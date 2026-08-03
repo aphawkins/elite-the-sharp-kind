@@ -44,7 +44,7 @@ public sealed class AssetSet
             x => x.Key,
             x => ImageReader.Read(x.Value.Path));
 
-        AssetColourBudget budget = Measure(assetLocator.Tier, images, fontBitmaps, PaletteColours(assetLocator));
+        AssetColourBudget budget = Measure(assetLocator, images, fontBitmaps, PaletteColours(assetLocator));
         Validate(budget, logger);
 
         return new(
@@ -54,7 +54,7 @@ public sealed class AssetSet
     }
 
     // Reports every missing file at once. Decoding them one at a time
-    // surfaces only the first, which turns filling in a new tier's asset
+    // surfaces only the first, which turns filling in a new rendition.s asset
     // set into a game of whack-a-mole.
     private static void RequireEveryFile(IAssetLocator assetLocator)
     {
@@ -70,22 +70,22 @@ public sealed class AssetSet
         if (missing.Length > 0)
         {
             throw new UsefulException(
-                $"The {assetLocator.Tier} asset set is missing {missing.Length} file(s): {string.Join(", ", missing)}.");
+                $"The {assetLocator.Rendition} asset set is missing {missing.Length} file(s): {string.Join(", ", missing)}.");
         }
     }
 
-    // The named palette counts against the tier's budget like any other
-    // asset: colours the game draws with are colours the tier has to be able
-    // to show, whether they arrive as pixels or as a name.
+    // The named palette counts against the rendition's budget like any other
+    // asset: colours the game draws with are colours the rendition has to be
+    // able to show, whether they arrive as pixels or as a name.
     private static HashSet<uint> PaletteColours(IAssetLocator assetLocator)
         => string.IsNullOrEmpty(assetLocator.PalettePath) ? []
             : !File.Exists(assetLocator.PalettePath)
             ? throw new UsefulException(
-                $"The {assetLocator.Tier} asset set is missing its palette: {assetLocator.PalettePath}")
+                $"The {assetLocator.Rendition} asset set is missing its palette: {assetLocator.PalettePath}")
             : [.. PaletteReader.Read(assetLocator.PalettePath).Values.Select(x => x.Argb)];
 
     private static AssetColourBudget Measure(
-        SystemTier tier,
+        IAssetLocator assetLocator,
         Dictionary<string, FastBitmap> images,
         Dictionary<string, FastBitmap> fontBitmaps,
         HashSet<uint> paletteColours)
@@ -94,7 +94,7 @@ public sealed class AssetSet
         Dictionary<string, int> perAsset = new() { ["Palette"] = paletteColours.Count };
         Dictionary<string, uint[]> outsidePalette = [];
         Dictionary<string, uint[]> offGrid = [];
-        int channelBits = AssetColourBudget.ChannelBits(tier);
+        int channelBits = assetLocator.Colours.ChannelBits;
         int partialAlpha = 0;
 
         AddOffGrid(offGrid, "Palette", paletteColours, channelBits);
@@ -124,7 +124,7 @@ public sealed class AssetSet
             }
         }
 
-        return new(tier, distinct.Count, partialAlpha, perAsset, outsidePalette, offGrid);
+        return new(assetLocator.Rendition, assetLocator.Colours, distinct.Count, partialAlpha, perAsset, outsidePalette, offGrid);
     }
 
     // Colours from one asset that the tier's DAC could not have produced.
@@ -197,12 +197,12 @@ public sealed class AssetSet
         if (!budget.IsWithinBudget)
         {
             string counted = $"{budget.ColourCount} distinct opaque colours against a cap of {budget.Cap}";
-            throw new UsefulException($"Asset colour cap exceeded for the {budget.Tier} tier: {counted}.");
+            throw new UsefulException($"Asset colour cap exceeded for {budget.Rendition}: {counted}.");
         }
 
         if (!budget.IsWithinPalette)
         {
-            string rule = $"The {budget.Tier} palette is the tier's whole colour set, so every asset colour has to be one it names";
+            string rule = $"{budget.Rendition} says its palette is its whole colour set, so every asset colour has to be one it names";
 
             throw new UsefulException(
                 $"{rule}, but {budget.OutsidePalette.Count} asset(s) use colours it does not: {Offenders(budget.OutsidePalette)}.");
@@ -210,8 +210,8 @@ public sealed class AssetSet
 
         if (!budget.IsOnColourGrid)
         {
-            int bits = AssetColourBudget.ChannelBits(budget.Tier);
-            string drives = $"The {budget.Tier} tier drives {bits} bits per channel";
+            int bits = budget.Limits.ChannelBits;
+            string drives = $"{budget.Rendition} drives {bits} bits per channel";
             string rule = $"{drives}, so every colour has to sit on one of its {1 << bits} levels per channel";
 
             throw new UsefulException(

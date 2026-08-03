@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Suns;
 using EliteSharpLib.Tests.Missions;
@@ -75,7 +76,7 @@ public class WireframeSunTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(ScreenSize, ScreenSize, b => lastFrame = b, AssetLocator.Create());
         GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
         RNG rng = new(new Random(0));
-        EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), new ZBufferRenderer(graphics), rng);
+        EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), new SixteenBitRendition(), new ZBufferRenderer(graphics), rng);
         WireframeSun sun = new(draw) { Location = new(0, 0, Distance, 0) };
 
         graphics.Clear();

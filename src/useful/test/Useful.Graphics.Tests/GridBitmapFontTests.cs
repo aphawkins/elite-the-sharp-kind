@@ -118,7 +118,8 @@ public class GridBitmapFontTests
     private static IAssetLocator Locator(string sheetPath)
     {
         Mock<IAssetLocator> locator = new();
-        locator.SetupGet(x => x.Tier).Returns(SystemTier.EightBit);
+        locator.SetupGet(x => x.Rendition).Returns("EightBit");
+        locator.SetupGet(x => x.Colours).Returns(new AssetColourLimits());
         locator.SetupGet(x => x.ImagePaths).Returns(new Dictionary<string, string>());
         BitmapFontEntry entry = new()
         {

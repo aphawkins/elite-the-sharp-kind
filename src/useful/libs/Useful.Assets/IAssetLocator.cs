@@ -4,10 +4,13 @@ namespace Useful.Assets;
 
 public interface IAssetLocator
 {
-    // Which tier the paths below resolve to. Consumers that only load assets
-    // can ignore it; the colour-budget validation needs it to know which cap
-    // applies.
-    public SystemTier Tier { get; }
+    // Which rendition the paths below resolve to. Consumers that only load
+    // assets can ignore it.
+    public string Rendition { get; }
+
+    // What that rendition declared its colours are limited to, which the
+    // load-time checks are run against.
+    public AssetColourLimits Colours { get; }
 
     public string PalettePath { get; }
 

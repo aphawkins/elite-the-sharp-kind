@@ -5,7 +5,6 @@
 using EliteSharpLib.Config;
 using EliteSharpLib.Suns;
 using Useful.Abstraction.Config;
-using Useful.Assets;
 using Useful.Config;
 
 namespace EliteSharpLib.Tests.Config;
@@ -94,12 +93,18 @@ public class ConfigFileTests
     }
 
     [Fact]
-    public void ReadConfigWithAnOutOfRangeEnumRepairsThatSettingAlone()
+    public void ReadConfigKeepsARenditionNameItDoesNotRecognise()
     {
+        // A name the game has never heard of is not a mistake to repair: the
+        // whole point of renditions being named rather than enumerated is
+        // that the game cannot know what exists. Whether one by that name is
+        // installed is settled when it is looked for, and that failure names
+        // it - repairing to the default here would quietly ignore what the
+        // commander asked for.
         EliteConfig config = ReadWritten(
-            /*lang=json,strict*/ "{\"engine\": {\"tier\": 7}, \"game\": {\"sunStyle\": \"Solid\"}}");
+            /*lang=json,strict*/ "{\"engine\": {\"rendition\": \"Psychedelic\"}, \"game\": {\"sunStyle\": \"Solid\"}}");
 
-        Assert.Equal(SystemTier.SixteenBit, config.Engine.Tier);
+        Assert.Equal("Psychedelic", config.Engine.Rendition);
         Assert.Equal(SunType.Solid, config.Game.SunStyle);
     }
 
@@ -114,12 +119,12 @@ public class ConfigFileTests
         Directory.CreateDirectory(directory);
         File.WriteAllText(
             Path.Combine(directory, ConfigFileName),
-            /*lang=json,strict*/ "{\"engine\": {\"tier\": \"ThirtyTwoBit\"}, \"game\": {\"instantDock\": true}}");
+            /*lang=json,strict*/ "{\"engine\": {\"windowScale\": \"lots\"}, \"game\": {\"instantDock\": true}}");
         ConfigFile<EliteConfig> configFile = new(directory, ConfigFileName, EliteServiceCollectionExtensions.RepairConfig);
 
         EliteConfig config = configFile.ReadConfig();
 
-        Assert.Equal(SystemTier.SixteenBit, config.Engine.Tier);
+        Assert.Equal("SixteenBit", config.Engine.Rendition);
         Assert.False(config.Game.InstantDock);
         Assert.True(File.Exists(Path.Combine(directory, ConfigFileName + ".bad")));
     }
@@ -134,19 +139,19 @@ public class ConfigFileTests
             $"{{\"engine\": {{\"windowScale\": {scale}, \"tier\": \"8Bit\"}}}}");
 
         Assert.Equal(1, config.Engine.WindowScale);
-        Assert.Equal(SystemTier.EightBit, config.Engine.Tier);
+        Assert.Equal("EightBit", config.Engine.Rendition);
     }
 
     [Fact]
     public void ReadConfigKeepsAWindowScaleItCanHonour()
     {
-        // The scale is independent of the tier: a magnified 8-bit window is
-        // the point of the setting, not a contradiction to repair away.
+        // The scale is independent of the rendition: a magnified 8-bit window
+        // is the point of the setting, not a contradiction to repair away.
         EliteConfig config = ReadWritten(
             /*lang=json,strict*/ "{\"engine\": {\"windowScale\": 3, \"tier\": \"8Bit\"}}");
 
         Assert.Equal(3, config.Engine.WindowScale);
-        Assert.Equal(SystemTier.EightBit, config.Engine.Tier);
+        Assert.Equal("EightBit", config.Engine.Rendition);
     }
 
     [Fact]
@@ -159,34 +164,49 @@ public class ConfigFileTests
         Assert.Equal(ConfigSchema.CurrentVersion, ReadWritten(/*lang=json,strict*/ "{\"version\": 99}").Version);
     }
 
-    // The tier is spelled with a digit in the file - "8Bit", "16Bit" - not
-    // with the C# member name, which cannot start with one. A round trip
-    // alone would pass either way, so the written text is checked directly.
+    // A rendition is written under the name it calls itself. The game has no
+    // spelling of its own to apply - it cannot have one for a rendition it
+    // has never seen.
     [Theory]
-    [InlineData(SystemTier.EightBit, "8Bit")]
-    [InlineData(SystemTier.SixteenBit, "16Bit")]
-    public void WriteConfigSpellsTheTierWithADigit(SystemTier tier, string expected)
+    [InlineData("EightBit")]
+    [InlineData("Psychedelic")]
+    public void WriteConfigWritesTheRenditionName(string rendition)
     {
         string directory = CreateTempDirectory();
         ConfigFile<EliteConfig> configFile = new(directory, ConfigFileName);
 
-        configFile.WriteConfig(new() { Engine = new() { Tier = tier } });
+        configFile.WriteConfig(new() { Engine = new() { Rendition = rendition } });
 
         string json = File.ReadAllText(Path.Combine(directory, ConfigFileName));
-        Assert.Contains($"\"tier\": \"{expected}\"", json, StringComparison.Ordinal);
+        Assert.Contains($"\"rendition\": \"{rendition}\"", json, StringComparison.Ordinal);
     }
 
-    // Reading goes through the configuration binder rather than
-    // System.Text.Json, so the digit spelling has to be understood on that
-    // side too - and the old member-name spelling still has to read, or
-    // every config file written before this change loses its tier.
+    // Files written before renditions existed say "tier", and spell it with a
+    // digit. Both the old key and the old spelling have to survive, or every
+    // config file written before this change quietly loses its choice.
     [Theory]
-    [InlineData("8Bit", SystemTier.EightBit)]
-    [InlineData("16Bit", SystemTier.SixteenBit)]
-    [InlineData("EightBit", SystemTier.EightBit)]
-    [InlineData("SixteenBit", SystemTier.SixteenBit)]
-    public void ReadConfigAcceptsBothTierSpellings(string written, SystemTier expected)
-        => Assert.Equal(expected, ReadWritten($"{{\"engine\": {{\"tier\": \"{written}\"}}}}").Engine.Tier);
+    [InlineData("8Bit", "EightBit")]
+    [InlineData("16Bit", "SixteenBit")]
+    [InlineData("EightBit", "EightBit")]
+    public void RepairUpgradesTheOldTierSetting(string written, string expected)
+    {
+        EngineConfigSettings engine = new() { Tier = written };
+
+        Assert.True(engine.Repair());
+        Assert.Equal(expected, engine.Rendition);
+        Assert.Null(engine.Tier);
+    }
+
+    // The old key only wins where the new one was never written, so a file
+    // holding both - which only a hand-edit produces - keeps the new one.
+    [Fact]
+    public void RepairKeepsTheRenditionWhenBothAreSet()
+    {
+        EngineConfigSettings engine = new() { Rendition = "Psychedelic", Tier = "8Bit" };
+
+        Assert.True(engine.Repair());
+        Assert.Equal("Psychedelic", engine.Rendition);
+    }
 
     private static EliteConfig ReadWritten(string json)
     {

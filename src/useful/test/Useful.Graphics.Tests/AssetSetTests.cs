@@ -10,6 +10,23 @@ namespace Useful.Graphics.Tests;
 
 public class AssetSetTests
 {
+    // What the two renditions the games ship with declare about themselves.
+    // The game no longer holds these as facts about a fixed set of tiers - a
+    // rendition declares its own, and these stand in for two that would.
+    private static AssetColourLimits EightBit => new()
+    {
+        MaxColours = 16,
+        PaletteNamesEveryColour = true,
+        ChannelBits = 8,
+    };
+
+    private static AssetColourLimits SixteenBit => new()
+    {
+        MaxColours = 4096,
+        PaletteNamesEveryColour = false,
+        ChannelBits = 4,
+    };
+
     [Fact]
     public void CountsDistinctOpaqueColoursAcrossTheWholeSet()
     {
@@ -19,7 +36,7 @@ public class AssetSetTests
         using TempImageFile blue = TempImageFile.From(Bmp(0xFF0000FF, 0xFF00FF00));
 
         // Act
-        AssetSet assets = AssetSet.Load(Locator(SystemTier.SixteenBit, ("Red", red), ("Blue", blue)));
+        AssetSet assets = AssetSet.Load(Locator(SixteenBit, ("Red", red), ("Blue", blue)));
 
         // Assert
         Assert.Equal(3, assets.Budget.ColourCount);
@@ -34,7 +51,7 @@ public class AssetSetTests
         using TempImageFile image = TempImageFile.From(Bmp(0xFFFF0000, 0x00123456));
 
         // Act
-        AssetSet assets = AssetSet.Load(Locator(SystemTier.SixteenBit, ("Image", image)));
+        AssetSet assets = AssetSet.Load(Locator(SixteenBit, ("Image", image)));
 
         // Assert
         Assert.Equal(1, assets.Budget.ColourCount);
@@ -49,7 +66,7 @@ public class AssetSetTests
         using TempImageFile font = TempImageFile.From(FontBmp(0xFF00FF00, 0xFF0000FF));
 
         // Act
-        AssetSet assets = AssetSet.Load(Locator(SystemTier.SixteenBit, [("Image", image)], [("Small", font)]));
+        AssetSet assets = AssetSet.Load(Locator(SixteenBit, [("Image", image)], [("Small", font)]));
 
         // Assert
         Assert.Equal(3, assets.Budget.ColourCount);
@@ -62,17 +79,11 @@ public class AssetSetTests
         // Arrange: the renderer has no middle ground for alpha, so a
         // half-transparent pixel is an authoring mistake, not a style.
         using TempImageFile image = TempImageFile.From(Bmp(0x80FF0000, 0xFF00FF00));
-        IAssetLocator locator = Locator(SystemTier.SixteenBit, ("Image", image));
+        IAssetLocator locator = Locator(SixteenBit, ("Image", image));
 
         // Act / Assert
         Assert.Throws<UsefulException>(() => AssetSet.Load(locator));
     }
-
-    [Theory]
-    [InlineData(SystemTier.EightBit, 16)]
-    [InlineData(SystemTier.SixteenBit, 4096)]
-    public void CapsEachTierAtItsOwnColourBudget(SystemTier tier, int expectedCap)
-        => Assert.Equal(expectedCap, AssetColourBudget.MaxColours(tier));
 
     [Fact]
     public void ThrowsWhenAnEightBitSetExceedsSixteenColours()
@@ -80,7 +91,7 @@ public class AssetSetTests
         // Arrange: 17 distinct colours against the 8-bit cap of 16.
         uint[] colours = [.. Enumerable.Range(0, 17).Select(i => 0xFF000000u | (uint)i)];
         using TempImageFile image = TempImageFile.From(Bmp(colours));
-        IAssetLocator locator = Locator(SystemTier.EightBit, ("Image", image));
+        IAssetLocator locator = Locator(EightBit, ("Image", image));
 
         // Act / Assert
         Assert.Throws<UsefulException>(() => AssetSet.Load(locator));
@@ -94,7 +105,7 @@ public class AssetSetTests
         using TempImageFile image = TempImageFile.From(Bmp(colours));
 
         // Act
-        AssetSet assets = AssetSet.Load(Locator(SystemTier.EightBit, ("Image", image)));
+        AssetSet assets = AssetSet.Load(Locator(EightBit, ("Image", image)));
 
         // Assert
         Assert.True(assets.Budget.IsWithinBudget);
@@ -110,18 +121,12 @@ public class AssetSetTests
         using TempImageFile image = TempImageFile.From(Bmp(OnGrid(17)));
 
         // Act
-        AssetSet assets = AssetSet.Load(Locator(SystemTier.SixteenBit, ("Image", image)));
+        AssetSet assets = AssetSet.Load(Locator(SixteenBit, ("Image", image)));
 
         // Assert
         Assert.Single(assets.Images);
         Assert.Equal(17, assets.Budget.ColourCount);
     }
-
-    [Theory]
-    [InlineData(SystemTier.EightBit, true)]
-    [InlineData(SystemTier.SixteenBit, false)]
-    public void TreatsThePaletteAsTheWholeColourSetOnlyOnIndexedColourTiers(SystemTier tier, bool expected)
-        => Assert.Equal(expected, AssetColourBudget.PaletteNamesEveryColour(tier));
 
     [Fact]
     public void ThrowsWhenAnEightBitBitmapUsesAColourThePaletteDoesNotName()
@@ -131,7 +136,7 @@ public class AssetSetTests
         // inside the 16-colour cap, so only the palette rule can catch it.
         using TempImageFile palette = Palette(("Red", 0xFFFF0000));
         using TempImageFile image = TempImageFile.From(Bmp(0xFFFF0000, 0xFF00FF00));
-        IAssetLocator locator = Locator(SystemTier.EightBit, palette, ("Image", image));
+        IAssetLocator locator = Locator(EightBit, palette, ("Image", image));
 
         // Act
         UsefulException exception = Assert.Throws<UsefulException>(() => AssetSet.Load(locator));
@@ -151,7 +156,7 @@ public class AssetSetTests
         using TempImageFile image = TempImageFile.From(Bmp(0xFFFF0000, 0xFF00FF00));
 
         // Act
-        AssetSet assets = AssetSet.Load(Locator(SystemTier.EightBit, palette, ("Image", image)));
+        AssetSet assets = AssetSet.Load(Locator(EightBit, palette, ("Image", image)));
 
         // Assert
         Assert.True(assets.Budget.IsWithinPalette);
@@ -167,7 +172,7 @@ public class AssetSetTests
         using TempImageFile image = TempImageFile.From(Bmp(0xFFFF0000, 0x00123456));
 
         // Act
-        AssetSet assets = AssetSet.Load(Locator(SystemTier.EightBit, palette, ("Image", image)));
+        AssetSet assets = AssetSet.Load(Locator(EightBit, palette, ("Image", image)));
 
         // Assert
         Assert.True(assets.Budget.IsWithinPalette);
@@ -184,7 +189,7 @@ public class AssetSetTests
         using TempImageFile image = TempImageFile.From(Bmp(0xFFFF0000, 0xFF00FF00));
 
         // Act
-        AssetSet assets = AssetSet.Load(Locator(SystemTier.SixteenBit, palette, ("Image", image)));
+        AssetSet assets = AssetSet.Load(Locator(SixteenBit, palette, ("Image", image)));
 
         // Assert
         Assert.True(assets.Budget.IsWithinPalette);
@@ -199,7 +204,7 @@ public class AssetSetTests
         using TempImageFile palette = Palette(("Red", 0xFFFF0000));
         using TempImageFile image = TempImageFile.From(Bmp(0xFFFF0000, 0xFFFF0000));
         using TempImageFile font = TempImageFile.From(FontBmp(0xFFFF0000, 0xFF00FF00));
-        IAssetLocator locator = Locator(SystemTier.EightBit, palette, [("Image", image)], [("Small", font)]);
+        IAssetLocator locator = Locator(EightBit, palette, [("Image", image)], [("Small", font)]);
 
         // Act
         UsefulException exception = Assert.Throws<UsefulException>(() => AssetSet.Load(locator));
@@ -207,12 +212,6 @@ public class AssetSetTests
         // Assert
         Assert.Contains("Small", exception.Message, StringComparison.Ordinal);
     }
-
-    [Theory]
-    [InlineData(SystemTier.EightBit, 8)]
-    [InlineData(SystemTier.SixteenBit, 4)]
-    public void DrivesEachTierAtItsOwnChannelDepth(SystemTier tier, int expectedBits)
-        => Assert.Equal(expectedBits, AssetColourBudget.ChannelBits(tier));
 
     [Theory]
     [InlineData(0xFF000000u, true)]
@@ -232,7 +231,7 @@ public class AssetSetTests
         // Arrange: 0x808080 is the classic mid grey, and the one no 12-bit DAC
         // can produce - 0x77 and 0x88 are the levels either side of it.
         using TempImageFile image = TempImageFile.From(Bmp(0xFF112233, 0xFF808080));
-        IAssetLocator locator = Locator(SystemTier.SixteenBit, ("Image", image));
+        IAssetLocator locator = Locator(SixteenBit, ("Image", image));
 
         // Act
         UsefulException exception = Assert.Throws<UsefulException>(() => AssetSet.Load(locator));
@@ -250,7 +249,7 @@ public class AssetSetTests
         using TempImageFile image = TempImageFile.From(Bmp(0xFF112233, 0xFFEE6622));
 
         // Act
-        AssetSet assets = AssetSet.Load(Locator(SystemTier.SixteenBit, ("Image", image)));
+        AssetSet assets = AssetSet.Load(Locator(SixteenBit, ("Image", image)));
 
         // Assert
         Assert.True(assets.Budget.IsOnColourGrid);
@@ -265,7 +264,7 @@ public class AssetSetTests
         // name. The bitmap here is clean, so only the palette can be at fault.
         using TempImageFile palette = Palette(("Grey", 0xFF808080));
         using TempImageFile image = TempImageFile.From(Bmp(0xFF112233, 0xFF112233));
-        IAssetLocator locator = Locator(SystemTier.SixteenBit, palette, ("Image", image));
+        IAssetLocator locator = Locator(SixteenBit, palette, ("Image", image));
 
         // Act
         UsefulException exception = Assert.Throws<UsefulException>(() => AssetSet.Load(locator));
@@ -283,7 +282,7 @@ public class AssetSetTests
         using TempImageFile image = TempImageFile.From(Bmp(0xFF808080, 0xFF808080));
 
         // Act
-        AssetSet assets = AssetSet.Load(Locator(SystemTier.EightBit, ("Image", image)));
+        AssetSet assets = AssetSet.Load(Locator(EightBit, ("Image", image)));
 
         // Assert
         Assert.True(assets.Budget.IsOnColourGrid);
@@ -296,7 +295,7 @@ public class AssetSetTests
         // land on the tier's levels like any other asset's.
         using TempImageFile image = TempImageFile.From(Bmp(0xFF112233, 0xFF112233));
         using TempImageFile font = TempImageFile.From(FontBmp(0xFF112233, 0xFF808080));
-        IAssetLocator locator = Locator(SystemTier.SixteenBit, [("Image", image)], [("Small", font)]);
+        IAssetLocator locator = Locator(SixteenBit, [("Image", image)], [("Small", font)]);
 
         // Act
         UsefulException exception = Assert.Throws<UsefulException>(() => AssetSet.Load(locator));
@@ -349,29 +348,30 @@ public class AssetSetTests
         return BmpBuilder.Build(width, height, 32, pixels);
     }
 
-    private static IAssetLocator Locator(SystemTier tier, params (string Name, TempImageFile File)[] images)
-        => Locator(tier, null, images, []);
+    private static IAssetLocator Locator(AssetColourLimits limits, params (string Name, TempImageFile File)[] images)
+        => Locator(limits, null, images, []);
 
     private static IAssetLocator Locator(
-        SystemTier tier,
+        AssetColourLimits limits,
         TempImageFile palette,
         params (string Name, TempImageFile File)[] images)
-        => Locator(tier, palette, images, []);
+        => Locator(limits, palette, images, []);
 
     private static IAssetLocator Locator(
-        SystemTier tier,
+        AssetColourLimits limits,
         (string Name, TempImageFile File)[] images,
         (string Name, TempImageFile File)[] fonts)
-        => Locator(tier, null, images, fonts);
+        => Locator(limits, null, images, fonts);
 
     private static IAssetLocator Locator(
-        SystemTier tier,
+        AssetColourLimits limits,
         TempImageFile? palette,
         (string Name, TempImageFile File)[] images,
         (string Name, TempImageFile File)[] fonts)
     {
         Mock<IAssetLocator> locator = new();
-        locator.SetupGet(x => x.Tier).Returns(tier);
+        locator.SetupGet(x => x.Rendition).Returns("Test");
+        locator.SetupGet(x => x.Colours).Returns(limits);
         locator.SetupGet(x => x.PalettePath).Returns(palette?.Path ?? string.Empty);
         locator.SetupGet(x => x.ImagePaths).Returns(images.ToDictionary(x => x.Name, x => x.File.Path));
         locator.SetupGet(x => x.FontBitmaps).Returns(fonts.ToDictionary(

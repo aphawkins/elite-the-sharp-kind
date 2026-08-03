@@ -6,6 +6,7 @@ using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Config;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Planets;
+using EliteSharpLib.Renditions;
 using EliteSharpLib.Views;
 using Useful.Audio;
 using Useful.Config;
@@ -100,6 +101,13 @@ public class EngineSettingsControllerTests
         Space space = SettingsControllerFixture.CreateSpace(out gameState, out keyboard, out FakeEliteDraw draw, out audio);
         configFile = SettingsControllerFixture.CreateConfigFile(ConfigFileName);
 
-        return new EngineSettingsController(gameState, keyboard, space, audio, configFile, new SettingsListView16Bit(draw));
+        return new EngineSettingsController(
+            gameState,
+            keyboard,
+            space,
+            audio,
+            configFile,
+            new InstalledRenditions(new SixteenBitRendition(), ["EightBit", "SixteenBit"]),
+            new SettingsListView16Bit(draw));
     }
 }

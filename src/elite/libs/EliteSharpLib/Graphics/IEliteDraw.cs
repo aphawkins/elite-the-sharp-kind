@@ -6,7 +6,6 @@ using System.Numerics;
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Ships;
 using Useful;
-using Useful.Assets;
 
 namespace EliteSharpLib.Graphics;
 
@@ -20,10 +19,10 @@ namespace EliteSharpLib.Graphics;
 internal interface IEliteDraw : IViewSurface
 {
     /// <summary>
-    /// Gets the machine class being reproduced, which the object factories
-    /// pick their per-tier renderers by.
+    /// Gets the name of the rendition being drawn, which the object factories
+    /// pick their renderers by until those move to the rendition too.
     /// </summary>
-    public SystemTier Tier { get; }
+    public string Rendition { get; }
 
     /// <summary>
     /// Gets the perspective projection's focal length in pixels: a point at

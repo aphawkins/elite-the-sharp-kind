@@ -4,17 +4,18 @@ using System.Text.Json;
 
 namespace Useful.Assets;
 
-// The one place asset paths are built, so tier resolution lives here and
-// nowhere else: tier-varying categories resolve to <Category>/<Tier>/<file>
-// and fall back to <Category>/<file>, which is what keeps the tier-neutral
-// categories - audio, TrueType fonts, tracks - from needing a copy per tier.
-// Models are tier-varying: their 'usemtl' names are resolved through the
-// tier's palette, and the two palettes name different colours. The tier is
+// The one place asset paths are built, so rendition resolution lives here and
+// nowhere else: rendition-varying categories resolve to <Category>/<Rendition>/<file>
+// and fall back to <Category>/<file>, which is what keeps the rendition-neutral
+// categories - audio, TrueType fonts, tracks - from needing a copy per rendition.
+// Models are rendition-varying: their 'usemtl' names are resolved through the
+// rendition's palette, and the two palettes name different colours. The rendition is
 // fixed at construction, so IAssetLocator's consumers never have to know one
 // exists.
 public sealed class AssetLocator : IAssetLocator
 {
     private const string AssetManifestFilename = "AssetManifest.json";
+    private const string DefaultRendition = "SixteenBit";
     private const string ImagesCategory = "Images";
     private const string FontsBitmapCategory = "FontsBitmap";
     private const string ModelsCategory = "Models";
@@ -22,29 +23,33 @@ public sealed class AssetLocator : IAssetLocator
     private readonly AssetManifest _assetManifest = new();
     private readonly string _baseDirectory;
 
-    internal AssetLocator(AssetManifest assetManifest, string baseDirectory, SystemTier tier)
+    internal AssetLocator(AssetManifest assetManifest, string baseDirectory, string rendition)
     {
         ArgumentNullException.ThrowIfNull(assetManifest);
 
-        if (assetManifest.Tiers.Count > 0 && !assetManifest.Tiers.Contains(tier))
+        // The name becomes a directory segment, so it may not climb out of
+        // the assets folder. A rendition the game was never built against
+        // names itself, and a name is not a path.
+        if (string.IsNullOrWhiteSpace(rendition) || rendition.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
         {
-            throw new UsefulException(
-                $"Asset tier {tier} is not one of the tiers this manifest ships: {string.Join(", ", assetManifest.Tiers)}.");
+            throw new UsefulException($"'{rendition}' cannot be used as a folder name, so no assets could be found for it.");
         }
 
         _assetManifest = assetManifest;
         _baseDirectory = Path.Combine(baseDirectory, "Assets");
-        Tier = tier;
+        Rendition = rendition;
     }
 
-    public SystemTier Tier { get; }
+    public string Rendition { get; }
 
-    public string PalettePath => TierPath(PaletteCategory, _assetManifest.Palette);
+    public AssetColourLimits Colours => _assetManifest.Colours;
+
+    public string PalettePath => RenditionPath(PaletteCategory, _assetManifest.Palette);
 
     public IDictionary<string, BitmapFontAsset> FontBitmaps
         => _assetManifest.FontsBitmap.ToDictionary(
             x => x.Key,
-            x => new BitmapFontAsset(TierPath(FontsBitmapCategory, x.Value.File), x.Value));
+            x => new BitmapFontAsset(RenditionPath(FontsBitmapCategory, x.Value.File), x.Value));
 
     public IDictionary<string, TrueTypeFontAsset> FontTrueTypes
         => _assetManifest.FontsTrueType.ToDictionary(
@@ -52,7 +57,7 @@ public sealed class AssetLocator : IAssetLocator
             x => new TrueTypeFontAsset(Path.Combine(_baseDirectory, "FontsTrueType", x.Value.File), x.Value.PointSize));
 
     public IDictionary<string, string> ImagePaths
-        => _assetManifest.Images.ToDictionary(x => x.Key, x => TierPath(ImagesCategory, x.Value));
+        => _assetManifest.Images.ToDictionary(x => x.Key, x => RenditionPath(ImagesCategory, x.Value));
 
     public IDictionary<string, string> MusicPaths
         => _assetManifest.Music.ToDictionary(x => x.Key, x => Path.Combine(_baseDirectory, "Music", x.Value));
@@ -64,52 +69,52 @@ public sealed class AssetLocator : IAssetLocator
         => _assetManifest.SoundFonts.ToDictionary(x => x.Key, x => Path.Combine(_baseDirectory, "SoundFonts", x.Value));
 
     public IDictionary<string, string> ModelPaths
-        => _assetManifest.Models.ToDictionary(x => x.Key, x => TierPath(ModelsCategory, x.Value));
+        => _assetManifest.Models.ToDictionary(x => x.Key, x => RenditionPath(ModelsCategory, x.Value));
 
-    public static AssetLocator Create() => Create(SystemTier.SixteenBit);
+    public static AssetLocator Create() => Create(DefaultRendition);
 
-    public static AssetLocator Create(SystemTier tier)
+    public static AssetLocator Create(string rendition)
     {
         string baseDir = Path.GetDirectoryName(AppContext.BaseDirectory) ?? string.Empty;
         string assetsDir = Path.Combine(baseDir, "Assets");
         string path = Path.Combine(assetsDir, AssetManifestFilename);
         AssetManifest manifest = ReadManifest(path);
 
-        // A tier only needs a manifest of its own where it differs from the
+        // A rendition only needs a manifest of its own where it differs from the
         // base one - a different filename, or a font sheet with different
         // geometry. Tiers whose assets merely live in a different folder need
         // no file at all.
-        string overlayPath = Path.Combine(assetsDir, $"AssetManifest.{tier}.json");
+        string overlayPath = Path.Combine(assetsDir, $"AssetManifest.{rendition}.json");
         if (File.Exists(overlayPath))
         {
             Overlay(manifest, ReadManifest(overlayPath));
         }
 
-        return new(manifest, baseDir, tier);
+        return new(manifest, baseDir, rendition);
     }
 
     public static AssetLocator Create(Stream manifestStream, string baseDirectory)
-        => Create(manifestStream, baseDirectory, SystemTier.SixteenBit);
+        => Create(manifestStream, baseDirectory, DefaultRendition);
 
-    public static AssetLocator Create(Stream manifestStream, string baseDirectory, SystemTier tier)
-        => Create(manifestStream, null, baseDirectory, tier);
+    public static AssetLocator Create(Stream manifestStream, string baseDirectory, string rendition)
+        => Create(manifestStream, null, baseDirectory, rendition);
 
     public static AssetLocator Create(
         Stream manifestStream,
-        Stream? tierManifestStream,
+        Stream? renditionManifestStream,
         string baseDirectory,
-        SystemTier tier)
+        string rendition)
     {
         ArgumentNullException.ThrowIfNull(manifestStream);
 
         AssetManifest manifest = Deserialize(manifestStream);
 
-        if (tierManifestStream is not null)
+        if (renditionManifestStream is not null)
         {
-            Overlay(manifest, Deserialize(tierManifestStream));
+            Overlay(manifest, Deserialize(renditionManifestStream));
         }
 
-        return new(manifest, baseDirectory, tier);
+        return new(manifest, baseDirectory, rendition);
     }
 
     private static AssetManifest Deserialize(Stream manifestStream)
@@ -139,35 +144,40 @@ public sealed class AssetLocator : IAssetLocator
         }
     }
 
-    // Entry-by-entry: a tier's manifest states only what it changes, so
+    // Entry-by-entry: a rendition's manifest states only what it changes, so
     // anything it leaves out keeps the base manifest's value.
-    private static void Overlay(AssetManifest manifest, AssetManifest tierManifest)
+    private static void Overlay(AssetManifest manifest, AssetManifest renditionManifest)
     {
-        if (!string.IsNullOrEmpty(tierManifest.Palette))
+        if (!string.IsNullOrEmpty(renditionManifest.Palette))
         {
-            manifest.Palette = tierManifest.Palette;
+            manifest.Palette = renditionManifest.Palette;
         }
 
-        Overlay(manifest.Images, tierManifest.Images);
-        Overlay(manifest.Sfx, tierManifest.Sfx);
-        Overlay(manifest.Music, tierManifest.Music);
-        Overlay(manifest.SoundFonts, tierManifest.SoundFonts);
-        Overlay(manifest.Models, tierManifest.Models);
-        Overlay(manifest.FontsBitmap, tierManifest.FontsBitmap);
-        Overlay(manifest.FontsTrueType, tierManifest.FontsTrueType);
+        // Colour limits belong to the rendition rather than the game, so its
+        // own manifest is the only place they can be stated - the base is
+        // what is shared, and a shared limit would be a limit on everyone.
+        manifest.Colours = renditionManifest.Colours;
+
+        Overlay(manifest.Images, renditionManifest.Images);
+        Overlay(manifest.Sfx, renditionManifest.Sfx);
+        Overlay(manifest.Music, renditionManifest.Music);
+        Overlay(manifest.SoundFonts, renditionManifest.SoundFonts);
+        Overlay(manifest.Models, renditionManifest.Models);
+        Overlay(manifest.FontsBitmap, renditionManifest.FontsBitmap);
+        Overlay(manifest.FontsTrueType, renditionManifest.FontsTrueType);
     }
 
-    private static void Overlay<T>(Dictionary<string, T> entries, Dictionary<string, T> tierEntries)
+    private static void Overlay<T>(Dictionary<string, T> entries, Dictionary<string, T> renditionEntries)
     {
-        foreach (KeyValuePair<string, T> entry in tierEntries)
+        foreach (KeyValuePair<string, T> entry in renditionEntries)
         {
             entries[entry.Key] = entry.Value;
         }
     }
 
-    private string TierPath(string category, string file)
+    private string RenditionPath(string category, string file)
     {
-        string tiered = Path.Combine(_baseDirectory, category, Tier.ToString(), file);
-        return File.Exists(tiered) ? tiered : Path.Combine(_baseDirectory, category, file);
+        string renditioned = Path.Combine(_baseDirectory, category, Rendition, file);
+        return File.Exists(renditioned) ? renditioned : Path.Combine(_baseDirectory, category, file);
     }
 }

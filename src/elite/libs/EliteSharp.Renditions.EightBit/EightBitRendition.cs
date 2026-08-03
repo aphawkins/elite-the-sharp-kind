@@ -4,7 +4,6 @@
 
 using EliteSharp.Abstractions.Renditions;
 using EliteSharp.Abstractions.Views;
-using Useful.Assets;
 
 namespace EliteSharp.Renditions.EightBit;
 
@@ -16,7 +15,13 @@ namespace EliteSharp.Renditions.EightBit;
 /// </summary>
 public sealed class EightBitRendition : IRendition
 {
-    public SystemTier Tier => SystemTier.EightBit;
+    public string Name => "EightBit";
+
+    public int ScreenWidth => 320;
+
+    public int ScreenHeight => 256;
+
+    public int Scale => 1;
 
     public IBaseView CreateBaseView(IViewSurface surface) => new BaseView8Bit(surface);
 

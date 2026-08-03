@@ -3,14 +3,13 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Abstractions.Views;
-using Useful.Assets;
 
 namespace EliteSharp.Abstractions.Renditions;
 
 /// <summary>
-/// Everything one asset tier draws, written in its own assembly and found at
-/// startup - the same door the missions come through. A tier's whole
-/// presentation is then an assembly rather than a branch in the game's
+/// Everything one rendition of the game draws, written in its own assembly
+/// and found at startup - the same door the missions come through. A whole
+/// presentation is then an assembly rather than a branch in the game.s
 /// composition root.
 /// <para>
 /// A rendition holds no state: it is handed an <see cref="IViewSurface"/> and
@@ -22,10 +21,36 @@ namespace EliteSharp.Abstractions.Renditions;
 public interface IRendition
 {
     /// <summary>
-    /// Gets the tier this rendition draws. The game loads every rendition it finds and
-    /// uses the one whose tier the commander configured.
+    /// Gets the name this rendition is known by - in the config file, and in
+    /// the folder its assets sit in. It has to stay put across releases: a
+    /// renamed rendition is one the commander's config no longer selects.
+    /// <para>
+    /// It is a name rather than one of a fixed set, because the game cannot
+    /// know what renditions exist. The two it ships with stand in for 8-bit
+    /// and 16-bit machines; a third need not be a machine at all.
+    /// </para>
     /// </summary>
-    public SystemTier Tier { get; }
+    public string Name { get; }
+
+    /// <summary>
+    /// Gets the width in pixels this rendition draws at. The game renders at
+    /// this size and the window magnifies it, so a rendition picks its own
+    /// resolution rather than being handed one.
+    /// </summary>
+    public int ScreenWidth { get; }
+
+    /// <summary>
+    /// Gets the height in pixels this rendition draws at.
+    /// </summary>
+    public int ScreenHeight { get; }
+
+    /// <summary>
+    /// Gets the coordinate scale: the original's drawing maths is written in a
+    /// 256-square space and multiplied up to the render resolution, so a
+    /// rendition twice the original's size uses 2. Whole numbers only - a
+    /// fraction puts HUD text and ship vertices on half-pixels.
+    /// </summary>
+    public int Scale { get; }
 
     /// <summary>
     /// Builds the chrome every screen of this tier shares - the border, the

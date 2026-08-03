@@ -758,6 +758,8 @@ public class SoftwareGraphicsTests
     private static Mock<IAssetLocator> ArrangeAssets(string filename = "")
     {
         Mock<IAssetLocator> moqAssetLocator = new();
+        moqAssetLocator.SetupGet(x => x.Rendition).Returns("Test");
+        moqAssetLocator.SetupGet(x => x.Colours).Returns(new AssetColourLimits());
 
         if (string.IsNullOrEmpty(filename))
         {

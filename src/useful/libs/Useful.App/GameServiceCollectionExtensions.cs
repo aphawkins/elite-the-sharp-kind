@@ -63,7 +63,7 @@ public static class GameServiceCollectionExtensions
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Graphics);
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Sound);
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);
-        services.AddSingleton<IAssetLocator>(_ => AssetLocator.Create(engine.Tier));
+        services.AddSingleton<IAssetLocator>(_ => AssetLocator.Create(engine.Rendition));
 
         return services;
     }

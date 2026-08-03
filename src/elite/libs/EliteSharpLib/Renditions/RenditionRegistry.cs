@@ -59,7 +59,7 @@ internal sealed class RenditionRegistry
         if (missing.Length > 0)
         {
             throw new InvalidOperationException(
-                $"{rendition.Tier} draws no screen for: {string.Join(", ", missing)}.");
+                $"{rendition.Name} draws no screen for: {string.Join(", ", missing)}.");
         }
     }
 

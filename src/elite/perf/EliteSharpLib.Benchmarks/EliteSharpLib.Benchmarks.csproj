@@ -12,6 +12,9 @@
     <ProjectReference Include="..\..\..\useful\libs\Useful.SDL\Useful.SDL.csproj" />
     <ProjectReference Include="..\..\..\useful\test\Useful.Fakes\Useful.Fakes.csproj" />
     <ProjectReference Include="..\..\libs\EliteSharpLib\EliteSharpLib.csproj" />
+    <!-- A rendition to construct EliteDraw against: it needs one for the scale
+         it draws at. Any would do; this is the one the benchmarks measure. -->
+    <ProjectReference Include="..\..\libs\EliteSharp.Renditions.SixteenBit\EliteSharp.Renditions.SixteenBit.csproj" />
   </ItemGroup>
 
 </Project>

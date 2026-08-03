@@ -3,7 +3,6 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using Microsoft.Extensions.Logging;
-using Useful.Assets;
 
 namespace EliteSharpLib;
 
@@ -69,6 +68,6 @@ internal static partial class LogMessages
     [LoggerMessage(
         EventId = 12,
         Level = LogLevel.Information,
-        Message = "Loaded {PackCount} rendition(s) from {AssemblyCount} plugin assemblies; drawing the {Tier} tier.")]
-    internal static partial void RenditionsLoaded(ILogger logger, int packCount, int assemblyCount, SystemTier tier);
+        Message = "Loaded {RenditionCount} rendition(s) from {AssemblyCount} plugin assemblies; drawing {Name}.")]
+    internal static partial void RenditionsLoaded(ILogger logger, int renditionCount, int assemblyCount, string name);
 }

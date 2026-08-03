@@ -6,13 +6,13 @@ using Xunit;
 
 namespace Useful.Assets.Tests;
 
-public class AssetLocatorTierTests : IDisposable
+public class AssetLocatorRenditionTests : IDisposable
 {
     private readonly string _tempRoot;
     private readonly string _assetsRoot;
     private bool _isDisposed;
 
-    public AssetLocatorTierTests()
+    public AssetLocatorRenditionTests()
     {
         _tempRoot = Path.Combine(Path.GetTempPath(), "Useful.Assets.Tests", Guid.NewGuid().ToString("N"));
         _assetsRoot = Path.Combine(_tempRoot, "Assets");
@@ -24,7 +24,7 @@ public class AssetLocatorTierTests : IDisposable
     {
         // Arrange
         GivenAsset("Images", "SixteenBit", "logo.bmp");
-        AssetLocator locator = Locate(SystemTier.SixteenBit);
+        AssetLocator locator = Locate("SixteenBit");
 
         // Act
         string path = locator.ImagePaths["Logo"];
@@ -36,10 +36,10 @@ public class AssetLocatorTierTests : IDisposable
     [Fact]
     public void FallsBackToTheSharedFolderWhenTheTierHasNoCopy()
     {
-        // Arrange: the file sits directly under Images, with no tier folder,
-        // which is what keeps tier-neutral assets from needing duplicating.
+        // Arrange: the file sits directly under Images, with no rendition folder,
+        // which is what keeps rendition-neutral assets from needing duplicating.
         GivenAsset("Images", null, "logo.bmp");
-        AssetLocator locator = Locate(SystemTier.SixteenBit);
+        AssetLocator locator = Locate("SixteenBit");
 
         // Act
         string path = locator.ImagePaths["Logo"];
@@ -56,8 +56,8 @@ public class AssetLocatorTierTests : IDisposable
         GivenAsset("Images", "SixteenBit", "logo.bmp");
 
         // Act
-        string eightBit = Locate(SystemTier.EightBit, SystemTier.EightBit, SystemTier.SixteenBit).ImagePaths["Logo"];
-        string sixteenBit = Locate(SystemTier.SixteenBit, SystemTier.EightBit, SystemTier.SixteenBit).ImagePaths["Logo"];
+        string eightBit = Locate("EightBit").ImagePaths["Logo"];
+        string sixteenBit = Locate("SixteenBit").ImagePaths["Logo"];
 
         // Assert
         Assert.Equal(Path.Combine(_assetsRoot, "Images", "EightBit", "logo.bmp"), eightBit);
@@ -70,7 +70,7 @@ public class AssetLocatorTierTests : IDisposable
         // Arrange
         GivenAsset("FontsBitmap", "SixteenBit", "font1.bmp");
         GivenAsset("Palette", "SixteenBit", "palette.json");
-        AssetLocator locator = Locate(SystemTier.SixteenBit);
+        AssetLocator locator = Locate("SixteenBit");
 
         // Assert
         Assert.Equal(Path.Combine(_assetsRoot, "FontsBitmap", "SixteenBit", "font1.bmp"), locator.FontBitmaps["Small"].Path);
@@ -80,11 +80,11 @@ public class AssetLocatorTierTests : IDisposable
     [Fact]
     public void ResolvesModelsByTier()
     {
-        // Arrange: a model's 'usemtl' names are resolved through the tier's
+        // Arrange: a model's 'usemtl' names are resolved through the rendition's
         // palette, and the two palettes name different colours, so the models
-        // are tier-varying like the images are.
+        // are rendition-varying like the images are.
         GivenAsset("Models", "SixteenBit", "ship.obj");
-        AssetLocator locator = Locate(SystemTier.SixteenBit);
+        AssetLocator locator = Locate("SixteenBit");
 
         // Act
         string path = locator.ModelPaths["Ship"];
@@ -97,9 +97,9 @@ public class AssetLocatorTierTests : IDisposable
     public void LeavesTierNeutralCategoriesOutsideTheTierFolder()
     {
         // Arrange: audio and TrueType fonts are resolution-independent and must
-        // not gain a tier segment even when a tier folder exists.
+        // not gain a rendition segment even when a rendition folder exists.
         GivenAsset("SFX", "SixteenBit", "beep.wav");
-        AssetLocator locator = Locate(SystemTier.SixteenBit);
+        AssetLocator locator = Locate("SixteenBit");
 
         // Act
         string path = locator.SfxPaths["Beep"];
@@ -113,10 +113,10 @@ public class AssetLocatorTierTests : IDisposable
     {
         // Arrange: the 8-bit set uses a different file for the same logical name.
         GivenAsset("Images", "EightBit", "logo-small.bmp");
-        object tierManifest = new { Images = new Dictionary<string, string> { { "Logo", "logo-small.bmp" } } };
+        object renditionManifest = new { Images = new Dictionary<string, string> { { "Logo", "logo-small.bmp" } } };
 
         // Act
-        string path = LocateWithTierManifest(SystemTier.EightBit, Manifest([SystemTier.EightBit]), tierManifest).ImagePaths["Logo"];
+        string path = LocateWithRenditionManifest("EightBit", Manifest(), renditionManifest).ImagePaths["Logo"];
 
         // Assert
         Assert.Equal(Path.Combine(_assetsRoot, "Images", "EightBit", "logo-small.bmp"), path);
@@ -125,10 +125,10 @@ public class AssetLocatorTierTests : IDisposable
     [Fact]
     public void ATierManifestLeavesEntriesItDoesNotNameAlone()
     {
-        // Arrange: a tier manifest that only replaces the font must not
+        // Arrange: a rendition manifest that only replaces the font must not
         // disturb the images, models or palette the base manifest declares.
         GivenAsset("Images", "EightBit", "logo.bmp");
-        object tierManifest = new
+        object renditionManifest = new
         {
             FontsBitmap = new Dictionary<string, object>
             {
@@ -137,7 +137,7 @@ public class AssetLocatorTierTests : IDisposable
         };
 
         // Act
-        AssetLocator locator = LocateWithTierManifest(SystemTier.EightBit, Manifest([SystemTier.EightBit]), tierManifest);
+        AssetLocator locator = LocateWithRenditionManifest("EightBit", Manifest(), renditionManifest);
 
         // Assert
         Assert.Equal(Path.Combine(_assetsRoot, "Images", "EightBit", "logo.bmp"), locator.ImagePaths["Logo"]);
@@ -147,22 +147,11 @@ public class AssetLocatorTierTests : IDisposable
     }
 
     [Fact]
-    public void ThrowsWhenTheRequestedTierIsNotOneTheManifestShips()
-    {
-        // Arrange: asking for a tier with no assets fails at construction
-        // rather than silently resolving to the shared fallback at first draw.
-        object manifest = Manifest([SystemTier.SixteenBit]);
-
-        // Act / Assert
-        Assert.Throws<UsefulException>(() => Locate(SystemTier.EightBit, manifest));
-    }
-
-    [Fact]
     public void DefaultsToTheSixteenBitTier()
     {
         // Arrange
         GivenAsset("Images", "SixteenBit", "logo.bmp");
-        using MemoryStream stream = ToStream(Manifest([]));
+        using MemoryStream stream = ToStream(Manifest());
 
         // Act
         AssetLocator locator = AssetLocator.Create(stream, _tempRoot);
@@ -206,11 +195,8 @@ public class AssetLocatorTierTests : IDisposable
     private static MemoryStream ToStream(object manifest)
         => new(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(manifest)));
 
-    private static object Manifest(SystemTier[] tiers) => new
+    private static object Manifest() => new
     {
-        // Serialized through SystemTier's own converter, so the manifest
-        // carries the JSON spelling ("16Bit") rather than the member name.
-        Tiers = tiers,
         Palette = "palette.json",
         FontsBitmap = new Dictionary<string, object>
         {
@@ -221,28 +207,28 @@ public class AssetLocatorTierTests : IDisposable
         Sfx = new Dictionary<string, string> { { "Beep", "beep.wav" } },
     };
 
-    private void GivenAsset(string category, string? tier, string filename)
+    private void GivenAsset(string category, string? rendition, string filename)
     {
-        string directory = tier is null
+        string directory = rendition is null
             ? Path.Combine(_assetsRoot, category)
-            : Path.Combine(_assetsRoot, category, tier);
+            : Path.Combine(_assetsRoot, category, rendition);
         Directory.CreateDirectory(directory);
         File.WriteAllText(Path.Combine(directory, filename), string.Empty);
     }
 
-    private AssetLocator Locate(SystemTier tier, params SystemTier[] shipped)
-        => Locate(tier, Manifest(shipped));
+    private AssetLocator Locate(string rendition)
+        => Locate(rendition, Manifest());
 
-    private AssetLocator Locate(SystemTier tier, object manifest)
+    private AssetLocator Locate(string rendition, object manifest)
     {
         using MemoryStream stream = ToStream(manifest);
-        return AssetLocator.Create(stream, _tempRoot, tier);
+        return AssetLocator.Create(stream, _tempRoot, rendition);
     }
 
-    private AssetLocator LocateWithTierManifest(SystemTier tier, object manifest, object tierManifest)
+    private AssetLocator LocateWithRenditionManifest(string rendition, object manifest, object renditionManifest)
     {
         using MemoryStream stream = ToStream(manifest);
-        using MemoryStream tierStream = ToStream(tierManifest);
-        return AssetLocator.Create(stream, tierStream, _tempRoot, tier);
+        using MemoryStream renditionStream = ToStream(renditionManifest);
+        return AssetLocator.Create(stream, renditionStream, _tempRoot, rendition);
     }
 }

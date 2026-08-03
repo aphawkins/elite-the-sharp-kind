@@ -3,9 +3,7 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using StuntCarRacerSharpLib.Config;
-using Useful;
 using Useful.Abstraction;
-using Useful.Assets;
 using Useful.Config;
 using Xunit;
 
@@ -87,49 +85,42 @@ public class ScrConfigFileTests
         Assert.False(config.Engine.Sound.Music);
     }
 
-    // The tier picks the asset set the game loads, so a value that is not a
-    // tier has to come back as one rather than reach the asset locator.
+    // A file written before renditions existed says "tier", and spells it
+    // with a digit. Repair carries the choice over to the new setting rather
+    // than letting it fall back to the default, which would lose it.
     [Fact]
-    public void ReadConfigRepairsAnOutOfRangeTier()
+    public void ReadConfigUpgradesTheOldTierSetting()
     {
         // Arrange
         string directory = CreateTempDirectory();
         Directory.CreateDirectory(directory);
         File.WriteAllText(
             Path.Combine(directory, ConfigFileName),
-            /*lang=json,strict*/ "{\"engine\": {\"tier\": 7, \"sound\": {\"music\": false}}}");
+            /*lang=json,strict*/ "{\"engine\": {\"tier\": \"16Bit\", \"sound\": {\"music\": false}}}");
         ConfigFile<ScrConfig> configFile = new(directory, ConfigFileName, StuntCarRacerServiceCollectionExtensions.RepairConfig);
 
         // Act
         ScrConfig config = configFile.ReadConfig();
 
         // Assert
-        Assert.Equal(SystemTier.SixteenBit, config.Engine.Tier);
+        Assert.Equal("SixteenBit", config.Engine.Rendition);
         Assert.False(config.Engine.Sound.Music);
     }
 
     [Fact]
-    public void WriteConfigThenReadConfigRoundTripsTheTier()
+    public void WriteConfigThenReadConfigRoundTripsTheRendition()
     {
         // Arrange
         ConfigFile<ScrConfig> configFile = new(CreateTempDirectory(), ConfigFileName);
-        ScrConfig written = new() { Engine = new() { Tier = SystemTier.EightBit } };
+        ScrConfig written = new() { Engine = new() { Rendition = "EightBit" } };
 
         // Act
         configFile.WriteConfig(written);
         ScrConfig read = configFile.ReadConfig();
 
         // Assert
-        Assert.Equal(SystemTier.EightBit, read.Engine.Tier);
+        Assert.Equal("EightBit", read.Engine.Rendition);
     }
-
-    // Stunt Car Racer ships only the 16-bit set, so selecting the 8-bit tier
-    // has to fail at startup on the manifest's Tiers list rather than load a
-    // game whose art is silently the wrong tier's. This flips when the 8-bit
-    // assets land.
-    [Fact]
-    public void CreatingAnAssetLocatorForAnUnshippedTierThrows()
-        => Assert.Throws<UsefulException>(() => AssetLocator.Create(SystemTier.EightBit));
 
     private static string CreateTempDirectory()
         => Path.Combine(Path.GetTempPath(), "ScrConfigFileTests_" + Guid.NewGuid().ToString("N"));

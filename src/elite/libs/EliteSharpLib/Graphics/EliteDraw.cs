@@ -5,6 +5,7 @@
 ////using System.Diagnostics;
 using System.Numerics;
 using EliteSharp.Abstractions.Assets;
+using EliteSharp.Abstractions.Renditions;
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Views;
@@ -24,7 +25,7 @@ internal sealed class EliteDraw : IEliteDraw
     // projection buffer never has to grow.
     private const int MaxModelPoints = 100;
 
-    // Focal length as a multiple of the tier's screen height. 1.0 reproduces
+    // Focal length as a multiple of the rendition's screen height. 1.0 reproduces
     // the 16-bit render exactly (512 x 1.0 = the old 256 x Scale 2).
     private const float FocusFactor = 1.0f;
 
@@ -34,8 +35,16 @@ internal sealed class EliteDraw : IEliteDraw
     private readonly IPolygonRenderer _shipRenderer;
     private readonly RNG _rng;
 
-    internal EliteDraw(GameState gameState, IGraphics graphics, IAssetLocator assetLocator, IPolygonRenderer shipRenderer, RNG rng)
+    internal EliteDraw(
+        GameState gameState,
+        IGraphics graphics,
+        IAssetLocator assetLocator,
+        IRendition rendition,
+        IPolygonRenderer shipRenderer,
+        RNG rng)
     {
+        ArgumentNullException.ThrowIfNull(rendition);
+
         _gameState = gameState;
         Graphics = graphics;
         _shipRenderer = shipRenderer;
@@ -44,15 +53,15 @@ internal sealed class EliteDraw : IEliteDraw
             graphics.ScreenWidth,
             graphics.ScreenHeight,
             graphics.ImageSize(nameof(ImageType.Scanner)),
-            assetLocator.Tier == SystemTier.EightBit ? 1 : 2);
-        Tier = assetLocator.Tier;
+            rendition.Scale);
+        Rendition = rendition.Name;
         Palette = PaletteReader.Read(assetLocator.PalettePath);
         _colorWhite = Palette["White"];
     }
 
     public ViewLayout Layout { get; }
 
-    public SystemTier Tier { get; }
+    public string Rendition { get; }
 
     // The original's projection is x * 256 / z against a 256-square view, i.e.
     // a focal length of one screen height. Deriving it from the tier's height

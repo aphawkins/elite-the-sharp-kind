@@ -2,10 +2,8 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using EliteSharp.Abstractions.Renditions;
 using EliteSharpLib.Renditions;
 using Microsoft.Extensions.Logging.Abstractions;
-using Useful.Assets;
 
 namespace EliteSharpLib.Tests.Views;
 
@@ -31,10 +29,10 @@ public sealed class RenditionLoaderTests : IDisposable
         GivenPacks();
 
         // Act
-        IRendition rendition = RenditionLoader.LoadFrom(_baseDirectory, SystemTier.EightBit, NullLogger.Instance);
+        InstalledRenditions found = RenditionLoader.LoadFrom(_baseDirectory, "EightBit", NullLogger.Instance);
 
         // Assert
-        Assert.Equal(SystemTier.EightBit, rendition.Tier);
+        Assert.Equal("EightBit", found.Chosen.Name);
     }
 
     [Fact]
@@ -44,10 +42,10 @@ public sealed class RenditionLoaderTests : IDisposable
         GivenPacks();
 
         // Act
-        IRendition rendition = RenditionLoader.LoadFrom(_baseDirectory, SystemTier.SixteenBit, NullLogger.Instance);
+        InstalledRenditions found = RenditionLoader.LoadFrom(_baseDirectory, "SixteenBit", NullLogger.Instance);
 
         // Assert
-        Assert.Equal(SystemTier.SixteenBit, rendition.Tier);
+        Assert.Equal("SixteenBit", found.Chosen.Name);
     }
 
     [Fact]
@@ -56,7 +54,7 @@ public sealed class RenditionLoaderTests : IDisposable
         // Act & Assert: unlike a missing mission, this is fatal - there would
         // be nothing to draw the game with.
         InvalidOperationException ex = Assert.Throws<InvalidOperationException>(
-            () => RenditionLoader.LoadFrom(_baseDirectory, SystemTier.EightBit, NullLogger.Instance));
+            () => RenditionLoader.LoadFrom(_baseDirectory, "EightBit", NullLogger.Instance));
 
         Assert.Contains("EightBit", ex.Message, StringComparison.Ordinal);
     }
@@ -69,7 +67,7 @@ public sealed class RenditionLoaderTests : IDisposable
 
         // Act & Assert
         Assert.Throws<InvalidOperationException>(
-            () => RenditionLoader.LoadFrom(_baseDirectory, SystemTier.EightBit, NullLogger.Instance));
+            () => RenditionLoader.LoadFrom(_baseDirectory, "EightBit", NullLogger.Instance));
     }
 
     [Fact]
@@ -81,10 +79,10 @@ public sealed class RenditionLoaderTests : IDisposable
         File.WriteAllText(Path.Combine(PluginFolder(), "rubbish.dll"), "not an assembly");
 
         // Act
-        IRendition rendition = RenditionLoader.LoadFrom(_baseDirectory, SystemTier.EightBit, NullLogger.Instance);
+        InstalledRenditions found = RenditionLoader.LoadFrom(_baseDirectory, "EightBit", NullLogger.Instance);
 
         // Assert
-        Assert.Equal(SystemTier.EightBit, rendition.Tier);
+        Assert.Equal("EightBit", found.Chosen.Name);
     }
 
     public void Dispose()

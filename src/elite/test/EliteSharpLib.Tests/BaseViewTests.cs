@@ -36,6 +36,6 @@ public class BaseViewTests
         GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
         ZBufferRenderer shipRenderer = new(graphics);
         RNG rng = new(new Random(0));
-        return new EliteDraw(gameState, graphics, new FakeAssetLocator(), shipRenderer, rng);
+        return new EliteDraw(gameState, graphics, new FakeAssetLocator(), new SixteenBitRendition(), shipRenderer, rng);
     }
 }

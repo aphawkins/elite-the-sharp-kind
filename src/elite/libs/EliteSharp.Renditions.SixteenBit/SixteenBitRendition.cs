@@ -4,7 +4,6 @@
 
 using EliteSharp.Abstractions.Renditions;
 using EliteSharp.Abstractions.Views;
-using Useful.Assets;
 
 namespace EliteSharp.Renditions.SixteenBit;
 
@@ -15,7 +14,15 @@ namespace EliteSharp.Renditions.SixteenBit;
 /// </summary>
 public sealed class SixteenBitRendition : IRendition
 {
-    public SystemTier Tier => SystemTier.SixteenBit;
+    public string Name => "SixteenBit";
+
+    // Widened from 512 to 640 on 2026-07-30 alongside a 640-wide scanner. The
+    // height is unchanged, so the vertical field of view is too.
+    public int ScreenWidth => 640;
+
+    public int ScreenHeight => 512;
+
+    public int Scale => 2;
 
     public IBaseView CreateBaseView(IViewSurface surface) => new BaseView16Bit(surface);
 

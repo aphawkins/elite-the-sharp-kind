@@ -1,6 +1,6 @@
 // 'Useful Libraries' - Andy Hawkins 2023-2026.
 
-using Useful.Assets;
+using System.Text.Json.Serialization;
 
 namespace Useful.Abstraction.Config;
 
@@ -12,11 +12,19 @@ namespace Useful.Abstraction.Config;
 /// </summary>
 public sealed class EngineConfigSettings
 {
+    private const string DefaultRendition = "SixteenBit";
+
     // Past this the window is larger than any display the game could be
     // shown on, so it is a typo rather than an intention.
     private const int MaxWindowScale = 4;
 
     private const int DefaultWindowScale = 1;
+
+    private static readonly Dictionary<string, string> s_legacyRenditionNames = new(StringComparer.Ordinal)
+    {
+        ["8Bit"] = "EightBit",
+        ["16Bit"] = "SixteenBit",
+    };
 
     // Which IAbstraction runs the game: Software (default) or Hardware
     // (SDL-accelerated). It picks the mixer as well as the rasteriser, which
@@ -29,11 +37,21 @@ public sealed class EngineConfigSettings
 
     public LoggingConfigSettings Logging { get; set; } = new();
 
-    // Which machine's look the game reproduces: picks the asset set and,
+    // Which rendition the game draws itself as: picks the asset set and,
     // with it, the render resolution and scale. The asset set covers music
-    // and effects as well as the artwork, so this isn't graphics-only
-    // either. See docs/asset-structure.md.
-    public SystemTier Tier { get; set; } = SystemTier.SixteenBit;
+    // and effects as well as the artwork, so this is not graphics-only
+    // either. Any name a rendition gives itself is valid here; whether one
+    // by that name is installed is settled when it is looked for. See
+    // docs/asset-structure.md.
+    public string Rendition { get; set; } = DefaultRendition;
+
+    // What this setting was called before renditions existed, read so a file
+    // written by an older build keeps the commander's choice. The binder fills
+    // it, Repair folds it into Rendition, and JsonIgnore keeps it from ever
+    // being written back - so a file upgrades itself the first time it is
+    // saved and the old key does not linger.
+    [JsonIgnore]
+    public string? Tier { get; set; }
 
     // How many window pixels each rendered pixel occupies. Independent of
     // Tier: the game always renders at the tier's native resolution and is
@@ -58,9 +76,31 @@ public sealed class EngineConfigSettings
             repaired = true;
         }
 
-        if (!Enum.IsDefined(Tier))
+        // The two renditions the game shipped with were once an enum, spelled
+        // "8Bit" and "16Bit" in the file. Those files are still out there, so
+        // they are read as the names those renditions now go by.
+        // Only where the new setting was never written, so a file holding
+        // both - which only a hand-edit produces - keeps the new one.
+        if (!string.IsNullOrWhiteSpace(Tier))
         {
-            Tier = SystemTier.SixteenBit;
+            if (string.Equals(Rendition, DefaultRendition, StringComparison.Ordinal))
+            {
+                Rendition = Tier;
+            }
+
+            Tier = null;
+            repaired = true;
+        }
+
+        if (s_legacyRenditionNames.TryGetValue(Rendition, out string? renamed))
+        {
+            Rendition = renamed;
+            repaired = true;
+        }
+
+        if (string.IsNullOrWhiteSpace(Rendition))
+        {
+            Rendition = DefaultRendition;
             repaired = true;
         }
 

@@ -4,7 +4,6 @@
 
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
-using Useful.Assets;
 using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Planets;
@@ -25,6 +24,8 @@ internal static class PlanetFactory
                 _ => throw new EliteException(),
             };
 
+    // The one place left that knows which renditions exist. It goes when the
+    // planet renderers move onto the rendition, which is what they are for.
     private static IObject StripedPlanet(IEliteDraw draw)
-        => draw.Tier == SystemTier.EightBit ? new StripedPlanet8Bit(draw) : new StripedPlanet16Bit(draw);
+        => string.Equals(draw.Rendition, "EightBit", StringComparison.Ordinal) ? new StripedPlanet8Bit(draw) : new StripedPlanet16Bit(draw);
 }

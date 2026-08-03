@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using BenchmarkDotNet.Attributes;
+using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Missions;
 using EliteSharpLib.Planets;
@@ -39,7 +40,7 @@ public class PlanetBenchmarks : IDisposable
         _graphics = SoftwareGraphics.Create(ScreenWidth, ScreenHeight, (_) => { }, assetLocator);
         ZBufferRenderer shipRenderer = new(_graphics);
         RNG rng = new(Random.Shared);
-        EliteDraw draw = new(gameState, _graphics, assetLocator, shipRenderer, rng);
+        EliteDraw draw = new(gameState, _graphics, assetLocator, new SixteenBitRendition(), shipRenderer, rng);
         _wireframePlanet = new(draw, false);
         _solidPlanet = new(draw);
         _fractalPlanet = new(draw, 12345);

@@ -7,7 +7,6 @@ using EliteSharp.Abstractions.Renditions;
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Renditions;
-using Useful.Assets;
 
 namespace EliteSharpLib.Tests.Views;
 
@@ -71,7 +70,13 @@ public class RenditionRegistryTests
     // Draws every screen except the ones it was told to leave out.
     private sealed class ShortRendition(params Type[] omitted) : IRendition
     {
-        public SystemTier Tier => SystemTier.EightBit;
+        public string Name => "Short";
+
+        public int ScreenWidth => 320;
+
+        public int ScreenHeight => 256;
+
+        public int Scale => 1;
 
         public IBaseView CreateBaseView(IViewSurface surface) => new NothingBaseView();
 

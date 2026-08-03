@@ -137,7 +137,7 @@ public static class GameApp
         var engineSettings = new
         {
             backend = engine.Backend.ToString(),
-            tier = engine.Tier.ToString(),
+            rendition = engine.Rendition,
             windowScale = engine.WindowScale,
             fps = engine.Graphics.Fps,
             graphicStyle = engine.Graphics.GraphicStyle.ToString(),

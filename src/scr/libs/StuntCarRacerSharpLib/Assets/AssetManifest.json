@@ -1,5 +1,5 @@
 {
-  "Tiers": [ "16Bit" ],
+  "Colours": { "MaxColours": 4096, "PaletteNamesEveryColour": false, "ChannelBits": 4 },
   "Palette": "palette.json",
   "Images": {
     "Atlas": "atlas.bmp",

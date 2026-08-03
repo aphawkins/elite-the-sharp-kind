@@ -7,14 +7,16 @@ namespace Useful.Fakes.Assets;
 // Minimal IAssetLocator implementation for initialize benchmark.
 public sealed class FakeAssetLocator : IAssetLocator
 {
-    public SystemTier Tier => SystemTier.SixteenBit;
+    public string Rendition => "SixteenBit";
+
+    public AssetColourLimits Colours { get; } = new();
 
     // Points at the real palette shipped alongside the consuming project's output, since EliteDraw
     // reads it unconditionally in its constructor and has no fake substitute for palette colors.
     // Built by hand rather than through AssetLocator: consumers that never touch the palette (the
     // audio tests) have no asset manifest to read, so this must stay a plain string.
     public string PalettePath { get; } =
-        Path.Combine(AppContext.BaseDirectory, "Assets", "Palette", nameof(SystemTier.SixteenBit), "palette.json");
+        Path.Combine(AppContext.BaseDirectory, "Assets", "Palette", "SixteenBit", "palette.json");
 
     public IDictionary<string, BitmapFontAsset> FontBitmaps { get; } = new Dictionary<string, BitmapFontAsset>();
 

@@ -8,21 +8,21 @@ using System.Reflection;
 using System.Runtime.Loader;
 using EliteSharp.Abstractions.Renditions;
 using Microsoft.Extensions.Logging;
-using Useful.Assets;
 
 namespace EliteSharpLib.Renditions;
 
 /// <summary>
-/// Finds the view renditions in the plugin folder, and picks the one for the tier
-/// the commander configured. Everything MEF touches happens in here and is
-/// finished with by the time the loader returns, the same as
-/// <see cref="Missions.MissionLoader"/>: it hands back a rendition, which is then
-/// registered like anything else.
+/// Finds the renditions in the plugin folder and picks the one the commander
+/// configured. Everything MEF touches happens in here and is finished with by
+/// the time the loader returns, the same as
+/// <see cref="Missions.MissionLoader"/>: it hands back a rendition, which is
+/// then registered like anything else.
 /// <para>
-/// Unlike a mission, a rendition is not optional. A missing Missions folder costs
-/// the commander some missions; a missing Views folder leaves the game with
-/// nothing to draw with at all, so this fails at startup and names the tier
-/// rather than starting a game that cannot show itself.
+/// Unlike a mission, a rendition is not optional. A missing Missions folder
+/// costs the commander some missions; a missing Renditions folder leaves the
+/// game with nothing to draw with at all, so this fails at startup and says
+/// which name it could not find rather than starting a game that cannot show
+/// itself.
 /// </para>
 /// </summary>
 internal static class RenditionLoader
@@ -41,20 +41,20 @@ internal static class RenditionLoader
     private static readonly ConventionBuilder s_conventions = BuildConventions();
 
     /// <summary>
-    /// Loads the rendition for one tier.
+    /// Loads the rendition for one name.
     /// </summary>
     /// <param name="baseDirectory">
     /// The folder the plugin folder sits in - the executable's, in the game,
     /// and a temporary one in tests.
     /// </param>
-    /// <param name="tier">The tier the commander configured.</param>
+    /// <param name="name">The name the commander configured.</param>
     /// <param name="logger">Where skipped files and the count found are reported.</param>
-    /// <returns>The rendition that draws <paramref name="tier"/>.</returns>
+    /// <returns>The rendition chosen, and the names of everything installed.</returns>
     /// <exception cref="InvalidOperationException">
-    /// Nothing in the folder draws this tier, which the game cannot start
+    /// Nothing in the folder goes by this name, which the game cannot start
     /// without.
     /// </exception>
-    public static IRendition LoadFrom(string baseDirectory, SystemTier tier, ILogger logger)
+    public static InstalledRenditions LoadFrom(string baseDirectory, string name, ILogger logger)
     {
         string folder = Path.Combine(baseDirectory, FolderName);
         List<Assembly> assemblies = [];
@@ -63,8 +63,8 @@ internal static class RenditionLoader
         {
             foreach (string file in Directory.EnumerateFiles(folder, "*.dll"))
             {
-                // One unreadable file is one tier the commander cannot play,
-                // which is only fatal if it was the tier they asked for - so
+                // One unreadable file is one rendition the commander cannot play,
+                // which is only fatal if it was the one they asked for - so
                 // the decision is left to the search below.
                 try
                 {
@@ -88,11 +88,15 @@ internal static class RenditionLoader
             renditions = [.. host.GetExports<IRendition>()];
         }
 
-        LogMessages.RenditionsLoaded(logger, renditions.Length, assemblies.Count, tier);
+        LogMessages.RenditionsLoaded(logger, renditions.Length, assemblies.Count, name);
 
-        return Array.Find(renditions, rendition => rendition.Tier == tier)
+        IRendition chosen = Array.Find(renditions, rendition => string.Equals(rendition.Name, name, StringComparison.Ordinal))
             ?? throw new InvalidOperationException(
-                $"No rendition in '{folder}' draws the {tier} tier, so there is nothing to draw the game with.");
+                $"Nothing in '{folder}' is called '{name}', so there is nothing to draw the game with.");
+
+        // The settings screen offers the commander what is installed, so the
+        // names of the ones that were not chosen are worth keeping.
+        return new(chosen, [.. renditions.Select(r => r.Name).Order(StringComparer.Ordinal)]);
     }
 
     private static ConventionBuilder BuildConventions()

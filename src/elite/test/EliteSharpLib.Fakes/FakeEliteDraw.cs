@@ -7,7 +7,6 @@ using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
 using Useful;
-using Useful.Assets;
 using Useful.Assets.Palettes;
 using Useful.Fakes.Assets;
 using Useful.Graphics;
@@ -19,7 +18,7 @@ internal class FakeEliteDraw : IEliteDraw
 {
     public ViewLayout Layout { get; set; } = new(512, 512, new(512, 129), 2);
 
-    public SystemTier Tier { get; set; } = SystemTier.SixteenBit;
+    public string Rendition { get; set; } = "SixteenBit";
 
     public float Focus => 512;
 

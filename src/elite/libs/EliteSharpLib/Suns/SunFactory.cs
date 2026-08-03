@@ -4,7 +4,6 @@
 
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
-using Useful.Assets;
 using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Suns;
@@ -22,6 +21,10 @@ internal static class SunFactory
                 _ => throw new EliteException(),
             };
 
+    // As PlanetFactory: this knows the two renditions by name until the sun
+    // renderers move onto the rendition itself.
     private static IObject GradientSun(IEliteDraw draw, RNG rng)
-        => draw.Tier == SystemTier.EightBit ? new GradientSun8Bit(draw, rng) : new GradientSun16Bit(draw, rng);
+        => string.Equals(draw.Rendition, "EightBit", StringComparison.Ordinal)
+            ? new GradientSun8Bit(draw, rng)
+            : new GradientSun16Bit(draw, rng);
 }

@@ -90,6 +90,8 @@ public class DrawImagePartTests
         };
 
         Mock<IAssetLocator> assets = new();
+        assets.SetupGet(a => a.Rendition).Returns("Test");
+        assets.SetupGet(a => a.Colours).Returns(new AssetColourLimits());
         assets.Setup(a => a.ImagePaths).Returns(images);
         assets.Setup(a => a.FontBitmaps).Returns(new Dictionary<string, BitmapFontAsset>());
 

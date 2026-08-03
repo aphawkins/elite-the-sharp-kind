@@ -76,7 +76,13 @@ public class LaserDrawTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
         GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
         RNG rng = new(new Random(0));
-        EliteDraw eliteDraw = new(gameState, graphics, AssetLocator.Create(), new ZBufferRenderer(graphics), rng);
+        EliteDraw eliteDraw = new(
+            gameState,
+            graphics,
+            AssetLocator.Create(),
+            new SixteenBitRendition(),
+            new ZBufferRenderer(graphics),
+            rng);
         LaserDraw16Bit laser = new(eliteDraw);
 
         graphics.Clear();

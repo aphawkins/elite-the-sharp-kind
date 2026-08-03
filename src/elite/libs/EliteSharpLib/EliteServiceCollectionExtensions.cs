@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Abstractions.Renditions;
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Audio;
 using EliteSharpLib.Config;
@@ -53,8 +54,16 @@ public static class EliteServiceCollectionExtensions
     // reason as ConfigFile above), so it can only be registered from in
     // here; EliteMain's constructor now just receives it instead of
     // building it.
-    public static IServiceCollection AddEliteMain(this IServiceCollection services)
+    public static IServiceCollection AddEliteMain(this IServiceCollection services, InstalledRenditions renditions)
     {
+        ArgumentNullException.ThrowIfNull(renditions);
+
+        // Loaded before the container exists, because the window has to be
+        // made at the size the rendition draws at. Registered rather than
+        // looked up again so there is one of it - and the names of the others
+        // with it, since the settings screen offers them.
+        services.AddSingleton(renditions);
+        services.AddSingleton(renditions.Chosen);
         services.AddEliteCore();
         services.AddEliteRendering();
         services.AddEliteSimulation();
@@ -88,13 +97,22 @@ public static class EliteServiceCollectionExtensions
         return services;
     }
 
+    // Finds the rendition the commander configured. The app needs it before
+    // the container exists, because the window is made at the size the
+    // rendition draws at, so this is the one thing loaded up front.
+    public static InstalledRenditions LoadRendition(string name, ILoggerFactory loggerFactory)
+    {
+        ArgumentNullException.ThrowIfNull(loggerFactory);
+
+        return RenditionLoader.LoadFrom(
+            AppContext.BaseDirectory,
+            name,
+            loggerFactory.CreateLogger(typeof(RenditionLoader)));
+    }
+
     // Both the engine and the game halves repair themselves; this is the
     // hook ConfigFile calls to do it.
     internal static bool RepairConfig(EliteConfig config) => config.Repair();
-
-    // The tier switch every per-tier registration branches on, in one place.
-    internal static bool IsEightBit(IServiceProvider sp)
-        => sp.GetRequiredService<IAssetLocator>().Tier == SystemTier.EightBit;
 
     private static void AddEliteCore(this IServiceCollection services)
     {
@@ -145,6 +163,7 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IGraphics>(),
             sp.GetRequiredService<IAssetLocator>(),
+            sp.GetRequiredService<IRendition>(),
             sp.GetRequiredService<IPolygonRenderer>(),
             sp.GetRequiredService<RNG>()));
         services.AddSingleton<IShipFactory>(sp => ShipFactory.Create(
@@ -311,20 +330,12 @@ public static class EliteServiceCollectionExtensions
         services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<ScannerModel>());
     }
 
-    // Every screen is a plugin now, both tiers of them: they are found in the
-    // Views folder beside the executable, the same way a stranger's tier would
-    // be. Unlike a mission, this is not optional - the rendition for the configured
-    // tier has to be there or the game has nothing to draw with, so the loader
-    // throws rather than starting a game that cannot show itself.
-    //
-    // The game's own drawing is what the views are handed, narrowed to the
+    // What the configured rendition drew, checked against the screens the game
+    // has. The game's own drawing is what its views are handed, narrowed to the
     // three members IViewSurface publishes.
     private static void AddRendition(this IServiceCollection services)
         => services.AddSingleton(sp => new RenditionRegistry(
-            RenditionLoader.LoadFrom(
-                AppContext.BaseDirectory,
-                sp.GetRequiredService<IAssetLocator>().Tier,
-                sp.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(RenditionLoader))),
+            sp.GetRequiredService<IRendition>(),
             sp.GetRequiredService<IEliteDraw>()));
 
     // TODO: improve this (moved from EliteMain, see backlog)

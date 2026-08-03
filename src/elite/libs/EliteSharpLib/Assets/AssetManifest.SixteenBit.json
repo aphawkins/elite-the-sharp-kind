@@ -1,4 +1,5 @@
 {
+  "Colours": { "MaxColours": 4096, "PaletteNamesEveryColour": false, "ChannelBits": 4 },
   "Images": {
     "EliteText": "elitetext.bmp"
   }

@@ -152,6 +152,7 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<Space>(),
             sp.GetRequiredService<AudioController>(),
             sp.GetRequiredService<ConfigFile<EliteConfig>>(),
+            sp.GetRequiredService<InstalledRenditions>(),
             sp.GetRequiredService<IView<SettingsListModel>>()));
     }
 
