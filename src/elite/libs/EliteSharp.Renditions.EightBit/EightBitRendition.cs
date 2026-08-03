@@ -39,25 +39,16 @@ public sealed class EightBitRendition : IRendition
     {
         ArgumentNullException.ThrowIfNull(surface);
 
-        return new ViewSet()
+        ViewSet views = new ViewSet()
             .Add<CommanderStatusModel>(new CommanderStatusView8Bit(surface))
             .Add<EquipmentModel>(new EquipmentView8Bit(surface))
             .Add<EscapeCapsuleModel>(new EscapeCapsuleView8Bit(surface))
             .Add<GalacticChartModel>(new GalacticChartView8Bit(surface))
             .Add<GameOverModel>(new GameOverView8Bit(surface))
             .Add<Intro1Model>(new Intro1View8Bit(surface))
-            .Add<Intro2Model>(new Intro2View8Bit(surface))
-            .Add<InventoryModel>(new InventoryView8Bit(surface))
-            .Add<LoadCommanderModel>(new LoadCommanderView8Bit(surface))
-            .Add<MarketModel>(new MarketView8Bit(surface))
-            .Add<OptionsModel>(new OptionsView8Bit(surface))
-            .Add<PilotModel>(new PilotView8Bit(surface))
-            .Add<PlanetDataModel>(new PlanetDataView8Bit(surface))
-            .Add<QuitModel>(new QuitView8Bit(surface))
-            .Add<SaveCommanderModel>(new SaveCommanderView8Bit(surface))
-            .Add<ScannerModel>(new ScannerView8Bit(surface))
-            .Add<SettingsListModel>(new SettingsListView8Bit(surface))
-            .Add<ShortRangeChartModel>(new ShortRangeChartView8Bit(surface));
+            .Add<Intro2Model>(new Intro2View8Bit(surface));
+
+        return AddFlightViews(views, surface);
     }
 
     public IPlanetRenderer CreatePlanetRenderer(IViewSurface surface, PlanetLook look)
@@ -95,4 +86,43 @@ public sealed class EightBitRendition : IRendition
 
         return new StarfieldRenderer8Bit(surface);
     }
+
+    public ShipColours CreateShipColours(IViewSurface surface)
+    {
+        ArgumentNullException.ThrowIfNull(surface);
+
+        return Ships(surface);
+    }
+
+    // Split from CreateViews to keep each method under CA1506's coupling
+    // limit, which naming every screen in one place goes past.
+    private static ViewSet AddFlightViews(ViewSet views, IViewSurface surface)
+    {
+        ArgumentNullException.ThrowIfNull(views);
+
+        return views
+            .Add<InventoryModel>(new InventoryView8Bit(surface))
+            .Add<LoadCommanderModel>(new LoadCommanderView8Bit(surface))
+            .Add<MarketModel>(new MarketView8Bit(surface))
+            .Add<OptionsModel>(new OptionsView8Bit(surface))
+            .Add<PilotModel>(new PilotView8Bit(surface))
+            .Add<PlanetDataModel>(new PlanetDataView8Bit(surface))
+            .Add<QuitModel>(new QuitView8Bit(surface))
+            .Add<SaveCommanderModel>(new SaveCommanderView8Bit(surface))
+            .Add<ScannerModel>(new ScannerView8Bit(surface, Ships(surface)))
+            .Add<SettingsListModel>(new SettingsListView8Bit(surface))
+            .Add<ShortRangeChartModel>(new ShortRangeChartView8Bit(surface));
+    }
+
+    // One definition of what a ship is painted, read by the scanner and by the
+    // beam a ship fires, so the two cannot disagree. Police are cyan here
+    // rather than the 16-bit purple: this palette has one purple and the
+    // missile already has it, and a commander has to be able to tell an
+    // incoming missile from a Viper at a glance.
+    private static ShipColours Ships(IViewSurface surface) => new(
+        Default: surface.Palette["White"],
+        Station: surface.Palette["Green"],
+        Missile: surface.Palette["Purple"],
+        Police: surface.Palette["Cyan"],
+        Hostile: surface.Palette["Yellow"]);
 }

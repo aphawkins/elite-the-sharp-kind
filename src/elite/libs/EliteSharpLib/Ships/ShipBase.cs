@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Trader;
 using Useful;
@@ -43,8 +44,6 @@ internal class ShipBase : IShip
     private const float DecalDepthBias = 0.99f;
 
     private readonly IEliteDraw _draw;
-    private readonly FastColor _colorCyan;
-    private readonly FastColor _colorWhite;
     private readonly RNG _rng;
     private int[]? _faceRoot;
     private Vector3[]? _faceNormal;
@@ -59,9 +58,6 @@ internal class ShipBase : IShip
         _draw = draw;
         _rng = rng;
         Model = ModelReader.None;
-
-        _colorCyan = draw.Palette["Cyan"];
-        _colorWhite = draw.Palette["White"];
     }
 
     private ShipBase(ShipBase other)
@@ -466,7 +462,9 @@ internal class ShipBase : IShip
             return;
         }
 
-        FastColor color = (Type == ShipType.Viper) ? _colorCyan : _colorWhite;
+        // A Viper's beam is the colour a Viper is on the scanner: both come
+        // from the rendition's one definition of what a police ship looks like.
+        FastColor color = _draw.Ships.For(Type == ShipType.Viper ? ShipClass.Police : ShipClass.Default);
 
         Vector2 mount = new(pointList[lasv].X, pointList[lasv].Y);
 

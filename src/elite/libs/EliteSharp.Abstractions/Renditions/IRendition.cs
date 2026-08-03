@@ -100,4 +100,13 @@ public interface IRendition
     /// <param name="surface">What the renderer draws on.</param>
     /// <returns>A renderer for the starfield.</returns>
     public IStarfieldRenderer CreateStarfieldRenderer(IViewSurface surface);
+
+    /// <summary>
+    /// What this rendition paints each sort of ship. One definition serves
+    /// everything that colours a ship - the scanner's lollipops and the beam a
+    /// ship fires - so the two cannot drift apart.
+    /// </summary>
+    /// <param name="surface">The surface whose palette the colours come from.</param>
+    /// <returns>This rendition's ship colours.</returns>
+    public ShipColours CreateShipColours(IViewSurface surface);
 }

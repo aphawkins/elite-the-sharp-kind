@@ -54,14 +54,14 @@ internal sealed class EliteDraw : IEliteDraw
             graphics.ScreenHeight,
             graphics.ImageSize(nameof(ImageType.Scanner)),
             rendition.Scale);
-        Rendition = rendition.Name;
         Palette = PaletteReader.Read(assetLocator.PalettePath);
+
+        // After Palette: the rendition looks its colours up through this.
+        Ships = rendition.CreateShipColours(this);
         _colorWhite = Palette["White"];
     }
 
     public ViewLayout Layout { get; }
-
-    public string Rendition { get; }
 
     // The original's projection is x * 256 / z against a 256-square view, i.e.
     // a focal length of one screen height. Deriving it from the tier's height
@@ -75,6 +75,8 @@ internal sealed class EliteDraw : IEliteDraw
     public IGraphics Graphics { get; }
 
     public IPaletteCollection Palette { get; }
+
+    public ShipColours Ships { get; }
 
     // depths is the camera-space depth at each point, which the z-buffered
     // strategy interpolates per pixel; z is one whole-face key, which the

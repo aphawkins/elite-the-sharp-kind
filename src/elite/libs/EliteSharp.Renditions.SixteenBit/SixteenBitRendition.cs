@@ -40,25 +40,16 @@ public sealed class SixteenBitRendition : IRendition
     {
         ArgumentNullException.ThrowIfNull(surface);
 
-        return new ViewSet()
+        ViewSet views = new ViewSet()
             .Add<CommanderStatusModel>(new CommanderStatusView16Bit(surface))
             .Add<EquipmentModel>(new EquipmentView16Bit(surface))
             .Add<EscapeCapsuleModel>(new EscapeCapsuleView16Bit(surface))
             .Add<GalacticChartModel>(new GalacticChartView16Bit(surface))
             .Add<GameOverModel>(new GameOverView16Bit(surface))
             .Add<Intro1Model>(new Intro1View16Bit(surface))
-            .Add<Intro2Model>(new Intro2View16Bit(surface))
-            .Add<InventoryModel>(new InventoryView16Bit(surface))
-            .Add<LoadCommanderModel>(new LoadCommanderView16Bit(surface))
-            .Add<MarketModel>(new MarketView16Bit(surface))
-            .Add<OptionsModel>(new OptionsView16Bit(surface))
-            .Add<PilotModel>(new PilotView16Bit(surface))
-            .Add<PlanetDataModel>(new PlanetDataView16Bit(surface))
-            .Add<QuitModel>(new QuitView16Bit(surface))
-            .Add<SaveCommanderModel>(new SaveCommanderView16Bit(surface))
-            .Add<ScannerModel>(new ScannerView16Bit(surface))
-            .Add<SettingsListModel>(new SettingsListView16Bit(surface))
-            .Add<ShortRangeChartModel>(new ShortRangeChartView16Bit(surface));
+            .Add<Intro2Model>(new Intro2View16Bit(surface));
+
+        return AddFlightViews(views, surface);
     }
 
     public IPlanetRenderer CreatePlanetRenderer(IViewSurface surface, PlanetLook look)
@@ -96,4 +87,40 @@ public sealed class SixteenBitRendition : IRendition
 
         return new StarfieldRenderer16Bit(surface);
     }
+
+    public ShipColours CreateShipColours(IViewSurface surface)
+    {
+        ArgumentNullException.ThrowIfNull(surface);
+
+        return Ships(surface);
+    }
+
+    // Split from CreateViews to keep each method under CA1506's coupling
+    // limit, which naming every screen in one place goes past.
+    private static ViewSet AddFlightViews(ViewSet views, IViewSurface surface)
+    {
+        ArgumentNullException.ThrowIfNull(views);
+
+        return views
+            .Add<InventoryModel>(new InventoryView16Bit(surface))
+            .Add<LoadCommanderModel>(new LoadCommanderView16Bit(surface))
+            .Add<MarketModel>(new MarketView16Bit(surface))
+            .Add<OptionsModel>(new OptionsView16Bit(surface))
+            .Add<PilotModel>(new PilotView16Bit(surface))
+            .Add<PlanetDataModel>(new PlanetDataView16Bit(surface))
+            .Add<QuitModel>(new QuitView16Bit(surface))
+            .Add<SaveCommanderModel>(new SaveCommanderView16Bit(surface))
+            .Add<ScannerModel>(new ScannerView16Bit(surface, Ships(surface)))
+            .Add<SettingsListModel>(new SettingsListView16Bit(surface))
+            .Add<ShortRangeChartModel>(new ShortRangeChartView16Bit(surface));
+    }
+
+    // One definition of what a ship is painted, read by the scanner and by the
+    // beam a ship fires, so the two cannot disagree.
+    private static ShipColours Ships(IViewSurface surface) => new(
+        Default: surface.Palette["White"],
+        Station: surface.Palette["Green"],
+        Missile: surface.Palette["Lilac"],
+        Police: surface.Palette["Purple"],
+        Hostile: surface.Palette["Yellow"]);
 }

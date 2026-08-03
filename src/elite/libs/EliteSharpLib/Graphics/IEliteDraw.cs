@@ -19,18 +19,19 @@ namespace EliteSharpLib.Graphics;
 internal interface IEliteDraw : IViewSurface
 {
     /// <summary>
-    /// Gets the name of the rendition being drawn, which the object factories
-    /// pick their renderers by until those move to the rendition too.
-    /// </summary>
-    public string Rendition { get; }
-
-    /// <summary>
     /// Gets the perspective projection's focal length in pixels: a point at
     /// model-space x projects to <c>Layout.ViewportCentre.X + (x * Focus / z)</c>.
     /// Derived from the tier's screen height so the field of view is the same
     /// at every tier, and independent of <see cref="ViewLayout.Scale"/>.
     /// </summary>
     public float Focus { get; }
+
+    /// <summary>
+    /// Gets what the rendition paints each sort of ship. The scanner reads it
+    /// for its lollipops and a ship reads it for the beam it fires, so a Viper
+    /// is the same colour in both places.
+    /// </summary>
+    public ShipColours Ships { get; }
 
     public void DrawObject(IObject obj);
 

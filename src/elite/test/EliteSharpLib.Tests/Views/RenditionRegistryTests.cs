@@ -94,6 +94,9 @@ public class RenditionRegistryTests
         public IStarfieldRenderer CreateStarfieldRenderer(IViewSurface surface)
             => new NothingStarfield();
 
+        public ShipColours CreateShipColours(IViewSurface surface)
+            => new(default, default, default, default, default);
+
         public ViewSet CreateViews(IViewSurface surface)
         {
             ViewSet views = new();

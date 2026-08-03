@@ -26,6 +26,13 @@ internal class FakeEliteDraw : IEliteDraw
 
     public IPaletteCollection Palette => new FakePalette();
 
+    public ShipColours Ships { get; set; } = new(
+        FakeColor.TestColor,
+        FakeColor.TestColor,
+        FakeColor.TestColor,
+        FakeColor.TestColor,
+        FakeColor.TestColor);
+
     public List<(Vector2[] Points, float[] Depths, FastColor FaceColor, float Z)> DrawnPolygons { get; } = [];
 
     public void DrawObject(IObject obj)

@@ -15,23 +15,15 @@ namespace EliteSharp.Renditions.EightBit;
 /// </summary>
 internal sealed class ScannerView8Bit : ScannerViewBase
 {
-    internal ScannerView8Bit(IViewSurface surface)
+    internal ScannerView8Bit(IViewSurface surface, ShipColours ships)
         : base(surface)
     {
+        Ships = ships;
+
         DialTopColor = surface.Palette["Yellow"];
         DialBodyColor = surface.Palette["Orange"];
         DialBottomColor = surface.Palette["Red"];
         SpeedWarningColor = surface.Palette["Red"];
-
-        // Police are cyan here rather than the 16-bit purple: this palette has
-        // one purple and the missile already has it, and a commander must be
-        // able to tell an incoming missile from a Viper at a glance.
-        Ships = new(
-            Default: surface.Palette["White"],
-            Station: surface.Palette["Green"],
-            Missile: surface.Palette["Purple"],
-            Police: surface.Palette["Cyan"],
-            Hostile: surface.Palette["Yellow"]);
     }
 
     protected override Vector2 ScannerCentre => new(Surface.Layout.ViewportCentre.X - 2, Surface.Layout.ViewportHeight + 28);

@@ -21,19 +21,15 @@ namespace EliteSharp.Renditions.SixteenBit;
 /// </remarks>
 internal sealed class ScannerView16Bit : ScannerViewBase
 {
-    internal ScannerView16Bit(IViewSurface surface)
+    internal ScannerView16Bit(IViewSurface surface, ShipColours ships)
         : base(surface)
     {
+        Ships = ships;
+
         DialTopColor = surface.Palette["Gold"];
         DialBodyColor = surface.Palette["DarkYellow"];
         DialBottomColor = surface.Palette["LightRed"];
         SpeedWarningColor = surface.Palette["LightRed"];
-        Ships = new(
-            Default: surface.Palette["White"],
-            Station: surface.Palette["Green"],
-            Missile: surface.Palette["Lilac"],
-            Police: surface.Palette["Purple"],
-            Hostile: surface.Palette["Yellow"]);
     }
 
     protected override Vector2 ScannerCentre => new(Surface.Layout.ViewportCentre.X - 3, Surface.Layout.ViewportHeight + 63);
