@@ -3,11 +3,13 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using BenchmarkDotNet.Attributes;
+using EliteSharp.Abstractions.Views.Planets;
 using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Missions;
 using EliteSharpLib.Planets;
 using Microsoft.Extensions.Logging.Abstractions;
+using Useful;
 using Useful.Controls;
 using Useful.Fakes.Assets;
 using Useful.Fakes.Controls;
@@ -22,10 +24,10 @@ public class PlanetBenchmarks : IDisposable
     private const int ScreenWidth = 512;
     private const int ScreenHeight = 512;
     private readonly SoftwareGraphics _graphics;
-    private readonly SolidPlanet _solidPlanet;
-    private readonly WireframePlanet _wireframePlanet;
-    private readonly FractalPlanet _fractalPlanet;
-    private readonly StripedPlanet16Bit _stripedPlanet;
+    private readonly Planet _solidPlanet;
+    private readonly Planet _wireframePlanet;
+    private readonly Planet _fractalPlanet;
+    private readonly Planet _stripedPlanet;
     private bool _disposedValue;
 
     public PlanetBenchmarks()
@@ -41,10 +43,11 @@ public class PlanetBenchmarks : IDisposable
         ZBufferRenderer shipRenderer = new(_graphics);
         RNG rng = new(Random.Shared);
         EliteDraw draw = new(gameState, _graphics, assetLocator, new SixteenBitRendition(), shipRenderer, rng);
-        _wireframePlanet = new(draw, false);
-        _solidPlanet = new(draw);
-        _fractalPlanet = new(draw, 12345);
-        _stripedPlanet = new(draw);
+        SixteenBitRendition rendition = new();
+        _wireframePlanet = Planet(draw, rendition, PlanetStyle.Wireframe);
+        _solidPlanet = Planet(draw, rendition, PlanetStyle.Solid);
+        _fractalPlanet = Planet(draw, rendition, PlanetStyle.Fractal);
+        _stripedPlanet = Planet(draw, rendition, PlanetStyle.Striped);
     }
 
     public void Dispose()
@@ -80,5 +83,15 @@ public class PlanetBenchmarks : IDisposable
             // set large fields to null
             _disposedValue = true;
         }
+    }
+
+    // The renderer comes off the rendition now, so the benchmark builds one
+    // the same way the game does.
+    private static Planet Planet(EliteDraw draw, SixteenBitRendition rendition, PlanetStyle style)
+    {
+        Random random = new(12345);
+        PlanetLook look = new(style, false, new RandomSource(random));
+
+        return new(draw, rendition.CreatePlanetRenderer(draw, look), style == PlanetStyle.Wireframe);
     }
 }

@@ -2,8 +2,11 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Abstractions.Renditions;
+using EliteSharp.Abstractions.Views.Planets;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful;
 using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Planets;
@@ -13,19 +16,37 @@ internal static class PlanetFactory
     // A wireframe world overrides the planet style; the original picks a
     // crater or an equator-and-meridian from bit 1 of the system's tech
     // level (SOS1).
-    internal static IObject Create(GraphicStyle style, PlanetType type, IEliteDraw draw, int seed, int techLevel)
-        => style == GraphicStyle.Wireframe
-            ? new WireframePlanet(draw, (techLevel & 2) != 0)
+    //
+    // Which style applies stays the game's decision - the commander chose it
+    // in the settings - and what that style looks like is the rendition's.
+    // This no longer knows which renditions exist.
+    internal static IObject Create(
+        GraphicStyle style,
+        PlanetType type,
+        IEliteDraw draw,
+        IRendition rendition,
+        int seed,
+        int techLevel)
+    {
+        ArgumentNullException.ThrowIfNull(rendition);
+
+        PlanetStyle planetStyle = style == GraphicStyle.Wireframe
+            ? PlanetStyle.Wireframe
             : type switch
             {
-                PlanetType.Fractal => new FractalPlanet(draw, seed),
-                PlanetType.Solid => new SolidPlanet(draw),
-                PlanetType.Striped => StripedPlanet(draw),
+                PlanetType.Fractal => PlanetStyle.Fractal,
+                PlanetType.Solid => PlanetStyle.Solid,
+                PlanetType.Striped => PlanetStyle.Striped,
                 _ => throw new EliteException(),
             };
 
-    // The one place left that knows which renditions exist. It goes when the
-    // planet renderers move onto the rendition, which is what they are for.
-    private static IObject StripedPlanet(IEliteDraw draw)
-        => string.Equals(draw.Rendition, "EightBit", StringComparison.Ordinal) ? new StripedPlanet8Bit(draw) : new StripedPlanet16Bit(draw);
+        // Reference: fesh0r/newkind's generate_fractal_landscape(rnd_seed)
+        // reseeds a single stream for the whole landscape, so the same system
+        // always renders the same planet. The game owns that stream, as it
+        // owns every other one.
+        Random random = new(seed);
+        PlanetLook look = new(planetStyle, (techLevel & 2) != 0, new RandomSource(random));
+
+        return new Planet(draw, rendition.CreatePlanetRenderer(draw, look), planetStyle == PlanetStyle.Wireframe);
+    }
 }

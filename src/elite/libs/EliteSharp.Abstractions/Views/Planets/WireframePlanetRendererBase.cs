@@ -3,13 +3,17 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using EliteSharpLib.Graphics;
-using EliteSharpLib.Ships;
 using Useful;
 
-namespace EliteSharpLib.Planets;
+namespace EliteSharp.Abstractions.Views.Planets;
 
-internal sealed class WireframePlanet : IObject
+/// <summary>
+/// A planet as an outline: a circle, and either a crater or an equator and
+/// meridian mapped from its orientation. The geometry is shared - it is the
+/// original's, and derived from the radius - and the line colour is the
+/// rendition's.
+/// </summary>
+public abstract class WireframePlanetRendererBase : IPlanetRenderer
 {
     // The original draws no surface detail below a radius of 6 (PL9).
     private const float MinDetailRadius = 6;
@@ -21,72 +25,40 @@ internal sealed class WireframePlanet : IObject
     // along roofv (PLS3).
     private const float CraterOffset = 222f / 256;
 
-    private readonly IEliteDraw _draw;
-    private readonly PlanetRenderer _planetRenderer;
-    private readonly FastColor _color;
+    private readonly IViewSurface _surface;
     private readonly bool _hasCrater;
 
-    internal WireframePlanet(IEliteDraw draw, bool hasCrater)
+    protected WireframePlanetRendererBase(IViewSurface surface, bool hasCrater)
     {
-        _draw = draw;
-        _planetRenderer = new(draw);
-        _color = draw.Palette["White"];
+        ArgumentNullException.ThrowIfNull(surface);
+
+        _surface = surface;
         _hasCrater = hasCrater;
     }
 
-    private WireframePlanet(WireframePlanet other)
+    /// <summary>
+    /// Gets the colour the outline is drawn in.
+    /// </summary>
+    protected abstract FastColor Colour { get; }
+
+    public void Draw(PlanetView planet)
     {
-        _draw = other._draw;
-        _planetRenderer = other._planetRenderer;
-        _color = other._color;
-        _hasCrater = other._hasCrater;
-    }
+        _surface.Graphics.DrawCircle(planet.Centre, planet.Radius, Colour);
 
-    public Vector4 Location { get; set; } = new(0, 0, 123456, 0);
-
-    public Matrix4x4 Rotmat { get; set; }
-
-    public ShipProperties Flags { get; set; }
-
-    public ShipType Type { get; set; } = ShipType.Planet;
-
-    // Pitch and roll pegged at 127, as the original (SOS1), so the planet keeps
-    // turning without damping and its surface detail sweeps round. Only this
-    // style spins: the others map their surface from Rotmat's rows and expect
-    // it to stay put.
-    public float RotX { get; set; } = 127;
-
-    public float RotZ { get; set; } = 127;
-
-    public IObject Clone()
-    {
-        WireframePlanet planet = new(this);
-        this.CopyTo(planet);
-        return planet;
-    }
-
-    public void Draw()
-    {
-        (Vector2 Position, float Radius)? v = _planetRenderer.GetPlanetPosition(Location);
-        if (v == null)
+        // The threshold is in the original's 256-wide space, so it is scaled
+        // to pixels the same way the radius was.
+        if (planet.Radius < MinDetailRadius * planet.UnitScale)
         {
             return;
         }
 
-        (Vector2 centre, float radius) = v.Value;
-        _draw.Graphics.DrawCircle(centre, radius, _color);
-
-        // The threshold is in the same 256-wide space as the radius it is
-        // compared against, so it follows the projection's focal length.
-        if (radius < MinDetailRadius * (_draw.Focus / 256))
-        {
-            return;
-        }
+        Vector2 centre = planet.Centre;
+        float radius = planet.Radius;
 
         // The orientation vector rows, as the original's sidev/roofv/nosev.
-        Vector3 sidev = new(Rotmat.M11, Rotmat.M12, Rotmat.M13);
-        Vector3 roofv = new(Rotmat.M21, Rotmat.M22, Rotmat.M23);
-        Vector3 nosev = new(Rotmat.M31, Rotmat.M32, Rotmat.M33);
+        Vector3 sidev = new(planet.Orientation.M11, planet.Orientation.M12, planet.Orientation.M13);
+        Vector3 roofv = new(planet.Orientation.M21, planet.Orientation.M22, planet.Orientation.M23);
+        Vector3 nosev = new(planet.Orientation.M31, planet.Orientation.M32, planet.Orientation.M33);
 
         if (_hasCrater)
         {
@@ -187,7 +159,7 @@ internal sealed class WireframePlanet : IObject
         for (int i = 1; i <= segments; i++)
         {
             Vector2 end = EllipsePoint(centre, u, v, startAngle + (sweep * i / segments));
-            _draw.Graphics.DrawLine(start, end, _color);
+            _surface.Graphics.DrawLine(start, end, Colour);
             start = end;
         }
     }

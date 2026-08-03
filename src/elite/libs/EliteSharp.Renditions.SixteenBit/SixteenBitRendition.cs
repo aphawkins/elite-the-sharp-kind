@@ -4,6 +4,7 @@
 
 using EliteSharp.Abstractions.Renditions;
 using EliteSharp.Abstractions.Views;
+using EliteSharp.Abstractions.Views.Planets;
 
 namespace EliteSharp.Renditions.SixteenBit;
 
@@ -56,5 +57,20 @@ public sealed class SixteenBitRendition : IRendition
             .Add<ScannerModel>(new ScannerView16Bit(surface))
             .Add<SettingsListModel>(new SettingsListView16Bit(surface))
             .Add<ShortRangeChartModel>(new ShortRangeChartView16Bit(surface));
+    }
+
+    public IPlanetRenderer CreatePlanetRenderer(IViewSurface surface, PlanetLook look)
+    {
+        ArgumentNullException.ThrowIfNull(surface);
+        ArgumentNullException.ThrowIfNull(look);
+
+        return look.Style switch
+        {
+            PlanetStyle.Wireframe => new WireframePlanetRenderer16Bit(surface, look.HasCrater),
+            PlanetStyle.Solid => new SolidPlanetRenderer16Bit(surface),
+            PlanetStyle.Striped => new StripedPlanetRenderer16Bit(surface),
+            PlanetStyle.Fractal => new FractalPlanetRenderer16Bit(surface, look.Random),
+            _ => throw new ArgumentOutOfRangeException(nameof(look)),
+        };
     }
 }

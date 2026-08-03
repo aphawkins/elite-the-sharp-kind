@@ -5,6 +5,7 @@
 using System.Numerics;
 using EliteSharp.Abstractions.Renditions;
 using EliteSharp.Abstractions.Views;
+using EliteSharp.Abstractions.Views.Planets;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Renditions;
 
@@ -81,6 +82,9 @@ public class RenditionRegistryTests
         public IBaseView CreateBaseView(IViewSurface surface) => new NothingBaseView();
 
         public IMissionBriefingView CreateMissionBriefingView(IViewSurface surface) => new NothingBriefingView();
+
+        public IPlanetRenderer CreatePlanetRenderer(IViewSurface surface, PlanetLook look)
+            => throw new NotSupportedException();
 
         public ViewSet CreateViews(IViewSurface surface)
         {

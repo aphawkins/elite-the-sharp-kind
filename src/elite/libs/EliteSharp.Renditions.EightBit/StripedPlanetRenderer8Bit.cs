@@ -2,11 +2,11 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using EliteSharpLib.Graphics;
-using EliteSharpLib.Ships;
+using EliteSharp.Abstractions.Views;
+using EliteSharp.Abstractions.Views.Planets;
 using Useful;
 
-namespace EliteSharpLib.Planets;
+namespace EliteSharp.Renditions.EightBit;
 
 /// <summary>
 /// The 8-bit banded planet. The 16-bit map grades through four blues and
@@ -14,19 +14,17 @@ namespace EliteSharpLib.Planets;
 /// here are blocked rather than graded - blue poles into a brown and orange
 /// equator, which is what the hardware this stands in for could show.
 /// </summary>
-internal sealed class StripedPlanet8Bit : StripedPlanetBase
+internal sealed class StripedPlanetRenderer8Bit : StripedPlanetRendererBase
 {
-    internal StripedPlanet8Bit(IEliteDraw draw)
-        : base(draw)
+    internal StripedPlanetRenderer8Bit(IViewSurface surface)
+        : base(surface)
     {
-        ArgumentNullException.ThrowIfNull(draw);
-
-        FastColor colorBlue = draw.Palette["Blue"];
-        FastColor colorLightBlue = draw.Palette["LightBlue"];
-        FastColor colorLightGray = draw.Palette["LightGray"];
-        FastColor colorOrange = draw.Palette["Orange"];
-        FastColor colorBrown = draw.Palette["Brown"];
-        StripeColors =
+        FastColor colorBlue = surface.Palette["Blue"];
+        FastColor colorLightBlue = surface.Palette["LightBlue"];
+        FastColor colorLightGray = surface.Palette["LightGray"];
+        FastColor colorOrange = surface.Palette["Orange"];
+        FastColor colorBrown = surface.Palette["Brown"];
+        Stripes =
         [
             colorBlue,
             colorBlue,
@@ -50,20 +48,7 @@ internal sealed class StripedPlanet8Bit : StripedPlanetBase
             colorBlue,
             colorBlue,
         ];
-
-        GenerateLandscape();
     }
 
-    private StripedPlanet8Bit(StripedPlanet8Bit other)
-        : base(other)
-        => StripeColors = other.StripeColors;
-
-    protected override FastColor[] StripeColors { get; }
-
-    public override IObject Clone()
-    {
-        StripedPlanet8Bit planet = new(this);
-        this.CopyTo(planet);
-        return planet;
-    }
+    protected override IReadOnlyList<FastColor> Stripes { get; }
 }

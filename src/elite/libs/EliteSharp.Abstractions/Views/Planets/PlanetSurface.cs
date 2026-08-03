@@ -3,47 +3,43 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using EliteSharpLib.Graphics;
 using Useful;
 
-namespace EliteSharpLib.Planets;
+namespace EliteSharp.Abstractions.Views.Planets;
 
-internal class PlanetRenderer
+/// <summary>
+/// Wraps a colour map round a sphere and rasterises it - the shared
+/// machinery every surfaced planet style draws through, whatever colours it
+/// fills the map with. Based on Doros circle drawing algorithm.
+/// </summary>
+public sealed class PlanetSurface
 {
+    // The colour map is a square of this many samples per side.
     internal const int LandXMax = 128;
+
     internal const int LandYMax = 128;
-    private readonly IEliteDraw _draw;
 
-    internal PlanetRenderer(IEliteDraw draw) => _draw = draw;
+    private readonly IViewSurface _draw;
 
-    internal FastColor[,] Landscape { get; } = new FastColor[LandXMax + 1, LandYMax + 1];
-
-    internal (Vector2 Position, float Radius)? GetPlanetPosition(Vector4 location)
+    public PlanetSurface(IViewSurface surface)
     {
-        Vector2 position = new(location.X, -location.Y);
-        position *= _draw.Focus / location.Z;
-        position += _draw.Layout.ViewportCentre;
+        ArgumentNullException.ThrowIfNull(surface);
 
-        float radius = 6291456 / location.Length();
-
-        // Planets are BIG!
-        ////  radius = 6291456 / ship_vec.z;
-        // The radius is in the original's 256-wide space, so it follows the
-        // projection's focal length rather than Scale.
-        radius *= _draw.Focus / 256;
-
-        return (position.X + radius < _draw.Layout.ViewportLeft) ||
-            (position.X - radius > _draw.Layout.ViewportRight) ||
-            (position.Y + radius < _draw.Layout.ViewportTop) ||
-            (position.Y - radius > _draw.Layout.ViewportBottom)
-            ? null
-            : (position, radius);
+        _draw = surface;
     }
 
+    // The colour map wrapped round the sphere, which the style fills. Kept
+    // inside the contracts: a rendition supplies colours through one of the
+    // style bases rather than filling the map itself.
+    internal FastColor[,] Landscape { get; } = new FastColor[LandXMax + 1, LandYMax + 1];
+
     /// <summary>
-    /// Draw a solid planet. Based on Doros circle drawing alogorithm.
+    /// Draws the sphere with the colour map wrapped round it.
     /// </summary>
-    internal void Draw(Vector2 centre, float radius, Matrix4x4 rotmat)
+    /// <param name="centre">The planet's centre on screen.</param>
+    /// <param name="radius">Its radius in pixels.</param>
+    /// <param name="rotmat">Which way up it is.</param>
+    public void Draw(Vector2 centre, float radius, Matrix4x4 rotmat)
     {
         float vx = rotmat.M21 * 65536;
         float vy = rotmat.M22 * 65536;

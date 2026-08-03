@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Abstractions.Views;
+using EliteSharp.Abstractions.Views.Planets;
 
 namespace EliteSharp.Abstractions.Renditions;
 
@@ -70,4 +71,14 @@ public interface IRendition
     /// before it draws a frame.
     /// </summary>
     public ViewSet CreateViews(IViewSurface surface);
+
+    /// <summary>
+    /// Builds a renderer for one planet. Planets live in the universe rather
+    /// than on a screen - they move, they are cloned - so the game keeps the
+    /// planet and the rendition supplies only what it looks like.
+    /// </summary>
+    /// <param name="surface">What the renderer draws on.</param>
+    /// <param name="look">Which style, and what it needs to build one.</param>
+    /// <returns>A renderer for that style.</returns>
+    public IPlanetRenderer CreatePlanetRenderer(IViewSurface surface, PlanetLook look);
 }

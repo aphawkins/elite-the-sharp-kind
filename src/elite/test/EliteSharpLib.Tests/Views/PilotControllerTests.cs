@@ -4,6 +4,7 @@
 
 using EliteSharp.Abstractions.Ships;
 using EliteSharp.Abstractions.Views;
+using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Lasers;
@@ -105,7 +106,19 @@ public class PilotControllerTests
         MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
 
         Combat combat = new(gameState, audio, ship, trade, pilot, universe, draw, shipFactory, rng, missions);
-        space = new(gameState, audio, pilot, combat, trade, ship, new PlanetController(gameState), stars, universe, draw, rng);
+        space = new(
+            gameState,
+            audio,
+            pilot,
+            combat,
+            trade,
+            ship,
+            new PlanetController(gameState),
+            stars,
+            universe,
+            draw,
+            new SixteenBitRendition(),
+            rng);
 
         return new PilotController(
             gameState, new FakeKeyboard(), pilot, ship, stars, space, combat, direction, rng, new FakePilotView());

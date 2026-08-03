@@ -226,6 +226,7 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<Stars>(),
             sp.GetRequiredService<Universe>(),
             sp.GetRequiredService<IEliteDraw>(),
+            sp.GetRequiredService<IRendition>(),
             sp.GetRequiredService<RNG>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<Space>()));
         services.AddSingleton(sp => new ScannerController(

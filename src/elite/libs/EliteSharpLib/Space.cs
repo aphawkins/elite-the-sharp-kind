@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using EliteSharp.Abstractions.Renditions;
 using EliteSharpLib.Audio;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
@@ -27,6 +28,7 @@ internal sealed class Space
     private readonly AudioController _audio;
     private readonly Combat _combat;
     private readonly IEliteDraw _draw;
+    private readonly IRendition _rendition;
     private readonly GameState _gameState;
     private readonly ILogger<Space> _logger;
     private readonly Pilot _pilot;
@@ -50,6 +52,7 @@ internal sealed class Space
         Stars stars,
         Universe universe,
         IEliteDraw draw,
+        IRendition rendition,
         RNG rng,
         ILogger<Space>? logger = null)
     {
@@ -63,6 +66,7 @@ internal sealed class Space
         _stars = stars;
         _universe = universe;
         _draw = draw;
+        _rendition = rendition;
         _rng = rng;
         _logger = logger ?? NullLogger<Space>.Instance;
     }
@@ -166,6 +170,7 @@ internal sealed class Space
             _gameState.Config.Engine.Graphics.GraphicStyle,
             _gameState.Config.Game.PlanetStyle,
             _draw,
+            _rendition,
             (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B,
             _gameState.CurrentPlanetData.TechLevel);
         if (!_universe.AddNewShip(planet, new(0, 0, 65536, 0), VectorMaths.GetLeftHandedBasisMatrix, 0, 0))
@@ -192,6 +197,7 @@ internal sealed class Space
             _gameState.Config.Engine.Graphics.GraphicStyle,
             _gameState.Config.Game.PlanetStyle,
             _draw,
+            _rendition,
             (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B,
             _gameState.CurrentPlanetData.TechLevel);
 
@@ -766,6 +772,7 @@ internal sealed class Space
             _gameState.Config.Engine.Graphics.GraphicStyle,
             _gameState.Config.Game.PlanetStyle,
             _draw,
+            _rendition,
             (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B,
             _gameState.CurrentPlanetData.TechLevel);
         if (!_universe.AddNewShip(planet, position, VectorMaths.GetLeftHandedBasisMatrix, 0, 0))

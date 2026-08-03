@@ -4,6 +4,7 @@
 
 using EliteSharp.Abstractions.Renditions;
 using EliteSharp.Abstractions.Views;
+using EliteSharp.Abstractions.Views.Planets;
 
 namespace EliteSharp.Renditions.EightBit;
 
@@ -55,5 +56,20 @@ public sealed class EightBitRendition : IRendition
             .Add<ScannerModel>(new ScannerView8Bit(surface))
             .Add<SettingsListModel>(new SettingsListView8Bit(surface))
             .Add<ShortRangeChartModel>(new ShortRangeChartView8Bit(surface));
+    }
+
+    public IPlanetRenderer CreatePlanetRenderer(IViewSurface surface, PlanetLook look)
+    {
+        ArgumentNullException.ThrowIfNull(surface);
+        ArgumentNullException.ThrowIfNull(look);
+
+        return look.Style switch
+        {
+            PlanetStyle.Wireframe => new WireframePlanetRenderer8Bit(surface, look.HasCrater),
+            PlanetStyle.Solid => new SolidPlanetRenderer8Bit(surface),
+            PlanetStyle.Striped => new StripedPlanetRenderer8Bit(surface),
+            PlanetStyle.Fractal => new FractalPlanetRenderer8Bit(surface, look.Random),
+            _ => throw new ArgumentOutOfRangeException(nameof(look)),
+        };
     }
 }

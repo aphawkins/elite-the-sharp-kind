@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Config;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
@@ -60,6 +61,7 @@ internal static class SettingsControllerFixture
             new Stars(gameState, draw, ship, rng),
             universe,
             draw,
+            new SixteenBitRendition(),
             rng);
     }
 

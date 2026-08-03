@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Missions;
@@ -412,7 +413,10 @@ public class SpaceTests
 
         space.RefreshPlanetStyle();
 
-        Assert.IsType<WireframePlanet>(universe.Planet);
+        // Only the outlined style spins, so a turning planet is a wireframe one.
+        // There is one Planet class now: the style lives in its renderer.
+        Assert.NotNull(universe.Planet);
+        Assert.Equal(127, universe.Planet.RotX);
         Assert.Equal(oldPlanet.Location, universe.Planet.Location);
         Assert.Equal(oldPlanet.Rotmat, universe.Planet.Rotmat);
 
@@ -474,7 +478,10 @@ public class SpaceTests
 
         space.RefreshPlanetStyle();
 
-        Assert.IsType<WireframePlanet>(universe.Planet);
+        // Only the outlined style spins, so a turning planet is a wireframe one.
+        // There is one Planet class now: the style lives in its renderer.
+        Assert.NotNull(universe.Planet);
+        Assert.Equal(127, universe.Planet.RotX);
     }
 
     [Fact]
@@ -529,6 +536,18 @@ public class SpaceTests
         PlanetController planet = new(gameState);
         Stars stars = new(gameState, draw, ship, rng);
 
-        return new Space(gameState, audio, pilot, combat, trade, ship, planet, stars, universe, draw, rng);
+        return new Space(
+            gameState,
+            audio,
+            pilot,
+            combat,
+            trade,
+            ship,
+            planet,
+            stars,
+            universe,
+            draw,
+            new SixteenBitRendition(),
+            rng);
     }
 }

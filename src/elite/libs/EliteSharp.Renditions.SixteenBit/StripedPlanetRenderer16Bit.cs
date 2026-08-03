@@ -2,28 +2,26 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using EliteSharpLib.Graphics;
-using EliteSharpLib.Ships;
+using EliteSharp.Abstractions.Views;
+using EliteSharp.Abstractions.Views.Planets;
 using Useful;
 
-namespace EliteSharpLib.Planets;
+namespace EliteSharp.Renditions.SixteenBit;
 
-internal sealed class StripedPlanet16Bit : StripedPlanetBase
+internal sealed class StripedPlanetRenderer16Bit : StripedPlanetRendererBase
 {
-    internal StripedPlanet16Bit(IEliteDraw draw)
-        : base(draw)
+    internal StripedPlanetRenderer16Bit(IViewSurface surface)
+        : base(surface)
     {
-        ArgumentNullException.ThrowIfNull(draw);
-
-        FastColor colorPurple = draw.Palette["Purple"];
-        FastColor colorDarkBlue = draw.Palette["DarkBlue"];
-        FastColor colorBlue = draw.Palette["Blue"];
-        FastColor colorLightBlue = draw.Palette["LightBlue"];
-        FastColor colorLighterGrey = draw.Palette["LighterGrey"];
-        FastColor colorOrange = draw.Palette["Orange"];
-        FastColor colorLightOrange = draw.Palette["LightOrange"];
-        FastColor colorDarkOrange = draw.Palette["DarkOrange"];
-        StripeColors =
+        FastColor colorPurple = surface.Palette["Purple"];
+        FastColor colorDarkBlue = surface.Palette["DarkBlue"];
+        FastColor colorBlue = surface.Palette["Blue"];
+        FastColor colorLightBlue = surface.Palette["LightBlue"];
+        FastColor colorLighterGrey = surface.Palette["LighterGrey"];
+        FastColor colorOrange = surface.Palette["Orange"];
+        FastColor colorLightOrange = surface.Palette["LightOrange"];
+        FastColor colorDarkOrange = surface.Palette["DarkOrange"];
+        Stripes =
         [
             colorPurple,
             colorPurple,
@@ -78,20 +76,7 @@ internal sealed class StripedPlanet16Bit : StripedPlanetBase
             colorPurple,
             colorPurple,
         ];
-
-        GenerateLandscape();
     }
 
-    private StripedPlanet16Bit(StripedPlanet16Bit other)
-        : base(other)
-        => StripeColors = other.StripeColors;
-
-    protected override FastColor[] StripeColors { get; }
-
-    public override IObject Clone()
-    {
-        StripedPlanet16Bit planet = new(this);
-        this.CopyTo(planet);
-        return planet;
-    }
+    protected override IReadOnlyList<FastColor> Stripes { get; }
 }
