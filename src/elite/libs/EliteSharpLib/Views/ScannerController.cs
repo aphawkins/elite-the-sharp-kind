@@ -13,7 +13,7 @@ namespace EliteSharpLib.Views;
 /// <summary>
 /// What the HUD says: the dial readings, the missile indicators, where the
 /// compass points and what is on the scanner. Every screen works this way -
-/// the game reads its own state here and the tier's pack draws what comes out,
+/// the game reads its own state here and the tier's rendition draws what comes out,
 /// which is what lets the HUD belong to a tier rather than to the game.
 /// </summary>
 internal sealed class ScannerController

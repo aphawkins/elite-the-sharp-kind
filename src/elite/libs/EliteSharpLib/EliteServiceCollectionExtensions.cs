@@ -8,6 +8,7 @@ using EliteSharpLib.Config;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Missions;
+using EliteSharpLib.Renditions;
 using EliteSharpLib.Save;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
@@ -265,7 +266,7 @@ public static class EliteServiceCollectionExtensions
     // AddEliteMain's screen-map factory above can resolve them.
     private static void AddEliteViews(this IServiceCollection services)
     {
-        services.AddViewPack();
+        services.AddRendition();
         services.AddBaseView();
         services.AddEliteFlightViews();
         services.AddSplitScreens();
@@ -298,32 +299,32 @@ public static class EliteServiceCollectionExtensions
 
     // The tier's shared chrome: every screen draws its own border through
     // this, EliteMain the hyperspace countdown, and the tier-split screens
-    // their headers. It comes off the pack with everything else.
+    // their headers. It comes off the rendition with everything else.
     private static void AddBaseView(this IServiceCollection services)
     {
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().BaseView);
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().BaseView);
 
-        // The HUD comes off the pack like any screen. Its controller is
+        // The HUD comes off the rendition like any screen. Its controller is
         // registered with the simulation rather than the screens, because
         // EliteMain and the equip-ship screen both refresh it directly and
         // it never enters the screen map.
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<ScannerModel>());
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<ScannerModel>());
     }
 
     // Every screen is a plugin now, both tiers of them: they are found in the
     // Views folder beside the executable, the same way a stranger's tier would
-    // be. Unlike a mission, this is not optional - the pack for the configured
+    // be. Unlike a mission, this is not optional - the rendition for the configured
     // tier has to be there or the game has nothing to draw with, so the loader
     // throws rather than starting a game that cannot show itself.
     //
     // The game's own drawing is what the views are handed, narrowed to the
     // three members IViewSurface publishes.
-    private static void AddViewPack(this IServiceCollection services)
-        => services.AddSingleton(sp => new ViewRegistry(
-            ViewLoader.LoadFrom(
+    private static void AddRendition(this IServiceCollection services)
+        => services.AddSingleton(sp => new RenditionRegistry(
+            RenditionLoader.LoadFrom(
                 AppContext.BaseDirectory,
                 sp.GetRequiredService<IAssetLocator>().Tier,
-                sp.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(ViewLoader))),
+                sp.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(RenditionLoader))),
             sp.GetRequiredService<IEliteDraw>()));
 
     // TODO: improve this (moved from EliteMain, see backlog)

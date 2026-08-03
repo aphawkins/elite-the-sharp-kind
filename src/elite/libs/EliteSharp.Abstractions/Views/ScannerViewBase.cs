@@ -17,7 +17,7 @@ namespace EliteSharp.Abstractions.Views;
 /// <para>
 /// It reads no game state. What is on the scanner, how full the dials are and
 /// where the compass points all arrive on <see cref="ScannerModel"/>, the same
-/// as any other screen, which is what lets the HUD live in a tier's pack
+/// as any other screen, which is what lets the HUD live in a rendition
 /// rather than in the game.
 /// </para>
 /// </summary>

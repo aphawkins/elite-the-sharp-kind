@@ -7,6 +7,7 @@ using EliteSharpLib.Config;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Missions;
+using EliteSharpLib.Renditions;
 using EliteSharpLib.Save;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
@@ -19,7 +20,7 @@ using Useful.Controls;
 
 namespace EliteSharpLib;
 
-// The screen registrations: each screen's view comes off the tier's view pack,
+// The screen registrations: each screen's view comes off the tier's rendition,
 // and the controller is what goes into the screen map. Kept in its own class,
 // separate from EliteServiceCollectionExtensions, because the combined
 // registrations tripped CA1506's class-coupling limit - the same reason they
@@ -28,7 +29,7 @@ namespace EliteSharpLib;
 // than here.
 //
 // There is no tier branch left here. Which views these are was decided when
-// the pack was loaded, so this file no longer knows there is more than one
+// the rendition was loaded, so this file no longer knows there is more than one
 // tier - which is what adding a third tier should cost: an assembly, and
 // nothing here.
 internal static class EliteSplitScreensServiceCollectionExtensions
@@ -45,7 +46,7 @@ internal static class EliteSplitScreensServiceCollectionExtensions
     // The screens the commander drives: charts, status, and the menus.
     private static void AddSplitConsoleScreens(this IServiceCollection services)
     {
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<GalacticChartModel>());
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<GalacticChartModel>());
         services.AddSingleton(sp => new GalacticChartController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
@@ -53,7 +54,7 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<IView<GalacticChartModel>>()));
 
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<ShortRangeChartModel>());
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<ShortRangeChartModel>());
         services.AddSingleton(sp => new ShortRangeChartController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IEliteDraw>(),
@@ -62,13 +63,13 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<IView<ShortRangeChartModel>>()));
 
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<QuitModel>());
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<QuitModel>());
         services.AddSingleton(sp => new QuitController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
             sp.GetRequiredService<IView<QuitModel>>()));
 
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<Intro1Model>());
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<Intro1Model>());
         services.AddSingleton(sp => new Intro1Controller(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<AudioController>(),
@@ -86,7 +87,7 @@ internal static class EliteSplitScreensServiceCollectionExtensions
     // pushed it over CA1506's per-method limit.
     private static void AddSplitStatusScreens(this IServiceCollection services)
     {
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<CommanderStatusModel>());
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<CommanderStatusModel>());
         services.AddSingleton(sp => new CommanderStatusController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<PlayerShip>(),
@@ -95,13 +96,13 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<Universe>(),
             sp.GetRequiredService<IView<CommanderStatusModel>>()));
 
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<InventoryModel>());
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<InventoryModel>());
         services.AddSingleton(sp => new InventoryController(
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<Trade>(),
             sp.GetRequiredService<IView<InventoryModel>>()));
 
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<PlanetDataModel>());
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<PlanetDataModel>());
         services.AddSingleton(sp => new PlanetDataController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<PlanetController>(),
@@ -115,13 +116,13 @@ internal static class EliteSplitScreensServiceCollectionExtensions
     // additionally share one IView<SettingsListModel> registration.
     private static void AddSplitMenuScreens(this IServiceCollection services)
     {
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<OptionsModel>());
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<OptionsModel>());
         services.AddSingleton(sp => new OptionsController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
             sp.GetRequiredService<IView<OptionsModel>>()));
 
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<MarketModel>());
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<MarketModel>());
         services.AddSingleton(sp => new MarketController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
@@ -129,7 +130,7 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<PlanetController>(),
             sp.GetRequiredService<IView<MarketModel>>()));
 
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<EquipmentModel>());
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<EquipmentModel>());
         services.AddSingleton(sp => new EquipmentController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
@@ -138,7 +139,7 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<ScannerController>(),
             sp.GetRequiredService<IView<EquipmentModel>>()));
 
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<SettingsListModel>());
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<SettingsListModel>());
         services.AddSingleton(sp => new SettingsController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
@@ -157,14 +158,14 @@ internal static class EliteSplitScreensServiceCollectionExtensions
     // The name-typing screens: load and save commander.
     private static void AddSplitTextEntryScreens(this IServiceCollection services)
     {
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<LoadCommanderModel>());
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<LoadCommanderModel>());
         services.AddSingleton(sp => new LoadCommanderController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
             sp.GetRequiredService<SaveFile>(),
             sp.GetRequiredService<IView<LoadCommanderModel>>()));
 
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<SaveCommanderModel>());
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<SaveCommanderModel>());
         services.AddSingleton(sp => new SaveCommanderController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),

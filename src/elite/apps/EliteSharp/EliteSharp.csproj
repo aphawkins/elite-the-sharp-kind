@@ -32,10 +32,10 @@
          reason: the game must find its own tiers the way it would find
          anyone else's. Unlike the missions, these are not optional - remove
          them and the game has nothing to draw with, and says so at startup. -->
-    <ProjectReference Include="..\..\libs\EliteSharp.Views.EightBit\EliteSharp.Views.EightBit.csproj"
+    <ProjectReference Include="..\..\libs\EliteSharp.Renditions.EightBit\EliteSharp.Renditions.EightBit.csproj"
                       ReferenceOutputAssembly="false"
                       Private="false" />
-    <ProjectReference Include="..\..\libs\EliteSharp.Views.SixteenBit\EliteSharp.Views.SixteenBit.csproj"
+    <ProjectReference Include="..\..\libs\EliteSharp.Renditions.SixteenBit\EliteSharp.Renditions.SixteenBit.csproj"
                       ReferenceOutputAssembly="false"
                       Private="false" />
   </ItemGroup>
@@ -58,20 +58,20 @@
           Condition="'$(PublishDir)' != ''" />
   </Target>
 
-  <!-- The same, into a Views folder, which is where ViewLoader looks. Both
+  <!-- The same, into a Views folder, which is where RenditionLoader looks. Both
        tiers are copied whichever one is configured: the tier is a setting the
        commander can change without reinstalling anything. -->
-  <Target Name="CopyViewPlugins" AfterTargets="Build;Publish">
-    <MSBuild Projects="..\..\libs\EliteSharp.Views.EightBit\EliteSharp.Views.EightBit.csproj;..\..\libs\EliteSharp.Views.SixteenBit\EliteSharp.Views.SixteenBit.csproj"
+  <Target Name="CopyRenditions" AfterTargets="Build;Publish">
+    <MSBuild Projects="..\..\libs\EliteSharp.Renditions.EightBit\EliteSharp.Renditions.EightBit.csproj;..\..\libs\EliteSharp.Renditions.SixteenBit\EliteSharp.Renditions.SixteenBit.csproj"
              Targets="GetTargetPath"
              Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework)">
-      <Output TaskParameter="TargetOutputs" ItemName="ViewPlugin" />
+      <Output TaskParameter="TargetOutputs" ItemName="Rendition" />
     </MSBuild>
-    <Copy SourceFiles="@(ViewPlugin)"
-          DestinationFolder="$(OutDir)Views"
+    <Copy SourceFiles="@(Rendition)"
+          DestinationFolder="$(OutDir)Renditions"
           SkipUnchangedFiles="true" />
-    <Copy SourceFiles="@(ViewPlugin)"
-          DestinationFolder="$(PublishDir)Views"
+    <Copy SourceFiles="@(Rendition)"
+          DestinationFolder="$(PublishDir)Renditions"
           SkipUnchangedFiles="true"
           Condition="'$(PublishDir)' != ''" />
   </Target>

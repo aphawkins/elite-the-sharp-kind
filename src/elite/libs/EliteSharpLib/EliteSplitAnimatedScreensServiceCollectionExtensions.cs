@@ -6,6 +6,7 @@ using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Missions;
+using EliteSharpLib.Renditions;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
@@ -35,7 +36,7 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
     // animated sequences that run to a tick count.
     private static void AddSplitSequenceScreens(this IServiceCollection services)
     {
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().MissionBriefingView);
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().MissionBriefingView);
         services.AddSingleton(sp => new MissionBriefingController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
@@ -47,7 +48,7 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
             sp.GetRequiredService<IMissionBriefingView>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<MissionBriefingController>()));
 
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<EscapeCapsuleModel>());
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<EscapeCapsuleModel>());
         services.AddSingleton(sp => new EscapeCapsuleController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<AudioController>(),
@@ -62,7 +63,7 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
             sp.GetRequiredService<IView<EscapeCapsuleModel>>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<EscapeCapsuleController>()));
 
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<GameOverModel>());
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<GameOverModel>());
         services.AddSingleton(sp => new GameOverController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<AudioController>(),
@@ -84,7 +85,7 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
     // resolving them here, since they aren't otherwise-distinct types.
     private static void AddSplitFlightScreens(this IServiceCollection services)
     {
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<Intro2Model>());
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<Intro2Model>());
         services.AddSingleton(sp => new Intro2Controller(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<AudioController>(),
@@ -97,6 +98,6 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
             sp.GetRequiredService<IView<Intro2Model>>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<Intro2Controller>()));
 
-        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<PilotModel>());
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<PilotModel>());
     }
 }

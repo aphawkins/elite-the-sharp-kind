@@ -2,7 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using EliteSharp.Views.SixteenBit;
+using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Config;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Planets;

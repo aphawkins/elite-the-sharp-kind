@@ -4,7 +4,7 @@
 
 using System.Numerics;
 using EliteSharp.Abstractions.Ships;
-using EliteSharp.Views.SixteenBit;
+using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Views;

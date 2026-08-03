@@ -8,7 +8,7 @@ namespace EliteSharp.Abstractions.Views;
 
 /// <summary>
 /// What each sort of ship is painted, in this tier's colours. There is one of
-/// these per pack and everything that colours a ship reads it, so a ship is
+/// these per rendition and everything that colours a ship reads it, so a ship is
 /// the same colour wherever it appears - on the scanner and in the beam it
 /// fires. Before this existed the two disagreed at 16-bit, where a police ship
 /// showed purple on the scanner and fired cyan.

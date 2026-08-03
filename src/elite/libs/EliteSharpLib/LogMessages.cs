@@ -63,12 +63,12 @@ internal static partial class LogMessages
     [LoggerMessage(
         EventId = 11,
         Level = LogLevel.Warning,
-        Message = "Skipped view plugin '{Path}': it could not be read.")]
+        Message = "Skipped rendition '{Path}': it could not be read.")]
     internal static partial void ViewAssemblyUnreadable(ILogger logger, string path, Exception ex);
 
     [LoggerMessage(
         EventId = 12,
         Level = LogLevel.Information,
-        Message = "Loaded {PackCount} view pack(s) from {AssemblyCount} plugin assemblies; drawing the {Tier} tier.")]
-    internal static partial void ViewPacksLoaded(ILogger logger, int packCount, int assemblyCount, SystemTier tier);
+        Message = "Loaded {PackCount} rendition(s) from {AssemblyCount} plugin assemblies; drawing the {Tier} tier.")]
+    internal static partial void RenditionsLoaded(ILogger logger, int packCount, int assemblyCount, SystemTier tier);
 }

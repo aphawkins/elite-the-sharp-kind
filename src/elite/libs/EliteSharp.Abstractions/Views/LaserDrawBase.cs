@@ -12,7 +12,7 @@ namespace EliteSharp.Abstractions.Views;
 /// <summary>
 /// The laser beams and crosshairs. The geometry is shared - it is already
 /// derived from the tier's scale and viewport edges, which is why this sits
-/// with the contracts rather than in either tier's pack - but the beam colours
+/// with the contracts rather than in either rendition - but the beam colours
 /// are each tier's own, so those are left to the subclass.
 /// <para>
 /// It reads no game state: whether the beams are outlined and where they
