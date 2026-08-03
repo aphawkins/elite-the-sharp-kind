@@ -135,7 +135,7 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<IKeyboard>(),
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<Trade>(),
-            sp.GetRequiredService<ScannerBase>(),
+            sp.GetRequiredService<ScannerController>(),
             sp.GetRequiredService<IView<EquipmentModel>>()));
 
         services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<SettingsListModel>());

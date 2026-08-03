@@ -46,6 +46,7 @@ public sealed class EightBitViewPack : IViewPack
             .Add<PlanetDataModel>(new PlanetDataView8Bit(surface))
             .Add<QuitModel>(new QuitView8Bit(surface))
             .Add<SaveCommanderModel>(new SaveCommanderView8Bit(surface))
+            .Add<ScannerModel>(new ScannerView8Bit(surface))
             .Add<SettingsListModel>(new SettingsListView8Bit(surface))
             .Add<ShortRangeChartModel>(new ShortRangeChartView8Bit(surface));
     }

@@ -78,7 +78,7 @@ public static class EliteServiceCollectionExtensions
                 sp.GetRequiredService<Combat>(),
                 sp.GetRequiredService<SaveFile>(),
                 sp.GetRequiredService<Space>(),
-                sp.GetRequiredService<ScannerBase>(),
+                sp.GetRequiredService<ScannerController>(),
                 sp.GetRequiredService<AudioController>(),
                 sp.GetRequiredService<PlanetController>());
         });
@@ -208,19 +208,12 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<RNG>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<Space>()));
-        services.AddSingleton<ScannerBase>(sp => IsEightBit(sp)
-            ? new Scanner8Bit(
-                sp.GetRequiredService<GameState>(),
-                sp.GetRequiredService<IEliteDraw>(),
-                sp.GetRequiredService<Universe>(),
-                sp.GetRequiredService<PlayerShip>(),
-                sp.GetRequiredService<Combat>())
-            : new Scanner16Bit(
-                sp.GetRequiredService<GameState>(),
-                sp.GetRequiredService<IEliteDraw>(),
-                sp.GetRequiredService<Universe>(),
-                sp.GetRequiredService<PlayerShip>(),
-                sp.GetRequiredService<Combat>()));
+        services.AddSingleton(sp => new ScannerController(
+            sp.GetRequiredService<GameState>(),
+            sp.GetRequiredService<PlayerShip>(),
+            sp.GetRequiredService<Universe>(),
+            sp.GetRequiredService<Combat>(),
+            sp.GetRequiredService<IView<ScannerModel>>()));
     }
 
     private static void PopulateScreens(IServiceProvider sp)
@@ -307,7 +300,15 @@ public static class EliteServiceCollectionExtensions
     // this, EliteMain the hyperspace countdown, and the tier-split screens
     // their headers. It comes off the pack with everything else.
     private static void AddBaseView(this IServiceCollection services)
-        => services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().BaseView);
+    {
+        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().BaseView);
+
+        // The HUD comes off the pack like any screen. Its controller is
+        // registered with the simulation rather than the screens, because
+        // EliteMain and the equip-ship screen both refresh it directly and
+        // it never enters the screen map.
+        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<ScannerModel>());
+    }
 
     // Every screen is a plugin now, both tiers of them: they are found in the
     // Views folder beside the executable, the same way a stranger's tier would

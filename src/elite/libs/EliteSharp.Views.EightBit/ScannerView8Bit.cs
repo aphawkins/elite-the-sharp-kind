@@ -3,37 +3,38 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using EliteSharpLib.Conflict;
-using EliteSharpLib.Graphics;
-using EliteSharpLib.Ships;
+using EliteSharp.Abstractions.Views;
 using Useful;
 
-namespace EliteSharpLib;
+namespace EliteSharp.Views.EightBit;
 
 /// <summary>
 /// The 8-bit HUD, laid out against the 320x56 scanner bitmap. Roughly the
 /// 16-bit offsets halved, since the scanner is a little under half the size in
 /// each axis - first drafts against the art rather than authored positions.
 /// </summary>
-internal sealed class Scanner8Bit : ScannerBase
+internal sealed class ScannerView8Bit : ScannerViewBase
 {
-    internal Scanner8Bit(GameState gameState, IEliteDraw draw, Universe universe, PlayerShip ship, Combat combat)
-        : base(gameState, draw, universe, ship, combat)
+    internal ScannerView8Bit(IViewSurface surface)
+        : base(surface)
     {
-        ArgumentNullException.ThrowIfNull(draw);
+        DialTopColor = surface.Palette["Yellow"];
+        DialBodyColor = surface.Palette["Orange"];
+        DialBottomColor = surface.Palette["Red"];
+        SpeedWarningColor = surface.Palette["Red"];
 
-        DialTopColor = draw.Palette["Yellow"];
-        DialBodyColor = draw.Palette["Orange"];
-        DialBottomColor = draw.Palette["Red"];
-        SpeedWarningColor = draw.Palette["Red"];
-        StationColor = draw.Palette["Green"];
-        MissileColor = draw.Palette["Purple"];
-        PoliceColor = draw.Palette["Cyan"];
-        HostileColor = draw.Palette["Yellow"];
-        DefaultColor = draw.Palette["White"];
+        // Police are cyan here rather than the 16-bit purple: this palette has
+        // one purple and the missile already has it, and a commander must be
+        // able to tell an incoming missile from a Viper at a glance.
+        Ships = new(
+            Default: surface.Palette["White"],
+            Station: surface.Palette["Green"],
+            Missile: surface.Palette["Purple"],
+            Police: surface.Palette["Cyan"],
+            Hostile: surface.Palette["Yellow"]);
     }
 
-    protected override Vector2 ScannerCentre => new(Draw.Layout.ViewportCentre.X - 2, Draw.Layout.ViewportHeight + 28);
+    protected override Vector2 ScannerCentre => new(Surface.Layout.ViewportCentre.X - 2, Surface.Layout.ViewportHeight + 28);
 
     protected override (float Y, float X) ScannerExtent => (14, 25);
 
@@ -93,13 +94,5 @@ internal sealed class Scanner8Bit : ScannerBase
 
     protected override FastColor SpeedWarningColor { get; }
 
-    protected override FastColor StationColor { get; }
-
-    protected override FastColor MissileColor { get; }
-
-    protected override FastColor PoliceColor { get; }
-
-    protected override FastColor HostileColor { get; }
-
-    protected override FastColor DefaultColor { get; }
+    protected override ShipColours Ships { get; }
 }

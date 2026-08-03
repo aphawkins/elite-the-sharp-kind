@@ -3,12 +3,10 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using EliteSharpLib.Conflict;
-using EliteSharpLib.Graphics;
-using EliteSharpLib.Ships;
+using EliteSharp.Abstractions.Views;
 using Useful;
 
-namespace EliteSharpLib;
+namespace EliteSharp.Views.SixteenBit;
 
 /// <summary>
 /// The 16-bit HUD, laid out against the 640x129 scanner bitmap.
@@ -21,25 +19,24 @@ namespace EliteSharpLib;
 /// 411 to 539, and the compass ring's centre 386.5 to 514.5. So the left
 /// cluster's offsets below are unchanged and the right cluster's are +128.
 /// </remarks>
-internal sealed class Scanner16Bit : ScannerBase
+internal sealed class ScannerView16Bit : ScannerViewBase
 {
-    internal Scanner16Bit(GameState gameState, IEliteDraw draw, Universe universe, PlayerShip ship, Combat combat)
-        : base(gameState, draw, universe, ship, combat)
+    internal ScannerView16Bit(IViewSurface surface)
+        : base(surface)
     {
-        ArgumentNullException.ThrowIfNull(draw);
-
-        DialTopColor = draw.Palette["Gold"];
-        DialBodyColor = draw.Palette["DarkYellow"];
-        DialBottomColor = draw.Palette["LightRed"];
-        SpeedWarningColor = draw.Palette["LightRed"];
-        StationColor = draw.Palette["Green"];
-        MissileColor = draw.Palette["Lilac"];
-        PoliceColor = draw.Palette["Purple"];
-        HostileColor = draw.Palette["Yellow"];
-        DefaultColor = draw.Palette["White"];
+        DialTopColor = surface.Palette["Gold"];
+        DialBodyColor = surface.Palette["DarkYellow"];
+        DialBottomColor = surface.Palette["LightRed"];
+        SpeedWarningColor = surface.Palette["LightRed"];
+        Ships = new(
+            Default: surface.Palette["White"],
+            Station: surface.Palette["Green"],
+            Missile: surface.Palette["Lilac"],
+            Police: surface.Palette["Purple"],
+            Hostile: surface.Palette["Yellow"]);
     }
 
-    protected override Vector2 ScannerCentre => new(Draw.Layout.ViewportCentre.X - 3, Draw.Layout.ViewportHeight + 63);
+    protected override Vector2 ScannerCentre => new(Surface.Layout.ViewportCentre.X - 3, Surface.Layout.ViewportHeight + 63);
 
     protected override (float Y, float X) ScannerExtent => (28, 50);
 
@@ -97,13 +94,5 @@ internal sealed class Scanner16Bit : ScannerBase
 
     protected override FastColor SpeedWarningColor { get; }
 
-    protected override FastColor StationColor { get; }
-
-    protected override FastColor MissileColor { get; }
-
-    protected override FastColor PoliceColor { get; }
-
-    protected override FastColor HostileColor { get; }
-
-    protected override FastColor DefaultColor { get; }
+    protected override ShipColours Ships { get; }
 }

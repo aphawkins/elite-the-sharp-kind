@@ -14,9 +14,10 @@ namespace EliteSharpLib.Views;
 /// </summary>
 internal sealed class ViewRegistry
 {
-    // Every screen with a controller of its own. The mission briefing is not
-    // here because the pack hands it over separately - it is the one screen
-    // that answers back, with where its tier puts the posing ship.
+    // Every screen with a controller of its own, the HUD among them - it is
+    // drawn from a model by a controller like any other. The mission briefing
+    // is not here because the pack hands it over separately: it is the one
+    // screen that answers back, with where its tier puts the posing ship.
     private static readonly Type[] s_requiredModels =
     [
         typeof(CommanderStatusModel),
@@ -34,6 +35,7 @@ internal sealed class ViewRegistry
         typeof(PlanetDataModel),
         typeof(QuitModel),
         typeof(SaveCommanderModel),
+        typeof(ScannerModel),
         typeof(SettingsListModel),
         typeof(ShortRangeChartModel),
     ];

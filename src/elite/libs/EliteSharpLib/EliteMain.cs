@@ -52,7 +52,7 @@ public sealed class EliteMain : IGame, IGameApp
     private readonly List<long> _framesDrawn = [];
     private readonly Pilot _pilot;
     private readonly SaveFile _save;
-    private readonly ScannerBase _scanner;
+    private readonly ScannerController _scanner;
     private readonly PlayerShip _ship;
     private readonly Space _space;
     private readonly Stars _stars;
@@ -73,7 +73,7 @@ public sealed class EliteMain : IGame, IGameApp
         Combat combat,
         SaveFile save,
         Space space,
-        ScannerBase scanner,
+        ScannerController scanner,
         AudioController audio,
         PlanetController planet)
     {

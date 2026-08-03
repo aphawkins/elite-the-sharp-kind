@@ -100,9 +100,18 @@ public class EquipmentControllerTests
         MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
 
         Combat combat = new(gameState, audio, ship, trade, pilot, universe, draw, shipFactory, rng, missions);
-        Scanner16Bit scanner = new(gameState, draw, universe, ship, combat);
+        ScannerController scanner = new(gameState, ship, universe, combat, new NothingScannerView());
 
         return new EquipmentController(gameState, keyboard, ship, trade, scanner, new FakeEquipmentView());
+    }
+
+    // Buying fuel or a missile refreshes the HUD; what it draws is not under
+    // test here.
+    private sealed class NothingScannerView : IView<ScannerModel>
+    {
+        public void Draw(ScannerModel model)
+        {
+        }
     }
 
     private sealed class FakeEquipmentView : IView<EquipmentModel>

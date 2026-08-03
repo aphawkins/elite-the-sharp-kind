@@ -94,6 +94,7 @@ public class ViewRegistryTests
             Add<PlanetDataModel>(views);
             Add<QuitModel>(views);
             Add<SaveCommanderModel>(views);
+            Add<ScannerModel>(views);
             Add<SettingsListModel>(views);
             Add<ShortRangeChartModel>(views);
 

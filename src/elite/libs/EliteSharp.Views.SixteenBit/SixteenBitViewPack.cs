@@ -45,6 +45,7 @@ public sealed class SixteenBitViewPack : IViewPack
             .Add<PlanetDataModel>(new PlanetDataView16Bit(surface))
             .Add<QuitModel>(new QuitView16Bit(surface))
             .Add<SaveCommanderModel>(new SaveCommanderView16Bit(surface))
+            .Add<ScannerModel>(new ScannerView16Bit(surface))
             .Add<SettingsListModel>(new SettingsListView16Bit(surface))
             .Add<ShortRangeChartModel>(new ShortRangeChartView16Bit(surface));
     }
