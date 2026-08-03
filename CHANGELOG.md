@@ -7,6 +7,26 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Screens become plugins, 2026-08-03)
+
+- The 8-bit and 16-bit screens are no longer written into the game. Each tier
+  is an assembly of its own — **`EliteSharp.Views.EightBit`** and
+  **`EliteSharp.Views.SixteenBit`** — referencing the contracts and nothing
+  else, and the game finds them at startup in a **`Views` folder beside the
+  executable**, the same way it finds a mission. Adding a tier is now an
+  assembly rather than a second branch in every screen registration.
+- **The `Views` folder is required.** Delete it, or the pack for the tier
+  configured in `engine.tier`, and the game refuses to start and says which
+  tier it could not find — there is nothing to draw with. A pack missing a
+  screen is refused the same way before the first frame, naming every screen it
+  does not draw.
+- The mission contracts assembly is now **`EliteSharp.Abstractions`**, one
+  plugin-facing assembly subdivided by namespace, so a plugin of any kind
+  references one thing. A mission plugin built against the old
+  `EliteSharp.Missions.Abstractions` needs recompiling; nothing about what a
+  mission *does* changed.
+- No visible change to either tier: both draw exactly what they drew before.
+
 ### Changed (Missions become plugins, 2026-08-02)
 
 - The two missions are no longer written into the game. They live in

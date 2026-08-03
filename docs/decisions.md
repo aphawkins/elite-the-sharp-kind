@@ -9,6 +9,65 @@ decision may reshape items in either. Newest first. When a decision
 reshapes or unblocks backlog items, those items are updated in the backlog
 to reference the decision here rather than restating it.
 
+## Resolved (2026-08-03) — the tiers are plugin assemblies too, behind one contracts assembly
+
+The mission work proved the door; this puts the presentation through it. Each
+asset tier's screens are now **an assembly the game finds at startup**, in a
+`Views` folder beside the executable: `EliteSharp.Views.EightBit` and
+`EliteSharp.Views.SixteenBit`, each referencing the contracts and nothing else,
+and neither referenced by the game. Adding a third tier is an assembly, and no
+edit to the game's composition at all.
+
+**One contracts assembly, not one per plugin family.** The mission contracts
+assembly was renamed `EliteSharp.Abstractions` and subdivided by namespace —
+`Missions`, `Views`, `Assets`, `Ships` — rather than growing a project per
+family, which would be sprawl standing in for a folder. Note the price, which
+was accepted knowingly: the mission contracts were dependency-free on their
+own, and views need `IGraphics` and a palette to exist at all, so a mission
+author now transitively carries a graphics assembly they never call. What a
+mission may touch is a namespace boundary now rather than a compile error.
+
+The calls that shaped it:
+
+- **`IViewSurface`, not `IEliteDraw`.** Views only ever used `Graphics`,
+  `Layout` and `Palette` — nothing called `DrawObject`, `Focus` or the
+  clip/render members — so the published surface is those three and
+  `IEliteDraw` implements it. Projecting a ship and starting a frame stay on
+  the game's side and are unreachable from a pack.
+- **A pack hands over a `ViewSet`, checked once at startup.** `Add<TModel>`
+  takes the model type off the view's own interface, so a pack cannot file a
+  view under a screen it does not draw, and `ViewRegistry` checks the set
+  against the game's screens before a frame is composed. A pack that is a
+  screen short is a startup failure naming every missing screen at once, not a
+  blank screen the commander finds later.
+- **The mission briefing is handed over separately.** It is the one screen that
+  answers back — where its tier puts the ship posing behind a briefing — so it
+  has its own factory method rather than being fished out of the set with a
+  cast that could fail.
+- **A missing pack is fatal, unlike a missing mission.** No `Missions` folder
+  costs the commander some missions; no pack for the configured tier leaves the
+  game with nothing to draw at all, so the loader throws and names the tier.
+- **The laser's game state moved onto `PilotModel`.** `LaserDrawBase` read
+  `GameState` for the wireframe setting and `RNG` for the beams' per-frame
+  jitter. Both now arrive on the model — the roll happens game-side because the
+  game owns the one source of entropy, and a view that rolled its own would not
+  be reproducible. The geometry is already derived from the tier's scale, so
+  the base sits with the contracts and only the beam colours are each pack's.
+
+Consequences:
+
+- **The `Views` folder is load-bearing, more so than `Missions`.** Both packs
+  are copied on `Build` and `Publish` whichever tier is configured, because the
+  tier is a setting the commander can change without reinstalling anything.
+- **The tier branch is gone from the composition root.** `IsEightBit` no longer
+  selects views; the registrations name a screen and take what the pack drew.
+- **Trimming and AOT are now foreclosed for the presentation as well**, which
+  the mission decision flagged as the thing to watch if the plugin model spread
+  to views. It has. Still nothing configures either.
+- The views and their models became public API. The views themselves stay
+  internal to their pack — the game only ever sees an `IView` — with the tests
+  let in, the same arrangement `EliteSharp.Missions.Classic` uses.
+
 ## Resolved (2026-08-02) — missions are plugin assemblies, not game code
 
 The mission stages were hardcoded, and adding a mission meant editing two
@@ -81,7 +140,8 @@ Consequences:
   present when the installed set varies.
 - **Trimming and AOT are foreclosed**, since discovery is reflection over
   externally-supplied assemblies. Nothing configures either today, so this costs
-  nothing now; it matters if the plugin model spreads to views or stock.
+  nothing now; it matters if the plugin model spreads to views or stock. (It
+  spread to views on 2026-08-03.)
 - **The 8-bit Constrictor debrief moved down the screen** to match the Thargoid
   one. The two had drifted into different layouts for the same shape of
   briefing, and one rule cannot draw both. 16-bit is unchanged.

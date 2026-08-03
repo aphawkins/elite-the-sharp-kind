@@ -142,7 +142,7 @@ Elite's own diagnostic opt-ins, read at runtime rather than compiled in, so they
 ## Missions
 
 Missions are plugins. Each is an assembly referencing
-`EliteSharp.Missions.Abstractions` and nothing else, and the game loads every
+`EliteSharp.Abstractions` and nothing else, and the game loads every
 one it finds in a **`Missions` folder beside the executable** at startup.
 
 The two missions the game ships with — the Constrictor hunt and the Thargoid
@@ -158,6 +158,23 @@ unless you mean it:
   The commander file records the mission by name, and a file naming a mission
   nothing provides is refused rather than half-loaded. The log says which name
   it could not place.
+
+## Screens
+
+The screens are plugins too, one assembly per asset tier —
+`EliteSharp.Views.EightBit` and `EliteSharp.Views.SixteenBit` — found in a
+**`Views` folder beside the executable** at startup. Each references
+`EliteSharp.Abstractions` and nothing else, exactly as a mission does, so a
+tier of your own can do everything these do.
+
+Unlike the missions, this folder is not optional. The game picks the pack whose
+tier matches `engine.tier` in the config, and **without it there is nothing to
+draw with**, so it refuses to start and says which tier it could not find. A
+pack that is missing a screen is refused the same way, naming every screen it
+does not draw — the check happens before the first frame rather than when the
+commander opens that screen. Both tiers are installed whichever one is
+configured, since the tier is a setting rather than a choice made at install
+time.
 
 ## Credits
 
