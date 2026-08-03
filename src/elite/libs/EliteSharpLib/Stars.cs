@@ -3,10 +3,10 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using EliteSharp.Abstractions.Views.Stars;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Views;
-using Useful;
 
 namespace EliteSharpLib;
 
@@ -16,16 +16,21 @@ internal sealed class Stars
     private readonly GameState _gameState;
     private readonly PlayerShip _ship;
     private readonly Vector4[] _stars = new Vector4[20];
-    private readonly FastColor _colorWhite;
+    private readonly IStarfieldRenderer _renderer;
     private readonly RNG _rng;
 
-    internal Stars(GameState gameState, IEliteDraw draw, PlayerShip ship, RNG rng)
+    // What this frame is showing, refilled by each starfield pass and handed
+    // to the rendition to draw. Which stars go in is the game's decision; how
+    // one looks is not.
+    private readonly List<StarMark> _marks = [];
+
+    internal Stars(GameState gameState, IEliteDraw draw, PlayerShip ship, IStarfieldRenderer renderer, RNG rng)
     {
         _gameState = gameState;
         _ship = ship;
         _draw = draw;
+        _renderer = renderer;
         _rng = rng;
-        _colorWhite = draw.Palette["White"];
     }
 
     internal bool WarpStars { get; set; }
@@ -65,6 +70,7 @@ internal sealed class Stars
 
     internal void FrontStarfield()
     {
+        _marks.Clear();
         float delta = WarpStars ? 50 : _ship.Speed;
         float alpha = _ship.Roll;
         float beta = _ship.Climb;
@@ -96,7 +102,10 @@ internal sealed class Stars
 
             if (WarpStars)
             {
-                _draw.Graphics.DrawLine(star, ToScreen(xx, yy), _colorWhite);
+                // The forward streak is not checked against the view: it
+                // runs from wherever the star was to wherever it now is, and
+                // the renderer clips what falls outside.
+                _marks.Add(new(star, ToScreen(xx, yy), true, zz));
             }
 
             star.X = xx;
@@ -113,6 +122,7 @@ internal sealed class Stars
         }
 
         WarpStars = false;
+        _renderer.Draw(_marks);
     }
 
     internal void LeftStarfield()
@@ -123,6 +133,7 @@ internal sealed class Stars
 
     internal void RearStarfield()
     {
+        _marks.Clear();
         float delta = WarpStars ? 50 : _ship.Speed;
         float alpha = -_ship.Roll;
         float beta = -_ship.Climb;
@@ -164,6 +175,7 @@ internal sealed class Stars
         }
 
         WarpStars = false;
+        _renderer.Draw(_marks);
     }
 
     internal void RightStarfield()
@@ -193,7 +205,7 @@ internal sealed class Stars
             (ey >= _draw.Layout.ViewportTop)
             && (ey <= _draw.Layout.ViewportBottom))
         {
-            _draw.Graphics.DrawLine(star, new(ex, ey), _colorWhite);
+            _marks.Add(new(star, new(ex, ey), true, 0));
         }
     }
 
@@ -242,18 +254,7 @@ internal sealed class Stars
             (star.Y >= _draw.Layout.ViewportTop)
             && (star.Y <= _draw.Layout.ViewportBottom))
         {
-            _draw.Graphics.DrawPixel(star, _colorWhite);
-
-            if (zz < 192)
-            {
-                _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), _colorWhite);
-            }
-
-            if (zz < 144)
-            {
-                _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), _colorWhite);
-                _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), _colorWhite);
-            }
+            _marks.Add(new(star, star, false, zz));
         }
 
         return star;
@@ -261,6 +262,7 @@ internal sealed class Stars
 
     private void SideStarfield(float alpha, float beta, float delta)
     {
+        _marks.Clear();
         for (int i = 0; i < _stars.Length; i++)
         {
             Vector2 star = PlotStar(i);
@@ -285,7 +287,7 @@ internal sealed class Stars
 
             if (WarpStars)
             {
-                _draw.Graphics.DrawLine(star, ToScreen(xx, yy), _colorWhite);
+                _marks.Add(new(star, ToScreen(xx, yy), true, zz));
             }
 
             if (MathF.Abs(_stars[i].X) >= StarHalfWidth)
@@ -303,5 +305,6 @@ internal sealed class Stars
         }
 
         WarpStars = false;
+        _renderer.Draw(_marks);
     }
 }

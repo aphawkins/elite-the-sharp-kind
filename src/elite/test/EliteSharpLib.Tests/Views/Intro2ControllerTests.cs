@@ -93,7 +93,7 @@ public class Intro2ControllerTests
             shipFactory,
             rng,
             missions);
-        Stars stars = new(gameState, draw, ship, rng);
+        Stars stars = new(gameState, draw, ship, new SixteenBitRendition().CreateStarfieldRenderer(draw), rng);
 
         return new Intro2Controller(
             gameState, audio, keyboard, stars, ship, combat, universe, shipFactory, new FakeIntro2View());

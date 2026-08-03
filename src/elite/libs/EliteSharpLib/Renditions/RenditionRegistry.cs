@@ -4,6 +4,7 @@
 
 using EliteSharp.Abstractions.Renditions;
 using EliteSharp.Abstractions.Views;
+using EliteSharp.Abstractions.Views.Stars;
 
 namespace EliteSharpLib.Renditions;
 
@@ -49,6 +50,7 @@ internal sealed class RenditionRegistry
 
         BaseView = rendition.CreateBaseView(surface);
         MissionBriefingView = rendition.CreateMissionBriefingView(surface);
+        Starfield = rendition.CreateStarfieldRenderer(surface);
         _views = rendition.CreateViews(surface);
 
         string[] missing = [.. s_requiredModels
@@ -73,6 +75,13 @@ internal sealed class RenditionRegistry
     /// Gets the screen every mission's messages are drawn on.
     /// </summary>
     internal IMissionBriefingView MissionBriefingView { get; }
+
+    /// <summary>
+    /// Gets the starfield renderer. It is not a screen - the game draws it
+    /// behind whatever screen is showing - so it comes off the rendition
+    /// directly rather than out of the set.
+    /// </summary>
+    internal IStarfieldRenderer Starfield { get; }
 
     /// <summary>
     /// Gets the view for one screen.

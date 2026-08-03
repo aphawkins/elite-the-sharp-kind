@@ -6,6 +6,7 @@ using System.Numerics;
 using EliteSharp.Abstractions.Renditions;
 using EliteSharp.Abstractions.Views;
 using EliteSharp.Abstractions.Views.Planets;
+using EliteSharp.Abstractions.Views.Stars;
 using EliteSharp.Abstractions.Views.Suns;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Renditions;
@@ -90,6 +91,9 @@ public class RenditionRegistryTests
         public ISunRenderer CreateSunRenderer(IViewSurface surface, SunLook look)
             => throw new NotSupportedException();
 
+        public IStarfieldRenderer CreateStarfieldRenderer(IViewSurface surface)
+            => new NothingStarfield();
+
         public ViewSet CreateViews(IViewSurface surface)
         {
             ViewSet views = new();
@@ -121,6 +125,13 @@ public class RenditionRegistryTests
             {
                 views.Add<TModel>(new NothingView<TModel>());
             }
+        }
+    }
+
+    private sealed class NothingStarfield : IStarfieldRenderer
+    {
+        public void Draw(IReadOnlyList<StarMark> stars)
+        {
         }
     }
 

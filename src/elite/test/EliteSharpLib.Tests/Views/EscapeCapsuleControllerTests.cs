@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Abstractions.Views;
+using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Audio;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Ships;
@@ -81,7 +82,7 @@ public class EscapeCapsuleControllerTests
             { nameof(SoundEffect.Explode), new(23) },
         };
         AudioController audio = new(new FakeSound(), sfx, new());
-        Stars stars = new(gameState, draw, ship, rng);
+        Stars stars = new(gameState, draw, ship, new SixteenBitRendition().CreateStarfieldRenderer(draw), rng);
         Pilot pilot = new(draw, audio, universe, ship, rng);
 
         return new EscapeCapsuleController(

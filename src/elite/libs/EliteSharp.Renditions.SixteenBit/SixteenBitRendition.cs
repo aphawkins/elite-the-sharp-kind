@@ -5,6 +5,7 @@
 using EliteSharp.Abstractions.Renditions;
 using EliteSharp.Abstractions.Views;
 using EliteSharp.Abstractions.Views.Planets;
+using EliteSharp.Abstractions.Views.Stars;
 using EliteSharp.Abstractions.Views.Suns;
 
 namespace EliteSharp.Renditions.SixteenBit;
@@ -87,5 +88,12 @@ public sealed class SixteenBitRendition : IRendition
             SunStyle.Gradient => new GradientSunRenderer16Bit(surface, look.Random),
             _ => throw new ArgumentOutOfRangeException(nameof(look)),
         };
+    }
+
+    public IStarfieldRenderer CreateStarfieldRenderer(IViewSurface surface)
+    {
+        ArgumentNullException.ThrowIfNull(surface);
+
+        return new StarfieldRenderer16Bit(surface);
     }
 }

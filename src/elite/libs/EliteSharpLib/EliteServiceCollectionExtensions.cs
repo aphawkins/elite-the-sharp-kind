@@ -179,6 +179,7 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<PlayerShip>(),
+            sp.GetRequiredService<RenditionRegistry>().Starfield,
             sp.GetRequiredService<RNG>()));
         services.AddSingleton(sp =>
         {

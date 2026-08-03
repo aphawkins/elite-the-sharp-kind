@@ -26,6 +26,8 @@ namespace EliteSharpLib.Tests.Views;
 // renderer involved.
 public class PilotControllerTests
 {
+    private static readonly SixteenBitRendition s_rendition = new();
+
     [Fact]
     public void EachDirectionNamesItsOwnView()
     {
@@ -101,7 +103,7 @@ public class PilotControllerTests
         FakeShipFactory shipFactory = new(draw, rng);
         Universe universe = new(shipFactory, rng);
         AudioController audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());
-        Stars stars = new(gameState, draw, ship, rng);
+        Stars stars = CreateStars(gameState, draw, ship, rng);
         Pilot pilot = new(draw, audio, universe, ship, rng);
         MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
 
@@ -113,7 +115,7 @@ public class PilotControllerTests
             pilot,
             universe,
             draw,
-            new SixteenBitRendition(),
+            s_rendition,
             shipFactory,
             rng,
             missions);
@@ -128,12 +130,18 @@ public class PilotControllerTests
             stars,
             universe,
             draw,
-            new SixteenBitRendition(),
+            s_rendition,
             rng);
 
         return new PilotController(
             gameState, new FakeKeyboard(), pilot, ship, stars, space, combat, direction, rng, new FakePilotView());
     }
+
+    // Kept out of CreateController, which is already at CA1506's coupling
+    // limit: the starfield renderer adds two more types to whichever method
+    // names it.
+    private static Stars CreateStars(GameState gameState, FakeEliteDraw draw, PlayerShip ship, RNG rng)
+        => new(gameState, draw, ship, s_rendition.CreateStarfieldRenderer(draw), rng);
 
     private sealed class FakePilotView : IView<PilotModel>
     {

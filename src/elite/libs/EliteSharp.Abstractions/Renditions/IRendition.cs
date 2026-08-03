@@ -4,6 +4,7 @@
 
 using EliteSharp.Abstractions.Views;
 using EliteSharp.Abstractions.Views.Planets;
+using EliteSharp.Abstractions.Views.Stars;
 using EliteSharp.Abstractions.Views.Suns;
 
 namespace EliteSharp.Abstractions.Renditions;
@@ -91,4 +92,12 @@ public interface IRendition
     /// <param name="look">Which style, and what it needs to build one.</param>
     /// <returns>A renderer for that style.</returns>
     public ISunRenderer CreateSunRenderer(IViewSurface surface, SunLook look);
+
+    /// <summary>
+    /// Builds the starfield renderer. There is only one - a star has no styles
+    /// to pick between - so this takes no look.
+    /// </summary>
+    /// <param name="surface">What the renderer draws on.</param>
+    /// <returns>A renderer for the starfield.</returns>
+    public IStarfieldRenderer CreateStarfieldRenderer(IViewSurface surface);
 }

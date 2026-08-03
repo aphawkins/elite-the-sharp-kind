@@ -5,6 +5,7 @@
 using EliteSharp.Abstractions.Renditions;
 using EliteSharp.Abstractions.Views;
 using EliteSharp.Abstractions.Views.Planets;
+using EliteSharp.Abstractions.Views.Stars;
 using EliteSharp.Abstractions.Views.Suns;
 
 namespace EliteSharp.Renditions.EightBit;
@@ -86,5 +87,12 @@ public sealed class EightBitRendition : IRendition
             SunStyle.Gradient => new GradientSunRenderer8Bit(surface, look.Random),
             _ => throw new ArgumentOutOfRangeException(nameof(look)),
         };
+    }
+
+    public IStarfieldRenderer CreateStarfieldRenderer(IViewSurface surface)
+    {
+        ArgumentNullException.ThrowIfNull(surface);
+
+        return new StarfieldRenderer8Bit(surface);
     }
 }
