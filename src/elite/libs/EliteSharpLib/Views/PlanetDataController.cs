@@ -5,6 +5,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
+using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Missions;
 using EliteSharpLib.Planets;
 using EliteSharpLib.Types;

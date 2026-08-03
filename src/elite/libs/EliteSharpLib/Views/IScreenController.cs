@@ -9,7 +9,7 @@ namespace EliteSharpLib.Views;
 /// <summary>
 /// The behavioural half of one screen: it takes input, advances the screen's
 /// own state and produces what gets drawn. The drawing half is an
-/// <see cref="IView{TModel}"/> it delegates to, so layout can vary per asset
+/// IView it delegates to, so layout can vary per asset
 /// tier while behaviour has a single home.
 /// </summary>
 internal interface IScreenController : IGameScreen

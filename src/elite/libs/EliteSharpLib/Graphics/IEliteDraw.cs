@@ -3,22 +3,22 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Ships;
-using EliteSharpLib.Views;
 using Useful;
 using Useful.Assets;
-using Useful.Assets.Palettes;
-using Useful.Graphics;
 
 namespace EliteSharpLib.Graphics;
 
-internal interface IEliteDraw
+/// <summary>
+/// The game's drawing, which is also what the views are handed - the three
+/// members a view may use are <see cref="IViewSurface"/>, and everything below
+/// them is the game's own. A view has no business projecting a ship or
+/// starting a frame, and cannot reach either from the other side of the
+/// plugin seam.
+/// </summary>
+internal interface IEliteDraw : IViewSurface
 {
-    /// <summary>
-    /// Gets the tier's screen metrics for laying out against.
-    /// </summary>
-    public ViewLayout Layout { get; }
-
     /// <summary>
     /// Gets the machine class being reproduced, which the object factories
     /// pick their per-tier renderers by.
@@ -32,10 +32,6 @@ internal interface IEliteDraw
     /// at every tier, and independent of <see cref="ViewLayout.Scale"/>.
     /// </summary>
     public float Focus { get; }
-
-    public IGraphics Graphics { get; }
-
-    public IPaletteCollection Palette { get; }
 
     public void DrawObject(IObject obj);
 

@@ -2,7 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using EliteSharpLib.Views;
+using EliteSharp.Abstractions.Views;
 
 namespace EliteSharpLib.Tests;
 
@@ -34,7 +34,7 @@ public class TextWrapTests
     {
         // The comma sits one past the row width. The scan used to start there,
         // so it broke after the comma and drew a nine-character row.
-        List<string> lines = TextWrap.Split("aaaaaaaa,bbbb", 8);
+        IReadOnlyList<string> lines = TextWrap.Split("aaaaaaaa,bbbb", 8);
 
         Assert.Equal(["aaaaaaaa", ",bbbb"], lines);
     }

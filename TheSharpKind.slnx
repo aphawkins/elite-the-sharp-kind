@@ -35,6 +35,8 @@
   <Folder Name="/src/elite/libs/">
     <Project Path="src/elite/libs/EliteSharp.Abstractions/EliteSharp.Abstractions.csproj" />
     <Project Path="src/elite/libs/EliteSharp.Missions.Classic/EliteSharp.Missions.Classic.csproj" />
+    <Project Path="src/elite/libs/EliteSharp.Views.EightBit/EliteSharp.Views.EightBit.csproj" />
+    <Project Path="src/elite/libs/EliteSharp.Views.SixteenBit/EliteSharp.Views.SixteenBit.csproj" />
     <Project Path="src/elite/libs/EliteSharpLib/EliteSharpLib.csproj" />
   </Folder>
   <Folder Name="/src/elite/perf/">

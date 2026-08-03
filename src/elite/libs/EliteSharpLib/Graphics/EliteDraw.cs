@@ -4,6 +4,8 @@
 
 ////using System.Diagnostics;
 using System.Numerics;
+using EliteSharp.Abstractions.Assets;
+using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Views;
 using Useful;

@@ -2,14 +2,13 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
-using EliteSharpLib.Views.EightBit;
-using EliteSharpLib.Views.SixteenBit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Useful.Audio;
@@ -21,7 +20,9 @@ namespace EliteSharpLib;
 // own animation: the sequence screens and the flight screens. Split out of
 // EliteSplitScreensServiceCollectionExtensions once each screen's second
 // (8-bit) view pushed that class over CA1506's class-coupling limit (96) -
-// the metric is per class, so an extra static class is what resolves it.
+// the metric is per class, so an extra static class is what resolves it. The
+// views themselves have since gone to plugins and the coupling with them, but
+// the split stays: the two halves are a reasonable size each.
 internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
 {
     internal static void AddSplitAnimatedScreens(this IServiceCollection services)
@@ -30,17 +31,11 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
         services.AddSplitFlightScreens();
     }
 
-    // Kept separate for the same reason as its twin in
-    // EliteSplitScreensServiceCollectionExtensions: a per-tier IView
-    // registration only has to reference this bool, not IAssetLocator and
-    // SystemTier themselves.
     // The screens that play out on their own: mission messages, and the
     // animated sequences that run to a tick count.
     private static void AddSplitSequenceScreens(this IServiceCollection services)
     {
-        services.AddSingleton<IMissionBriefingView>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
-            ? new MissionBriefingView8Bit(sp.GetRequiredService<IEliteDraw>())
-            : new MissionBriefingView16Bit(sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().MissionBriefingView);
         services.AddSingleton(sp => new MissionBriefingController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
@@ -52,9 +47,7 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
             sp.GetRequiredService<IMissionBriefingView>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<MissionBriefingController>()));
 
-        services.AddSingleton<IView<EscapeCapsuleModel>>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
-            ? new EscapeCapsuleView8Bit(sp.GetRequiredService<IEliteDraw>())
-            : new EscapeCapsuleView16Bit(sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<EscapeCapsuleModel>());
         services.AddSingleton(sp => new EscapeCapsuleController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<AudioController>(),
@@ -69,9 +62,7 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
             sp.GetRequiredService<IView<EscapeCapsuleModel>>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<EscapeCapsuleController>()));
 
-        services.AddSingleton<IView<GameOverModel>>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
-            ? new GameOverView8Bit(sp.GetRequiredService<IEliteDraw>())
-            : new GameOverView16Bit(sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<GameOverModel>());
         services.AddSingleton(sp => new GameOverController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<AudioController>(),
@@ -93,9 +84,7 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
     // resolving them here, since they aren't otherwise-distinct types.
     private static void AddSplitFlightScreens(this IServiceCollection services)
     {
-        services.AddSingleton<IView<Intro2Model>>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
-            ? new Intro2View8Bit(sp.GetRequiredService<IEliteDraw>())
-            : new Intro2View16Bit(sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<Intro2Model>());
         services.AddSingleton(sp => new Intro2Controller(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<AudioController>(),
@@ -108,8 +97,6 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
             sp.GetRequiredService<IView<Intro2Model>>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<Intro2Controller>()));
 
-        services.AddSingleton<IView<PilotModel>>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
-            ? new PilotView8Bit(sp.GetRequiredService<IEliteDraw>())
-            : new PilotView16Bit(sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().View<PilotModel>());
     }
 }

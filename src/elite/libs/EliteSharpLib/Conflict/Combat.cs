@@ -4,9 +4,9 @@
 
 using System.Diagnostics;
 using System.Numerics;
+using EliteSharp.Abstractions.Ships;
 using EliteSharpLib.Audio;
 using EliteSharpLib.Graphics;
-using EliteSharpLib.Lasers;
 using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Suns;

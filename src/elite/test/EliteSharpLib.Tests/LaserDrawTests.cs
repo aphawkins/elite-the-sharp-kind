@@ -3,8 +3,9 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using EliteSharp.Abstractions.Ships;
+using EliteSharp.Views.SixteenBit;
 using EliteSharpLib.Graphics;
-using EliteSharpLib.Lasers;
 using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Views;
 using Useful;

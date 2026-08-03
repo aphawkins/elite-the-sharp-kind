@@ -27,6 +27,17 @@
     <ProjectReference Include="..\..\libs\EliteSharp.Missions.Classic\EliteSharp.Missions.Classic.csproj"
                       ReferenceOutputAssembly="false"
                       Private="false" />
+
+    <!-- And so are both tiers of screens. Same arrangement, and the same
+         reason: the game must find its own tiers the way it would find
+         anyone else's. Unlike the missions, these are not optional - remove
+         them and the game has nothing to draw with, and says so at startup. -->
+    <ProjectReference Include="..\..\libs\EliteSharp.Views.EightBit\EliteSharp.Views.EightBit.csproj"
+                      ReferenceOutputAssembly="false"
+                      Private="false" />
+    <ProjectReference Include="..\..\libs\EliteSharp.Views.SixteenBit\EliteSharp.Views.SixteenBit.csproj"
+                      ReferenceOutputAssembly="false"
+                      Private="false" />
   </ItemGroup>
 
   <!-- Into a Missions folder beside the executable, which is where
@@ -43,6 +54,24 @@
           SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(MissionPlugin)"
           DestinationFolder="$(PublishDir)Missions"
+          SkipUnchangedFiles="true"
+          Condition="'$(PublishDir)' != ''" />
+  </Target>
+
+  <!-- The same, into a Views folder, which is where ViewLoader looks. Both
+       tiers are copied whichever one is configured: the tier is a setting the
+       commander can change without reinstalling anything. -->
+  <Target Name="CopyViewPlugins" AfterTargets="Build;Publish">
+    <MSBuild Projects="..\..\libs\EliteSharp.Views.EightBit\EliteSharp.Views.EightBit.csproj;..\..\libs\EliteSharp.Views.SixteenBit\EliteSharp.Views.SixteenBit.csproj"
+             Targets="GetTargetPath"
+             Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework)">
+      <Output TaskParameter="TargetOutputs" ItemName="ViewPlugin" />
+    </MSBuild>
+    <Copy SourceFiles="@(ViewPlugin)"
+          DestinationFolder="$(OutDir)Views"
+          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(ViewPlugin)"
+          DestinationFolder="$(PublishDir)Views"
           SkipUnchangedFiles="true"
           Condition="'$(PublishDir)' != ''" />
   </Target>

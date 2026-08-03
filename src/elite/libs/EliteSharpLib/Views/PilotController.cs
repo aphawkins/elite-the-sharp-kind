@@ -4,8 +4,9 @@
 
 using System.Diagnostics;
 using System.Numerics;
+using EliteSharp.Abstractions.Ships;
+using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Conflict;
-using EliteSharpLib.Lasers;
 using EliteSharpLib.Ships;
 using Useful.Controls;
 using Useful.Graphics.Rendering;

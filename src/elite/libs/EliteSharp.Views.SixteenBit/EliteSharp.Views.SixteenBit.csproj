@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The 16-bit tier's screens, as a plugin. It references the contracts and
+       nothing else - not the game - which is the whole point: whatever the
+       game can do for its own tiers it can do for anyone's. It is not
+       referenced by the game either; the app's build drops the DLL into the
+       Views folder beside the executable and the loader finds it there. -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\EliteSharp.Abstractions\EliteSharp.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

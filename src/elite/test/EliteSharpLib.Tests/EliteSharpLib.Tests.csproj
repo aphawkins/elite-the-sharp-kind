@@ -29,6 +29,11 @@
     <!-- Referenced directly, unlike the game, because these tests are about
          what the two shipped missions do rather than about finding them. -->
     <ProjectReference Include="..\..\libs\EliteSharp.Missions.Classic\EliteSharp.Missions.Classic.csproj" />
+    <!-- Referenced for the same reason: the tests below are about what a tier
+         draws, not about finding it. The tests that drive the real
+         composition still find their packs off disk, via the copy below. -->
+    <ProjectReference Include="..\..\libs\EliteSharp.Views.EightBit\EliteSharp.Views.EightBit.csproj" />
+    <ProjectReference Include="..\..\libs\EliteSharp.Views.SixteenBit\EliteSharp.Views.SixteenBit.csproj" />
     <ProjectReference Include="..\..\libs\EliteSharpLib\EliteSharpLib.csproj" />
     <ProjectReference Include="..\EliteSharpLib.Fakes\EliteSharpLib.Fakes.csproj" />
     <!-- Built and copied, but deliberately not referenced: the loader has to
@@ -57,6 +62,22 @@
     </MSBuild>
     <Copy SourceFiles="@(MissionPlugin)"
           DestinationFolder="$(OutDir)Missions"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+  <!-- Both view packs, into a Views folder, exactly as the app's build does
+       it. Without this the harness has no tier to draw with and every test
+       that builds the real composition fails at startup - which is the
+       failure the game is meant to have, so it is worth it being the same
+       one. -->
+  <Target Name="CopyViewPlugins" AfterTargets="Build">
+    <MSBuild Projects="..\..\libs\EliteSharp.Views.EightBit\EliteSharp.Views.EightBit.csproj;..\..\libs\EliteSharp.Views.SixteenBit\EliteSharp.Views.SixteenBit.csproj"
+             Targets="GetTargetPath"
+             Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework)">
+      <Output TaskParameter="TargetOutputs" ItemName="ViewPlugin" />
+    </MSBuild>
+    <Copy SourceFiles="@(ViewPlugin)"
+          DestinationFolder="$(OutDir)Views"
           SkipUnchangedFiles="true" />
   </Target>
 

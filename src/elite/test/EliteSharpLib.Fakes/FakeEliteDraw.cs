@@ -3,9 +3,9 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
-using EliteSharpLib.Views;
 using Useful;
 using Useful.Assets;
 using Useful.Assets.Palettes;

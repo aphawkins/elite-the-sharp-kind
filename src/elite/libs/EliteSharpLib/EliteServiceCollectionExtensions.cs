@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Audio;
 using EliteSharpLib.Config;
 using EliteSharpLib.Conflict;
@@ -11,8 +12,6 @@ using EliteSharpLib.Save;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
-using EliteSharpLib.Views.EightBit;
-using EliteSharpLib.Views.SixteenBit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Useful.Abstraction;
@@ -273,6 +272,7 @@ public static class EliteServiceCollectionExtensions
     // AddEliteMain's screen-map factory above can resolve them.
     private static void AddEliteViews(this IServiceCollection services)
     {
+        services.AddViewPack();
         services.AddBaseView();
         services.AddEliteFlightViews();
         services.AddSplitScreens();
@@ -305,11 +305,25 @@ public static class EliteServiceCollectionExtensions
 
     // The tier's shared chrome: every screen draws its own border through
     // this, EliteMain the hyperspace countdown, and the tier-split screens
-    // their headers.
+    // their headers. It comes off the pack with everything else.
     private static void AddBaseView(this IServiceCollection services)
-        => services.AddSingleton<IBaseView>(sp => IsEightBit(sp)
-            ? new BaseView8Bit(sp.GetRequiredService<IEliteDraw>())
-            : new BaseView16Bit(sp.GetRequiredService<IEliteDraw>()));
+        => services.AddSingleton(sp => sp.GetRequiredService<ViewRegistry>().BaseView);
+
+    // Every screen is a plugin now, both tiers of them: they are found in the
+    // Views folder beside the executable, the same way a stranger's tier would
+    // be. Unlike a mission, this is not optional - the pack for the configured
+    // tier has to be there or the game has nothing to draw with, so the loader
+    // throws rather than starting a game that cannot show itself.
+    //
+    // The game's own drawing is what the views are handed, narrowed to the
+    // three members IViewSurface publishes.
+    private static void AddViewPack(this IServiceCollection services)
+        => services.AddSingleton(sp => new ViewRegistry(
+            ViewLoader.LoadFrom(
+                AppContext.BaseDirectory,
+                sp.GetRequiredService<IAssetLocator>().Tier,
+                sp.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(ViewLoader))),
+            sp.GetRequiredService<IEliteDraw>()));
 
     // TODO: improve this (moved from EliteMain, see backlog)
     private static Dictionary<string, SfxSample> BuildEliteSfx() => new()

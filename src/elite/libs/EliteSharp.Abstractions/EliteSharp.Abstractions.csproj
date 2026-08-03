@@ -1,7 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Contracts only: a mission plugin references this assembly and nothing
-       else, so it deliberately has no project or package references of its
-       own. Anything reachable from here is published API. -->
+  <!-- The one plugin-facing assembly: a plugin references this and nothing
+       else. Anything reachable from here is published API, so what goes in is
+       contracts and the data they carry, never game behaviour.
+
+       Subdivided by namespace rather than by project - Missions, Views, and
+       whatever comes next - because a project per plugin family is sprawl
+       standing in for a folder.
+
+       The references below are what drawing needs: a view is handed an
+       IGraphics and a palette, so they cannot be avoided. Note what that
+       costs. The mission contracts were dependency-free on their own, and a
+       mission author now transitively carries a graphics assembly they never
+       call; what a mission may touch is a namespace boundary now rather than
+       a compile error. -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\useful\libs\Useful.Assets\Useful.Assets.csproj" />
+    <ProjectReference Include="..\..\..\useful\libs\Useful.Graphics\Useful.Graphics.csproj" />
+    <ProjectReference Include="..\..\..\useful\libs\Useful\Useful.csproj" />
+  </ItemGroup>
 
 </Project>

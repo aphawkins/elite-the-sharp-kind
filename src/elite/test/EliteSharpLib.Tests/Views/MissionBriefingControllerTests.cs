@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using EliteSharp.Abstractions.Views;
 using EliteSharp.Missions.Classic;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Equipment;

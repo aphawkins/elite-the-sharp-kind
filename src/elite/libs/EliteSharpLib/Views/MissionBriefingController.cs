@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Abstractions.Missions;
+using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;

@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using Microsoft.Extensions.Logging;
+using Useful.Assets;
 
 namespace EliteSharpLib;
 
@@ -58,4 +59,16 @@ internal static partial class LogMessages
         Level = LogLevel.Warning,
         Message = "Commander file puts mission '{Name}' at stage '{Stage}', which it does not have.")]
     internal static partial void SaveNamesUnknownStage(ILogger logger, string name, string stage);
+
+    [LoggerMessage(
+        EventId = 11,
+        Level = LogLevel.Warning,
+        Message = "Skipped view plugin '{Path}': it could not be read.")]
+    internal static partial void ViewAssemblyUnreadable(ILogger logger, string path, Exception ex);
+
+    [LoggerMessage(
+        EventId = 12,
+        Level = LogLevel.Information,
+        Message = "Loaded {PackCount} view pack(s) from {AssemblyCount} plugin assemblies; drawing the {Tier} tier.")]
+    internal static partial void ViewPacksLoaded(ILogger logger, int packCount, int assemblyCount, SystemTier tier);
 }

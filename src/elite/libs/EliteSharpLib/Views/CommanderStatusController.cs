@@ -2,8 +2,9 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Abstractions.Ships;
+using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Equipment;
-using EliteSharpLib.Lasers;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Types;
