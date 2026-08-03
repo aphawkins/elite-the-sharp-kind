@@ -68,23 +68,9 @@ internal sealed class Planet : IObject
 
     public void Draw()
     {
-        Vector2 centre = new(Location.X, -Location.Y);
-        centre *= _draw.Focus / Location.Z;
-        centre += _draw.Layout.ViewportCentre;
-
-        // Planets are BIG! The radius is in the original's 256-wide space, so
-        // it follows the projection's focal length rather than the scale.
-        float unitScale = _draw.Focus / 256;
-        float radius = 6291456 / Location.Length() * unitScale;
-
-        if ((centre.X + radius < _draw.Layout.ViewportLeft) ||
-            (centre.X - radius > _draw.Layout.ViewportRight) ||
-            (centre.Y + radius < _draw.Layout.ViewportTop) ||
-            (centre.Y - radius > _draw.Layout.ViewportBottom))
+        if (WorldProjection.TryProject(_draw, Location, out Vector2 centre, out float radius, out float unitScale))
         {
-            return;
+            _renderer.Draw(new(centre, radius, Rotmat, unitScale));
         }
-
-        _renderer.Draw(new(centre, radius, Rotmat, unitScale));
     }
 }

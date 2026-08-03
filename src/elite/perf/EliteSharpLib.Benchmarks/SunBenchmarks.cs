@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using BenchmarkDotNet.Attributes;
+using EliteSharp.Abstractions.Views.Suns;
 using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Missions;
@@ -22,8 +23,8 @@ public class SunBenchmarks : IDisposable
     private const int ScreenWidth = 512;
     private const int ScreenHeight = 512;
     private readonly SoftwareGraphics _graphics;
-    private readonly SolidSun _solidSun;
-    private readonly GradientSun16Bit _gradientSun;
+    private readonly Sun _solidSun;
+    private readonly Sun _gradientSun;
     private bool _disposedValue;
 
     public SunBenchmarks()
@@ -38,8 +39,9 @@ public class SunBenchmarks : IDisposable
         ZBufferRenderer shipRenderer = new(_graphics);
         RNG rng = new(Random.Shared);
         EliteDraw draw = new(gameState, _graphics, assetLocator, new SixteenBitRendition(), shipRenderer, rng);
-        _gradientSun = new(draw, rng);
-        _solidSun = new(draw, rng);
+        SixteenBitRendition rendition = new();
+        _gradientSun = Sun(draw, rendition, rng, SunStyle.Gradient);
+        _solidSun = Sun(draw, rendition, rng, SunStyle.Solid);
     }
 
     public void Dispose()
@@ -70,4 +72,9 @@ public class SunBenchmarks : IDisposable
             _disposedValue = true;
         }
     }
+
+    // The renderer comes off the rendition now, so the benchmark builds one
+    // the same way the game does.
+    private static Sun Sun(EliteDraw draw, SixteenBitRendition rendition, RNG rng, SunStyle style)
+        => new(draw, rendition.CreateSunRenderer(draw, new(style, rng)));
 }

@@ -5,6 +5,7 @@
 using System.Numerics;
 using EliteSharp.Abstractions.Views;
 using EliteSharp.Missions.Classic;
+using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Equipment;
 using EliteSharpLib.Fakes;
@@ -258,7 +259,18 @@ public class MissionBriefingControllerTests
         AudioController audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());
         Pilot pilot = new(draw, audio, universe, ship, rng);
         MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
-        Combat combat = new(gameState, audio, ship, trade, pilot, universe, draw, shipFactory, rng, missions);
+        Combat combat = new(
+            gameState,
+            audio,
+            ship,
+            trade,
+            pilot,
+            universe,
+            draw,
+            new SixteenBitRendition(),
+            shipFactory,
+            rng,
+            missions);
 
         return _controller = new MissionBriefingController(
             gameState,

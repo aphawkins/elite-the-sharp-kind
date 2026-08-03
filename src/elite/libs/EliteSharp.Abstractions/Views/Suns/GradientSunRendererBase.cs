@@ -3,65 +3,31 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using EliteSharpLib.Graphics;
-using EliteSharpLib.Ships;
 using Useful;
 
-namespace EliteSharpLib.Suns;
+namespace EliteSharp.Abstractions.Views.Suns;
 
 /// <summary>
 /// A banded sun. The banding maths is shared; which colours the bands are is
 /// each tier's own, so <see cref="SunColor"/> is left to the subclass.
 /// </summary>
-internal abstract class GradientSunBase : IObject
+public abstract class GradientSunRendererBase : ISunRenderer
 {
-    private readonly IEliteDraw _draw;
-    private readonly RNG _rng;
+    private readonly IViewSurface _surface;
+    private readonly IRandomSource _rng;
 
-    protected GradientSunBase(IEliteDraw draw, RNG rng)
+    protected GradientSunRendererBase(IViewSurface surface, IRandomSource random)
     {
-        _draw = draw;
-        _rng = rng;
+        ArgumentNullException.ThrowIfNull(surface);
+
+        _surface = surface;
+        _rng = random;
     }
 
-    protected GradientSunBase(GradientSunBase other)
+    public void Draw(SunView sun)
     {
-        ArgumentNullException.ThrowIfNull(other);
-
-        _draw = other._draw;
-        _rng = other._rng;
-    }
-
-    public ShipProperties Flags { get; set; }
-
-    public Vector4 Location { get; set; } = new(0, 0, 123456, 0);
-
-    public Matrix4x4 Rotmat { get; set; }
-
-    public float RotX { get; set; }
-
-    public float RotZ { get; set; }
-
-    public ShipType Type { get; set; } = ShipType.Sun;
-
-    public abstract IObject Clone();
-
-    public void Draw()
-    {
-        Vector2 centre = new(Location.X, -Location.Y);
-
-        centre *= _draw.Focus / Location.Z;
-        centre += _draw.Layout.ViewportCentre;
-
-        float radius = 6291456 / Location.Length() * (_draw.Focus / 256);
-
-        if (centre.X + radius < _draw.Layout.ViewportLeft ||
-            centre.X - radius > _draw.Layout.ViewportRight ||
-            centre.Y + radius < _draw.Layout.ViewportTop ||
-            centre.Y - radius > _draw.Layout.ViewportBottom)
-        {
-            return;
-        }
+        Vector2 centre = sun.Centre;
+        float radius = sun.Radius;
 
         float s = -radius;
         float x = radius;
@@ -105,7 +71,7 @@ internal abstract class GradientSunBase : IObject
             Y = centre.Y + y,
         };
 
-        if (s.Y < _draw.Layout.ViewportTop || s.Y > _draw.Layout.ViewportBottom)
+        if (s.Y < _surface.Layout.ViewportTop || s.Y > _surface.Layout.ViewportBottom)
         {
             return;
         }
@@ -116,19 +82,19 @@ internal abstract class GradientSunBase : IObject
         s.X -= radius * _rng.Random(2, 10) / 256f;
         ex += radius * _rng.Random(2, 10) / 256f;
 
-        if (ex < _draw.Layout.ViewportLeft || s.X > _draw.Layout.ViewportRight)
+        if (ex < _surface.Layout.ViewportLeft || s.X > _surface.Layout.ViewportRight)
         {
             return;
         }
 
-        if (s.X < _draw.Layout.ViewportLeft)
+        if (s.X < _surface.Layout.ViewportLeft)
         {
-            s.X = _draw.Layout.ViewportLeft;
+            s.X = _surface.Layout.ViewportLeft;
         }
 
-        if (ex > _draw.Layout.ViewportRight)
+        if (ex > _surface.Layout.ViewportRight)
         {
-            ex = _draw.Layout.ViewportRight;
+            ex = _surface.Layout.ViewportRight;
         }
 
         float inner = radius * (200 + _rng.Random(8)) / 256;
@@ -147,7 +113,7 @@ internal abstract class GradientSunBase : IObject
         {
             float distance = (dx * dx) + dy;
 
-            _draw.Graphics.DrawPixel(s, SunColor(distance, inner, inner2, outer, (int)s.X ^ (int)y));
+            _surface.Graphics.DrawPixel(s, SunColor(distance, inner, inner2, outer, (int)s.X ^ (int)y));
         }
     }
 }

@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Abstractions.Views;
+using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Missions;
@@ -99,7 +100,18 @@ public class EquipmentControllerTests
         Pilot pilot = new(draw, audio, universe, ship, rng);
         MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
 
-        Combat combat = new(gameState, audio, ship, trade, pilot, universe, draw, shipFactory, rng, missions);
+        Combat combat = new(
+            gameState,
+            audio,
+            ship,
+            trade,
+            pilot,
+            universe,
+            draw,
+            new SixteenBitRendition(),
+            shipFactory,
+            rng,
+            missions);
         ScannerController scanner = new(gameState, ship, universe, combat, new NothingScannerView());
 
         return new EquipmentController(gameState, keyboard, ship, trade, scanner, new FakeEquipmentView());

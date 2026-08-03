@@ -4,6 +4,7 @@
 
 using System.Diagnostics;
 using System.Numerics;
+using EliteSharp.Abstractions.Renditions;
 using EliteSharp.Abstractions.Ships;
 using EliteSharpLib.Audio;
 using EliteSharpLib.Graphics;
@@ -28,6 +29,7 @@ internal sealed partial class Combat
     private readonly Trade _trade;
     private readonly Universe _universe;
     private readonly IEliteDraw _draw;
+    private readonly IRendition _rendition;
     private readonly IShipFactory _shipFactory;
     private readonly MissionRunner _missions;
     private readonly RNG _rng;
@@ -45,6 +47,7 @@ internal sealed partial class Combat
         Pilot pilot,
         Universe universe,
         IEliteDraw draw,
+        IRendition rendition,
         IShipFactory shipFactory,
         RNG rng,
         MissionRunner missions,
@@ -57,6 +60,7 @@ internal sealed partial class Combat
         _pilot = pilot;
         _universe = universe;
         _draw = draw;
+        _rendition = rendition;
         _shipFactory = shipFactory;
         _rng = rng;
         _missions = missions;
@@ -306,7 +310,7 @@ internal sealed partial class Combat
             Vector4 position = obj.Location;
             position.Y = (int)position.Y & 0xFFFF;
             position.Y = (int)position.Y | 0x60000;
-            IObject sun = SunFactory.Create(_gameState.Config.Engine.Graphics.GraphicStyle, _gameState.Config.Game.SunStyle, _draw, _rng);
+            IObject sun = SunFactory.Create(_gameState, _draw, _rendition, _rng);
             _universe.AddNewShip(sun, position, VectorMaths.GetLeftHandedBasisMatrix, 0, 0);
         }
 

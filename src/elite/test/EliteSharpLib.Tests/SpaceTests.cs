@@ -446,7 +446,9 @@ public class SpaceTests
 
         space.RefreshSunStyle();
 
-        Assert.IsType<SolidSun>(universe.StationOrSun);
+        // One Sun class now: which style it is lives in its renderer, and what
+        // each style draws is covered by the renderer tests.
+        Assert.IsType<Sun>(universe.StationOrSun);
         Assert.Equal(oldSun.Location, universe.StationOrSun.Location);
         Assert.Single(universe.GetAllObjects());
     }
@@ -463,7 +465,7 @@ public class SpaceTests
 
         space.RefreshSunStyle();
 
-        Assert.IsType<WireframeSun>(universe.StationOrSun);
+        Assert.IsType<Sun>(universe.StationOrSun);
     }
 
     [Fact]
@@ -532,7 +534,18 @@ public class SpaceTests
         Pilot pilot = new(draw, audio, universe, ship, rng);
         MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
 
-        combat = new Combat(gameState, audio, ship, trade, pilot, universe, draw, shipFactory, rng, missions);
+        combat = new Combat(
+            gameState,
+            audio,
+            ship,
+            trade,
+            pilot,
+            universe,
+            draw,
+            new SixteenBitRendition(),
+            shipFactory,
+            rng,
+            missions);
         PlanetController planet = new(gameState);
         Stars stars = new(gameState, draw, ship, rng);
 

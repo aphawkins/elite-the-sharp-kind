@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Abstractions.Views;
+using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Missions;
@@ -80,7 +81,18 @@ public class Intro2ControllerTests
         Trade trade = new(gameState, ship);
         MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
 
-        Combat combat = new(gameState, audio, ship, trade, pilot, universe, draw, shipFactory, rng, missions);
+        Combat combat = new(
+            gameState,
+            audio,
+            ship,
+            trade,
+            pilot,
+            universe,
+            draw,
+            new SixteenBitRendition(),
+            shipFactory,
+            rng,
+            missions);
         Stars stars = new(gameState, draw, ship, rng);
 
         return new Intro2Controller(

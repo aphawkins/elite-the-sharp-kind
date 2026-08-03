@@ -203,6 +203,7 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<Pilot>(),
             sp.GetRequiredService<Universe>(),
             sp.GetRequiredService<IEliteDraw>(),
+            sp.GetRequiredService<IRendition>(),
             sp.GetRequiredService<IShipFactory>(),
             sp.GetRequiredService<RNG>(),
             sp.GetRequiredService<MissionRunner>(),

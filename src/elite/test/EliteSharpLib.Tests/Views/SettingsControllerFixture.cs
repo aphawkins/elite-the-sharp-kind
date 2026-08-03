@@ -48,7 +48,18 @@ internal static class SettingsControllerFixture
         Pilot pilot = new(draw, audio, universe, ship, rng);
         MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
 
-        Combat combat = new(gameState, audio, ship, trade, pilot, universe, draw, shipFactory, rng, missions);
+        Combat combat = new(
+            gameState,
+            audio,
+            ship,
+            trade,
+            pilot,
+            universe,
+            draw,
+            new SixteenBitRendition(),
+            shipFactory,
+            rng,
+            missions);
 
         return new Space(
             gameState,

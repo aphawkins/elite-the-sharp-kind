@@ -4,6 +4,7 @@
 
 using EliteSharp.Abstractions.Views;
 using EliteSharp.Abstractions.Views.Planets;
+using EliteSharp.Abstractions.Views.Suns;
 
 namespace EliteSharp.Abstractions.Renditions;
 
@@ -81,4 +82,13 @@ public interface IRendition
     /// <param name="look">Which style, and what it needs to build one.</param>
     /// <returns>A renderer for that style.</returns>
     public IPlanetRenderer CreatePlanetRenderer(IViewSurface surface, PlanetLook look);
+
+    /// <summary>
+    /// Builds a renderer for one sun. As with a planet, the sun stays in the
+    /// universe and only what it looks like is the rendition's.
+    /// </summary>
+    /// <param name="surface">What the renderer draws on.</param>
+    /// <param name="look">Which style, and what it needs to build one.</param>
+    /// <returns>A renderer for that style.</returns>
+    public ISunRenderer CreateSunRenderer(IViewSurface surface, SunLook look);
 }

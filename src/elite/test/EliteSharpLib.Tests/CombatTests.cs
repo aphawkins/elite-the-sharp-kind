@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Missions;
@@ -61,6 +62,17 @@ public class CombatTests
 
         MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
 
-        return new Combat(gameState, audio, ship, trade, pilot, universe, draw, shipFactory, rng, missions);
+        return new Combat(
+            gameState,
+            audio,
+            ship,
+            trade,
+            pilot,
+            universe,
+            draw,
+            new SixteenBitRendition(),
+            shipFactory,
+            rng,
+            missions);
     }
 }
