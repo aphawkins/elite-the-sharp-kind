@@ -1,7 +1,0 @@
-{
-  "Colours": { "MaxColours": 16, "PaletteNamesEveryColour": true, "ChannelBits": 8 },
-  "FontsBitmap": {
-    "Small": { "File": "bbc-micro.bmp", "CellWidth": 8, "CellHeight": 8, "Columns": 12 },
-    "Large": { "File": "bbc-micro.bmp", "CellWidth": 8, "CellHeight": 8, "Columns": 12 }
-  }
-}

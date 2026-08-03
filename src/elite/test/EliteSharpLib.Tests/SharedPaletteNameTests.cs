@@ -29,7 +29,7 @@ public class SharedPaletteNameTests
     [MemberData(nameof(Renditions))]
     public void EveryRenditionDefinesTheNamesSharedCodeUses(string rendition)
     {
-        IPaletteCollection palette = PaletteReader.Read(AssetLocator.Create(rendition).PalettePath);
+        IPaletteCollection palette = PaletteReader.Read(PaletteOf(rendition));
 
         string[] missing = [.. s_sharedNames.Where(name => !palette.ContainsKey(name))];
 
@@ -42,9 +42,15 @@ public class SharedPaletteNameTests
     [Fact]
     public void TheRenditionsDoNotOtherwiseShareAPalette()
     {
-        IPaletteCollection eightBit = PaletteReader.Read(AssetLocator.Create("EightBit").PalettePath);
-        IPaletteCollection sixteenBit = PaletteReader.Read(AssetLocator.Create("SixteenBit").PalettePath);
+        IPaletteCollection eightBit = PaletteReader.Read(PaletteOf("EightBit"));
+        IPaletteCollection sixteenBit = PaletteReader.Read(PaletteOf("SixteenBit"));
 
         Assert.NotEqual(eightBit.Keys.Order(StringComparer.Ordinal), sixteenBit.Keys.Order(StringComparer.Ordinal));
     }
+
+    // A rendition keeps its palette with the rest of its assets, in the folder
+    // its assembly was loaded from.
+    private static string PaletteOf(string rendition) => AssetLocator
+        .CreateFrom(Path.Combine(AppContext.BaseDirectory, "Renditions", $"EliteSharp.Renditions.{rendition}"), rendition)
+        .PalettePath;
 }

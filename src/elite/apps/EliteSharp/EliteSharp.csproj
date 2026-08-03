@@ -77,11 +77,28 @@
              Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework)">
       <Output TaskParameter="TargetOutputs" ItemName="RenditionAssembly" />
     </MSBuild>
+    <!-- The assembly, and the Assets tree that is the rendition's artwork.
+         Taken from the source folder rather than the build output, so this
+         does not depend on where a rendition's bin happens to be, and
+         RecursiveDir keeps the tree's shape under the copy. -->
+    <ItemGroup>
+      <RenditionAsset Include="..\..\libs\EliteSharp.Renditions.EightBit\Assets\**\*"
+                      Rendition="EliteSharp.Renditions.EightBit" />
+      <RenditionAsset Include="..\..\libs\EliteSharp.Renditions.SixteenBit\Assets\**\*"
+                      Rendition="EliteSharp.Renditions.SixteenBit" />
+    </ItemGroup>
     <Copy SourceFiles="@(RenditionAssembly)"
           DestinationFolder="$(OutDir)Renditions\%(Filename)"
           SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(RenditionAsset)"
+          DestinationFolder="$(OutDir)Renditions\%(RenditionAsset.Rendition)\Assets\%(RecursiveDir)"
+          SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(RenditionAssembly)"
           DestinationFolder="$(PublishDir)Renditions\%(Filename)"
+          SkipUnchangedFiles="true"
+          Condition="'$(PublishDir)' != ''" />
+    <Copy SourceFiles="@(RenditionAsset)"
+          DestinationFolder="$(PublishDir)Renditions\%(RenditionAsset.Rendition)\Assets\%(RecursiveDir)"
           SkipUnchangedFiles="true"
           Condition="'$(PublishDir)' != ''" />
   </Target>

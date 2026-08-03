@@ -16,7 +16,7 @@ public sealed class FakeAssetLocator : IAssetLocator
     // Built by hand rather than through AssetLocator: consumers that never touch the palette (the
     // audio tests) have no asset manifest to read, so this must stay a plain string.
     public string PalettePath { get; } =
-        Path.Combine(AppContext.BaseDirectory, "Assets", "Palette", "SixteenBit", "palette.json");
+        Path.Combine(AppContext.BaseDirectory, "Assets", "Palette", "palette.json");
 
     public IDictionary<string, BitmapFontAsset> FontBitmaps { get; } = new Dictionary<string, BitmapFontAsset>();
 

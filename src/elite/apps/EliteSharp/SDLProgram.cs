@@ -36,6 +36,7 @@ internal static class SDLProgram
         ServiceCollection services = new();
         services.AddGameEngine(engine, renditions.Chosen.ScreenWidth, renditions.Chosen.ScreenHeight, Title, loggerFactory);
         services.AddEliteConfig(userDataPath);
+        services.AddRenditionAssets(renditions);
         services.AddEliteMain(renditions);
 
         return services;

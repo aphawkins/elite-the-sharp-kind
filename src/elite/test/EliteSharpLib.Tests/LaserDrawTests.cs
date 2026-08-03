@@ -10,7 +10,6 @@ using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Views;
 using Useful;
 using Useful.Abstraction;
-using Useful.Assets;
 using Useful.Fakes.Controls;
 using Useful.Graphics;
 using Useful.Graphics.Rendering;
@@ -73,13 +72,13 @@ public class LaserDrawTests
     private static FastBitmap Render(Action<LaserDraw16Bit> draw)
     {
         FastBitmap? lastFrame = null;
-        using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, TestAssets.Locator());
         GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
         RNG rng = new(new Random(0));
         EliteDraw eliteDraw = new(
             gameState,
             graphics,
-            AssetLocator.Create(),
+            TestAssets.Locator(),
             new SixteenBitRendition(),
             new ZBufferRenderer(graphics),
             rng);

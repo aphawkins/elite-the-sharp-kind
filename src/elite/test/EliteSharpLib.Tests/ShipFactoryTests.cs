@@ -5,7 +5,6 @@
 using System.Reflection;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Ships;
-using Useful.Assets;
 using Useful.Fakes;
 using Useful.Fakes.Assets;
 
@@ -99,7 +98,7 @@ public class ShipFactoryTests
         // has to have a model entry.
         FakeEliteDraw draw = new();
         RNG rng = new(new FakeRandomSource { RandomValue = roll });
-        ShipFactory factory = ShipFactory.Create(AssetLocator.Create(), draw, rng);
+        ShipFactory factory = ShipFactory.Create(TestAssets.Locator(), draw, rng);
 
         // Act
         IShip created = factory.CreateLoneWolf();
@@ -134,7 +133,7 @@ public class ShipFactoryTests
         {
             ModelPaths = new Dictionary<string, string>()
             {
-                { "Adder", "Assets/Models/SixteenBit/adder.obj" },
+                { "Adder", "Renditions/EliteSharp.Renditions.SixteenBit/Assets/Models/adder.obj" },
             },
         };
 

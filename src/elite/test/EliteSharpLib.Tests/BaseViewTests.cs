@@ -7,7 +7,6 @@ using EliteSharpLib.Graphics;
 using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
-using Useful.Fakes.Assets;
 using Useful.Fakes.Controls;
 using Useful.Graphics.Fakes;
 using Useful.Graphics.Rendering;
@@ -36,6 +35,6 @@ public class BaseViewTests
         GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
         ZBufferRenderer shipRenderer = new(graphics);
         RNG rng = new(new Random(0));
-        return new EliteDraw(gameState, graphics, new FakeAssetLocator(), new SixteenBitRendition(), shipRenderer, rng);
+        return new EliteDraw(gameState, graphics, TestAssets.Locator(), new SixteenBitRendition(), shipRenderer, rng);
     }
 }

@@ -9,7 +9,6 @@ using EliteSharpLib.Ships;
 using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
-using Useful.Assets;
 using Useful.Fakes.Controls;
 using Useful.Graphics;
 using Useful.Graphics.Rendering;
@@ -29,12 +28,12 @@ public class VisualDumpTests
         Directory.CreateDirectory(outDir);
 
         FastBitmap? lastFrame = null;
-        using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, TestAssets.Locator());
         GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
         ZBufferRenderer shipRenderer = new(graphics);
         RNG rng = new(new Random(0));
-        EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), new SixteenBitRendition(), shipRenderer, rng);
-        ShipFactory factory = ShipFactory.Create(AssetLocator.Create(), draw, rng);
+        EliteDraw draw = new(gameState, graphics, TestAssets.Locator(), new SixteenBitRendition(), shipRenderer, rng);
+        ShipFactory factory = ShipFactory.Create(TestAssets.Locator(), draw, rng);
 
         void RenderAndSave(string name, params IShip[] ships)
         {
@@ -116,12 +115,12 @@ public class VisualDumpTests
         Directory.CreateDirectory(outDir);
 
         FastBitmap? lastFrame = null;
-        using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
-        WireframeRenderer shipRenderer = new(graphics, AssetLocator.Create());
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, TestAssets.Locator());
+        WireframeRenderer shipRenderer = new(graphics, TestAssets.Locator());
         GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
         RNG rng = new(new Random(0));
-        EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), new SixteenBitRendition(), shipRenderer, rng);
-        ShipFactory factory = ShipFactory.Create(AssetLocator.Create(), draw, rng);
+        EliteDraw draw = new(gameState, graphics, TestAssets.Locator(), new SixteenBitRendition(), shipRenderer, rng);
+        ShipFactory factory = ShipFactory.Create(TestAssets.Locator(), draw, rng);
 
         IShip missile = factory.CreateShip("Missile");
         missile.Location = new(0, 0, 120, 0);
@@ -143,8 +142,8 @@ public class VisualDumpTests
 
         // the same poses filled, as the reference for what should be visible
         ZBufferRenderer solidRenderer = new(graphics);
-        EliteDraw solidDraw = new(gameState, graphics, AssetLocator.Create(), new SixteenBitRendition(), solidRenderer, rng);
-        IShip solidMissile = ShipFactory.Create(AssetLocator.Create(), solidDraw, rng).CreateShip("Missile");
+        EliteDraw solidDraw = new(gameState, graphics, TestAssets.Locator(), new SixteenBitRendition(), solidRenderer, rng);
+        IShip solidMissile = ShipFactory.Create(TestAssets.Locator(), solidDraw, rng).CreateShip("Missile");
         solidMissile.Location = new(0, 0, 120, 0);
 
         for (int i = 0; i < 6; i++)
@@ -175,12 +174,12 @@ public class VisualDumpTests
         (uint[] Pixels, int Width, int Height) RenderAsteroid(Func<IGraphics, IPolygonRenderer> createRenderer)
         {
             FastBitmap? lastFrame = null;
-            using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
+            using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, TestAssets.Locator());
             IPolygonRenderer shipRenderer = createRenderer(graphics);
             GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
             RNG rng = new(new Random(0));
-            EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), new SixteenBitRendition(), shipRenderer, rng);
-            ShipFactory factory = ShipFactory.Create(AssetLocator.Create(), draw, rng);
+            EliteDraw draw = new(gameState, graphics, TestAssets.Locator(), new SixteenBitRendition(), shipRenderer, rng);
+            ShipFactory factory = ShipFactory.Create(TestAssets.Locator(), draw, rng);
 
             IShip asteroid = factory.CreateShip("Asteroid");
             asteroid.Location = new(0, 0, 300, 0);

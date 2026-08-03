@@ -1,20 +1,4 @@
 {
-  "Palette": "palette.json",
-  "Images": {
-    "Scanner": "scanner.bmp",
-    "CompassGreen": "compass-green.bmp",
-    "CompassRed": "compass-red.bmp",
-    "Station": "station.bmp",
-    "ECM": "ecm.bmp",
-    "MissileGreen": "missile-green.bmp",
-    "MissileYellow": "missile-yellow.bmp",
-    "MissileRed": "missile-red.bmp",
-    "Blake": "blake.bmp",
-    "LaserPulse": "laser-pulse.bmp",
-    "LaserBeam": "laser-beam.bmp",
-    "LaserMilitary": "laser-military.bmp",
-    "LaserMining": "laser-mining.bmp"
-  },
   "Sfx": {
     "Launch": "launch.ogg",
     "Crash": "crash.ogg",
@@ -38,46 +22,8 @@
   "SoundFonts": {
     "Default": "TimGM6mb.sf2"
   },
-  "FontsBitmap": {
-    "Small": { "File": "font1.bmp", "CellWidth": 32, "CellHeight": 32, "Columns": 16, "Padding": 1, "IsProportional": true },
-    "Large": { "File": "font2.bmp", "CellWidth": 32, "CellHeight": 32, "Columns": 16, "Padding": 1, "IsProportional": true }
-  },
   "FontsTrueType": {
     "Small": { "File": "OpenSans-Regular.ttf", "PointSize": 12 },
     "Large": { "File": "OpenSans-Regular.ttf", "PointSize": 18 }
-  },
-  "Models": {
-    "Adder": "adder.obj",
-    "Alloy": "alloy.obj",
-    "Anaconda": "anaconda.obj",
-    "AspMk2": "aspmk2.obj",
-    "Asteroid": "asteroid.obj",
-    "Boa": "boa.obj",
-    "Boulder": "boulder.obj",
-    "CargoCannister": "cargocannister.obj",
-    "CobraMk1": "cobramk1.obj",
-    "CobraMk3": "cobramk3.obj",
-    "Constrictor": "constrictor.obj",
-    "Coriolis": "coriolis.obj",
-    "Cougar": "cougar.obj",
-    "DodecStation": "dodecstation.obj",
-    "EscapeCapsule": "escapecapsule.obj",
-    "FerDeLance": "ferdelance.obj",
-    "Gecko": "gecko.obj",
-    "Krait": "krait.obj",
-    "Mamba": "mamba.obj",
-    "Missile": "missile.obj",
-    "Moray": "moray.obj",
-    "Python": "python.obj",
-    "RockHermit": "rockhermit.obj",
-    "RockSplinter": "rocksplinter.obj",
-    "Shuttle": "shuttle.obj",
-    "Sidewinder": "sidewinder.obj",
-    "Tharglet": "tharglet.obj",
-    "Thargoid": "thargoid.obj",
-    "Transporter": "transporter.obj",
-    "Viper": "viper.obj",
-    "Worm": "worm.obj"
   }
-
 }

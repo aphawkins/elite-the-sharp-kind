@@ -110,6 +110,18 @@ public static class EliteServiceCollectionExtensions
             loggerFactory.CreateLogger(typeof(RenditionLoader)));
     }
 
+    // The rendition's own artwork, palette, fonts and models, plus the audio
+    // the game keeps for itself. Registered over the one AddGameEngine put
+    // there, which knows only about the executable's own Assets folder.
+    public static IServiceCollection AddRenditionAssets(this IServiceCollection services, InstalledRenditions renditions)
+    {
+        ArgumentNullException.ThrowIfNull(renditions);
+
+        return services.AddSingleton<IAssetLocator>(_ => new RenditionAssets(
+            AssetLocator.CreateFrom(renditions.Folder, renditions.Chosen.Name),
+            AssetLocator.Create(renditions.Chosen.Name)));
+    }
+
     // Both the engine and the game halves repair themselves; this is the
     // hook ConfigFile calls to do it.
     internal static bool RepairConfig(EliteConfig config) => config.Repair();

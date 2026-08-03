@@ -6,6 +6,11 @@ using Xunit;
 
 namespace Useful.Assets.Tests;
 
+// Path resolution, which is all this class does. There used to be a lot more
+// to say: a category resolved to <Category>/<Rendition>/<file> and fell back
+// to <Category>/<file>, and a rendition could overlay entries onto a shared
+// manifest. None of that survives a rendition keeping its assets in its own
+// folder - the folder is the answer, and its manifest is the whole manifest.
 public class AssetLocatorRenditionTests : IDisposable
 {
     private readonly string _tempRoot;
@@ -19,145 +24,61 @@ public class AssetLocatorRenditionTests : IDisposable
         Directory.CreateDirectory(_assetsRoot);
     }
 
-    [Fact]
-    public void PrefersTheTierFolderWhenTheAssetExistsThere()
+    [Theory]
+    [InlineData("Images", "logo.bmp")]
+    [InlineData("Models", "ship.obj")]
+    [InlineData("FontsBitmap", "font1.bmp")]
+    [InlineData("Palette", "palette.json")]
+    [InlineData("SFX", "beep.wav")]
+    public void ResolvesEveryCategoryUnderTheFolderItWasPointedAt(string category, string file)
     {
         // Arrange
-        GivenAsset("Images", "SixteenBit", "logo.bmp");
-        AssetLocator locator = Locate("SixteenBit");
+        AssetLocator locator = Locate("Anything");
 
         // Act
-        string path = locator.ImagePaths["Logo"];
-
-        // Assert
-        Assert.Equal(Path.Combine(_assetsRoot, "Images", "SixteenBit", "logo.bmp"), path);
-    }
-
-    [Fact]
-    public void FallsBackToTheSharedFolderWhenTheTierHasNoCopy()
-    {
-        // Arrange: the file sits directly under Images, with no rendition folder,
-        // which is what keeps rendition-neutral assets from needing duplicating.
-        GivenAsset("Images", null, "logo.bmp");
-        AssetLocator locator = Locate("SixteenBit");
-
-        // Act
-        string path = locator.ImagePaths["Logo"];
-
-        // Assert
-        Assert.Equal(Path.Combine(_assetsRoot, "Images", "logo.bmp"), path);
-    }
-
-    [Fact]
-    public void ResolvesEachTierToItsOwnCopyOfTheSameLogicalName()
-    {
-        // Arrange: one logical name, one filename, two tiers.
-        GivenAsset("Images", "EightBit", "logo.bmp");
-        GivenAsset("Images", "SixteenBit", "logo.bmp");
-
-        // Act
-        string eightBit = Locate("EightBit").ImagePaths["Logo"];
-        string sixteenBit = Locate("SixteenBit").ImagePaths["Logo"];
-
-        // Assert
-        Assert.Equal(Path.Combine(_assetsRoot, "Images", "EightBit", "logo.bmp"), eightBit);
-        Assert.Equal(Path.Combine(_assetsRoot, "Images", "SixteenBit", "logo.bmp"), sixteenBit);
-    }
-
-    [Fact]
-    public void ResolvesBitmapFontsAndThePaletteByTierToo()
-    {
-        // Arrange
-        GivenAsset("FontsBitmap", "SixteenBit", "font1.bmp");
-        GivenAsset("Palette", "SixteenBit", "palette.json");
-        AssetLocator locator = Locate("SixteenBit");
-
-        // Assert
-        Assert.Equal(Path.Combine(_assetsRoot, "FontsBitmap", "SixteenBit", "font1.bmp"), locator.FontBitmaps["Small"].Path);
-        Assert.Equal(Path.Combine(_assetsRoot, "Palette", "SixteenBit", "palette.json"), locator.PalettePath);
-    }
-
-    [Fact]
-    public void ResolvesModelsByTier()
-    {
-        // Arrange: a model's 'usemtl' names are resolved through the rendition's
-        // palette, and the two palettes name different colours, so the models
-        // are rendition-varying like the images are.
-        GivenAsset("Models", "SixteenBit", "ship.obj");
-        AssetLocator locator = Locate("SixteenBit");
-
-        // Act
-        string path = locator.ModelPaths["Ship"];
-
-        // Assert
-        Assert.Equal(Path.Combine(_assetsRoot, "Models", "SixteenBit", "ship.obj"), path);
-    }
-
-    [Fact]
-    public void LeavesTierNeutralCategoriesOutsideTheTierFolder()
-    {
-        // Arrange: audio and TrueType fonts are resolution-independent and must
-        // not gain a rendition segment even when a rendition folder exists.
-        GivenAsset("SFX", "SixteenBit", "beep.wav");
-        AssetLocator locator = Locate("SixteenBit");
-
-        // Act
-        string path = locator.SfxPaths["Beep"];
-
-        // Assert
-        Assert.Equal(Path.Combine(_assetsRoot, "SFX", "beep.wav"), path);
-    }
-
-    [Fact]
-    public void ATierManifestReplacesTheEntriesItNames()
-    {
-        // Arrange: the 8-bit set uses a different file for the same logical name.
-        GivenAsset("Images", "EightBit", "logo-small.bmp");
-        object renditionManifest = new { Images = new Dictionary<string, string> { { "Logo", "logo-small.bmp" } } };
-
-        // Act
-        string path = LocateWithRenditionManifest("EightBit", Manifest(), renditionManifest).ImagePaths["Logo"];
-
-        // Assert
-        Assert.Equal(Path.Combine(_assetsRoot, "Images", "EightBit", "logo-small.bmp"), path);
-    }
-
-    [Fact]
-    public void ATierManifestLeavesEntriesItDoesNotNameAlone()
-    {
-        // Arrange: a rendition manifest that only replaces the font must not
-        // disturb the images, models or palette the base manifest declares.
-        GivenAsset("Images", "EightBit", "logo.bmp");
-        object renditionManifest = new
+        string path = category switch
         {
-            FontsBitmap = new Dictionary<string, object>
-            {
-                { "Small", new { File = "bbc.bmp", CellWidth = 10, CellHeight = 10, Columns = 12 } },
-            },
+            "Images" => locator.ImagePaths["Logo"],
+            "Models" => locator.ModelPaths["Ship"],
+            "FontsBitmap" => locator.FontBitmaps["Small"].Path,
+            "Palette" => locator.PalettePath,
+            _ => locator.SfxPaths["Beep"],
         };
 
-        // Act
-        AssetLocator locator = LocateWithRenditionManifest("EightBit", Manifest(), renditionManifest);
-
-        // Assert
-        Assert.Equal(Path.Combine(_assetsRoot, "Images", "EightBit", "logo.bmp"), locator.ImagePaths["Logo"]);
-        Assert.Equal(Path.Combine(_assetsRoot, "Models", "ship.obj"), locator.ModelPaths["Ship"]);
-        Assert.Equal(10, locator.FontBitmaps["Small"].CellWidth);
-        Assert.Equal(12, locator.FontBitmaps["Small"].Columns);
+        // Assert: no rendition segment anywhere in it.
+        Assert.Equal(Path.Combine(_assetsRoot, category, file), path);
     }
 
     [Fact]
-    public void DefaultsToTheSixteenBitTier()
+    public void CarriesTheNameItWasGivenWithoutPuttingItInAPath()
     {
-        // Arrange
-        GivenAsset("Images", "SixteenBit", "logo.bmp");
+        // The name is a label for messages now - which rendition an asset
+        // complaint is about - and no longer decides where anything lives.
+        AssetLocator locator = Locate("Psychedelic");
+
+        Assert.Equal("Psychedelic", locator.Rendition);
+        Assert.DoesNotContain("Psychedelic", locator.ImagePaths["Logo"], StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ReadsTheColourLimitsTheRenditionDeclared()
+    {
+        AssetLocator locator = Locate("Anything");
+
+        Assert.Equal(16, locator.Colours.MaxColours);
+        Assert.True(locator.Colours.PaletteNamesEveryColour);
+        Assert.Equal(8, locator.Colours.ChannelBits);
+    }
+
+    [Fact]
+    public void RefusesANameThatCouldNotBeAFolder()
+    {
+        // It is still written into messages and, for the game, used to find a
+        // rendition on disk, so a name with a path separator in it is refused
+        // rather than followed.
         using MemoryStream stream = ToStream(Manifest());
 
-        // Act
-        AssetLocator locator = AssetLocator.Create(stream, _tempRoot);
-
-        // Assert
-        Assert.Equal(Path.Combine(_assetsRoot, "Images", "SixteenBit", "logo.bmp"), locator.ImagePaths["Logo"]);
+        Assert.Throws<UsefulException>(() => AssetLocator.Create(stream, _tempRoot, "../escape"));
     }
 
     public void Dispose()
@@ -197,6 +118,7 @@ public class AssetLocatorRenditionTests : IDisposable
 
     private static object Manifest() => new
     {
+        Colours = new { MaxColours = 16, PaletteNamesEveryColour = true, ChannelBits = 8 },
         Palette = "palette.json",
         FontsBitmap = new Dictionary<string, object>
         {
@@ -207,28 +129,9 @@ public class AssetLocatorRenditionTests : IDisposable
         Sfx = new Dictionary<string, string> { { "Beep", "beep.wav" } },
     };
 
-    private void GivenAsset(string category, string? rendition, string filename)
-    {
-        string directory = rendition is null
-            ? Path.Combine(_assetsRoot, category)
-            : Path.Combine(_assetsRoot, category, rendition);
-        Directory.CreateDirectory(directory);
-        File.WriteAllText(Path.Combine(directory, filename), string.Empty);
-    }
-
     private AssetLocator Locate(string rendition)
-        => Locate(rendition, Manifest());
-
-    private AssetLocator Locate(string rendition, object manifest)
     {
-        using MemoryStream stream = ToStream(manifest);
+        using MemoryStream stream = ToStream(Manifest());
         return AssetLocator.Create(stream, _tempRoot, rendition);
-    }
-
-    private AssetLocator LocateWithRenditionManifest(string rendition, object manifest, object renditionManifest)
-    {
-        using MemoryStream stream = ToStream(manifest);
-        using MemoryStream renditionStream = ToStream(renditionManifest);
-        return AssetLocator.Create(stream, renditionStream, _tempRoot, rendition);
     }
 }

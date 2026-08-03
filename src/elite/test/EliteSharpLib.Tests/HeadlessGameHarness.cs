@@ -29,7 +29,7 @@ internal sealed class HeadlessGameHarness : HeadlessGameHarnessBase<GameStateSum
     // derives its layout (Centre, ScannerTop, ...) from these, and a 0x0
     // screen produces negative ranges that blow up star generation.
     public HeadlessGameHarness(int width = 512, int height = 512)
-        : base(width, height, AssetLocator.Create())
+        : base(width, height, TestAssets.Locator())
     {
         FakeAbstraction abstraction = new(Graphics);
         Keyboard = (FakeKeyboard)abstraction.Keyboard;
@@ -42,7 +42,7 @@ internal sealed class HeadlessGameHarness : HeadlessGameHarnessBase<GameStateSum
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Graphics);
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Sound);
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);
-        services.AddSingleton<IAssetLocator>(_ => AssetLocator.Create());
+        services.AddSingleton<IAssetLocator>(_ => TestAssets.Locator());
         services.AddEliteConfig(_configDirectory);
         services.AddEliteMain(EliteServiceCollectionExtensions.LoadRendition("SixteenBit", NullLoggerFactory.Instance));
 
