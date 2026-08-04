@@ -42,26 +42,6 @@ there before starting an item that mentions a decision.
       [backlog-roadmap.md](backlog-roadmap.md) so the coordinate space it
       scales against is settled.
 
-- [ ] [EliteSharpLib] **Possible missing 80-point splash damage when a
-      missile self-destructs near the player** — original `TA35`/`TA87`
-      ([elite-source-flight.asm:9219-9245](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))
-      applies 80 damage to the player whenever a missile is destroyed *for
-      any reason* while near the player (not just a direct hit — this is
-      separate from the 250-damage direct-hit case). `TryGetMissileHeading`
-      (`Combat.cs:1145-1192`) only has the 250-damage direct-hit path and a
-      no-damage ECM-jam path; no equivalent near-miss splash path was found
-      in a quick read. May be handled elsewhere (missile removal/collision
-      code was not traced) — needs verification before treating as
-      confirmed. **2026-08-04 attempt:** the mechanic is real and clearly
-      missing, but TA35's own proximity test (`x_lo OR y_lo OR z_lo` of the
-      missile's position) only examines each axis's *low* byte, ignoring
-      the high byte/sign entirely — read literally that's satisfied on
-      roughly 1-in-256-cubed ticks, which can't be what "just got destroyed
-      near us" means for ordinary play. Left unfixed rather than guess a
-      distance convention (e.g. reusing the direct-hit box a few lines
-      above) that isn't actually what the original does — needs someone
-      who can resolve the byte-layout reading before it's implemented.
-
 ## Could
 
 - [ ] [Useful.Graphics] No frustum side-plane clipping: `NearPlaneClip`
@@ -127,3 +107,21 @@ re-covered.
       exactly `0.9166f` — already in the port, already correct, and
       already symmetric (`MathF.Abs`) as the original's "positive or
       negative, just needs to be parallel" comment describes.
+- [ ] [EliteSharpLib] Possible missing 80-point splash damage when a
+      missile self-destructs near the player — original `TA35`/`TA87`
+      ([elite-source-flight.asm:9219-9245](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))
+      applies 80 damage to the player whenever a missile is destroyed *for
+      any reason* while near the player, separate from the 250-damage
+      direct-hit case. `TryGetMissileHeading` (`Combat.cs:1145-1192`) has
+      no such path. **2026-08-04: blocked, not abandoned.** The mechanic is
+      real and clearly missing, but TA35's own proximity test (`x_lo OR
+      y_lo OR z_lo` of the missile's position) only examines each axis's
+      *low* byte, ignoring the high byte/sign entirely — confirmed via
+      `MAS4`'s own byte-offset convention (`INWK+1/+4/+7` are the *high*
+      bytes), so this isn't a misreading of which bytes are which. Read
+      literally that's satisfied on roughly 1-in-256-cubed ticks, which
+      can't be what "just got destroyed near us" means for ordinary play.
+      Left unfixed rather than guess a distance convention (e.g. reusing
+      the direct-hit box a few lines above) that isn't actually what the
+      original does. Revisit if someone can resolve what this byte-level
+      check is really testing.
