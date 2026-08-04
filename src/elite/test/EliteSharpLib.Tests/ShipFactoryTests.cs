@@ -107,6 +107,30 @@ public class ShipFactoryTests
         Assert.Equal(expectedType, created.Type.ToString());
     }
 
+    [Theory]
+    [InlineData(0, "Sidewinder")]
+    [InlineData(1, "Mamba")]
+    [InlineData(2, "Krait")]
+    [InlineData(3, "Adder")]
+    [InlineData(4, "Gecko")]
+    [InlineData(5, "CobraMk1")]
+    [InlineData(6, "Worm")]
+    [InlineData(7, "CobraMk3")]
+    public void CreatePackHunterPicksShipByRoll(int roll, string expectedType)
+    {
+        // Arrange: original mt1 ANDs two random bytes together, so a single
+        // FakeRandomSource value (used for both draws) reduces to roll & 7.
+        FakeEliteDraw draw = new();
+        RNG rng = new(new FakeRandomSource { RandomValue = roll });
+        ShipFactory factory = ShipFactory.Create(TestAssets.Locator(), draw, rng);
+
+        // Act
+        IShip created = factory.CreatePackHunter();
+
+        // Assert
+        Assert.Equal(expectedType, created.Type.ToString());
+    }
+
     [Fact]
     public void CreateUnknownModelNameThrowsEliteException()
     {

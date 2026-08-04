@@ -7,6 +7,15 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Pack-hunter spawns, 2026-08-04)
+
+- **Pack-hunter spawns were missing Cobra Mk III and used the wrong
+  probability shape.** The original picks from 8 ship types via the AND of
+  two random bytes reduced to 0-7, deliberately biased toward smaller
+  indices (Sidewinder common, Cobra Mk III rare). `CreatePackHunter` had
+  only 7 options, chosen with a flat `Random(7)`, and Cobra Mk III wasn't
+  reachable at all.
+
 ### Fixed (Hyperspace misjump chance, 2026-08-04)
 
 - **Hyperspace misjump chance was roughly a third too low.** The original

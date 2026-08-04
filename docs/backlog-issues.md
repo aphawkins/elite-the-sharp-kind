@@ -55,24 +55,6 @@ there before starting an item that mentions a decision.
       [elite-readme.md](elite-readme.md#environment-variables)); they are
       otherwise hours of play away.
 
-- [ ] [EliteSharpLib] **Pack-hunter spawns are missing Cobra Mk III and use
-      the wrong probability shape** — original `mt1`
-      ([elite-source-flight.asm:24917-24974](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))
-      picks from 8 ship types (Sidewinder, Mamba, Krait, Adder, Gecko,
-      Cobra Mk I, Worm, Cobra Mk III) via `CPIR`, the AND of two random
-      bytes reduced to 0-7 — explicitly documented as biased toward smaller
-      indices, so Sidewinder is common and Cobra Mk III rare.
-      `ShipFactory.CreatePackHunter()` (`ShipFactory.cs:115-129`) has only 7
-      options (no Cobra Mk III at all) chosen via a flat `_rng.Random(7)`.
-      Two separate problems in the same spot: a ship type missing entirely,
-      and a uniform distribution where the original is deliberately skewed.
-      (Note: `CreateLoneWolf`'s inclusion of the Moray, which looked similar
-      at first glance, is *not* a bug — the original's own disassembly
-      comments at asm:24838-24862 call the Moray's unreachability via that
-      path "presumably a bug" and suggest almost exactly the fix
-      `CreateLoneWolf` implements, so that one is a deliberate improvement,
-      not a divergence.)
-
 - [ ] [EliteSharpLib] **A legal status of exactly 50 shows "Offender"
       instead of "Fugitive"** — original status screen
       ([elite-source-docked.asm:6270-6277](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-docked.asm))

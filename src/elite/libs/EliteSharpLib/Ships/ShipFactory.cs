@@ -114,7 +114,11 @@ internal sealed class ShipFactory : IShipFactory
 
     public IShip CreatePackHunter()
     {
-        int rnd = _rng.Random(7);
+        // Original mt1: AND two random bytes together so each bit has a 25%
+        // chance of being set, biasing the result toward smaller indices.
+        int first = _rng.Random(256);
+        int second = _rng.Random(256);
+        int rnd = first & second & 7;
         return rnd switch
         {
             0 => CreateShip("Sidewinder"),
@@ -124,6 +128,7 @@ internal sealed class ShipFactory : IShipFactory
             4 => CreateShip("Gecko"),
             5 => CreateShip("CobraMk1"),
             6 => CreateShip("Worm"),
+            7 => CreateShip("CobraMk3"),
             _ => throw new EliteException($"Unexpected pack hunter roll '{rnd}'."),
         };
     }
