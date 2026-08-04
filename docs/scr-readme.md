@@ -89,7 +89,7 @@ Stunt Car Racer's own diagnostic opt-in, read at runtime rather than compiled in
 
 ## Porting notes
 
-- Source of the conversion: `github.com/ptitSeb/stuntcarremake` (C++, DirectX9/DXUT + SDL2), a maintained fork of `fluffyfreak/stuntcarracer`.  Earlier work was ported from fluffyfreak before the switch; where the two diverge, ptitSeb's is the source of truth.
+- Source of the conversion: `github.com/ptitSeb/stuntcarremake` (C++, DirectX9/DXUT + SDL2), a maintained fork of `fluffyfreak/stuntcarracer`.  Earlier work was ported from fluffyfreak before the switch; where the two diverge, ptitSeb's is the source of truth — see [reference-sources.md](reference-sources.md).
 - Hardware access stays behind the `Useful.Abstraction` interfaces (`IGraphics`, `IKeyboard`, `ISound`); the software rasterizer (`Useful.Graphics.SoftwareGraphics`) is the primary rendering path.
 - Before writing SCR-specific code, check whether the equivalent already exists in `src/useful/*` and extend that library instead of duplicating it.  A genuine SCR-only need (e.g. track-segment collision) is fine to keep local.
 - Behavioural fidelity ("feels like the original"), not bit-exact numerical replication, is the bar — there is no requirement to match the original's frame-by-frame physics output.

@@ -209,5 +209,8 @@ an old config keeps the look it had.
 
 The original Elite code is (C) I.Bell & D.Braben 1984.
 
+The BBC Micro original and Pinder's C rewrite are what this port is checked
+against — see [reference-sources.md](reference-sources.md).
+
 Gabriel Gambetta - Computer Graphics from Scratch
 https://gabrielgambetta.com/computer-graphics-from-scratch/

@@ -9,6 +9,39 @@ decision may reshape items in either. Newest first. When a decision
 reshapes or unblocks backlog items, those items are updated in the backlog
 to reference the decision here rather than restating it.
 
+## Resolved (2026-08-03) — a missile arrives in a box, not a sphere
+
+Missiles were slow to arrive and corkscrewed on the way, sometimes flying
+several passes before killing anything. Two explanations were tried against
+the game before the sources were to hand, and **both were wrong** - they are
+recorded because they are plausible enough to be tried again:
+
+- **"The tracking has a sign inverted."** Flipping the sense of the pitch that
+  `TrackObject` rolls against does make a pursuer converge where it had been
+  diverging, which is convincing until checked. Both sources have it as the
+  port had it: The New Kind's `if (ship->rotx < 0) ship->rotz = -ship->rotz`
+  is a faithful reading of the 6502's `EOR INWK+30` into `nroll`, which sets
+  the roll's sign from the side dot product against the pitch counter's sign.
+- **"A missile should turn harder than a ship."** It does not. `TACTICS` sets
+  `RAT = 3` for everything it steers and the commentary is explicit that only
+  `DOCKIT` changes it. A missile turns exactly as sharply as a Python, and a
+  target well off the nose at launch really can out-turn it. That is the
+  original's behaviour, not a defect to tune away.
+
+What was actually wrong was the arming distance. Close enough is **each axis
+within 256** - the 6502 ORs the three high bytes and tests for zero, and The
+New Kind spells the three comparisons out. This port asked whether the
+distance was under 256, which inscribes a sphere in that box and throws away
+the corners: up to 443 units of reach, gone. A missile that had arrived flew
+on through, came round, and tried again - the several passes.
+
+The lesson is the process, not the constant: the port was measured against
+itself for an afternoon and produced two confident, wrong answers. The
+sources for both games are now written down in
+[reference-sources.md](reference-sources.md), with the BBC assembly as the one
+that wins for Elite. The two readmes only link to it: they are for people who
+want to play the games.
+
 ## Resolved (2026-08-03) — a modifier that decides is held, not pressed
 
 The Ctrl-M mission jump stopped M firing missiles. `IsPressed` is one-shot: it

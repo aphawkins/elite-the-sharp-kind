@@ -1161,7 +1161,12 @@ internal sealed partial class Combat
 
         vec = missile.Location - missile.Target.Location;
 
-        if (vec.Length() < 256)
+        // Close enough is each axis within 256, not the distance within 256:
+        // a box, as both the 6502 (TACTICS part 1 tests x_hi, y_hi and z_hi in
+        // turn) and The New Kind have it. The distance test this used to do
+        // inscribes a sphere in that box and throws away everything in the
+        // corners - a missile that had arrived flew on through.
+        if (MathF.Abs(vec.X) < 256 && MathF.Abs(vec.Y) < 256 && MathF.Abs(vec.Z) < 256)
         {
             missile.Flags |= ShipProperties.Dead;
 

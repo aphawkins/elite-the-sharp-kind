@@ -7,6 +7,20 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Missiles arrive, 2026-08-03)
+
+- **A missile detonates when it gets there.** It was asking whether the
+  distance to its target was under 256 where both the BBC 6502 and The New
+  Kind ask whether each axis is - a sphere inscribed in the original's box,
+  throwing away the corners and up to 443 units of reach. A missile that had
+  arrived flew straight through, turned round and came back, which is why they
+  seemed to take several passes to kill anything.
+- Both games' reference sources are now written down in
+  [reference-sources.md](docs/reference-sources.md) - which checkout to read
+  and which one wins when they disagree (the BBC assembly for Elite,
+  ptitSeb's fork for Stunt Car Racer). The two readmes link to it rather than
+  carrying the detail, being for people who want to play the games.
+
 ### Fixed (The M key fires a missile again, 2026-08-03)
 
 - **A bare `M` fires a missile again.** With `ELITE_DEBUG_MISSIONS` set, the
