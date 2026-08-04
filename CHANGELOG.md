@@ -7,6 +7,15 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Stardust count, 2026-08-04)
+
+- **Stardust count now varies by location, matching the original's two
+  values.** The original shows 18 particles (`NOST`) in normal space,
+  dropped to 3 in witchspace for a visibly emptier void. `Stars` always
+  simulated and drew all 20 of its allocated slots regardless of
+  location; it now tracks how many of those slots are active (`NOSTM`)
+  and only simulates/draws that many.
+
 ### Fixed (Energy bomb vs Constrictor, 2026-08-04)
 
 - **The energy bomb no longer spares the Constrictor (or the homebrew

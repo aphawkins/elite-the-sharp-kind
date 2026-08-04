@@ -123,16 +123,6 @@ there before starting an item that mentions a decision.
       someone to re-derive the exact normalized threshold and verify against
       actual docking behaviour before treating as confirmed.
 
-- [ ] [EliteSharpLib] Stardust count doesn't vary by location, and doesn't
-      match either of the original's two values — `NOSTM`
-      ([elite-source-flight.asm:1645-1648](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))
-      is 18 particles (`NOST`) in normal space, dropped to 3 in witchspace
-      for a visibly emptier void. `Stars.cs` allocates a fixed
-      `Vector4[20]` and always simulates/draws all 20, in every location —
-      neither count matches, and there's no witchspace-specific reduction
-      at all. Purely cosmetic (atmosphere, not scoring/physics), so low
-      priority.
-
 ## Could
 
 - [ ] [Useful.Graphics] No frustum side-plane clipping: `NearPlaneClip`

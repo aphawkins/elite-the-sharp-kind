@@ -818,7 +818,7 @@ internal sealed class Space
         _ship.Speed = 12;
         _ship.Roll = 0;
         _ship.Climb = 0;
-        _stars.CreateNewStars();
+        _stars.CreateNewStars(3);
         _combat.Reset();
         _universe.ClearUniverse();
 

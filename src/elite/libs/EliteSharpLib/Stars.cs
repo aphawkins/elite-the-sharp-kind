@@ -35,6 +35,10 @@ internal sealed class Stars
 
     internal bool WarpStars { get; set; }
 
+    // How many of the 20 slots are actually simulated and drawn - the
+    // original's NOSTM, 18 in normal space and 3 in witchspace.
+    private int Count { get; set; } = 18;
+
     // Star coordinates are held in the original's 256-wide space, centred on
     // the view, so they map to the screen by the same factor as the projected
     // planet and sun radii. The star-space half-extents below are the screen's
@@ -46,9 +50,11 @@ internal sealed class Stars
 
     private float StarHalfHeight => _draw.Layout.ViewportCentre.Y / StarScale;
 
-    internal void CreateNewStars()
+    internal void CreateNewStars(int count = 18)
     {
-        for (int i = 0; i < _stars.Length; i++)
+        Count = Math.Clamp(count, 0, _stars.Length);
+
+        for (int i = 0; i < Count; i++)
         {
             _stars[i] = CreateNewStar();
         }
@@ -61,7 +67,7 @@ internal sealed class Stars
     /// </summary>
     internal void FlipStars()
     {
-        for (int i = 0; i < _stars.Length; i++)
+        for (int i = 0; i < Count; i++)
         {
             _stars[i].X = -_stars[i].X;
             _stars[i].Y = -_stars[i].Y;
@@ -78,7 +84,7 @@ internal sealed class Stars
         alpha /= 256;
         delta /= 2;
 
-        for (int i = 0; i < _stars.Length; i++)
+        for (int i = 0; i < Count; i++)
         {
             Vector2 star = PlotStar(i);
 
@@ -141,7 +147,7 @@ internal sealed class Stars
         alpha /= 256;
         delta /= 2;
 
-        for (int i = 0; i < _stars.Length; i++)
+        for (int i = 0; i < Count; i++)
         {
             Vector2 star = PlotStar(i);
 
@@ -263,7 +269,7 @@ internal sealed class Stars
     private void SideStarfield(float alpha, float beta, float delta)
     {
         _marks.Clear();
-        for (int i = 0; i < _stars.Length; i++)
+        for (int i = 0; i < Count; i++)
         {
             Vector2 star = PlotStar(i);
 
