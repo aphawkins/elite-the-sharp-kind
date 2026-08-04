@@ -55,16 +55,6 @@ there before starting an item that mentions a decision.
       [elite-readme.md](elite-readme.md#environment-variables)); they are
       otherwise hours of play away.
 
-- [ ] [EliteSharpLib] **Hyperspace misjump chance is roughly a third too
-      low** — original `TT18` ([elite-source-flight.asm:17444-17447](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))
-      triggers a misjump into witchspace when the random byte is `>= 253`
-      (253, 254 or 255 — 3/256 ≈ 1.17%). `CompleteHyperspace`
-      (`Space.cs:735`) uses `_rng.Random(256) > 253`, matching only 254 or
-      255 (2/256 ≈ 0.78%) — a `>=` became a `>`. Straightforward one-line
-      fix once confirmed; the fuel-deduction formula, countdown length (15),
-      and pre-jump range/fuel checks around it were all checked and match
-      the original exactly.
-
 - [ ] [EliteSharpLib] **Pack-hunter spawns are missing Cobra Mk III and use
       the wrong probability shape** — original `mt1`
       ([elite-source-flight.asm:24917-24974](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))

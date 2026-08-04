@@ -499,6 +499,28 @@ public class SpaceTests
         Assert.Same(station, universe.StationOrSun);
     }
 
+    [Fact]
+    public void CompletingHyperspaceMisjumpsOnARandomByteOf253()
+    {
+        // Original TT18: a misjump triggers when the random byte is >= 253
+        // (253, 254 or 255). 253 itself was previously being treated as a
+        // safe jump.
+        Space space = CreateSpace(
+            out GameState gameState, out _, out PlayerShip ship, out _, out _, out _, out _, out FakeRandomSource randomSource);
+        ship.Fuel = 7;
+        gameState.DockedPlanet.D = 0;
+        gameState.HyperspacePlanet.D = 10;
+        randomSource.RandomValue = 253;
+
+        space.StartHyperspace();
+        for (int i = 0; i < 16; i++)
+        {
+            space.CountdownHyperspace();
+        }
+
+        Assert.True(gameState.InWitchspace);
+    }
+
     private static void AddFarPlanetAndStation(Universe universe, FakeEliteDraw draw, RNG rng)
     {
         IShip planet = new FakeShip(draw, rng) { Type = ShipType.Planet };

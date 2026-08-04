@@ -732,7 +732,7 @@ internal sealed class Space
             _ship.Fuel -= _hyperDistance;
             _gameState.Cmdr.LegalStatus /= 2;
 
-            if ((_rng.Random(256) > 253) || (_ship.Climb >= _ship.MaxClimb))
+            if ((_rng.Random(256) >= 253) || (_ship.Climb >= _ship.MaxClimb))
             {
                 EnterWitchspace();
                 return;

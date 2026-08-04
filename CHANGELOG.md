@@ -7,6 +7,13 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Hyperspace misjump chance, 2026-08-04)
+
+- **Hyperspace misjump chance was roughly a third too low.** The original
+  triggers a misjump into witchspace when the random byte is `>= 253`
+  (253, 254 or 255); `CompleteHyperspace` used `> 253`, matching only 254
+  or 255 - a `>=` had become a `>`.
+
 ### Fixed (Docking Computer price, 2026-08-04)
 
 - **Docking Computer cost 1500 Cr, should be 1000 Cr.** The original `PRXS`
