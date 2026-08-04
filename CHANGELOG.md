@@ -7,6 +7,16 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Sun orientation, 2026-08-04)
+
+- **The sun no longer rotates with the player's roll and pitch.** Traced
+  `MV40`/`MV45` in the original: both planets and suns share the same
+  position-space rotation (orbital motion around the player), but the sun
+  specifically returns before the next step, which rotates an object's own
+  orientation vectors and applies its spin - "we don't need to rotate the
+  sun around its origin." `MoveUniverseObject` had no such early-out, so
+  the sun's own facing rotated and span like any other object.
+
 ### Fixed (Firing-cone thresholds, 2026-08-04) [best-effort, see note]
 
 - **Firing-cone thresholds now use a single re-derived gate.** The

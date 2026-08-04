@@ -921,6 +921,14 @@ internal sealed class Space
 
         obj.Location = position;
 
+        // Original MV45: the sun returns here, before rotating its own
+        // orientation vectors or applying its spin - "we don't need to
+        // rotate the sun around its origin."
+        if (obj.Type == ShipType.Sun)
+        {
+            return;
+        }
+
         if (obj.Type == ShipType.Planet)
         {
             beta = 0.0f;

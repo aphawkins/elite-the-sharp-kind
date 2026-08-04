@@ -85,24 +85,6 @@ there before starting an item that mentions a decision.
       above) that isn't actually what the original does — needs someone
       who can resolve the byte-layout reading before it's implemented.
 
-- [ ] [EliteSharpLib] **Sun may rotate with player roll/pitch when the
-      original explicitly prevents it** — original `MVEIT` part 6
-      ([elite-source-flight.asm:32549-32570](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))
-      returns early for `TYPE == 129` (the sun) specifically to skip parts 7
-      and 8, which rotate an object's own orientation vectors by our
-      roll/pitch and apply its own spin — comment: "we don't need to rotate
-      the sun around its origin." `MoveUniverseObject`
-      (`Space.cs:905-944`) has no such early-out:
-      `VectorMaths.RotateVector(obj.Rotmat, alpha, beta)` runs
-      unconditionally and `beta` is only zeroed for `ShipType.Planet`, not
-      `Sun`; `SpinUniverseObject` also runs for the sun. **Not yet
-      confirmed** — planets and suns in the original route through a
-      separate `MV40` routine (not read during this sweep) before rejoining
-      `MVEIT` at `MV45`, so `MV40`'s own position-update logic needs
-      checking before treating this as a real bug: it may already handle
-      orientation differently than the generic ship path this comparison
-      was made against.
-
 - [ ] [EliteSharpLib] **Docking-bay roll-alignment threshold looks about
       2.7x too strict** — original `DOCKIT` part `PH32`
       ([elite-source-flight.asm:10356-10387](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))

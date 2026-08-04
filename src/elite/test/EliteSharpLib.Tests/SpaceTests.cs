@@ -319,6 +319,27 @@ public class SpaceTests
     }
 
     [Fact]
+    public void RollingAndClimbingDoesNotRotateTheSunsOwnOrientation()
+    {
+        // Arrange: original MV45 - the sun returns before rotating its own
+        // orientation vectors or spinning, "we don't need to rotate the sun
+        // around its origin." A planet, by contrast, still rotates.
+        Space space = CreateSpace(
+            out _, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
+        ship.Roll = 30;
+        ship.Climb = 20;
+        FakeShip sun = new(draw, rng) { Type = ShipType.Sun, Rotmat = Matrix4x4.Identity };
+        universe.AddNewShip(sun, new(0, 0, 500, 0), Matrix4x4.Identity, 0, 0);
+        FakeShip planet = new(draw, rng) { Type = ShipType.Planet, Rotmat = Matrix4x4.Identity };
+        universe.AddNewShip(planet, new(1000, 0, 500, 0), Matrix4x4.Identity, 0, 0);
+
+        space.UpdateUniverse();
+
+        Assert.Equal(Matrix4x4.Identity, sun.Rotmat);
+        Assert.NotEqual(Matrix4x4.Identity, planet.Rotmat);
+    }
+
+    [Fact]
     public void UpdateAltitudeTriggersGameOverWhenTooClose()
     {
         Space space = CreateSpace(
