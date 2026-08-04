@@ -600,8 +600,6 @@ internal sealed class Space
             (!obj.Flags.HasFlag(ShipProperties.Dead)) &&
             (obj.Type != ShipType.Planet) &&
             (obj.Type != ShipType.Sun) &&
-            (obj.Type != ShipType.Constrictor) &&
-            (obj.Type != ShipType.Cougar) &&
             !obj.Flags.HasFlag(ShipProperties.Station);
 
     private bool NeedsTactics(IObject obj)

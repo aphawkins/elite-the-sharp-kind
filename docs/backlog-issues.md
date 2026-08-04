@@ -123,22 +123,6 @@ there before starting an item that mentions a decision.
       someone to re-derive the exact normalized threshold and verify against
       actual docking behaviour before treating as confirmed.
 
-- [ ] [EliteSharpLib] **Energy bomb shouldn't spare the Constrictor mission
-      ship** — original's bomb-kill sweep (main flight loop part 5,
-      [elite-source-flight.asm:2781-2794](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))
-      excludes only the space station and already-exploding ships; it does
-      not check ship type otherwise, so a detonated energy bomb kills a
-      nearby Constrictor outright, bypassing its "only military lasers
-      penetrate" shield gimmick entirely (confirmed real: asm:3265-3278
-      shows non-military lasers do zero damage to it, matching
-      `ApplyLaserDamage` in `Combat.cs` exactly — that part of the port is
-      faithful). `IsDestroyedByBomb` (`Space.cs:598-605`) explicitly excludes
-      `ShipType.Constrictor` from bomb kills (also excludes `Cougar`, but
-      that ship doesn't exist in the base 6502 game so it isn't a
-      divergence). If the Constrictor exclusion is deliberate rather than a
-      guess-based "protect the special ship" addition, it removes a tactic
-      that worked in the original.
-
 - [ ] [EliteSharpLib] Stardust count doesn't vary by location, and doesn't
       match either of the original's two values — `NOSTM`
       ([elite-source-flight.asm:1645-1648](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))

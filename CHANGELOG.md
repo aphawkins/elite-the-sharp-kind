@@ -7,6 +7,16 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Energy bomb vs Constrictor, 2026-08-04)
+
+- **The energy bomb no longer spares the Constrictor (or the homebrew
+  Cougar).** The original's bomb-kill sweep excludes only the space
+  station and already-exploding ships - no ship-type check at all, so a
+  detonated bomb kills a nearby Constrictor outright, bypassing its "only
+  military lasers penetrate" shield gimmick. `IsDestroyedByBomb` had an
+  explicit Constrictor (and Cougar) exclusion with no original
+  counterpart.
+
 ### Fixed (Bounty hunters turning hostile, 2026-08-04)
 
 - **Bounty hunters turning hostile at legal status 40 were entirely

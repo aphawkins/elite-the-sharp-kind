@@ -301,6 +301,24 @@ public class SpaceTests
     }
 
     [Fact]
+    public void AnEnergyBombKillsAConstrictor()
+    {
+        // Arrange: the original's bomb-kill sweep excludes only the space
+        // station and already-exploding ships - no ship-type check at all,
+        // so the Constrictor's "only military lasers penetrate" gimmick
+        // doesn't save it from a bomb.
+        Space space = CreateSpace(
+            out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
+        gameState.DetonateBomb = true;
+        FakeShip constrictor = new(draw, rng) { Type = ShipType.Constrictor };
+        universe.AddNewShip(constrictor, new(0, 0, 500, 0), Matrix4x4.Identity, 0, 0);
+
+        space.UpdateUniverse();
+
+        Assert.True(constrictor.Flags.HasFlag(ShipProperties.Dead));
+    }
+
+    [Fact]
     public void UpdateAltitudeTriggersGameOverWhenTooClose()
     {
         Space space = CreateSpace(
