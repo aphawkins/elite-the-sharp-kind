@@ -9,7 +9,7 @@ using Useful;
 namespace EliteSharp.Renditions.SixteenBit;
 
 /// <summary>
-/// The 16-bit save-commander screen: the 512-space layout, and nothing else.
+/// The 16-bit save-commander screen, laid out against the 640-wide viewport.
 /// </summary>
 internal sealed class SaveCommanderView16Bit : BaseView16Bit, IView<SaveCommanderModel>
 {
@@ -35,7 +35,7 @@ internal sealed class SaveCommanderView16Bit : BaseView16Bit, IView<SaveCommande
         DrawViewHeader("SAVE COMMANDER");
 
         _surface.Graphics.DrawTextCentre(75, "Please enter commander name:", nameof(FontType.Small), _colorWhite);
-        _surface.Graphics.DrawRectangle(new(100 + _surface.Layout.ViewportLeft, 100), 312, 50, _colorWhite);
+        _surface.Graphics.DrawRectangle(new(_surface.Layout.ViewportCentre.X - 156, 100), 312, 50, _colorWhite);
         _surface.Graphics.DrawTextCentre(112, model.Name, nameof(FontType.Large), _colorWhite);
 
         if (model.StatusMessage.Length > 0)

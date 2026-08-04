@@ -10,8 +10,8 @@ using Useful;
 namespace EliteSharp.Renditions.SixteenBit;
 
 /// <summary>
-/// The 16-bit commander status screen: the 512-space layout, and nothing
-/// else. Labels sit at x=16 with their values at x=200, on 16px rows.
+/// The 16-bit commander status screen, laid out against the 640-wide
+/// viewport. Labels sit at x=16 with their values at x=200, on 16px rows.
 /// </summary>
 internal sealed class CommanderStatusView16Bit : BaseView16Bit, IView<CommanderStatusModel>
 {
@@ -20,7 +20,7 @@ internal sealed class CommanderStatusView16Bit : BaseView16Bit, IView<CommanderS
     private const int EquipmentX = 50;
     private const int EquipmentStartY = 202;
     private const int EquipmentMaxY = 290;
-    private const int EquipmentColumnWidth = 200;
+    private const int EquipmentColumnWidth = 300;
     private const int SpacingY = 16;
 
     private readonly IViewSurface _surface;

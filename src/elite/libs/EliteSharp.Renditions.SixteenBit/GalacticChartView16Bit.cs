@@ -10,7 +10,10 @@ using Useful;
 namespace EliteSharp.Renditions.SixteenBit;
 
 /// <summary>
-/// The 16-bit galactic chart: the 512-space layout, and nothing else.
+/// The 16-bit galactic chart, laid out against the 640-wide viewport: the
+/// star field's own space is still 512-wide, so <see cref="ToScreen"/>
+/// centres it in the wider viewport with a fixed offset rather than
+/// stretching it.
 /// </summary>
 internal sealed class GalacticChartView16Bit : BaseView16Bit, IView<GalacticChartModel>
 {
@@ -82,8 +85,10 @@ internal sealed class GalacticChartView16Bit : BaseView16Bit, IView<GalacticChar
                 _colorWhite);
     }
 
-    // Galaxy space (D, B) to this tier's screen coordinates.
+    // Galaxy space (D, B) to this tier's screen coordinates. The star
+    // field's own span is 512-wide regardless of the viewport, so it is
+    // centred in the wider 640-wide viewport with a fixed +64 offset.
     private Vector2 ToScreen(Vector2 galaxy) => new(
-        (galaxy.X * _surface.Layout.Scale) + _surface.Layout.ViewportLeft,
+        (galaxy.X * _surface.Layout.Scale) + _surface.Layout.ViewportLeft + 64,
         (galaxy.Y * _surface.Layout.Scale / 2) + (18 * _surface.Layout.Scale) + 1);
 }

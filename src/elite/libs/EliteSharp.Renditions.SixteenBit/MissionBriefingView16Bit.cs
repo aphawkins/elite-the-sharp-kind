@@ -10,7 +10,7 @@ using Useful;
 namespace EliteSharp.Renditions.SixteenBit;
 
 /// <summary>
-/// The 16-bit mission messages: the 512-space layout, and nothing else. The
+/// The 16-bit mission messages, laid out against the 640-wide viewport. The
 /// layout keys off what the briefing holds rather than which mission sent it -
 /// a long message that runs the height of the screen is blocked around
 /// whatever is pictured beside it, while a short one sits in the middle under
@@ -26,13 +26,13 @@ internal sealed class MissionBriefingView16Bit : BaseView16Bit, IMissionBriefing
     private const int UpperBlockTop = 50;
     private const int UpperBlockWidth = 300;
     private const int LowerBlockTop = 200;
-    private const int LowerBlockWidth = 470;
+    private const int LowerBlockWidth = 600;
 
     /// <summary>
     /// A message in one block is set on its own in the middle of the screen,
     /// under the headline if there is one.
     /// </summary>
-    private const int SingleBlockLeft = 116;
+    private const int SingleBlockLeft = 120;
     private const int SingleBlockTop = 132;
     private const int SingleBlockWidth = 400;
 
@@ -83,7 +83,7 @@ internal sealed class MissionBriefingView16Bit : BaseView16Bit, IMissionBriefing
 
         if (model.ShowPortrait)
         {
-            _surface.Graphics.DrawImage(nameof(ImageType.Blake), new(352, 46));
+            _surface.Graphics.DrawImage(nameof(ImageType.Blake), new(480, 46));
         }
 
         _surface.Graphics.DrawTextCentre(FooterTop, "Press space to continue.", nameof(FontType.Large), _colorGold);

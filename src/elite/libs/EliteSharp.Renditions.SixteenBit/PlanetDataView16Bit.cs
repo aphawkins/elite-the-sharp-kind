@@ -9,7 +9,7 @@ using Useful;
 namespace EliteSharp.Renditions.SixteenBit;
 
 /// <summary>
-/// The 16-bit planet data screen: the 512-space layout, and nothing else.
+/// The 16-bit planet data screen, laid out against the 640-wide viewport.
 /// </summary>
 internal sealed class PlanetDataView16Bit : BaseView16Bit, IView<PlanetDataModel>
 {
@@ -55,6 +55,6 @@ internal sealed class PlanetDataView16Bit : BaseView16Bit, IView<PlanetDataModel
             new(175 + _surface.Layout.ViewportLeft, 202), model.Productivity, nameof(FontType.Small), _colorWhite);
         _surface.Graphics.DrawTextLeft(new(16 + _surface.Layout.ViewportLeft, 234), "Average Radius:", nameof(FontType.Small), _colorGreen);
         _surface.Graphics.DrawTextLeft(new(175 + _surface.Layout.ViewportLeft, 234), model.Radius, nameof(FontType.Small), _colorWhite);
-        DrawTextPretty(new(16 + _surface.Layout.ViewportLeft, 266), 400, model.Description);
+        DrawTextPretty(new(16 + _surface.Layout.ViewportLeft, 266), (int)_surface.Layout.ViewportWidth - 32, model.Description);
     }
 }

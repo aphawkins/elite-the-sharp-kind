@@ -9,7 +9,7 @@ using Useful;
 namespace EliteSharp.Renditions.SixteenBit;
 
 /// <summary>
-/// The 16-bit equip-ship screen: the 512-space layout, and nothing else.
+/// The 16-bit equip-ship screen, laid out against the 640-wide viewport.
 /// </summary>
 internal sealed class EquipmentView16Bit : BaseView16Bit, IView<EquipmentModel>
 {
@@ -42,21 +42,21 @@ internal sealed class EquipmentView16Bit : BaseView16Bit, IView<EquipmentModel>
         {
             if (row.IsHighlighted)
             {
-                _surface.Graphics.DrawRectangleFilled(new(2 + _surface.Layout.ViewportLeft, y + 1), 508, 15, _colorLightRed);
+                _surface.Graphics.DrawRectangleFilled(new(2, y + 1), (int)_surface.Layout.ViewportWidth - 4, 15, _colorLightRed);
             }
 
             FastColor color = row.IsAffordable ? _colorWhite : _colorLightGrey;
             int x = row.IsIndented ? 50 : 16;
-            _surface.Graphics.DrawTextLeft(new(x + _surface.Layout.ViewportLeft, y), row.Name, nameof(FontType.Small), color);
+            _surface.Graphics.DrawTextLeft(new(x, y), row.Name, nameof(FontType.Small), color);
 
             if (row.Price.Length > 0)
             {
-                _surface.Graphics.DrawTextRight(new(450 + _surface.Layout.ViewportLeft, y), row.Price, nameof(FontType.Small), color);
+                _surface.Graphics.DrawTextRight(new(578, y), row.Price, nameof(FontType.Small), color);
             }
 
             y += 15;
         }
 
-        _surface.Graphics.DrawTextLeft(new(16 + _surface.Layout.ViewportLeft, 340), model.Cash, nameof(FontType.Small), _colorWhite);
+        _surface.Graphics.DrawTextLeft(new(16, 340), model.Cash, nameof(FontType.Small), _colorWhite);
     }
 }

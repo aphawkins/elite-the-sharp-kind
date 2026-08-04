@@ -7,6 +7,34 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (16-bit screens re-laid-out for 640 width, 2026-08-04)
+
+- **Eight 16-bit screens were still laid out for 512 on the now-640-wide
+  tier.** Their absolute coordinates were authored against 512x512 and
+  never revisited when the tier widened on 2026-07-30, so centred and
+  right-anchored content sat up to 128px short of where it belonged. Fixed
+  by re-authoring each screen against 640, following `ScannerView16Bit`'s
+  existing precedent (left-anchored content unchanged, right-anchored
+  content shifted the full 128, centred content shifted half, 64):
+  - `MarketView16Bit` and `EquipmentView16Bit`: table columns spread wider,
+    highlight-row width now derived from `Layout.ViewportWidth`.
+  - `CommanderStatusView16Bit`: the equipment list's second column moved
+    further right.
+  - `PlanetDataView16Bit`: the description block widened to use the extra
+    width.
+  - `GalacticChartView16Bit`: the star field (still 512-wide in galaxy
+    space) is now centred in the 640-wide viewport with a fixed offset,
+    rather than stretched.
+  - `MissionBriefingView16Bit`: the single-paragraph block re-centred, the
+    two-paragraph lower block widened, and the portrait moved toward the
+    new right edge.
+  - `SaveCommanderView16Bit`: the name-entry box re-centred under its
+    already-correct, already-centred text.
+  - `InventoryView16Bit` was checked and needs no change - its columns are
+    left-anchored well within both old and new widths.
+  This was `docs/backlog-issues.md`'s only remaining Must; the file is now
+  empty of Musts.
+
 ### Investigated (Docking-bay roll-alignment threshold, 2026-08-04)
 
 - **Confirmed not a bug.** The backlog suspected `FlyToDockingBay`'s

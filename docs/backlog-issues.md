@@ -32,29 +32,6 @@ there before starting an item that mentions a decision.
 
 ## Must
 
-### Layout
-
-- [ ] [EliteSharpLib] **The 16-bit screens are still laid out for 512 on a
-      640-wide tier.** Their absolute coordinates were authored against
-      512x512 and never revisited when the tier widened to 640x512 on
-      2026-07-30, while headers, prompts and the scanner are drawn about the
-      viewport's centre — so the two are 64 pixels apart at the resolution
-      the game actually ships. Visible on the market table, planet data,
-      equipment list, inventory, commander status, the galactic chart's star
-      field, the mission briefing screen (`MissionBriefingView16Bit`'s
-      single-block position at `new(116, 132)` and the portrait at
-      `new(352, 46)`) and the save screen's name box, which sits left of the
-      name it frames.
-      Fix by **re-laying-out those screens against 640** — widening the
-      tables and moving the columns out to use the width. Per
-      [decisions.md](decisions.md) (2026-08-01) the tiers are fixed-width,
-      so this is a one-off re-authoring against a known resolution, *not* a
-      centred content band, a design-space origin, or any other mechanism
-      inside `ViewLayout`. Reach the mission screens with Ctrl-M
-      under `ELITE_DEBUG_MISSIONS` (see
-      [elite-readme.md](elite-readme.md#environment-variables)); they are
-      otherwise hours of play away.
-
 ## Should
 
 - [ ] [EliteSharpLib] Number of stars is not proportional to screen area

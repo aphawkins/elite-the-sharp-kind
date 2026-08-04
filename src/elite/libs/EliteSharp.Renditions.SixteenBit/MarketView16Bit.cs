@@ -9,7 +9,10 @@ using Useful;
 namespace EliteSharp.Renditions.SixteenBit;
 
 /// <summary>
-/// The 16-bit market screen: the 512-space layout, and nothing else.
+/// The 16-bit market screen, laid out against the 640-wide viewport: the
+/// left margin (16) is unchanged from the 512-wide layout, and every other
+/// column is stretched by the same 640/512 ratio the columns themselves
+/// were spread across.
 /// </summary>
 internal sealed class MarketView16Bit : BaseView16Bit, IView<MarketModel>
 {
@@ -36,11 +39,11 @@ internal sealed class MarketView16Bit : BaseView16Bit, IView<MarketModel>
 
         DrawViewHeader(model.Title);
 
-        _surface.Graphics.DrawTextLeft(new(16 + _surface.Layout.ViewportLeft, 40), "PRODUCT", nameof(FontType.Small), _colorGreen);
-        _surface.Graphics.DrawTextLeft(new(166 + _surface.Layout.ViewportLeft, 40), "UNIT", nameof(FontType.Small), _colorGreen);
-        _surface.Graphics.DrawTextLeft(new(246 + _surface.Layout.ViewportLeft, 40), "PRICE", nameof(FontType.Small), _colorGreen);
-        _surface.Graphics.DrawTextLeft(new(314 + _surface.Layout.ViewportLeft, 40), "FOR SALE", nameof(FontType.Small), _colorGreen);
-        _surface.Graphics.DrawTextLeft(new(420 + _surface.Layout.ViewportLeft, 40), "IN HOLD", nameof(FontType.Small), _colorGreen);
+        _surface.Graphics.DrawTextLeft(new(16, 40), "PRODUCT", nameof(FontType.Small), _colorGreen);
+        _surface.Graphics.DrawTextLeft(new(204, 40), "UNIT", nameof(FontType.Small), _colorGreen);
+        _surface.Graphics.DrawTextLeft(new(304, 40), "PRICE", nameof(FontType.Small), _colorGreen);
+        _surface.Graphics.DrawTextLeft(new(389, 40), "FOR SALE", nameof(FontType.Small), _colorGreen);
+        _surface.Graphics.DrawTextLeft(new(521, 40), "IN HOLD", nameof(FontType.Small), _colorGreen);
 
         for (int i = 0; i < model.Rows.Count; i++)
         {
@@ -49,42 +52,41 @@ internal sealed class MarketView16Bit : BaseView16Bit, IView<MarketModel>
 
             if (row.IsHighlighted)
             {
-                _surface.Graphics.DrawRectangleFilled(new(2 + _surface.Layout.ViewportLeft, y), 508, 15, _colorLightRed);
+                _surface.Graphics.DrawRectangleFilled(new(2, y), (int)_surface.Layout.ViewportWidth - 4, 15, _colorLightRed);
             }
 
-            _surface.Graphics.DrawTextLeft(new(16 + _surface.Layout.ViewportLeft, y), row.Name, nameof(FontType.Small), _colorWhite);
+            _surface.Graphics.DrawTextLeft(new(16, y), row.Name, nameof(FontType.Small), _colorWhite);
 
-            _surface.Graphics.DrawTextLeft(new(180 + _surface.Layout.ViewportLeft, y), row.Units, nameof(FontType.Small), _colorWhite);
+            _surface.Graphics.DrawTextLeft(new(221, y), row.Units, nameof(FontType.Small), _colorWhite);
 
             _surface.Graphics
-                .DrawTextRight(new(285 + _surface.Layout.ViewportLeft, y), $"{row.Price:N1}", nameof(FontType.Small), _colorWhite);
+                .DrawTextRight(new(352, y), $"{row.Price:N1}", nameof(FontType.Small), _colorWhite);
 
             _surface.Graphics.DrawTextRight(
-                new(365 + _surface.Layout.ViewportLeft, y),
+                new(452, y),
                 row.ForSaleQuantity > 0 ? $"{row.ForSaleQuantity}" : "-",
                 nameof(FontType.Small),
                 _colorWhite);
             _surface.Graphics.DrawTextLeft(
-                new(365 + _surface.Layout.ViewportLeft, y),
+                new(452, y),
                 row.ForSaleQuantity > 0 ? row.Units : string.Empty,
                 nameof(FontType.Small),
                 _colorWhite);
 
             _surface.Graphics.DrawTextRight(
-                new(455 + _surface.Layout.ViewportLeft, y),
+                new(566, y),
                 row.InHoldQuantity > 0 ? $"{row.InHoldQuantity,2}" : "-",
                 nameof(FontType.Small),
                 _colorWhite);
             _surface.Graphics.DrawTextLeft(
-                new(455 + _surface.Layout.ViewportLeft, y),
+                new(566, y),
                 row.InHoldQuantity > 0 ? row.Units : string.Empty,
                 nameof(FontType.Small),
                 _colorWhite);
         }
 
-        _surface.Graphics.DrawTextLeft(new(16 + _surface.Layout.ViewportLeft, 340), "Cash:", nameof(FontType.Small), _colorGreen);
+        _surface.Graphics.DrawTextLeft(new(16, 340), "Cash:", nameof(FontType.Small), _colorGreen);
         _surface.Graphics
-            .DrawTextRight(
-                new(225 + _surface.Layout.ViewportLeft, 340), $"{model.Cash,10:N1} Credits", nameof(FontType.Small), _colorWhite);
+            .DrawTextRight(new(277, 340), $"{model.Cash,10:N1} Credits", nameof(FontType.Small), _colorWhite);
     }
 }
