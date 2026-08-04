@@ -11,7 +11,11 @@ internal sealed class FakeShipFactory(IEliteDraw draw, RNG rng) : IShipFactory
 {
     public IShip CreateAsteroid() => new FakeShip(draw, rng);
 
-    public IShip CreateLoneWolf() => new FakeShip(draw, rng);
+    public IShip CreateLoneWolf() => new FakeShip(draw, rng)
+    {
+        Type = ShipType.FerDeLance,
+        Flags = ShipProperties.LoneWolf | ShipProperties.BountyHunter,
+    };
 
     public IShip CreatePackHunter() => new FakeShip(draw, rng);
 

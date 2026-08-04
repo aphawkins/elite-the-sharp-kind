@@ -12,7 +12,7 @@ internal sealed class FerDeLance : ShipBase
         : base(draw, rng)
     {
         Type = ShipType.FerDeLance;
-        Flags = ShipProperties.LoneWolf | ShipProperties.Police;
+        Flags = ShipProperties.LoneWolf | ShipProperties.Police | ShipProperties.BountyHunter;
         EnergyMax = 160;
         LaserStrength = 9;
         MinDistance = 384;

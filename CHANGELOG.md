@@ -7,6 +7,21 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Bounty hunters turning hostile, 2026-08-04)
+
+- **Bounty hunters turning hostile at legal status 40 were entirely
+  missing.** The original's `E%` blueprint table flags the Viper and
+  Fer-de-lance as bounty hunters (`NEWB` bit 1); once the player's legal
+  status reaches 40 (an "Offender," not yet the 50-threshold "Fugitive"),
+  a bounty hunter turns hostile. The port had no such mechanic - worse,
+  `CreateLoneWolf` overwrote a spawned ship's flags outright, discarding
+  the `Police`/`Cloaked` flags its own prototype had already set (e.g.
+  Fer-de-lance, Cougar), which also silently broke their existing
+  `LegalStatus >= 64` police-hostility check. Added a `BountyHunter` flag
+  (set on Fer-de-lance, matching the original), had `CreateLoneWolf` OR
+  flags in instead of replacing them, and gated a bounty hunter's initial
+  and ongoing hostility on `LegalStatus >= 40` in `ShipTactics`.
+
 ### Fixed (Mining/Military Laser tech-level gating, 2026-08-04)
 
 - **Mining Laser and Military Laser were available a tech level too

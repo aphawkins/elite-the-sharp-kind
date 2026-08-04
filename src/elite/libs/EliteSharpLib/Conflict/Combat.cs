@@ -513,8 +513,8 @@ internal sealed partial class Combat
             return;
         }
 
-        if (flags.HasFlag(ShipProperties.Police) &&
-            _gameState.Cmdr.LegalStatus >= 64)
+        if ((flags.HasFlag(ShipProperties.Police) && _gameState.Cmdr.LegalStatus >= 64) ||
+            (flags.HasFlag(ShipProperties.BountyHunter) && _gameState.Cmdr.LegalStatus >= 40))
         {
             flags |= ShipProperties.Angry;
             ship.Flags = flags;
@@ -978,7 +978,12 @@ internal sealed partial class Combat
 
         if (_universe.AddNewShip(loneWolf))
         {
-            loneWolf.Flags = ShipProperties.Angry;
+            // A bounty hunter waits for a bad enough record (FIST >= 40).
+            if (!loneWolf.Flags.HasFlag(ShipProperties.BountyHunter) || _gameState.Cmdr.LegalStatus >= 40)
+            {
+                loneWolf.Flags |= ShipProperties.Angry;
+            }
+
             if (_rng.Random(256) > 200 || loneWolf.Type == ShipType.Constrictor)
             {
                 loneWolf.Flags |= ShipProperties.HasECM;

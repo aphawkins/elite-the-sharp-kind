@@ -29,4 +29,5 @@ internal enum ShipProperties
     Trader = 1 << 18,
     PackHunter = 1 << 19,
     LoneWolf = 1 << 20,
+    BountyHunter = 1 << 21,
 }

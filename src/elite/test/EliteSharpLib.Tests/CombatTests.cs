@@ -155,6 +155,38 @@ public class CombatTests
         Assert.Equal(2, universe.GetAllObjects().Count());
     }
 
+    [Fact]
+    public void ABountyHunterLoneWolfIsNotHostileBelowLegalStatus40()
+    {
+        // Arrange: original TACTICS part 3 - a bounty hunter (NEWB bit 1)
+        // only turns hostile once FIST >= 40, an "Offender" but not yet a
+        // "Fugitive."
+        Combat combat = CreateCombat(out Universe universe, out _, out _, out GameState gameState, randomValue: 0);
+        gameState.Cmdr.LegalStatus = 39;
+
+        InvokeCreateLoneWolf(combat);
+
+        Assert.False(Assert.Single(universe.GetAllObjects()).Flags.HasFlag(ShipProperties.Angry));
+    }
+
+    [Fact]
+    public void ABountyHunterLoneWolfIsHostileAtLegalStatus40()
+    {
+        Combat combat = CreateCombat(out Universe universe, out _, out _, out GameState gameState, randomValue: 0);
+        gameState.Cmdr.LegalStatus = 40;
+
+        InvokeCreateLoneWolf(combat);
+
+        Assert.True(Assert.Single(universe.GetAllObjects()).Flags.HasFlag(ShipProperties.Angry));
+    }
+
+    private static void InvokeCreateLoneWolf(Combat combat)
+    {
+        MethodInfo method = typeof(Combat).GetMethod("CreateLoneWolf", BindingFlags.Instance | BindingFlags.NonPublic)
+            ?? throw new MissingMethodException(nameof(Combat), "CreateLoneWolf");
+        method.Invoke(combat, null);
+    }
+
     private static void InvokeCheckForPolice(Combat combat)
     {
         MethodInfo method = typeof(Combat).GetMethod("CheckForPolice", BindingFlags.Instance | BindingFlags.NonPublic)

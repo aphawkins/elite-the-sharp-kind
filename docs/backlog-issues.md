@@ -123,24 +123,6 @@ there before starting an item that mentions a decision.
       someone to re-derive the exact normalized threshold and verify against
       actual docking behaviour before treating as confirmed.
 
-- [ ] [EliteSharpLib] **Bounty hunters turning hostile at legal status 40
-      may be entirely missing** — original `TACTICS` part 3
-      ([elite-source-flight.asm:9479-9486](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))
-      re-checks every tick, for any ship flagged as a bounty hunter
-      (`NEWB` bit 1): once the player's `FIST` (legal status) reaches 40 —
-      "Offender," not yet the 50-threshold "Fugitive" — the bounty hunter
-      sets itself hostile. `ShipTactics` (`Combat.cs:504-533`) has only one
-      legal-status hostility check, `Cmdr.LegalStatus >= 64` gated on
-      `ShipProperties.Police` (a different, higher threshold, police-only).
-      `ShipProperties` defines a `LoneWolf` flag but `CreateLoneWolf`
-      (`Combat.cs:971-997`) never sets it on the ship it spawns, and no
-      combat code reads a legal-status threshold against it. If real, this
-      drops a real gameplay mechanic (moderately bad reputation drawing
-      bounty-hunter aggression before police get involved). Only searched
-      `Combat.cs` for this — needs a check of the rest of the ship-behaviour
-      code before treating as confirmed missing rather than differently
-      named.
-
 - [ ] [EliteSharpLib] **Energy bomb shouldn't spare the Constrictor mission
       ship** — original's bomb-kill sweep (main flight loop part 5,
       [elite-source-flight.asm:2781-2794](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))
