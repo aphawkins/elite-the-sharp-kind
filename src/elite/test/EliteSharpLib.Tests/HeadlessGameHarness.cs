@@ -44,7 +44,7 @@ internal sealed class HeadlessGameHarness : HeadlessGameHarnessBase<GameStateSum
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);
         services.AddSingleton<IAssetLocator>(_ => TestAssets.Locator());
         services.AddEliteConfig(_configDirectory);
-        services.AddEliteMain(EliteServiceCollectionExtensions.LoadRendition("SixteenBit", NullLoggerFactory.Instance));
+        services.AddEliteMain(EliteServiceCollectionExtensions.LoadRendition("16-bit", NullLoggerFactory.Instance));
 
         _provider = services.BuildServiceProvider();
         Game = _provider.GetRequiredService<EliteMain>();

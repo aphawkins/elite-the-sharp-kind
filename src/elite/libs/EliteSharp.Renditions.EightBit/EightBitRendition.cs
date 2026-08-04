@@ -18,7 +18,7 @@ namespace EliteSharp.Renditions.EightBit;
 /// </summary>
 public sealed class EightBitRendition : IRendition
 {
-    public string Name => "EightBit";
+    public string Name => "8-bit";
 
     public int ScreenWidth => 320;
 

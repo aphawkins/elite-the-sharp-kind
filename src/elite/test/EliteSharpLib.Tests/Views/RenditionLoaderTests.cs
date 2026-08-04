@@ -29,10 +29,10 @@ public sealed class RenditionLoaderTests : IDisposable
         GivenPacks();
 
         // Act
-        InstalledRenditions found = RenditionLoader.LoadFrom(_baseDirectory, "EightBit", NullLogger.Instance);
+        InstalledRenditions found = RenditionLoader.LoadFrom(_baseDirectory, "8-bit", NullLogger.Instance);
 
         // Assert
-        Assert.Equal("EightBit", found.Chosen.Name);
+        Assert.Equal("8-bit", found.Chosen.Name);
     }
 
     [Fact]
@@ -42,10 +42,10 @@ public sealed class RenditionLoaderTests : IDisposable
         GivenPacks();
 
         // Act
-        InstalledRenditions found = RenditionLoader.LoadFrom(_baseDirectory, "SixteenBit", NullLogger.Instance);
+        InstalledRenditions found = RenditionLoader.LoadFrom(_baseDirectory, "16-bit", NullLogger.Instance);
 
         // Assert
-        Assert.Equal("SixteenBit", found.Chosen.Name);
+        Assert.Equal("16-bit", found.Chosen.Name);
     }
 
     [Fact]
@@ -54,9 +54,9 @@ public sealed class RenditionLoaderTests : IDisposable
         // Act & Assert: unlike a missing mission, this is fatal - there would
         // be nothing to draw the game with.
         InvalidOperationException ex = Assert.Throws<InvalidOperationException>(
-            () => RenditionLoader.LoadFrom(_baseDirectory, "EightBit", NullLogger.Instance));
+            () => RenditionLoader.LoadFrom(_baseDirectory, "8-bit", NullLogger.Instance));
 
-        Assert.Contains("EightBit", ex.Message, StringComparison.Ordinal);
+        Assert.Contains("8-bit", ex.Message, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public sealed class RenditionLoaderTests : IDisposable
 
         // Act & Assert
         Assert.Throws<InvalidOperationException>(
-            () => RenditionLoader.LoadFrom(_baseDirectory, "EightBit", NullLogger.Instance));
+            () => RenditionLoader.LoadFrom(_baseDirectory, "8-bit", NullLogger.Instance));
     }
 
     [Fact]
@@ -79,10 +79,10 @@ public sealed class RenditionLoaderTests : IDisposable
         File.WriteAllText(Path.Combine(PluginFolder(), "rubbish.dll"), "not an assembly");
 
         // Act
-        InstalledRenditions found = RenditionLoader.LoadFrom(_baseDirectory, "EightBit", NullLogger.Instance);
+        InstalledRenditions found = RenditionLoader.LoadFrom(_baseDirectory, "8-bit", NullLogger.Instance);
 
         // Assert
-        Assert.Equal("EightBit", found.Chosen.Name);
+        Assert.Equal("8-bit", found.Chosen.Name);
     }
 
     public void Dispose()

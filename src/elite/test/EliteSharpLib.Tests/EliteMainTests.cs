@@ -32,7 +32,7 @@ public class EliteMainTests
             services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);
             services.AddSingleton<IAssetLocator>(_ => TestAssets.Locator());
             services.AddEliteConfig(configDirectory);
-            services.AddEliteMain(EliteServiceCollectionExtensions.LoadRendition("SixteenBit", NullLoggerFactory.Instance));
+            services.AddEliteMain(EliteServiceCollectionExtensions.LoadRendition("16-bit", NullLoggerFactory.Instance));
 
             using ServiceProvider provider = services.BuildServiceProvider();
 

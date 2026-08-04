@@ -107,7 +107,7 @@ public class EngineSettingsControllerTests
             space,
             audio,
             configFile,
-            new InstalledRenditions(new SixteenBitRendition(), string.Empty, ["EightBit", "SixteenBit"]),
+            new InstalledRenditions(new SixteenBitRendition(), string.Empty, ["8-bit", "16-bit"]),
             new SettingsListView16Bit(draw));
     }
 }

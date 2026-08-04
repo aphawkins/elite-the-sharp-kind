@@ -12,7 +12,7 @@ namespace Useful.Abstraction.Config;
 /// </summary>
 public sealed class EngineConfigSettings
 {
-    private const string DefaultRendition = "SixteenBit";
+    private const string DefaultRendition = "16-bit";
 
     // Past this the window is larger than any display the game could be
     // shown on, so it is a typo rather than an intention.
@@ -22,8 +22,10 @@ public sealed class EngineConfigSettings
 
     private static readonly Dictionary<string, string> s_legacyRenditionNames = new(StringComparer.Ordinal)
     {
-        ["8Bit"] = "EightBit",
-        ["16Bit"] = "SixteenBit",
+        ["8Bit"] = "8-bit",
+        ["16Bit"] = "16-bit",
+        ["EightBit"] = "8-bit",
+        ["SixteenBit"] = "16-bit",
     };
 
     // Which IAbstraction runs the game: Software (default) or Hardware

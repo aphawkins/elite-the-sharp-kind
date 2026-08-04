@@ -17,7 +17,7 @@ namespace EliteSharp.Renditions.SixteenBit;
 /// </summary>
 public sealed class SixteenBitRendition : IRendition
 {
-    public string Name => "SixteenBit";
+    public string Name => "16-bit";
 
     // Widened from 512 to 640 on 2026-07-30 alongside a 640-wide scanner. The
     // height is unchanged, so the vertical field of view is too.

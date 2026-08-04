@@ -103,7 +103,7 @@ public class ScrConfigFileTests
         ScrConfig config = configFile.ReadConfig();
 
         // Assert
-        Assert.Equal("SixteenBit", config.Engine.Rendition);
+        Assert.Equal("16-bit", config.Engine.Rendition);
         Assert.False(config.Engine.Sound.Music);
     }
 

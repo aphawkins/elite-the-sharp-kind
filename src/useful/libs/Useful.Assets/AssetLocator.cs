@@ -12,7 +12,7 @@ namespace Useful.Assets;
 public sealed class AssetLocator : IAssetLocator
 {
     private const string AssetManifestFilename = "AssetManifest.json";
-    private const string DefaultRendition = "SixteenBit";
+    private const string DefaultRendition = "16-bit";
     private const string ImagesCategory = "Images";
     private const string FontsBitmapCategory = "FontsBitmap";
     private const string ModelsCategory = "Models";

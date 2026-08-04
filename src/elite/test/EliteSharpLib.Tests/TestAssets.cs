@@ -14,7 +14,7 @@ namespace EliteSharpLib.Tests;
 // sound effects, which is all the game keeps for itself.
 internal static class TestAssets
 {
-    private const string Rendition = "SixteenBit";
+    private const string Rendition = "16-bit";
 
     // Where the test project's build drops the renditions, which is the same
     // arrangement the app ships.

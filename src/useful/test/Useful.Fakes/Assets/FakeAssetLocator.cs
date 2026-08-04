@@ -7,7 +7,7 @@ namespace Useful.Fakes.Assets;
 // Minimal IAssetLocator implementation for initialize benchmark.
 public sealed class FakeAssetLocator : IAssetLocator
 {
-    public string Rendition => "SixteenBit";
+    public string Rendition => "16-bit";
 
     public AssetColourLimits Colours { get; } = new();
 

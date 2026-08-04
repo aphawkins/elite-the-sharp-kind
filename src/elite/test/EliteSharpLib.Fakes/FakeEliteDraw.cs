@@ -18,7 +18,7 @@ internal class FakeEliteDraw : IEliteDraw
 {
     public ViewLayout Layout { get; set; } = new(512, 512, new(512, 129), 2);
 
-    public string Rendition { get; set; } = "SixteenBit";
+    public string Rendition { get; set; } = "16-bit";
 
     public float Focus => 512;
 

@@ -124,7 +124,7 @@ public class ConfigFileTests
 
         EliteConfig config = configFile.ReadConfig();
 
-        Assert.Equal("SixteenBit", config.Engine.Rendition);
+        Assert.Equal("16-bit", config.Engine.Rendition);
         Assert.False(config.Game.InstantDock);
         Assert.True(File.Exists(Path.Combine(directory, ConfigFileName + ".bad")));
     }
@@ -139,7 +139,7 @@ public class ConfigFileTests
             $"{{\"engine\": {{\"windowScale\": {scale}, \"tier\": \"8Bit\"}}}}");
 
         Assert.Equal(1, config.Engine.WindowScale);
-        Assert.Equal("EightBit", config.Engine.Rendition);
+        Assert.Equal("8-bit", config.Engine.Rendition);
     }
 
     [Fact]
@@ -151,7 +151,7 @@ public class ConfigFileTests
             /*lang=json,strict*/ "{\"engine\": {\"windowScale\": 3, \"tier\": \"8Bit\"}}");
 
         Assert.Equal(3, config.Engine.WindowScale);
-        Assert.Equal("EightBit", config.Engine.Rendition);
+        Assert.Equal("8-bit", config.Engine.Rendition);
     }
 
     [Fact]
@@ -168,7 +168,7 @@ public class ConfigFileTests
     // spelling of its own to apply - it cannot have one for a rendition it
     // has never seen.
     [Theory]
-    [InlineData("EightBit")]
+    [InlineData("8-bit")]
     [InlineData("Psychedelic")]
     public void WriteConfigWritesTheRenditionName(string rendition)
     {
@@ -185,9 +185,9 @@ public class ConfigFileTests
     // digit. Both the old key and the old spelling have to survive, or every
     // config file written before this change quietly loses its choice.
     [Theory]
-    [InlineData("8Bit", "EightBit")]
-    [InlineData("16Bit", "SixteenBit")]
-    [InlineData("EightBit", "EightBit")]
+    [InlineData("8Bit", "8-bit")]
+    [InlineData("16Bit", "16-bit")]
+    [InlineData("EightBit", "8-bit")]
     public void RepairUpgradesTheOldTierSetting(string written, string expected)
     {
         EngineConfigSettings engine = new() { Tier = written };
