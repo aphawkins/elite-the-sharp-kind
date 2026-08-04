@@ -20,5 +20,5 @@ internal static class LegalStatusBand
 
     internal static string For(int bounty) => bounty == 0
         ? "Clean"
-        : bounty > FugitiveBounty ? "Fugitive" : "Offender";
+        : bounty >= FugitiveBounty ? "Fugitive" : "Offender";
 }

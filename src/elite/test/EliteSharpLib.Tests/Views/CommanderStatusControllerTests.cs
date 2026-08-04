@@ -53,7 +53,8 @@ public class CommanderStatusControllerTests
 
     [Theory]
     [InlineData(0, "Clean")]
-    [InlineData(50, "Offender")]
+    [InlineData(49, "Offender")]
+    [InlineData(50, "Fugitive")]
     [InlineData(51, "Fugitive")]
     public void LegalStatusBandsOnTheCommandersRecord(int legalStatus, string expected)
     {

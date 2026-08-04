@@ -55,16 +55,6 @@ there before starting an item that mentions a decision.
       [elite-readme.md](elite-readme.md#environment-variables)); they are
       otherwise hours of play away.
 
-- [ ] [EliteSharpLib] **A legal status of exactly 50 shows "Offender"
-      instead of "Fugitive"** — original status screen
-      ([elite-source-docked.asm:6270-6277](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-docked.asm))
-      does `CPY #50` then branches on carry, so **50 and above** is
-      Fugitive (0 = Clean, 1-49 = Offender, 50+ = Fugitive, per the
-      original's own comment at asm:1419-1428). `LegalStatusBand.For`
-      (`LegalStatusBand.cs:21-23`) uses `bounty > FugitiveBounty` (i.e.
-      `> 50`), so a bounty of exactly 50 is misclassified as "Offender".
-      One-character fix (`>` to `>=`) once confirmed.
-
 - [ ] [EliteSharpLib] **A full cargo hold shouldn't damage the ship when
       scooping, but the port applies full collision damage anyway** — the
       original has two distinct outcomes: can't scoop at all (canister

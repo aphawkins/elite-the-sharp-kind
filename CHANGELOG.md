@@ -7,6 +7,12 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Legal status band, 2026-08-04)
+
+- **A legal status of exactly 50 showed "Offender" instead of "Fugitive".**
+  The original's `CPY #50` branches on carry, so 50 and above is Fugitive;
+  `LegalStatusBand.For` used `bounty > 50`, misclassifying exactly 50.
+
 ### Fixed (Pack-hunter spawns, 2026-08-04)
 
 - **Pack-hunter spawns were missing Cobra Mk III and used the wrong
