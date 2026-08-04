@@ -7,6 +7,17 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Investigated (Docking-bay roll-alignment threshold, 2026-08-04)
+
+- **Confirmed not a bug.** The backlog suspected `FlyToDockingBay`'s
+  `0.9166f` roll-alignment threshold was ~2.7x too strict against the
+  original's `|A| >= 33` check. That suspicion divided by the wrong
+  denominator (96, the unit vector's own magnitude) instead of 36 (the
+  dot product's own max magnitude after its implicit `>>8` scaling - the
+  same shape of error as the equipment tech-level item below). The
+  correct normalization is `33/36 ≈ 0.9167`, which is exactly the
+  `0.9166f` already in the port. No code change.
+
 ### Fixed (Sun orientation, 2026-08-04)
 
 - **The sun no longer rotates with the player's roll and pitch.** Traced

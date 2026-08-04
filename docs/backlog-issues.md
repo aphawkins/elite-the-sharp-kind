@@ -85,21 +85,6 @@ there before starting an item that mentions a decision.
       above) that isn't actually what the original does — needs someone
       who can resolve the byte-layout reading before it's implemented.
 
-- [ ] [EliteSharpLib] **Docking-bay roll-alignment threshold looks about
-      2.7x too strict** — original `DOCKIT` part `PH32`
-      ([elite-source-flight.asm:10356-10387](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))
-      checks `|roofv(station) . sidev(ship)| >= 33/96 ≈ 0.344` (doubled dot
-      product >= 66 against a max unit-vector magnitude of 96) before
-      committing to the final docking-bay approach — documented as
-      deliberately loose ("it just needs to be parallel-ish"). `FlyToDockingBay`
-      (`Pilot.cs:340-347`) checks the equivalent dot product against
-      `0.9166f` instead. If real, the ported autopilot demands near-perfect
-      roll alignment where the original was forgiving, likely causing
-      stalling or slow docking approaches for both the player's docking
-      computer and NPC ships (both go through `AutoPilotShip`). Needs
-      someone to re-derive the exact normalized threshold and verify against
-      actual docking behaviour before treating as confirmed.
-
 ## Could
 
 - [ ] [Useful.Graphics] No frustum side-plane clipping: `NearPlaneClip`
@@ -153,3 +138,15 @@ re-covered.
       one-level-too-strict; that was wrong. Mining Laser and Military
       Laser were genuinely off by the same mis-derivation's mirror error
       (too lenient) and have been fixed — see CHANGELOG.
+- [ ] [EliteSharpLib] Docking-bay roll-alignment threshold
+      (`FlyToDockingBay`, `Pilot.cs:342`, `MathF.Abs(dir) >= 0.9166f`) —
+      **not a bug.** A prior sweep computed the original's `CPX #66`
+      threshold as `33/96 ≈ 0.344`, dividing by the *unit vector's* own
+      magnitude (96). But `TAS4`'s dot product (like the unrelated `CNT`
+      dot product used elsewhere in `TACTICS`) is right-shifted by 8 as
+      part of the multiply, capping its own high byte at `96*96/256 = 36`,
+      not 96 — the same-shaped error as the equipment tech-level item
+      above. The correct normalization is `33/36 ≈ 0.9167`, which is
+      exactly `0.9166f` — already in the port, already correct, and
+      already symmetric (`MathF.Abs`) as the original's "positive or
+      negative, just needs to be parallel" comment describes.
