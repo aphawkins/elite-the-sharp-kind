@@ -569,18 +569,13 @@ internal sealed partial class Combat
     {
         ExplodeObject(obj);
 
-        if (obj.Type == ShipType.Asteroid)
+        if (obj.Type == ShipType.Asteroid && _laserType == LaserType.Mining)
         {
-            if (_laserType is LaserType.Mining or LaserType.Pulse)
-            {
-                LaunchLoot(obj, ShipType.Rock);
-            }
+            LaunchLoot(obj, ShipType.Rock);
         }
-        else
-        {
-            LaunchLoot(obj, ShipType.Alloy);
-            LaunchLoot(obj, ShipType.Cargo);
-        }
+
+        LaunchLoot(obj, ShipType.Alloy);
+        LaunchLoot(obj, ShipType.Cargo);
     }
 
     private void StationTactics(IShip ship)

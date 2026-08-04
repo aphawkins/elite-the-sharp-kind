@@ -55,22 +55,6 @@ there before starting an item that mentions a decision.
       [elite-readme.md](elite-readme.md#environment-variables)); they are
       otherwise hours of play away.
 
-- [ ] [EliteSharpLib] **Asteroid loot drops are wrong on two counts: Pulse
-      lasers shouldn't yield splinters, and asteroids should still be able
-      to drop alloy/cargo** — original kill-loot logic
-      ([elite-source-flight.asm:3291-3314](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm)):
-      splinters only drop if the kill shot's laser power exactly equals the
-      mining laser's value (`CMP #Mlas`) — Pulse-laser kills get none. Then,
-      unconditionally, *every* kill (including asteroids) falls through to
-      `nosp` and attempts to spawn alloy plates and cargo canisters
-      (`SPIN PLT`/`SPIN OIL`) regardless of ship type — the splinter check
-      is an addition on top of that, not an alternative to it.
-      `DestroyTarget` (`Combat.cs:566-582`) instead does `if (Asteroid) {
-      splinters if Mining OR Pulse } else { alloy + cargo }` — an asteroid
-      kill in the port can only ever yield splinters (never alloy/cargo),
-      and any other ship kill can never yield splinters, when the original
-      has no such exclusivity and gates splinters on Mining specifically.
-
 - [ ] [EliteSharpLib] **Police-spawn chance factors in legal status under
       an inverted condition** — original
       ([elite-source-flight.asm:24683-24726](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))

@@ -7,6 +7,15 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Asteroid loot drops, 2026-08-04)
+
+- **Asteroid loot drops were wrong on two counts.** Splinters should only
+  drop from a mining-laser kill, not a Pulse-laser kill; and every kill,
+  asteroids included, should still yield alloy plates and cargo canisters
+  on top of any splinters. `DestroyTarget` instead made splinters and
+  alloy/cargo mutually exclusive by ship type, and let Pulse-laser kills
+  yield splinters too.
+
 ### Fixed (Witchspace Thargoid ambush, 2026-08-04)
 
 - **Witchspace now always spawns exactly 4 Thargoids.** The original loops

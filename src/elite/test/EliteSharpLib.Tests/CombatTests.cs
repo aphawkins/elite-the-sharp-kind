@@ -2,6 +2,8 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Reflection;
+using EliteSharp.Abstractions.Ships;
 using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
@@ -88,6 +90,52 @@ public class CombatTests
         combat.ScoopItem(canister);
 
         Assert.True(ship.ShieldFront < PlayerShip.ShieldMax);
+    }
+
+    [Fact]
+    public void DestroyingAnAsteroidWithAPulseLaserYieldsAlloyAndCargoButNoSplinters()
+    {
+        // Arrange: original CMP #Mlas only spawns splinters when the killing
+        // laser is exactly the mining laser - Pulse-laser kills get none -
+        // but every kill, asteroids included, still falls through to spawn
+        // alloy plates and cargo canisters.
+        Combat combat = CreateCombat(out Universe universe, out _, out _, randomValue: 2);
+        SetLaserType(combat, LaserType.Pulse);
+        FakeShip asteroid = new(new FakeEliteDraw(), new(new FakeRandomSource())) { Type = ShipType.Asteroid, LootMax = 15 };
+
+        InvokeDestroyTarget(combat, asteroid);
+
+        // Alloy (2) and cargo (2) still spawn; no rock splinters.
+        Assert.Equal(4, universe.GetAllObjects().Count());
+    }
+
+    [Fact]
+    public void DestroyingAnAsteroidWithAMiningLaserYieldsSplintersAlloyAndCargo()
+    {
+        // Arrange: a mining-laser kill gets splinters in addition to the
+        // alloy/cargo every kill yields, not instead of it.
+        Combat combat = CreateCombat(out Universe universe, out _, out _, randomValue: 2);
+        SetLaserType(combat, LaserType.Mining);
+        FakeShip asteroid = new(new FakeEliteDraw(), new(new FakeRandomSource())) { Type = ShipType.Asteroid, LootMax = 15 };
+
+        InvokeDestroyTarget(combat, asteroid);
+
+        // Splinters (2) plus alloy (2) plus cargo (2).
+        Assert.Equal(6, universe.GetAllObjects().Count());
+    }
+
+    private static void SetLaserType(Combat combat, LaserType laserType)
+    {
+        FieldInfo field = typeof(Combat).GetField("_laserType", BindingFlags.Instance | BindingFlags.NonPublic)
+            ?? throw new MissingFieldException(nameof(Combat), "_laserType");
+        field.SetValue(combat, laserType);
+    }
+
+    private static void InvokeDestroyTarget(Combat combat, IShip obj)
+    {
+        MethodInfo method = typeof(Combat).GetMethod("DestroyTarget", BindingFlags.Instance | BindingFlags.NonPublic)
+            ?? throw new MissingMethodException(nameof(Combat), "DestroyTarget");
+        method.Invoke(combat, [obj]);
     }
 
     private static Combat CreateCombat(out Universe universe, out PlayerShip ship, out Trade trade, int randomValue)
