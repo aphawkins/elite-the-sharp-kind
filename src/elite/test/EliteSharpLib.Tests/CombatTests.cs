@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Numerics;
 using System.Reflection;
 using EliteSharp.Abstractions.Ships;
 using EliteSharp.Renditions.SixteenBit;
@@ -27,7 +28,7 @@ public class CombatTests
     {
         // Arrange: the 1-in-256-ish escort roll (RNG.Random(256) > 64) is
         // forced deterministically instead of hunting for a seed that hits it.
-        Combat combat = CreateCombat(out Universe universe, out _, out _, randomValue: 254);
+        Combat combat = CreateCombat(out Universe universe, out _, out _, out _, randomValue: 254);
 
         // Act
         combat.CreateThargoid();
@@ -40,7 +41,7 @@ public class CombatTests
     public void CreateThargoidDoesNotLaunchThargletBelowThreshold()
     {
         // Arrange: force the same roll to miss the threshold.
-        Combat combat = CreateCombat(out Universe universe, out _, out _, randomValue: 0);
+        Combat combat = CreateCombat(out Universe universe, out _, out _, out _, randomValue: 0);
 
         // Act
         combat.CreateThargoid();
@@ -54,7 +55,7 @@ public class CombatTests
     {
         // Arrange: original MA59 - scooping fails because the hold is full,
         // which only plays a destruction sound, no OOPS damage call.
-        Combat combat = CreateCombat(out _, out PlayerShip ship, out _, randomValue: 0);
+        Combat combat = CreateCombat(out _, out PlayerShip ship, out _, out _, randomValue: 0);
         ship.HasFuelScoop = true;
         ship.CargoCapacity = 0;
         ship.ShieldFront = PlayerShip.ShieldMax;
@@ -77,7 +78,7 @@ public class CombatTests
     {
         // Arrange: original MA58 - can't scoop at all, so this is a genuine
         // collision and takes full OOPS damage.
-        Combat combat = CreateCombat(out _, out PlayerShip ship, out _, randomValue: 0);
+        Combat combat = CreateCombat(out _, out PlayerShip ship, out _, out _, randomValue: 0);
         ship.HasFuelScoop = false;
         ship.CargoCapacity = 100;
         ship.ShieldFront = PlayerShip.ShieldMax;
@@ -99,7 +100,7 @@ public class CombatTests
         // laser is exactly the mining laser - Pulse-laser kills get none -
         // but every kill, asteroids included, still falls through to spawn
         // alloy plates and cargo canisters.
-        Combat combat = CreateCombat(out Universe universe, out _, out _, randomValue: 2);
+        Combat combat = CreateCombat(out Universe universe, out _, out _, out _, randomValue: 2);
         SetLaserType(combat, LaserType.Pulse);
         FakeShip asteroid = new(new FakeEliteDraw(), new(new FakeRandomSource())) { Type = ShipType.Asteroid, LootMax = 15 };
 
@@ -114,7 +115,7 @@ public class CombatTests
     {
         // Arrange: a mining-laser kill gets splinters in addition to the
         // alloy/cargo every kill yields, not instead of it.
-        Combat combat = CreateCombat(out Universe universe, out _, out _, randomValue: 2);
+        Combat combat = CreateCombat(out Universe universe, out _, out _, out _, randomValue: 2);
         SetLaserType(combat, LaserType.Mining);
         FakeShip asteroid = new(new FakeEliteDraw(), new(new FakeRandomSource())) { Type = ShipType.Asteroid, LootMax = 15 };
 
@@ -122,6 +123,43 @@ public class CombatTests
 
         // Splinters (2) plus alloy (2) plus cargo (2).
         Assert.Equal(6, universe.GetAllObjects().Count());
+    }
+
+    [Fact]
+    public void PoliceIgnoreLegalStatusWithNoPoliceNearby()
+    {
+        // Arrange: original LDX MANY+COPS; BEQ P%+5 skips ORing in our legal
+        // status when there are no cops in the bubble yet - they haven't
+        // scanned us, so a bad reputation alone shouldn't summon them.
+        Combat combat = CreateCombat(out Universe universe, out _, out _, out GameState gameState, randomValue: 50);
+        gameState.Cmdr.LegalStatus = 200;
+
+        InvokeCheckForPolice(combat);
+
+        Assert.Empty(universe.GetAllObjects());
+    }
+
+    [Fact]
+    public void PoliceFactorInLegalStatusWhenAlreadyPresent()
+    {
+        // Arrange: with cops already in the bubble, our legal status is ORed
+        // into the spawn chance - they've almost certainly scanned us.
+        Combat combat = CreateCombat(out Universe universe, out _, out _, out GameState gameState, randomValue: 50);
+        gameState.Cmdr.LegalStatus = 200;
+        FakeShip existingPolice = new(new FakeEliteDraw(), new(new FakeRandomSource())) { Type = ShipType.Viper };
+        universe.AddNewShip(existingPolice, default, Matrix4x4.Identity, 0, 0);
+
+        InvokeCheckForPolice(combat);
+
+        // The existing Viper plus a newly spawned police ship.
+        Assert.Equal(2, universe.GetAllObjects().Count());
+    }
+
+    private static void InvokeCheckForPolice(Combat combat)
+    {
+        MethodInfo method = typeof(Combat).GetMethod("CheckForPolice", BindingFlags.Instance | BindingFlags.NonPublic)
+            ?? throw new MissingMethodException(nameof(Combat), "CheckForPolice");
+        method.Invoke(combat, null);
     }
 
     private static void SetLaserType(Combat combat, LaserType laserType)
@@ -138,10 +176,11 @@ public class CombatTests
         method.Invoke(combat, [obj]);
     }
 
-    private static Combat CreateCombat(out Universe universe, out PlayerShip ship, out Trade trade, int randomValue)
+    private static Combat CreateCombat(
+        out Universe universe, out PlayerShip ship, out Trade trade, out GameState gameState, int randomValue)
     {
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
-        GameState gameState = new(views, TestMissions.Registry());
+        gameState = new(views, TestMissions.Registry());
         ship = new PlayerShip();
         trade = new Trade(gameState, ship);
         FakeEliteDraw draw = new();

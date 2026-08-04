@@ -55,18 +55,6 @@ there before starting an item that mentions a decision.
       [elite-readme.md](elite-readme.md#environment-variables)); they are
       otherwise hours of play away.
 
-- [ ] [EliteSharpLib] **Police-spawn chance factors in legal status under
-      an inverted condition** — original
-      ([elite-source-flight.asm:24683-24726](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))
-      ORs the player's legal status into the spawn-chance roll only when
-      police are *already present* in the local bubble (`LDX MANY+COPS;
-      BEQ P%+5` skips the OR when the count is zero) — modelling "they've
-      already scanned you." `CheckForPolice` (`Combat.cs:902-908`) has
-      `if (_universe.PoliceCount == 0) { offense |= LegalStatus; }` — the
-      exact opposite condition, applying legal status only when *no*
-      police are nearby instead. One-word fix (`==` to `!=`) once
-      confirmed.
-
 ## Should
 
 - [ ] [EliteSharpLib] Number of stars is not proportional to screen area

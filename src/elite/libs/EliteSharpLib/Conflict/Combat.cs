@@ -899,7 +899,7 @@ internal sealed partial class Combat
     private void CheckForPolice()
     {
         int offense = _trade.IsCarryingContraband() * 2;
-        if (_universe.PoliceCount == 0)
+        if (_universe.PoliceCount != 0)
         {
             offense |= _gameState.Cmdr.LegalStatus;
         }

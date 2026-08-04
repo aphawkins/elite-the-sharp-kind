@@ -7,6 +7,15 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Police-spawn legal status, 2026-08-04)
+
+- **Police-spawn chance factored in legal status under an inverted
+  condition.** The original ORs the player's legal status into the
+  spawn-chance roll only when police are already present in the local
+  bubble - modelling "they've already scanned you." `CheckForPolice` had
+  the exact opposite condition, applying legal status only when *no*
+  police were nearby.
+
 ### Fixed (Asteroid loot drops, 2026-08-04)
 
 - **Asteroid loot drops were wrong on two counts.** Splinters should only
