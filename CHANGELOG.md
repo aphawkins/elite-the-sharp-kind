@@ -7,6 +7,13 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Witchspace Thargoid ambush, 2026-08-04)
+
+- **Witchspace now always spawns exactly 4 Thargoids.** The original loops
+  spawning Thargoids until the count exceeds 3, always ending with exactly
+  4 - deterministic, not random. `EnterWitchspace` was spawning a random
+  1-4 instead, so a misjump ambush sometimes gave only one Thargoid.
+
 ### Fixed (Fuel scooping rate, 2026-08-04)
 
 - **Fuel scooping gained roughly 40x too much fuel per tick.** The original

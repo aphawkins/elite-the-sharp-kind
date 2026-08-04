@@ -824,9 +824,7 @@ internal sealed class Space
         _combat.Reset();
         _universe.ClearUniverse();
 
-        int nthg = _rng.Random(1, 5);
-
-        for (int i = 0; i < nthg; i++)
+        for (int i = 0; i < 4; i++)
         {
             _combat.CreateThargoid();
         }

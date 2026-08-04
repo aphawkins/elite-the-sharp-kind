@@ -521,6 +521,36 @@ public class SpaceTests
         Assert.True(gameState.InWitchspace);
     }
 
+    [Fact]
+    public void MisjumpingIntoWitchspaceAlwaysSpawnsExactlyFourThargoids()
+    {
+        // Original MJP1: GTHG loops until MANY+THG exceeds 3, always ending
+        // with exactly 4 Thargoids - not a random 1-4. A random byte of 253
+        // also clears the >64 escort threshold in CreateThargoid, so each
+        // Thargoid brings its Tharglet companion too.
+        Space space = CreateSpace(
+            out GameState gameState,
+            out Universe universe,
+            out PlayerShip ship,
+            out _,
+            out _,
+            out _,
+            out _,
+            out FakeRandomSource randomSource);
+        ship.Fuel = 7;
+        gameState.DockedPlanet.D = 0;
+        gameState.HyperspacePlanet.D = 10;
+        randomSource.RandomValue = 253;
+
+        space.StartHyperspace();
+        for (int i = 0; i < 16; i++)
+        {
+            space.CountdownHyperspace();
+        }
+
+        Assert.Equal(8, universe.GetAllObjects().Count());
+    }
+
     private static void AddFarPlanetAndStation(Universe universe, FakeEliteDraw draw, RNG rng)
     {
         IShip planet = new FakeShip(draw, rng) { Type = ShipType.Planet };

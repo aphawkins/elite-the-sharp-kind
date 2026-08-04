@@ -55,18 +55,6 @@ there before starting an item that mentions a decision.
       [elite-readme.md](elite-readme.md#environment-variables)); they are
       otherwise hours of play away.
 
-- [ ] [EliteSharpLib] **Witchspace should always spawn exactly 4 Thargoids,
-      not a random 1-4** — original `MJP1`
-      ([elite-source-flight.asm:17372-17383](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))
-      loops spawning Thargoids via `GTHG` until the count exceeds 3, always
-      ending with exactly 4 — deterministic, not random. `EnterWitchspace`
-      (`Space.cs:827`) does `int nthg = _rng.Random(1, 5);` and spawns that
-      many, giving a random 1-4 instead. A misjump should reliably be a
-      "four Thargoids" ambush every time; the port sometimes gives only
-      one. (Same code independently confirms the stardust-count finding
-      already on this list: the original sets `NOSTM = 3` for witchspace
-      right after this loop.)
-
 - [ ] [EliteSharpLib] **Asteroid loot drops are wrong on two counts: Pulse
       lasers shouldn't yield splinters, and asteroids should still be able
       to drop alloy/cargo** — original kill-loot logic
