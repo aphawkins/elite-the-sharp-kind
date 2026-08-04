@@ -67,6 +67,34 @@ public class IKeyboardTests
     }
 
     [Fact]
+    public void IsPressedConsumesAPressSoOnlyOneReaderActsOnIt()
+    {
+        FakeKeyboard kb = new();
+
+        kb.KeyDown(ConsoleKey.M, ConsoleModifiers.None);
+
+        Assert.True(kb.IsPressed(ConsoleKey.M));
+        Assert.False(kb.IsPressed(ConsoleKey.M)); // the second reader sees nothing
+    }
+
+    [Fact]
+    public void IsHeldReflectsContinuousModifierStateWithoutConsumingIt()
+    {
+        FakeKeyboard kb = new();
+
+        // Ctrl arrives as its own event, keyless, and stays down while held.
+        kb.KeyDown(ConsoleKey.None, ConsoleModifiers.Control);
+        kb.KeyDown(ConsoleKey.M, ConsoleModifiers.None);
+
+        Assert.True(kb.IsHeld(ConsoleModifiers.Control));
+        Assert.True(kb.IsHeld(ConsoleModifiers.Control)); // repeated reads don't clear it
+        Assert.True(kb.IsPressed(ConsoleKey.M));
+
+        kb.KeyUp(ConsoleKey.None, ConsoleModifiers.Control);
+        Assert.False(kb.IsHeld(ConsoleModifiers.Control));
+    }
+
+    [Fact]
     public void PollDoesNotThrowAndCloseCanBeSetByImplementation()
     {
         FakeKeyboard kb = new();

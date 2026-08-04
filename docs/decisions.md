@@ -9,6 +9,25 @@ decision may reshape items in either. Newest first. When a decision
 reshapes or unblocks backlog items, those items are updated in the backlog
 to reference the decision here rather than restating it.
 
+## Resolved (2026-08-03) — a modifier that decides is held, not pressed
+
+The Ctrl-M mission jump stopped M firing missiles. `IsPressed` is one-shot: it
+reports a press and consumes it. The jump's guard read M first and Ctrl second,
+so with `ELITE_DEBUG_MISSIONS` set every bare M was eaten by a cheat that then
+declined to run, and the missile handler polled an empty keyboard.
+
+- **A modifier that only decides what another key means is read with
+  `IsHeld`, and read first.** `IKeyboard` gained `IsHeld(ConsoleModifiers)`
+  for it. Consuming the key first steals it from the handler it belongs to;
+  consuming the modifier steals it from the next combination in the tick
+  (Ctrl-H's galactic hyperspace, which was reading it the same way and now
+  does not).
+- **The fake keyboard models the one-shot contract.** `FakeKeyboard.IsPressed`
+  answered every call, so no test could have caught this - and four tests were
+  leaning on it, holding one key-down across twenty ticks of menu navigation
+  that the real keyboard would have moved one row. The fake consumes now and
+  those tests press per tick.
+
 ## Resolved (2026-08-03) — a tier is a rendition, and a rendition draws everything
 
 The entry below put the screens behind the plugin door and left the rest of

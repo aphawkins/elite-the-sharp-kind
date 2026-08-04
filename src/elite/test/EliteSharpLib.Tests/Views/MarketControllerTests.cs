@@ -50,9 +50,10 @@ public class MarketControllerTests
         MarketController controller = CreateController(out FakeKeyboard keyboard);
         controller.Reset();
 
-        keyboard.KeyDown(ConsoleKey.DownArrow, default);
+        // A press is read once, so each step down needs its own key-down.
         for (int i = 0; i < 20; i++)
         {
+            keyboard.KeyDown(ConsoleKey.DownArrow, default);
             controller.HandleInput();
         }
 

@@ -281,9 +281,12 @@ public sealed class EliteMain : IGame, IGameApp
     // see MissionJump for what each jump costs.
     private void HandleMissionJumpKeys()
     {
+        // Ctrl first, and held rather than pressed: IsPressed(M) consumes the
+        // press, so testing M first ate the bare M that fires a missile, and
+        // consuming Ctrl here would take it from Ctrl-H's galactic hyperspace.
         if (!MissionJump.IsEnabled ||
-            !_keyboard.IsPressed(ConsoleKey.M) ||
-            !_keyboard.IsPressed(ConsoleModifiers.Control))
+            !_keyboard.IsHeld(ConsoleModifiers.Control) ||
+            !_keyboard.IsPressed(ConsoleKey.M))
         {
             return;
         }

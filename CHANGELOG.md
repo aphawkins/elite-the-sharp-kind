@@ -7,6 +7,21 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (The M key fires a missile again, 2026-08-03)
+
+- **A bare `M` fires a missile again.** With `ELITE_DEBUG_MISSIONS` set, the
+  Ctrl-M mission jump was reading the `M` key before checking Ctrl. A key
+  press is read once and consumed, so the jump ate every bare `M` and then
+  declined to run, leaving nothing for the missile. It tests Ctrl first now,
+  and without consuming it - `Ctrl-H`'s galactic hyperspace was taking Ctrl
+  away the same way and no longer does.
+- `IKeyboard` gained **`IsHeld(ConsoleModifiers)`** for guards of the form
+  "Ctrl decides what this key does", and its documentation now says which of
+  the two to reach for.
+- **The test keyboard models the one-shot contract.** `FakeKeyboard.IsPressed`
+  answered every call, so no test could see two handlers act on one press.
+  It consumes now, like the real keyboard.
+
 ### Changed (Renditions, 2026-08-03)
 
 - Everything the game draws is now a **rendition**: a plugin holding the

@@ -53,9 +53,9 @@ public class SettingsControllerTests
         controller.Reset();
 
         // Navigate to the last row - the Back row.
-        keyboard.KeyDown(ConsoleKey.DownArrow, default);
         for (int i = 0; i < 4; i++)
         {
+            keyboard.KeyDown(ConsoleKey.DownArrow, default);
             controller.HandleInput();
         }
 

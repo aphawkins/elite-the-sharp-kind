@@ -45,9 +45,9 @@ public class EngineSettingsControllerTests
         controller.Reset();
 
         // Down twice to row 2, then toggle.
-        keyboard.KeyDown(ConsoleKey.DownArrow, default);
         for (int i = 0; i < 2; i++)
         {
+            keyboard.KeyDown(ConsoleKey.DownArrow, default);
             controller.HandleInput();
         }
 
@@ -78,9 +78,9 @@ public class EngineSettingsControllerTests
         controller.Reset();
 
         // Navigate to the last row - the Back row.
-        keyboard.KeyDown(ConsoleKey.DownArrow, default);
         for (int i = 0; i < 6; i++)
         {
+            keyboard.KeyDown(ConsoleKey.DownArrow, default);
             controller.HandleInput();
         }
 

@@ -51,6 +51,35 @@ public class MissionJumpTests
         }
     }
 
+    // The cheat shares its key with the missile. Reading M before checking
+    // Ctrl consumed the press - IsPressed is one-shot - so with the cheat
+    // enabled a bare M stopped firing missiles. The jump must leave an
+    // unmodified M for whoever else wants it.
+    [Fact]
+    public void ABareMIsLeftForTheMissile()
+    {
+        string? original = Environment.GetEnvironmentVariable(MissionJump.EnvVar);
+        Environment.SetEnvironmentVariable(MissionJump.EnvVar, "1");
+
+        try
+        {
+            using HeadlessGameHarness harness = new();
+            harness.Run(3, [new(1, ConsoleKey.N, KeyScriptAction.Tap), new(2, ConsoleKey.Spacebar, KeyScriptAction.Tap)]);
+
+            // Docked, so nothing else claims M either: whether the press
+            // survives the tick is exactly whether the cheat swallowed it.
+            Assert.True(harness.Game.State.IsDocked);
+            harness.Keyboard.KeyDown(ConsoleKey.M, ConsoleModifiers.None);
+            harness.Step([]);
+
+            Assert.True(harness.Keyboard.IsPressed(ConsoleKey.M));
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable(MissionJump.EnvVar, original);
+        }
+    }
+
     [Fact]
     public void IsDisabledUnlessTheEnvironmentVariableIsSet()
         => Assert.Equal(

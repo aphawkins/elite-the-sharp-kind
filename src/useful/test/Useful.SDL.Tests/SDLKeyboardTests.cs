@@ -20,6 +20,29 @@ public class SDLKeyboardTests
         Assert.Equal(ConsoleModifiers.None, modifiers);
     }
 
+    // A modifier that only decides what another key means has to be readable
+    // without being taken away - see EliteMain's Ctrl-M mission jump, which
+    // shares its key with the missile and its Ctrl with galactic hyperspace.
+    [Fact]
+    public void IsHeldReportsAModifierWithoutConsumingIt()
+    {
+        FakeInput fakeInput = new();
+        SoftwareKeyboard kb = new(fakeInput);
+
+        kb.KeyDown(ConsoleKey.None, ConsoleModifiers.Control);
+        kb.KeyDown(ConsoleKey.M, ConsoleModifiers.None);
+
+        Assert.True(kb.IsHeld(ConsoleModifiers.Control));
+        Assert.True(kb.IsHeld(ConsoleModifiers.Control));
+        Assert.False(kb.IsHeld(ConsoleModifiers.Shift));
+
+        // and the key it modifies is still there for its handler
+        Assert.True(kb.IsPressed(ConsoleKey.M));
+
+        kb.KeyUp(ConsoleKey.None, ConsoleModifiers.Control);
+        Assert.False(kb.IsHeld(ConsoleModifiers.Control));
+    }
+
     [Fact]
     public void KeyDownLastPressedReturnsAndClears()
     {

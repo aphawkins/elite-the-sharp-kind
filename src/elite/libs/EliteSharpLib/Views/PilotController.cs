@@ -233,7 +233,10 @@ internal sealed class PilotController : IScreenController
 
         if (_keyboard.IsPressed(ConsoleKey.H) && (!_gameState.IsDocked))
         {
-            if (_keyboard.IsPressed(ConsoleModifiers.Control))
+            // Held, not pressed: Ctrl only picks which hyperspace this is, and
+            // consuming it would take it from any other Ctrl combination read
+            // later in the same tick.
+            if (_keyboard.IsHeld(ConsoleModifiers.Control))
             {
                 _space.StartGalacticHyperspace();
             }
