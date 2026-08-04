@@ -7,6 +7,26 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Firing-cone thresholds, 2026-08-04) [best-effort, see note]
+
+- **Firing-cone thresholds now use a single re-derived gate.** The
+  original's `CPX #160` (X <= -32 of a max magnitude 36, ≈ -0.889
+  normalized) decides both whether a ship may fire and whether it sets
+  its `Firing` flag - the same check, used twice. The port gated firing
+  consideration at a looser `-0.833` and then re-checked a third,
+  un-original `-0.917` threshold before setting the flag. Both are now
+  `-0.889`, and `FiringTactics` sets the flag unconditionally once
+  entered, matching "same gate for both." The final hit threshold
+  (`-0.972`) was already confirmed faithful and is unchanged.
+  **Caveat:** the disassembly's own prose translation of `CPX #160` into
+  decimal ranges doesn't fully reconcile with standard two's-complement
+  arithmetic on a full re-derivation; this fix trusts the stated intent
+  (three graduated bands, matching the already-verified `-0.972` sibling
+  value) over that literal byte-level puzzle. A companion investigation
+  into 80-point missile splash damage was attempted but left unfixed -
+  see [backlog-issues.md](docs/backlog-issues.md) - after the same kind
+  of byte-layout reading produced a result too narrow to trust.
+
 ### Fixed (Stardust count, 2026-08-04)
 
 - **Stardust count now varies by location, matching the original's two

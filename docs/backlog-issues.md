@@ -65,19 +65,6 @@ there before starting an item that mentions a decision.
       [backlog-roadmap.md](backlog-roadmap.md) so the coordinate space it
       scales against is settled.
 
-- [ ] [EliteSharpLib] **Firing-cone thresholds vs original `TACTICS` may be
-      off** — `AttackTactics` (`Combat.cs:659-664`) gates laser consideration
-      at `direction <= -0.833`, looser than the 6502 original's `CPX #160`
-      gate (X <= -32 of a max magnitude 36, i.e. ≈ -0.889 normalized —
-      [elite-source-flight.asm:9780](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm)).
-      `FiringTactics` (`Combat.cs:714-734`) then sets the `Firing` flag at
-      `-0.917`, a third threshold with no counterpart in the original, which
-      uses the *same* gate for "may fire" and "sets firing flag." Only the
-      final hit threshold (`-0.972`, matching original `CPX #163`/X<=-35) is
-      confirmed faithful. Net effect if real: enemy ships enter "about to
-      fire" state across a wider cone than the original. Not yet confirmed —
-      needs someone to re-derive the exact normalized thresholds and trace
-      `AttackTactics`'s callers.
 - [ ] [EliteSharpLib] **Possible missing 80-point splash damage when a
       missile self-destructs near the player** — original `TA35`/`TA87`
       ([elite-source-flight.asm:9219-9245](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))
@@ -88,7 +75,15 @@ there before starting an item that mentions a decision.
       no-damage ECM-jam path; no equivalent near-miss splash path was found
       in a quick read. May be handled elsewhere (missile removal/collision
       code was not traced) — needs verification before treating as
-      confirmed.
+      confirmed. **2026-08-04 attempt:** the mechanic is real and clearly
+      missing, but TA35's own proximity test (`x_lo OR y_lo OR z_lo` of the
+      missile's position) only examines each axis's *low* byte, ignoring
+      the high byte/sign entirely — read literally that's satisfied on
+      roughly 1-in-256-cubed ticks, which can't be what "just got destroyed
+      near us" means for ordinary play. Left unfixed rather than guess a
+      distance convention (e.g. reusing the direct-hit box a few lines
+      above) that isn't actually what the original does — needs someone
+      who can resolve the byte-layout reading before it's implemented.
 
 - [ ] [EliteSharpLib] **Sun may rotate with player roll/pitch when the
       original explicitly prevents it** — original `MVEIT` part 6

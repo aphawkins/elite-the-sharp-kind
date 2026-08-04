@@ -126,6 +126,50 @@ public class CombatTests
     }
 
     [Fact]
+    public void FiringTacticsSetsFiringAndHostileRegardlessOfHitChance()
+    {
+        // Arrange: best-effort re-derivation of the original TACTICS/CPX #160
+        // - the same gate governs both "may fire" and "sets Firing flag", so
+        // FiringTactics no longer re-checks a separate (and un-original)
+        // -0.917 threshold before setting the flag. -0.90 is between the old
+        // dead zone and the hit threshold, and previously wouldn't have set
+        // either flag.
+        Combat combat = CreateCombat(out _, out PlayerShip ship, out _, out _, randomValue: 0);
+        ship.ShieldFront = PlayerShip.ShieldMax;
+        FakeShip enemy = new(new FakeEliteDraw(), new(new FakeRandomSource())) { LaserStrength = 10 };
+
+        InvokeFiringTactics(combat, enemy, -0.90f, new(0, 0, 1, 0));
+
+        Assert.True(enemy.Flags.HasFlag(ShipProperties.Firing));
+        Assert.True(enemy.Flags.HasFlag(ShipProperties.Hostile));
+        Assert.Equal(PlayerShip.ShieldMax, ship.ShieldFront);
+    }
+
+    [Fact]
+    public void AttackTacticsDoesNotFireBetweenTheOldAndNewThreshold()
+    {
+        // Arrange: -0.86 is between the old -0.833 gate and the re-derived
+        // -0.889 (-32/36) gate, so it used to enter firing tactics and set
+        // the Firing flag; it shouldn't any more.
+        Combat combat = CreateCombat(out Universe universe, out _, out _, out _, randomValue: 0);
+        FakeShip enemy = new(new FakeEliteDraw(), new(new FakeRandomSource()))
+        {
+            Type = ShipType.CobraMk3,
+            Flags = ShipProperties.Angry,
+            Rotmat = Matrix4x4.Identity,
+            Location = new(0.51f, 0, -0.86f, 0),
+            LaserStrength = 10,
+            Energy = 100,
+            EnergyMax = 100,
+        };
+        universe.AddNewShip(enemy, enemy.Location, enemy.Rotmat, 0, 0);
+
+        combat.Tactics(enemy, 0);
+
+        Assert.False(enemy.Flags.HasFlag(ShipProperties.Firing));
+    }
+
+    [Fact]
     public void PoliceIgnoreLegalStatusWithNoPoliceNearby()
     {
         // Arrange: original LDX MANY+COPS; BEQ P%+5 skips ORing in our legal
@@ -206,6 +250,13 @@ public class CombatTests
         MethodInfo method = typeof(Combat).GetMethod("DestroyTarget", BindingFlags.Instance | BindingFlags.NonPublic)
             ?? throw new MissingMethodException(nameof(Combat), "DestroyTarget");
         method.Invoke(combat, [obj]);
+    }
+
+    private static void InvokeFiringTactics(Combat combat, IShip ship, float direction, Vector4 nvec)
+    {
+        MethodInfo method = typeof(Combat).GetMethod("FiringTactics", BindingFlags.Instance | BindingFlags.NonPublic)
+            ?? throw new MissingMethodException(nameof(Combat), "FiringTactics");
+        method.Invoke(combat, [ship, direction, nvec]);
     }
 
     private static Combat CreateCombat(

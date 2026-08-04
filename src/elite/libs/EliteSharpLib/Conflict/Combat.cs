@@ -653,8 +653,9 @@ internal sealed partial class Combat
         Vector4 nvec = VectorMaths.UnitVector(ship.Location);
         float direction = VectorMaths.VectorDotProduct(nvec, ship.Rotmat.GetRow(2));
 
+        // Original CPX #160 (X <= -32 of magnitude 36): also gates Firing.
         if (ship.Location.Length() < 8192 &&
-            direction <= -0.833 &&
+            direction <= -0.889 &&
             ship.LaserStrength != 0)
         {
             FiringTactics(ship, direction, nvec);
@@ -710,10 +711,7 @@ internal sealed partial class Combat
 
     private void FiringTactics(IShip ship, float direction, Vector4 nvec)
     {
-        if (direction <= -0.917)
-        {
-            ship.Flags |= ShipProperties.Firing | ShipProperties.Hostile;
-        }
+        ship.Flags |= ShipProperties.Firing | ShipProperties.Hostile;
 
         if (direction <= -0.972)
         {
