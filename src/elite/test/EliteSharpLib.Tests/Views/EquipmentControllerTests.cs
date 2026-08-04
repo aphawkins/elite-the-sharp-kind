@@ -97,6 +97,38 @@ public class EquipmentControllerTests
         Assert.Equal("1,000.0", Assert.Single(model.Rows, row => row.Name == "Docking Computers").Price);
     }
 
+    [Theory]
+    [InlineData(9, false)]
+    [InlineData(10, true)]
+    public void MilitaryLaserRequiresPlanetTechLevel10(int planetTechLevel, bool expectedVisible)
+    {
+        // Arrange: original PRXS position 12 (0-based) is shown once
+        // planet tech + 3 > 12, i.e. planet tech >= 10.
+        EquipmentController controller = CreateController(out GameState gameState, out _);
+        gameState.CurrentPlanetData.TechLevel = planetTechLevel;
+
+        controller.Reset();
+
+        EquipmentModel model = controller.BuildModel();
+        Assert.Equal(expectedVisible, model.Rows.Any(row => row.Name == "Military Laser"));
+    }
+
+    [Theory]
+    [InlineData(10, false)]
+    [InlineData(11, true)]
+    public void MiningLaserRequiresPlanetTechLevel11(int planetTechLevel, bool expectedVisible)
+    {
+        // Arrange: original PRXS position 13 (0-based) is shown once
+        // planet tech + 3 > 13, i.e. planet tech >= 11.
+        EquipmentController controller = CreateController(out GameState gameState, out _);
+        gameState.CurrentPlanetData.TechLevel = planetTechLevel;
+
+        controller.Reset();
+
+        EquipmentModel model = controller.BuildModel();
+        Assert.Equal(expectedVisible, model.Rows.Any(row => row.Name == "Mining Laser"));
+    }
+
     private static EquipmentController CreateController(out GameState gameState, out PlayerShip ship)
     {
         FakeKeyboard keyboard = new();

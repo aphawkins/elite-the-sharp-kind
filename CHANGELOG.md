@@ -7,6 +7,17 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Mining/Military Laser tech-level gating, 2026-08-04)
+
+- **Mining Laser and Military Laser were available a tech level too
+  early.** Re-deriving the original's positional tech-gating formula (item
+  at `PRXS` position *N* shows once `planet_tech >= N - 2`) shows Mining
+  Laser needs tech 11 and Military Laser needs tech 10; the port had both
+  at tech 9. Every other gated item (E.C.M., Fuel Scoops, Escape Pod,
+  Energy Bomb, Energy Unit, Docking Computer, Galactic Hyperdrive) was
+  re-checked against the same formula and already matched exactly - a
+  prior backlog note suspecting E.C.M. was based on a mis-derivation.
+
 ### Fixed (Police-spawn legal status, 2026-08-04)
 
 - **Police-spawn chance factored in legal status under an inverted

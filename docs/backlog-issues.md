@@ -123,25 +123,6 @@ there before starting an item that mentions a decision.
       someone to re-derive the exact normalized threshold and verify against
       actual docking behaviour before treating as confirmed.
 
-- [ ] [EliteSharpLib] **Equipment tech-level gating may be systematically
-      off by one for several items** — the original has no per-item tech
-      level; availability is positional: the item at list position *N* in
-      `PRXS` shows once `system_tech + 3 >= N`
-      ([elite-source-docked.asm:16343-16357](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-docked.asm)).
-      Working that formula out for E.C.M. (position 3) gives `tech >= 0`,
-      i.e. **available at every tech level** — but `EquipmentController.cs:28`
-      gives it `TechLevel = 2`, checked as `(planetTech+1) >= TechLevel`
-      (`ListPrices`, `EquipmentController.cs:356-364`), which requires
-      `tech >= 1` and locks E.C.M. out of the lowest-tech systems where the
-      original allows it. Re-deriving the same original formula for the
-      other gated items (Fuel Scoops, Escape Pod, Energy Bomb, Energy Unit,
-      Docking Computer, Galactic Hyperdrive, the Pulse/Beam laser upgrades)
-      mostly showed the same one-level-too-strict pattern, but Mining Laser
-      and Military Laser came out matching or one level too lenient instead
-      — inconsistent enough that a full re-derivation by hand is needed
-      before treating this as confirmed beyond the E.C.M. case, which is
-      the one unambiguous example.
-
 - [ ] [EliteSharpLib] **Bounty hunters turning hostile at legal status 40
       may be entirely missing** — original `TACTICS` part 3
       ([elite-source-flight.asm:9479-9486](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))
@@ -228,3 +209,14 @@ re-covered.
       manifest lists `[ "SixteenBit" ]` only. Closing it is an asset-authoring
       job, not a code fix; see the SCR 8-bit asset set item under Won't in
       [backlog-roadmap.md](backlog-roadmap.md) for what it would take.
+- [ ] [EliteSharpLib] Equipment tech-level gating for E.C.M., Fuel Scoops,
+      Escape Pod, Energy Bomb, Energy Unit, Docking Computer and Galactic
+      Hyperdrive — **not a bug.** A 2026-08-04 re-derivation of the
+      original's positional formula (item at `PRXS` position *N* shows once
+      `planet_tech >= N - 2`, from the `EQL1` list loop at
+      [elite-source-docked.asm:16371-16408](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-docked.asm))
+      matches every one of these items' current `TechLevel` exactly. A
+      prior sweep had mis-derived the formula and flagged E.C.M. as
+      one-level-too-strict; that was wrong. Mining Laser and Military
+      Laser were genuinely off by the same mis-derivation's mirror error
+      (too lenient) and have been fixed — see CHANGELOG.
