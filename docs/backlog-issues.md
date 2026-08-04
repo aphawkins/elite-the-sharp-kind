@@ -55,20 +55,6 @@ there before starting an item that mentions a decision.
       [elite-readme.md](elite-readme.md#environment-variables)); they are
       otherwise hours of play away.
 
-- [ ] [EliteSharpLib] **Docking Computer costs 1500 Cr, should be 1000 Cr** —
-      original `PRXS` table entry 10
-      ([elite-source-docked.asm:6171](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-docked.asm),
-      `EQUW 10000` = 1000.0 Cr at the table's ×10 scale) prices the Docking
-      Computer at 1000 Cr. `EquipmentController.cs:33` has
-      `new(false, true, 9, 1500, " Docking Computers", ...)` — 1500, the same
-      value as Energy Unit one row up, suggesting a copy/paste slip. Every
-      other item in `_equipmentStock` was checked against `PRXS` and matches
-      exactly (Missile 30, Cargo Bay 400, E.C.M. 600, Fuel Scoops 525,
-      Escape Pod 1000, Energy Bomb 900, Energy Unit 1500, Galactic
-      Hyperdrive 5000, Military Laser 6000, Mining Laser 800, fuel priced at
-      `(7-fuel)*2`), so this looks like an isolated fix: change `1500` to
-      `1000` on that one line.
-
 - [ ] [EliteSharpLib] **Hyperspace misjump chance is roughly a third too
       low** — original `TT18` ([elite-source-flight.asm:17444-17447](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))
       triggers a misjump into witchspace when the random byte is `>= 253`

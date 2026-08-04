@@ -7,6 +7,12 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Docking Computer price, 2026-08-04)
+
+- **Docking Computer cost 1500 Cr, should be 1000 Cr.** The original `PRXS`
+  price table has it at 1000 Cr; the port's equipment stock had it at 1500,
+  the same value as the Extra Energy Unit one row above - a copy/paste slip.
+
 ### Fixed (Missiles arrive, 2026-08-03)
 
 - **A missile detonates when it gets there.** It was asking whether the

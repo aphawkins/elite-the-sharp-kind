@@ -30,7 +30,7 @@ internal sealed class EquipmentController : IScreenController
         new(false, true, 6, 1000, " Escape Capsule", EquipmentType.EscapeCapsule),
         new(false, true, 7, 900, " Energy Bomb", EquipmentType.EnergyBomb),
         new(false, true, 8, 1500, " Extra Energy Unit", EquipmentType.EnergyUnit),
-        new(false, true, 9, 1500, " Docking Computers", EquipmentType.DockingComputer),
+        new(false, true, 9, 1000, " Docking Computers", EquipmentType.DockingComputer),
         new(false, true, 10, 5000, " Galactic Hyperdrive", EquipmentType.GalacticHyperdrive),
         new(false, false, 3, 400, "+Pulse Laser", EquipmentType.PulseLaser),
         new(false, true, 3, 0, "-Pulse Laser", EquipmentType.PulseLaser),

@@ -85,6 +85,18 @@ public class EquipmentControllerTests
         Assert.Equal("14.0", controller.BuildModel().Rows[0].Price);
     }
 
+    [Fact]
+    public void DockingComputerCosts1000Credits()
+    {
+        EquipmentController controller = CreateController(out GameState gameState, out _);
+        gameState.CurrentPlanetData.TechLevel = 10;
+
+        controller.Reset();
+
+        EquipmentModel model = controller.BuildModel();
+        Assert.Equal("1,000.0", Assert.Single(model.Rows, row => row.Name == "Docking Computers").Price);
+    }
+
     private static EquipmentController CreateController(out GameState gameState, out PlayerShip ship)
     {
         FakeKeyboard keyboard = new();
