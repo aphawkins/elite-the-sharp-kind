@@ -55,22 +55,6 @@ there before starting an item that mentions a decision.
       [elite-readme.md](elite-readme.md#environment-variables)); they are
       otherwise hours of play away.
 
-- [ ] [EliteSharpLib] **Fuel scooping gains roughly 40x too much fuel per
-      tick** — original's scoop-and-temperature block
-      ([elite-source-flight.asm:3855-3867](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))
-      adds `speed/8` to the ×10-scaled fuel counter, i.e. **`speed/80`**
-      actual light years per scoop tick — explicitly documented as
-      "between 0.1 and 0.5 light years" across the speed range 1-40.
-      `UpdateCabinTemp` (`Space.cs:380`) does `_ship.Fuel += _ship.Speed / 2`
-      directly in real light-year units, i.e. **`speed/2`** per tick — 40x
-      the original rate (0.5 LY vs 20 LY at max speed, against a 7 LY tank).
-      The calling cadence was checked and matches exactly
-      (`EliteMain.cs:255`, `(State.MCount & 31) == 20`, same as the
-      original's gating), so this isn't a frequency mismatch — it's the
-      per-tick formula. Everything else in the same routine (ambient temp
-      30, scoop threshold 224, overheat/death behaviour, max fuel cap of 7)
-      was checked and matches.
-
 - [ ] [EliteSharpLib] **Witchspace should always spawn exactly 4 Thargoids,
       not a random 1-4** — original `MJP1`
       ([elite-source-flight.asm:17372-17383](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))

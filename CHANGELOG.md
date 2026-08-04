@@ -7,6 +7,13 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Fuel scooping rate, 2026-08-04)
+
+- **Fuel scooping gained roughly 40x too much fuel per tick.** The original
+  scoops `speed/80` light years per tick (0.1-0.5 LY across the speed
+  range); `UpdateCabinTemp` was adding `speed/2` directly, 40x the intended
+  rate against a 7 LY tank.
+
 ### Fixed (Scooping with a full hold, 2026-08-04)
 
 - **A full cargo hold no longer damages the ship when scooping.** The

@@ -377,7 +377,7 @@ internal sealed class Space
             return;
         }
 
-        _ship.Fuel += _ship.Speed / 2;
+        _ship.Fuel += _ship.Speed / 80;
         if (_ship.Fuel > _ship.MaxFuel)
         {
             _ship.Fuel = _ship.MaxFuel;

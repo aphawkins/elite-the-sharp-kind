@@ -368,7 +368,7 @@ public class SpaceTests
         space.UpdateCabinTemp();
 
         Assert.Equal((207 * PlayerShip.TemperatureStep) + PlayerShip.AmbientTemperature, ship.CabinTemperature);
-        Assert.Equal(5, ship.Fuel);
+        Assert.Equal(0.125f, ship.Fuel);
         Assert.Equal("Fuel Scoop On", gameState.MessageString);
     }
 
