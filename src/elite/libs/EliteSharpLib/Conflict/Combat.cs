@@ -343,12 +343,14 @@ internal sealed partial class Combat
             return;
         }
 
-        if (!_ship.HasFuelScoop
-            || obj.Location.Y >= 0 ||
-            _trade.TotalCargoTonnage() == _ship.CargoCapacity)
+        if (!_ship.HasFuelScoop || obj.Location.Y >= 0 || _trade.TotalCargoTonnage() == _ship.CargoCapacity)
         {
             ExplodeObject(obj);
-            _ship.DamageShip(128 + (obj.Energy / 2), obj.Location.Z > 0);
+            if (!_ship.HasFuelScoop || obj.Location.Y >= 0)
+            {
+                _ship.DamageShip(128 + (obj.Energy / 2), obj.Location.Z > 0);
+            }
+
             return;
         }
 

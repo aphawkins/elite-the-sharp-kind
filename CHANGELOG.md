@@ -7,6 +7,15 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Scooping with a full hold, 2026-08-04)
+
+- **A full cargo hold no longer damages the ship when scooping.** The
+  original has two distinct outcomes: can't scoop at all (no fuel scoop, or
+  the canister is above the ship) takes full collision damage; a scoop
+  attempt that fails only because the hold is full just destroys the
+  canister with a sound, no damage. `ScoopItem` collapsed both cases into
+  one branch that always applied collision damage.
+
 ### Fixed (Legal status band, 2026-08-04)
 
 - **A legal status of exactly 50 showed "Offender" instead of "Fugitive".**

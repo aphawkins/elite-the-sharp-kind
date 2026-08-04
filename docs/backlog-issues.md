@@ -55,23 +55,6 @@ there before starting an item that mentions a decision.
       [elite-readme.md](elite-readme.md#environment-variables)); they are
       otherwise hours of play away.
 
-- [ ] [EliteSharpLib] **A full cargo hold shouldn't damage the ship when
-      scooping, but the port applies full collision damage anyway** — the
-      original has two distinct outcomes: can't scoop at all (canister
-      above the ship, or no fuel scoop fitted — `MA58`,
-      [elite-source-flight.asm:3157-3176](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))
-      takes full collision damage (`128 + energy/2` via `OOPS`); tried to
-      scoop but the hold is full (`tnpr1` fails → `MA59`, asm:3123-3129)
-      only plays a destruction sound and removes the canister — **no damage
-      at all**. `ScoopItem` (`Combat.cs:346-353`) collapses all three
-      conditions (`!HasFuelScoop || obj.Location.Y >= 0 ||
-      TotalCargoTonnage() == CargoCapacity`) into one branch that always
-      applies `128 + obj.Energy/2` damage, so a full hold now deals the
-      same heavy damage as a genuine bad-angle collision. The scooped-item
-      type mapping elsewhere in the same method was checked and is correct
-      (cargo canisters, escape capsules → Slaves, Tharglets → Alien Items
-      all match the original's per-ship-type values).
-
 - [ ] [EliteSharpLib] **Fuel scooping gains roughly 40x too much fuel per
       tick** — original's scoop-and-temperature block
       ([elite-source-flight.asm:3855-3867](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))
