@@ -13,4 +13,17 @@
     <ProjectReference Include="..\..\test\Useful.Fakes\Useful.Fakes.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- FakeAssetLocator points PalettePath at the consuming project's own
+         output, and AssetSet.Load throws if the file is not there - so the
+         Create benchmark needs a palette of its own. The Elite benchmarks get
+         one by referencing a rendition, which this project cannot do: Useful
+         does not depend on either game. A fixture instead. Its colours are
+         not what is measured, only how many there are, so it mirrors a real
+         rendition's set rather than a token two or three. -->
+    <None Update="Assets\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

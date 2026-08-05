@@ -7,6 +7,68 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (the benchmark suites actually run again, 2026-08-05)
+
+- **Every benchmark project was broken in a different way**, all of them
+  invisibly, because the benchmark-history workflow is manually triggered
+  and the failures are not build failures. Found while fixing the artifacts
+  path below, and fixed together since none of them is worth much alone:
+  - `Useful.Graphics.Benchmarks`: `SoftwareGraphicsBenchmarks.Create` threw
+    "The 16-bit asset set is missing its palette" - `FakeAssetLocator`
+    points `PalettePath` at the consuming project's own output and this
+    project had no palette there. One throwing benchmark suppresses the
+    whole class's summary export, so the class produced no results at all.
+    It now carries an `Assets/Palette/palette.json` fixture of its own,
+    copied to output. Not a project reference to a rendition, which is how
+    the Elite benchmarks get theirs: Useful does not depend on either game.
+  - `EliteSharpLib.Benchmarks`: every benchmark threw in its constructor
+    with `KeyNotFoundException: 'Scanner'`. `EliteDraw` needs the
+    rendition's artwork and a bare `FakeAssetLocator` has none. The project
+    now copies the 16-bit rendition under `Renditions/` the way the app and
+    the test project do, and a new `BenchmarkAssets.Locator()` composes it
+    with the game's assets through `RenditionAssets` - the same composition
+    `EliteSharpLib.Tests` builds, and the one the benchmarks are supposed to
+    be measuring. All six benchmarks now report real numbers.
+  - `EliteSharpLib.Benchmarks` and `Useful.Controls.Benchmarks` also both
+    refused to run at all whenever a git worktree checkout sits nested under
+    the repo: BenchmarkDotNet's per-run project generation looks the project
+    up by name across the whole tree and throws on more than one match.
+    Both now use `InProcessNoEmitToolchain`, as `Useful.Graphics.Benchmarks`
+    already did.
+
+### Fixed (benchmark artifacts path, 2026-08-05)
+
+- **All three benchmark projects wrote their reports where nothing looked
+  for them.** `EliteSharpLib.Benchmarks`, `Useful.Controls.Benchmarks` and
+  `Useful.Graphics.Benchmarks` each passed
+  `WithArtifactsPath("../../../reports")`, which from the project directory
+  resolves to `src/reports/`. Two things expected `<project>/reports/`
+  instead: `.gitignore`'s `src/*/perf/*/reports/` rule, so every local run
+  left untracked files behind; and, more seriously, every
+  `output-file-path` in `.github/workflows/benchmarks.yml`, so the
+  benchmark-history workflow has been reading files that were never
+  written since the reports directories were first ignored (d9ea0dbb).
+  The path is now `"reports"` in all three, matching both. Verified by
+  running each suite and confirming the exact JSON path the workflow names
+  now exists and is git-ignored.
+
+### Changed (off-screen face cost profiled, 2026-08-05)
+
+- **Frustum side-plane clipping measured and declined.** The backlog carried
+  an item saying left/right/top/bottom clipping happens after projection, in
+  the per-scanline span clamps of `DrawTriangleFilled`, and asked for a
+  profile before anything was changed. New `OffScreenTriangleBenchmarks`
+  (`src/useful/perf/Useful.Graphics.Benchmarks`) measures a face wholly off
+  to the side (1.79 us), one straddling an edge (1.78 us) and one off the
+  top (8 ns - already rejected by the Y clamp), against a full-screen fill
+  (93.7 us) and a small on-screen face (536 ns) at 512x512. The wasted work
+  is 2% of one legitimate full-screen face, so the item moved to Won't in
+  [backlog-issues.md](docs/backlog-issues.md) with the numbers attached.
+- **Fixed a Release-build break** in `EliteSharpLib.Tests/TestAssets.cs`:
+  the rendition-folder field introduced by the previous commit was a
+  `static readonly` without the `s_` prefix the analyzers require (IDE1006),
+  which failed the build before any test could run.
+
 ### Changed (star count now per-tier, 16-bit starfield softened, 2026-08-05)
 
 - **Star count was fixed regardless of screen area** (issue #4): the

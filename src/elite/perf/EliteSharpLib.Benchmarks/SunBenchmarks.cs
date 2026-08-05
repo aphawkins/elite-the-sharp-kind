@@ -9,8 +9,8 @@ using EliteSharpLib.Graphics;
 using EliteSharpLib.Missions;
 using EliteSharpLib.Suns;
 using Microsoft.Extensions.Logging.Abstractions;
+using Useful.Assets;
 using Useful.Controls;
-using Useful.Fakes.Assets;
 using Useful.Graphics;
 using Useful.Graphics.Rendering;
 using Useful.SDL;
@@ -29,7 +29,7 @@ public class SunBenchmarks : IDisposable
 
     public SunBenchmarks()
     {
-        FakeAssetLocator assetLocator = new();
+        IAssetLocator assetLocator = BenchmarkAssets.Locator();
         SoftwareKeyboard keyboard = new(new SDLInput());
         Useful.Abstraction.ScreenManager<Views.Screen, Views.IScreenController> views = new(keyboard);
 

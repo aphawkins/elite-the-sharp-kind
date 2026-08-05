@@ -17,4 +17,32 @@
     <ProjectReference Include="..\..\libs\EliteSharp.Renditions.SixteenBit\EliteSharp.Renditions.SixteenBit.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <RenditionProject Include="..\..\libs\EliteSharp.Renditions.SixteenBit\EliteSharp.Renditions.SixteenBit.csproj" />
+  </ItemGroup>
+
+  <!-- The rendition into a folder of its own under Renditions, exactly as the
+       app's build and the test project's do it. Without this the benchmarks
+       have nothing to draw with and every one of them fails in its
+       constructor - which is the failure the game would have, so it is worth
+       it being the same one. Only the 16-bit rendition: it is the one these
+       benchmarks measure. -->
+  <Target Name="CopyRenditions" AfterTargets="Build">
+    <MSBuild Projects="@(RenditionProject)"
+             Targets="GetTargetPath"
+             Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework)">
+      <Output TaskParameter="TargetOutputs" ItemName="RenditionAssembly" />
+    </MSBuild>
+    <ItemGroup>
+      <RenditionAsset Include="..\..\libs\EliteSharp.Renditions.SixteenBit\Assets\**\*"
+                      Rendition="EliteSharp.Renditions.SixteenBit" />
+    </ItemGroup>
+    <Copy SourceFiles="@(RenditionAssembly)"
+          DestinationFolder="$(OutDir)Renditions\%(Filename)"
+          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(RenditionAsset)"
+          DestinationFolder="$(OutDir)Renditions\%(RenditionAsset.Rendition)\Assets\%(RecursiveDir)"
+          SkipUnchangedFiles="true" />
+  </Target>
+
 </Project>

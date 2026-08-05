@@ -36,23 +36,26 @@ there before starting an item that mentions a decision.
 
 ## Could
 
-- [ ] [Useful.Graphics] No frustum side-plane clipping: `NearPlaneClip`
-      clips one plane, and left/right/top/bottom are handled *after*
-      rasterisation, per pixel, by `SetClipRegion` plus the `Math.Max/Min`
-      span clamps in `DrawTriangleFilled`. Output is correct — this is a
-      cost defect, not a wrongness one — but a face projected far off-screen
-      still runs a full scanline loop over a hugely clamped span. Clip (or
-      guard-band) in camera space before rasterising. Related to, and
-      bounded by, the rasteriser-throughput Won't in
-      [backlog-roadmap.md](backlog-roadmap.md): both games are frame-capped
-      by design and nothing here is a measured bottleneck, so only take this
-      if a profile says so.
-
 ## Won't
 
 Investigated and deliberately not fixed. Kept so the same ground isn't
 re-covered.
 
+- [ ] [Useful.Graphics] No frustum side-plane clipping — **profiled, not
+      worth fixing.** `NearPlaneClip` clips one plane; left/right/top/bottom
+      are handled *after* projection by `SetClipRegion` plus the
+      `Math.Max/Min` span clamps in `DrawTriangleFilled`, so a face off to
+      the side still walks its clamped scanline range. Output was never
+      wrong — the only question was cost, and a 2026-08-05 measurement
+      (`OffScreenTriangleBenchmarks`, 512×512, i5-14600K) settles it: a
+      full-height face entirely off to the left costs **1.79 µs**, a face
+      straddling the right edge **1.78 µs**, against **93.7 µs** for one
+      full-screen face and **536 ns** for a small on-screen one. A face off
+      the top or bottom is already free (**8 ns**) — the Y clamp rejects it
+      before the loop. So the worst wasted face costs 2% of a single
+      legitimate full-screen fill, and it would take roughly 9,000 of them
+      per frame to spend a 60fps budget; both games draw tens. Revisit only
+      if a profile of real gameplay contradicts this.
 - [ ] [Useful.Graphics] Fan triangulation of concave polygons — **not
       reachable with the current assets.** `DrawPolygonFilled` fans from
       vertex 0, which is wrong for a concave polygon. A 2026-07-31 sweep of

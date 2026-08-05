@@ -30,6 +30,11 @@ internal static class Program
             args.Length == 0 ? ["--filter", "*"] : args,
             ManualConfig
                 .Create(DefaultConfig.Instance)
-                .WithArtifactsPath("../../../reports")
+
+                // Relative to the project directory, which is where both
+                // `dotnet run` and the benchmarks workflow start from. Kept
+                // in step with .gitignore's src/*/perf/*/reports/ and with
+                // the workflow's output-file-path.
+                .WithArtifactsPath("reports")
                 .AddJob(Job.Default.WithToolchain(InProcessNoEmitToolchain.Instance)));
 }

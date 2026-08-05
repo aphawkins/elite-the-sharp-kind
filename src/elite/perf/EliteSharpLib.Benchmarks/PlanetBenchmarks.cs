@@ -10,8 +10,8 @@ using EliteSharpLib.Missions;
 using EliteSharpLib.Planets;
 using Microsoft.Extensions.Logging.Abstractions;
 using Useful;
+using Useful.Assets;
 using Useful.Controls;
-using Useful.Fakes.Assets;
 using Useful.Fakes.Controls;
 using Useful.Graphics;
 using Useful.Graphics.Rendering;
@@ -33,7 +33,7 @@ public class PlanetBenchmarks : IDisposable
     public PlanetBenchmarks()
     {
         FakeInput input = new();
-        FakeAssetLocator assetLocator = new();
+        IAssetLocator assetLocator = BenchmarkAssets.Locator();
         SoftwareKeyboard keyboard = new(input);
         Useful.Abstraction.ScreenManager<Views.Screen, Views.IScreenController> views = new(keyboard);
 
