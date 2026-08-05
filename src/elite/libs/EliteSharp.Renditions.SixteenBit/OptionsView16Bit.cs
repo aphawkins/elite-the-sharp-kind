@@ -2,34 +2,52 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Numerics;
 using EliteSharp.Abstractions.Assets;
 using EliteSharp.Abstractions.Views;
-using Useful;
+using Useful.Widgets;
 
 namespace EliteSharp.Renditions.SixteenBit;
 
 /// <summary>
 /// The 16-bit options menu: the 512-space layout, and nothing else.
+/// <para>
+/// Two stacks - the options and the credits under them - each a container the
+/// rows are centred in. The option rows are the width of the selection bar,
+/// so a selected row's block is the bar; the credits are the full viewport
+/// width, which is how they land where screen-centred text used to.
+/// </para>
 /// </summary>
 internal sealed class OptionsView16Bit : BaseView16Bit, IView<OptionsModel>
 {
     private const int OptionBarHeight = 15;
     private const int OptionBarWidth = 400;
+    private const int OptionSpacing = 30;
+    private const int VersionOffsetY = 80;
+    private const int CreditsOffsetY = 60;
+    private const int CreditSpacing = 20;
 
     private readonly IViewSurface _surface;
-    private readonly FastColor _colorWhite;
-    private readonly FastColor _colorLightRed;
-    private readonly FastColor _colorLightGrey;
+    private readonly WidgetStyle _style;
+    private readonly Container<Label> _options = new() { ChildAlignment = TextAlignment.Centre, Spacing = OptionSpacing };
+    private readonly Container<Label> _credits = new() { ChildAlignment = TextAlignment.Centre, Spacing = CreditSpacing };
+    private readonly Label _version;
 
     internal OptionsView16Bit(IViewSurface surface)
         : base(surface)
     {
         _surface = surface;
 
-        _colorWhite = surface.Palette["White"];
-        _colorLightRed = surface.Palette["LightRed"];
-        _colorLightGrey = surface.Palette["LightGrey"];
+        _style = new(
+            nameof(FontType.Small),
+            WidgetColors.TextOnly(surface.Palette["White"]),
+            new(surface.Palette["LightRed"], surface.Palette["White"]),
+            WidgetColors.TextOnly(surface.Palette["LightGrey"]));
+
+        _version = new(surface.Graphics, _style)
+        {
+            Alignment = TextAlignment.Centre,
+            Width = surface.Layout.ViewportWidth,
+        };
     }
 
     public void Draw(OptionsModel model)
@@ -40,29 +58,74 @@ internal sealed class OptionsView16Bit : BaseView16Bit, IView<OptionsModel>
 
         DrawViewHeader("GAME OPTIONS");
 
-        for (int i = 0; i < model.Options.Count; i++)
+        FillOptions(model);
+        FillCredits(model);
+
+        _options.Width = OptionBarWidth;
+        _options.Position = new(
+            _surface.Layout.ViewportCentre.X - (OptionBarWidth / 2),
+            (_surface.Layout.ViewportHeight - (OptionSpacing * model.Options.Count)) / 2);
+        _options.Draw();
+
+        _version.Position = new(_surface.Layout.ViewportLeft, _surface.Layout.ViewportHeight - VersionOffsetY);
+        _version.Text = model.Version;
+        _version.Draw();
+
+        _credits.Width = _surface.Layout.ViewportWidth;
+        _credits.Position = new(_surface.Layout.ViewportLeft, _surface.Layout.ViewportHeight - CreditsOffsetY);
+        _credits.Draw();
+    }
+
+    // The rows are rebuilt only when the count changes: it never does in
+    // practice, but the model owns the list, so the view does not assume it.
+    private void FillOptions(OptionsModel model)
+    {
+        if (_options.Children.Count != model.Options.Count)
         {
-            Vector2 position = new(
-                _surface.Layout.ViewportCentre.X - (OptionBarWidth / 2),
-                ((_surface.Layout.ViewportHeight - (30 * model.Options.Count)) / 2) + (i * 30));
-
-            if (i == model.HighlightedIndex)
+            _options.Clear();
+            for (int i = 0; i < model.Options.Count; i++)
             {
-                _surface.Graphics.DrawRectangleFilled(position, OptionBarWidth, OptionBarHeight, _colorLightRed);
+                _options.Add(new Label(_surface.Graphics, _style)
+                {
+                    Alignment = TextAlignment.Centre,
+                    Width = OptionBarWidth,
+                    Height = OptionBarHeight,
+                });
             }
-
-            FastColor col = model.Options[i].IsEnabled ? _colorWhite : _colorLightGrey;
-
-            _surface.Graphics.DrawTextCentre(position.Y, model.Options[i].Label, nameof(FontType.Small), col);
         }
 
-        _surface.Graphics.DrawTextCentre(_surface.Layout.ViewportHeight - 80, model.Version, nameof(FontType.Small), _colorWhite);
-
-        float y = _surface.Layout.ViewportHeight - 60;
-        foreach (string credit in model.Credits)
+        for (int i = 0; i < model.Options.Count; i++)
         {
-            _surface.Graphics.DrawTextCentre(y, credit, nameof(FontType.Small), _colorWhite);
-            y += 20;
+            Label row = _options.Children[i];
+            row.Text = model.Options[i].Label;
+            row.State = (i == model.HighlightedIndex, model.Options[i].IsEnabled) switch
+            {
+                (true, true) => WidgetState.Selected,
+                (true, false) => WidgetState.SelectedDisabled,
+                (false, true) => WidgetState.Normal,
+                (false, false) => WidgetState.Disabled,
+            };
+        }
+    }
+
+    private void FillCredits(OptionsModel model)
+    {
+        if (_credits.Children.Count != model.Credits.Count)
+        {
+            _credits.Clear();
+            for (int i = 0; i < model.Credits.Count; i++)
+            {
+                _credits.Add(new Label(_surface.Graphics, _style)
+                {
+                    Alignment = TextAlignment.Centre,
+                    Width = _surface.Layout.ViewportWidth,
+                });
+            }
+        }
+
+        for (int i = 0; i < model.Credits.Count; i++)
+        {
+            _credits.Children[i].Text = model.Credits[i];
         }
     }
 }
