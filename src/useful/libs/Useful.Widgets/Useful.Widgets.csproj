@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- On-screen widgets: the small drawing idioms a menu screen repeats -
+       a highlight bar, a label, a name-and-value row. Not to be confused
+       with Useful.Controls, which is the input side (keyboard, key scripts).
+       Knows about IGraphics and nothing above it, so it has no idea which
+       game or which rendition is drawing with it. -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\Useful.Controls\Useful.Controls.csproj" />
+    <ProjectReference Include="..\Useful.Graphics\Useful.Graphics.csproj" />
+  </ItemGroup>
+
+</Project>
