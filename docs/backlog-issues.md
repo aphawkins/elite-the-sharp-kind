@@ -34,14 +34,6 @@ there before starting an item that mentions a decision.
 
 ## Should
 
-- [ ] [EliteSharpLib] Number of stars is not proportional to screen area
-      (issue #4): the 8-bit tier renders at 320x256, a quarter the area of
-      512x512, with the same star count, so the starfield is four times as
-      dense; the 16-bit tier's 640x512 changes it again. Scale star count by
-      screen area. Sequence after the Elite non-512x512 audit in
-      [backlog-roadmap.md](backlog-roadmap.md) so the coordinate space it
-      scales against is settled.
-
 ## Could
 
 - [ ] [Useful.Graphics] No frustum side-plane clipping: `NearPlaneClip`

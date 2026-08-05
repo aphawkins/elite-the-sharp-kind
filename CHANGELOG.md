@@ -7,6 +7,28 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (star count now per-tier, 16-bit starfield softened, 2026-08-05)
+
+- **Star count was fixed regardless of screen area** (issue #4): the
+  original's NOSTM values (18 normal-space stars, 3 in witchspace) were
+  used unscaled at every tier, so the 8-bit tier's 320x256 canvas rendered
+  a starfield four times as dense as 512x512, and the 16-bit tier's
+  640x512 changed the ratio again. Rather than deriving each tier's count
+  from a formula, `IStarfieldRenderer` now exposes `NormalSpaceStarCount`
+  and `WitchspaceStarCount` so each rendition tunes its own by eye - the
+  8-bit tier keeps the original 18/3, the 16-bit tier uses 55/9.
+  `Stars.CreateNewStars`/`CreateNewWitchspaceStars` (`EliteSharpLib/Stars.cs`)
+  read these instead of a hardcoded default, and the star buffer is sized
+  to match instead of a fixed 20-slot array.
+- **16-bit starfield polish:** at 640x512 a near star's growing pixels
+  (`StarfieldRendererBase.Draw`, drawn once a star passes `WideDistance`/
+  `BlockDistance`) read as a flat white square rather than a bright point.
+  `StarfieldRenderer16Bit` now draws those extra pixels in a dimmer
+  `LighterGrey` halo instead of solid white - a lightweight stand-in for
+  anti-aliasing that needed no change to the shared `IGraphics` pixel API,
+  which has no alpha-blended draw path. The 8-bit tier is unaffected
+  (`HaloColour` defaults to the star's own colour).
+
 ### Fixed (16-bit screens re-laid-out for 640 width, 2026-08-04)
 
 - **Eight 16-bit screens were still laid out for 512 on the now-640-wide

@@ -15,7 +15,6 @@ internal sealed class Stars
     private readonly IEliteDraw _draw;
     private readonly GameState _gameState;
     private readonly PlayerShip _ship;
-    private readonly Vector4[] _stars = new Vector4[20];
     private readonly IStarfieldRenderer _renderer;
     private readonly RNG _rng;
 
@@ -23,6 +22,8 @@ internal sealed class Stars
     // to the rendition to draw. Which stars go in is the game's decision; how
     // one looks is not.
     private readonly List<StarMark> _marks = [];
+
+    private Vector4[] _stars = [];
 
     internal Stars(GameState gameState, IEliteDraw draw, PlayerShip ship, IStarfieldRenderer renderer, RNG rng)
     {
@@ -35,9 +36,9 @@ internal sealed class Stars
 
     internal bool WarpStars { get; set; }
 
-    // How many of the 20 slots are actually simulated and drawn - the
-    // original's NOSTM, 18 in normal space and 3 in witchspace.
-    private int Count { get; set; } = 18;
+    // How many stars are currently simulated and drawn. Tracks _stars' own
+    // length rather than a separate field, so the two can never desync.
+    private int Count => _stars.Length;
 
     // Star coordinates are held in the original's 256-wide space, centred on
     // the view, so they map to the screen by the same factor as the projected
@@ -50,17 +51,18 @@ internal sealed class Stars
 
     private float StarHalfHeight => _draw.Layout.ViewportCentre.Y / StarScale;
 
-    internal void CreateNewStars(int count = 18)
-    {
-        Count = Math.Clamp(count, 0, _stars.Length);
+    /// <summary>
+    /// Refills normal space with the rendition's own <see
+    /// cref="IStarfieldRenderer.NormalSpaceStarCount"/>.
+    /// </summary>
+    internal void CreateNewStars() => CreateNewStars(_renderer.NormalSpaceStarCount);
 
-        for (int i = 0; i < Count; i++)
-        {
-            _stars[i] = CreateNewStar();
-        }
-
-        WarpStars = false;
-    }
+    /// <summary>
+    /// Refills witchspace with the rendition's own <see
+    /// cref="IStarfieldRenderer.WitchspaceStarCount"/>, visibly emptier than
+    /// normal space.
+    /// </summary>
+    internal void CreateNewWitchspaceStars() => CreateNewStars(_renderer.WitchspaceStarCount);
 
     /// <summary>
     /// When we change view, flip the stars over so they look like other stars.
@@ -239,6 +241,17 @@ internal sealed class Stars
         Y = _rng.Random(-(int)StarHalfHeight, (int)StarHalfHeight) | 4,
         Z = _rng.Random(256) | 144,
     };
+
+    private void CreateNewStars(int count)
+    {
+        _stars = new Vector4[Math.Max(1, count)];
+        for (int i = 0; i < Count; i++)
+        {
+            _stars[i] = CreateNewStar();
+        }
+
+        WarpStars = false;
+    }
 
     // Draws star i in its current screen location (a bright pixel that grows
     // as it approaches the camera), then returns that screen position so the

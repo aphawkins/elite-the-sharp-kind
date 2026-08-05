@@ -18,6 +18,10 @@ internal sealed class StarfieldRenderer8Bit : StarfieldRendererBase
         : base(surface)
         => Colour = surface.Palette["White"];
 
+    public override int NormalSpaceStarCount => 18;
+
+    public override int WitchspaceStarCount => 3;
+
     protected override FastColor Colour { get; }
 
     protected override float WideDistance => 192;

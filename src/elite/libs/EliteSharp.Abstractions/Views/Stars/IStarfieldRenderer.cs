@@ -12,6 +12,20 @@ namespace EliteSharp.Abstractions.Views.Stars;
 public interface IStarfieldRenderer
 {
     /// <summary>
+    /// Gets how many stars normal space simulates - the original's NOSTM, 18.
+    /// Each tier tunes its own value rather than deriving one from screen
+    /// area, so density can be judged by eye per rendition.
+    /// </summary>
+    public int NormalSpaceStarCount { get; }
+
+    /// <summary>
+    /// Gets how many stars witchspace simulates - the original's NOSTM
+    /// dropped to 3, for a visibly emptier void. Tuned per tier alongside
+    /// <see cref="NormalSpaceStarCount"/>.
+    /// </summary>
+    public int WitchspaceStarCount { get; }
+
+    /// <summary>
     /// Draws every star the game is showing this frame.
     /// </summary>
     /// <param name="stars">The stars, already in screen coordinates.</param>

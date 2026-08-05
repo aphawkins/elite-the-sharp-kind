@@ -16,34 +16,41 @@ namespace EliteSharpLib.Tests;
 public class StarsTests
 {
     [Fact]
-    public void NormalSpaceSimulatesEighteenStars()
+    public void NormalSpaceSimulatesTheRenditionsOwnStarCount()
     {
-        Stars stars = CreateStars(out FakeStarfieldRenderer renderer);
+        // Each rendition tunes its own star count for its own resolution,
+        // rather than one being derived from another - the fake renderer's
+        // 27 stands in for whatever a rendition author picked.
+        Stars stars = CreateStars(out FakeStarfieldRenderer renderer, normalSpaceStarCount: 27);
 
         stars.CreateNewStars();
         stars.FrontStarfield();
 
-        Assert.Equal(18, renderer.LastDrawCount);
+        Assert.Equal(27, renderer.LastDrawCount);
     }
 
     [Fact]
-    public void WitchspaceSimulatesThreeStars()
+    public void WitchspaceSimulatesTheRenditionsOwnStarCount()
     {
         // Original NOSTM: 18 particles (NOST) in normal space, dropped to 3
-        // in witchspace for a visibly emptier void.
-        Stars stars = CreateStars(out FakeStarfieldRenderer renderer);
+        // in witchspace for a visibly emptier void - each rendition tunes
+        // its own pair of counts the same way.
+        Stars stars = CreateStars(out FakeStarfieldRenderer renderer, witchspaceStarCount: 5);
 
-        stars.CreateNewStars(3);
+        stars.CreateNewWitchspaceStars();
         stars.FrontStarfield();
 
-        Assert.Equal(3, renderer.LastDrawCount);
+        Assert.Equal(5, renderer.LastDrawCount);
     }
 
-    private static Stars CreateStars(out FakeStarfieldRenderer renderer)
+    private static Stars CreateStars(
+        out FakeStarfieldRenderer renderer,
+        int normalSpaceStarCount = 18,
+        int witchspaceStarCount = 3)
     {
         FakeEliteDraw draw = new();
         PlayerShip ship = new();
-        renderer = new();
+        renderer = new(normalSpaceStarCount, witchspaceStarCount);
         RNG rng = new(new FakeRandomSource());
 
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
@@ -51,8 +58,12 @@ public class StarsTests
         return new(gameState, draw, ship, renderer, rng);
     }
 
-    private sealed class FakeStarfieldRenderer : IStarfieldRenderer
+    private sealed class FakeStarfieldRenderer(int normalSpaceStarCount, int witchspaceStarCount) : IStarfieldRenderer
     {
+        public int NormalSpaceStarCount { get; } = normalSpaceStarCount;
+
+        public int WitchspaceStarCount { get; } = witchspaceStarCount;
+
         internal int LastDrawCount { get; private set; }
 
         public void Draw(IReadOnlyList<StarMark> stars) => LastDrawCount = stars.Count;

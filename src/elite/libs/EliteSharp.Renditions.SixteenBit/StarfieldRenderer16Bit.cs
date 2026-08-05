@@ -10,15 +10,32 @@ namespace EliteSharp.Renditions.SixteenBit;
 
 /// <summary>
 /// The starfield in this rendition's white, with the original's threshold for
-/// a star being near enough to draw a pixel wider.
+/// a star being near enough to draw a pixel wider. At this tier's higher
+/// resolution a flat white square reads as a blocky dot rather than a bright
+/// point, so the growing pixels around a near star's core are drawn a shade
+/// dimmer than the core itself - a soft halo standing in for true
+/// anti-aliasing, which the shared <see cref="Useful.Graphics.IGraphics"/>
+/// pixel API has no alpha-blended path for.
 /// </summary>
 internal sealed class StarfieldRenderer16Bit : StarfieldRendererBase
 {
     internal StarfieldRenderer16Bit(IViewSurface surface)
         : base(surface)
-        => Colour = surface.Palette["White"];
+    {
+        Colour = surface.Palette["White"];
+        HaloColour = surface.Palette["LighterGrey"];
+    }
+
+    // Tuned by eye for the 640x512 canvas - denser than the 8-bit tier's 18,
+    // since a starfield that sparse looks empty stretched across four times
+    // the area.
+    public override int NormalSpaceStarCount => 55;
+
+    public override int WitchspaceStarCount => 9;
 
     protected override FastColor Colour { get; }
+
+    protected override FastColor HaloColour { get; }
 
     protected override float WideDistance => 192;
 

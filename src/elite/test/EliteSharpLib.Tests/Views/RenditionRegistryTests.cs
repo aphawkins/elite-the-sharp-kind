@@ -133,6 +133,10 @@ public class RenditionRegistryTests
 
     private sealed class NothingStarfield : IStarfieldRenderer
     {
+        public int NormalSpaceStarCount => 18;
+
+        public int WitchspaceStarCount => 3;
+
         public void Draw(IReadOnlyList<StarMark> stars)
         {
         }

@@ -22,10 +22,22 @@ public abstract class StarfieldRendererBase : IStarfieldRenderer
         _surface = surface;
     }
 
+    public abstract int NormalSpaceStarCount { get; }
+
+    public abstract int WitchspaceStarCount { get; }
+
     /// <summary>
     /// Gets the colour stars are drawn in.
     /// </summary>
     protected abstract FastColor Colour { get; }
+
+    /// <summary>
+    /// Gets the colour a near star's extra pixels (beyond its single-pixel
+    /// core) are drawn in. Defaults to <see cref="Colour"/>, matching the
+    /// original's flat look; a rendition can dim it instead to soften a
+    /// growing star's edge rather than block it out in solid colour.
+    /// </summary>
+    protected virtual FastColor HaloColour => Colour;
 
     /// <summary>
     /// Gets the distance a star has to be inside to be drawn a pixel wider.
@@ -54,13 +66,13 @@ public abstract class StarfieldRendererBase : IStarfieldRenderer
 
             if (star.Distance < WideDistance)
             {
-                _surface.Graphics.DrawPixel(new(star.Position.X + 1, star.Position.Y), Colour);
+                _surface.Graphics.DrawPixel(new(star.Position.X + 1, star.Position.Y), HaloColour);
             }
 
             if (star.Distance < BlockDistance)
             {
-                _surface.Graphics.DrawPixel(new(star.Position.X, star.Position.Y + 1), Colour);
-                _surface.Graphics.DrawPixel(new(star.Position.X + 1, star.Position.Y + 1), Colour);
+                _surface.Graphics.DrawPixel(new(star.Position.X, star.Position.Y + 1), HaloColour);
+                _surface.Graphics.DrawPixel(new(star.Position.X + 1, star.Position.Y + 1), HaloColour);
             }
         }
     }
