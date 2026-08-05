@@ -5,8 +5,10 @@
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Config;
 using EliteSharpLib.Planets;
+using EliteSharpLib.Suns;
 using Useful.Config;
 using Useful.Controls;
+using Useful.Widgets;
 
 namespace EliteSharpLib.Views;
 
@@ -14,58 +16,87 @@ namespace EliteSharpLib.Views;
 // shared engine settings have their own screen - see EngineSettingsController.
 internal sealed class SettingsController : SettingsListController
 {
-    private readonly Space _space;
-
     internal SettingsController(
         GameState gameState,
         IKeyboard keyboard,
         Space space,
         IConfigWriter<EliteConfig> configWriter,
-        IView<SettingsListModel> view)
+        IBaseView baseView,
+        IViewSurface surface,
+        SettingsListStyle style)
         : base(
             gameState,
             keyboard,
-            configWriter,
+            baseView,
+            surface,
+            style,
             "GAME SETTINGS",
-            [
-                new("Planet Style:", ["Solid", "Striped", "Fractal"]),
-                new("Sun Style:", ["Solid", "Gradient"]),
-                new("Planet Desc.:", ["BBC", "MSX"]),
-                new("Instant Dock:", ["Off", "On"]),
-            ],
-            view)
-        => _space = space;
-
-    protected override int SettingValue(int index) => index switch
+            BuildSettings(gameState, space, configWriter))
     {
-        0 => (int)State.Config.Game.PlanetStyle,
-        1 => (int)State.Config.Game.SunStyle,
-        2 => State.Config.Game.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0,
-        3 => State.Config.Game.InstantDock ? 1 : 0,
-        _ => 0,
-    };
+    }
 
-    protected override void ToggleSetting(int index)
+    // Each setting names what it stores, how it is shown and what has to
+    // happen when it changes - all in one place, where it used to be split
+    // across an array, an index-to-value switch and a value-to-effect switch.
+    private static IReadOnlyList<ISetting> BuildSettings(
+        GameState gameState,
+        Space space,
+        IConfigWriter<EliteConfig> configWriter)
     {
-        switch (index)
-        {
-            case 0:
-                State.Config.Game.PlanetStyle = Next(State.Config.Game.PlanetStyle);
-                _space.RefreshPlanetStyle();
-                break;
+        ArgumentNullException.ThrowIfNull(gameState);
+        ArgumentNullException.ThrowIfNull(space);
+        ArgumentNullException.ThrowIfNull(configWriter);
 
-            case 1:
-                State.Config.Game.SunStyle = Next(State.Config.Game.SunStyle);
-                _space.RefreshSunStyle();
-                break;
+        EliteConfig config = gameState.Config;
+        void Save() => configWriter.WriteConfig(config);
 
-            case 2:
-                State.Config.Game.PlanetDescriptions = Next(State.Config.Game.PlanetDescriptions);
-                break;
-
-            case 3:
-                State.Config.Game.InstantDock = !State.Config.Game.InstantDock;
-                break;
-        }
+        // Planet Style is PlanetType, not the rendition's PlanetStyle:
+        // whether the world is drawn solid at all is the engine's Graphic
+        // Style, so this row picks only what a solid planet looks like and
+        // has no wireframe of its own.
+        return
+        [
+            new SavedSetting(
+                new EnumSetting<PlanetType>(
+                    "Planet Style:",
+                    [
+                        (PlanetType.Solid, "Solid"),
+                        (PlanetType.Striped, "Striped"),
+                        (PlanetType.Fractal, "Fractal"),
+                    ],
+                    () => config.Game.PlanetStyle,
+                    value =>
+                    {
+                        config.Game.PlanetStyle = value;
+                        space.RefreshPlanetStyle();
+                    }),
+                Save),
+            new SavedSetting(
+                new EnumSetting<SunType>(
+                    "Sun Style:",
+                    [(SunType.Solid, "Solid"), (SunType.Gradient, "Gradient")],
+                    () => config.Game.SunStyle,
+                    value =>
+                    {
+                        config.Game.SunStyle = value;
+                        space.RefreshSunStyle();
+                    }),
+                Save),
+            new SavedSetting(
+                new EnumSetting<PlanetDescriptions>(
+                    "Planet Desc.:",
+                    [(PlanetDescriptions.TreeGrubs, "BBC"), (PlanetDescriptions.HoopyCasinos, "MSX")],
+                    () => config.Game.PlanetDescriptions,
+                    value => config.Game.PlanetDescriptions = value),
+                Save),
+            new SavedSetting(
+                new ToggleSetting(
+                    "Instant Dock:",
+                    "Off",
+                    "On",
+                    () => config.Game.InstantDock,
+                    value => config.Game.InstantDock = value),
+                Save),
+        ];
     }
 }

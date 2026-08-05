@@ -2,7 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Config;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Planets;
@@ -75,6 +74,13 @@ public class SettingsControllerTests
         Space space = SettingsControllerFixture.CreateSpace(out gameState, out keyboard, out FakeEliteDraw draw, out _);
         configFile = SettingsControllerFixture.CreateConfigFile(ConfigFileName);
 
-        return new SettingsController(gameState, keyboard, space, configFile, new SettingsListView16Bit(draw));
+        return new SettingsController(
+            gameState,
+            keyboard,
+            space,
+            configFile,
+            SettingsControllerFixture.CreateBaseView(draw),
+            draw,
+            SettingsControllerFixture.CreateStyle(draw));
     }
 }

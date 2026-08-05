@@ -108,6 +108,8 @@ public class EngineSettingsControllerTests
             audio,
             configFile,
             new InstalledRenditions(new SixteenBitRendition(), string.Empty, ["8-bit", "16-bit"]),
-            new SettingsListView16Bit(draw));
+            SettingsControllerFixture.CreateBaseView(draw),
+            draw,
+            SettingsControllerFixture.CreateStyle(draw));
     }
 }

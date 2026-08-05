@@ -5,20 +5,20 @@
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Config;
 using EliteSharpLib.Renditions;
+using Useful.Abstraction;
 using Useful.Audio;
 using Useful.Config;
 using Useful.Controls;
+using Useful.Graphics.Rendering;
+using Useful.Widgets;
 
 namespace EliteSharpLib.Views;
 
-// The "engine" half of the config file: the settings shared by every game in
-// the collection, as opposed to Elite's own on the Game Settings screen.
+// The "engine" half of the config file: the settings that are not about Elite
+// in particular. The game's own are on their own screen - see
+// SettingsController.
 internal sealed class EngineSettingsController : SettingsListController
 {
-    private readonly AudioController _audio;
-    private readonly Space _space;
-    private readonly IReadOnlyList<string> _renditions;
-
     internal EngineSettingsController(
         GameState gameState,
         IKeyboard keyboard,
@@ -26,115 +26,117 @@ internal sealed class EngineSettingsController : SettingsListController
         AudioController audio,
         IConfigWriter<EliteConfig> configWriter,
         InstalledRenditions renditions,
-        IView<SettingsListModel> view)
+        IBaseView baseView,
+        IViewSurface surface,
+        SettingsListStyle style)
         : base(
             gameState,
             keyboard,
-            configWriter,
+            baseView,
+            surface,
+            style,
             "ENGINE SETTINGS",
-            [
-                new("Graphic Style:", ["Wireframe", "Solid"]),
-                new("Depth Sort:", ["Painter", "ZBuffer"]),
-                new("Music:", ["Off", "On"]),
-                new("Effects:", ["Off", "On"]),
-
-                // Both of these are read before the game is built - the
-                // backend picks the abstraction, the rendition the render
-                // resolution and asset set - so they are saved now and taken
-                // up on the next launch.
-                //
-                // The renditions offered are the ones installed, so a
-                // commander cannot select one that is not there. They are
-                // shown by the name each calls itself: the game cannot
-                // prettify a name it has never seen.
-                new("Backend *:", ["Software", "Hardware"]),
-                new("Rendition *:", [.. Names(renditions)]),
-            ],
-            view,
+            BuildSettings(gameState, space, audio, configWriter, renditions),
             "* Applies when the game is restarted")
     {
-        _space = space;
-        _audio = audio;
-        _renditions = Names(renditions);
     }
 
-    protected override int SettingValue(int index) => index switch
+    private static IReadOnlyList<ISetting> BuildSettings(
+        GameState gameState,
+        Space space,
+        AudioController audio,
+        IConfigWriter<EliteConfig> configWriter,
+        InstalledRenditions renditions)
     {
-        0 => (int)State.Config.Engine.Graphics.GraphicStyle,
-        1 => (int)State.Config.Engine.Graphics.DepthSort,
-        2 => State.Config.Engine.Sound.Music ? 1 : 0,
-        3 => State.Config.Engine.Sound.Effects ? 1 : 0,
-        4 => (int)State.Config.Engine.Backend,
-        5 => RenditionIndex(),
-        _ => 0,
-    };
-
-    protected override void ToggleSetting(int index)
-    {
-        switch (index)
-        {
-            case 0:
-                State.Config.Engine.Graphics.GraphicStyle = Next(State.Config.Engine.Graphics.GraphicStyle);
-
-                // The planet and sun styles only apply in a solid world, so
-                // both have to be rebuilt when that flips either way.
-                _space.RefreshPlanetStyle();
-                _space.RefreshSunStyle();
-                break;
-
-            case 1:
-                State.Config.Engine.Graphics.DepthSort = Next(State.Config.Engine.Graphics.DepthSort);
-                break;
-
-            case 2:
-                State.Config.Engine.Sound.Music = !State.Config.Engine.Sound.Music;
-                _audio.MusicOn = State.Config.Engine.Sound.Music;
-
-                // Silence whatever is already playing rather than leaving it
-                // running until the next screen change.
-                if (!_audio.MusicOn)
-                {
-                    _audio.StopMusic();
-                }
-
-                break;
-
-            case 3:
-                State.Config.Engine.Sound.Effects = !State.Config.Engine.Sound.Effects;
-                _audio.EffectsOn = State.Config.Engine.Sound.Effects;
-                break;
-
-            case 4:
-                State.Config.Engine.Backend = Next(State.Config.Engine.Backend);
-                break;
-
-            case 5:
-                // Wraps, so with one installed the row simply stays put.
-                State.Config.Engine.Rendition = _renditions[(RenditionIndex() + 1) % _renditions.Count];
-                break;
-        }
-    }
-
-    private static IReadOnlyList<string> Names(InstalledRenditions renditions)
-    {
+        ArgumentNullException.ThrowIfNull(gameState);
+        ArgumentNullException.ThrowIfNull(space);
+        ArgumentNullException.ThrowIfNull(audio);
+        ArgumentNullException.ThrowIfNull(configWriter);
         ArgumentNullException.ThrowIfNull(renditions);
 
-        return renditions.Names;
-    }
+        EliteConfig config = gameState.Config;
+        void Save() => configWriter.WriteConfig(config);
 
-    // The configured rendition is always one of these - the game would not
-    // have started otherwise - but the answer indexes a row's values, so it
-    // falls back to the first rather than risking a crash on this screen.
-    private int RenditionIndex()
-    {
-        for (int i = 0; i < _renditions.Count; i++)
-        {
-            if (string.Equals(_renditions[i], State.Config.Engine.Rendition, StringComparison.Ordinal))
-            {
-                return i;
-            }
-        }
+        return
+        [
+            new SavedSetting(
+                new EnumSetting<GraphicStyle>(
+                    "Graphic Style:",
+                    [(GraphicStyle.Wireframe, "Wireframe"), (GraphicStyle.Solid, "Solid")],
+                    () => config.Engine.Graphics.GraphicStyle,
+                    value =>
+                    {
+                        config.Engine.Graphics.GraphicStyle = value;
 
-        return 0;
+                        // The planet and sun styles only apply in a solid
+                        // world, so both have to be rebuilt when that flips
+                        // either way.
+                        space.RefreshPlanetStyle();
+                        space.RefreshSunStyle();
+                    }),
+                Save),
+            new SavedSetting(
+                new EnumSetting<DepthSort>(
+                    "Depth Sort:",
+                    [(DepthSort.Painter, "Painter"), (DepthSort.ZBuffer, "ZBuffer")],
+                    () => config.Engine.Graphics.DepthSort,
+                    value => config.Engine.Graphics.DepthSort = value),
+                Save),
+            new SavedSetting(
+                new ToggleSetting(
+                    "Music:",
+                    "Off",
+                    "On",
+                    () => config.Engine.Sound.Music,
+                    value =>
+                    {
+                        config.Engine.Sound.Music = value;
+                        audio.MusicOn = value;
+
+                        // Silence whatever is already playing rather than
+                        // leaving it running until the next screen change.
+                        if (!value)
+                        {
+                            audio.StopMusic();
+                        }
+                    }),
+                Save),
+            new SavedSetting(
+                new ToggleSetting(
+                    "Effects:",
+                    "Off",
+                    "On",
+                    () => config.Engine.Sound.Effects,
+                    value =>
+                    {
+                        config.Engine.Sound.Effects = value;
+                        audio.EffectsOn = value;
+                    }),
+                Save),
+
+            // Both of these are read before the game is built - the backend
+            // picks the abstraction, the rendition the render resolution and
+            // asset set - so they are saved now and taken up on the next
+            // launch.
+            new SavedSetting(
+                new EnumSetting<Backend>(
+                    "Backend *:",
+                    [(Backend.Software, "Software"), (Backend.Hardware, "Hardware")],
+                    () => config.Engine.Backend,
+                    value => config.Engine.Backend = value),
+                Save),
+
+            // The renditions offered are the ones installed, so a commander
+            // cannot select one that is not there. They are shown by the name
+            // each calls itself: the game cannot prettify a name it has never
+            // seen. With one installed the row simply stays put.
+            new SavedSetting(
+                new ChoiceSetting(
+                    "Rendition *:",
+                    renditions.Names,
+                    () => config.Engine.Rendition,
+                    value => config.Engine.Rendition = value),
+                Save),
+        ];
     }
 }

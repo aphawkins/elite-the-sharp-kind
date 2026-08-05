@@ -3,149 +3,174 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Abstractions.Views;
-using EliteSharpLib.Config;
-using Useful.Config;
 using Useful.Controls;
+using Useful.Widgets;
 
 namespace EliteSharpLib.Views;
 
 /// <summary>
 /// A single-column list of settings with a Back row under it: the cursor and
 /// navigation the engine and game settings screens share. Each screen
-/// supplies its own rows, reads its own current values and applies its own
-/// toggles; saving is common, since every change is written as it is made.
+/// supplies its own settings, already bound to whatever stores them, and this
+/// owns the widgets that show and cycle them.
 /// <para>
-/// Both tiers lay the list out one setting per row, so the cursor moves a
-/// single row at a time and Left/Right cycle the highlighted setting's value
-/// rather than moving between columns.
+/// The widgets live here rather than in a rendition because a setting's value
+/// is not a rendition's to hold: both tiers can be installed, and one answer
+/// to "what is Graphic Style set to" has to serve both. What the rendition
+/// supplies is a <see cref="SettingsListStyle"/> - every colour and position,
+/// and nothing else - so the screen is still authored per tier without the
+/// state being duplicated per tier.
+/// </para>
+/// <para>
+/// Cycling is the widget's: this moves the cursor and hands the keys to the
+/// row it is on. Left and Right now step opposite ways, which they did not
+/// before - the enums behind these settings only offered a Next, so both keys
+/// used to advance; a bound setting is an index, which can go either way.
 /// </para>
 /// </summary>
-internal abstract class SettingsListController(
-    GameState gameState,
-    IKeyboard keyboard,
-    IConfigWriter<EliteConfig> configWriter,
-    string header,
-    (string Name, string[] Values)[] settings,
-    IView<SettingsListModel> view,
-    string footer = "") : IScreenController
+internal abstract class SettingsListController : IScreenController
 {
-    // The Back row is the same on every screen, so it's appended here rather
-    // than repeated in each list.
-    private readonly (string Name, string[] Values)[] _settingList = [.. settings, new("Back", [string.Empty])];
+    private readonly GameState _gameState;
+    private readonly IKeyboard _keyboard;
+    private readonly IBaseView _baseView;
+    private readonly string _header;
+    private readonly string _footer;
+    private readonly Container<ComboBox> _rows = new() { ChildAlignment = TextAlignment.Left };
+    private readonly Label _back;
+    private readonly Label _footerLabel;
 
-    private int _highlightedItem;
+    protected SettingsListController(
+        GameState gameState,
+        IKeyboard keyboard,
+        IBaseView baseView,
+        IViewSurface surface,
+        SettingsListStyle style,
+        string header,
+        IReadOnlyList<ISetting> settings,
+        string footer = "")
+    {
+        ArgumentNullException.ThrowIfNull(surface);
+        ArgumentNullException.ThrowIfNull(style);
+        ArgumentNullException.ThrowIfNull(settings);
 
-    protected GameState State => gameState;
+        _gameState = gameState;
+        _keyboard = keyboard;
+        _baseView = baseView;
+        _header = header;
+        _footer = footer;
 
-    public void Draw() => view.Draw(BuildModel());
+        _rows.Position = new(style.RowsLeft, style.FirstRowY);
+        _rows.Width = style.RowWidth;
+        _rows.Spacing = style.RowHeight;
+
+        foreach (ISetting setting in settings)
+        {
+            _rows.Add(new ComboBox(surface.Graphics, style.RowStyle, style.ValueStyle, setting)
+            {
+                Width = style.RowWidth,
+                Height = style.RowHeight,
+                ValueOffsetX = style.ValueOffsetX,
+                ArrowGap = style.ArrowGap,
+                SnapToCell = style.SnapToCell,
+            });
+        }
+
+        // The Back row is the same on every screen, so it is here rather than
+        // repeated in each. It is a label, not a setting: there is nothing to
+        // cycle.
+        _back = new(surface.Graphics, style.RowStyle)
+        {
+            Text = "Back",
+            Alignment = TextAlignment.Centre,
+            Position = new(surface.Layout.ViewportCentre.X - (style.BackRowWidth / 2), style.BackRowY),
+            Width = style.BackRowWidth,
+            Height = style.RowHeight,
+            SnapToCell = style.SnapToCell,
+        };
+
+        _footerLabel = new(surface.Graphics, style.ValueStyle)
+        {
+            Text = footer,
+            Alignment = TextAlignment.Centre,
+            Position = new(surface.Layout.ViewportLeft, style.FooterY),
+            Width = surface.Layout.ViewportWidth,
+            SnapToCell = style.SnapToCell,
+        };
+    }
+
+    // Exposed for tests: which row the cursor is on, and the settings behind
+    // the rows.
+    internal int HighlightedItem { get; private set; }
+
+    internal IReadOnlyList<ISetting> Settings => [.. _rows.Children.Select(row => row.Setting)];
+
+    private int BackIndex => _rows.Children.Count;
+
+    public void Draw()
+    {
+        _baseView.DrawBorder();
+        _baseView.DrawViewHeader(_header);
+
+        for (int i = 0; i < _rows.Children.Count; i++)
+        {
+            _rows.Children[i].State = i == HighlightedItem ? WidgetState.Selected : WidgetState.Normal;
+        }
+
+        _rows.Draw();
+
+        _back.State = HighlightedItem == BackIndex ? WidgetState.Selected : WidgetState.Normal;
+        _back.Draw();
+
+        if (_footer.Length > 0)
+        {
+            _footerLabel.Draw();
+        }
+    }
 
     public void HandleInput()
     {
-        if (keyboard.IsPressed(ConsoleKey.S) || keyboard.IsPressed(ConsoleKey.UpArrow))
+        if (_keyboard.IsPressed(ConsoleKey.S) || _keyboard.IsPressed(ConsoleKey.UpArrow))
         {
             SelectUp();
         }
 
-        if (keyboard.IsPressed(ConsoleKey.X) || keyboard.IsPressed(ConsoleKey.DownArrow))
+        if (_keyboard.IsPressed(ConsoleKey.X) || _keyboard.IsPressed(ConsoleKey.DownArrow))
         {
             SelectDown();
         }
 
-        if (keyboard.IsPressed(ConsoleKey.OemComma)
-            || keyboard.IsPressed(ConsoleKey.LeftArrow)
-            || keyboard.IsPressed(ConsoleKey.OemPeriod)
-            || keyboard.IsPressed(ConsoleKey.RightArrow))
+        if (HighlightedItem == BackIndex)
         {
-            Cycle();
+            if (_keyboard.IsPressed(ConsoleKey.Enter))
+            {
+                _gameState.SetView(Screen.Options);
+            }
+
+            return;
         }
 
-        if (keyboard.IsPressed(ConsoleKey.Enter))
-        {
-            Toggle();
-        }
+        _rows.Children[HighlightedItem].HandleInput(_keyboard);
     }
 
-    public void Reset() => _highlightedItem = 0;
+    public void Reset() => HighlightedItem = 0;
 
     public void Update()
     {
     }
 
-    // Exposed for tests: the resolved rows and the cursor position.
-    internal SettingsListModel BuildModel()
-    {
-        SettingsRow[] rows = new SettingsRow[_settingList.Length];
-        for (int i = 0; i < _settingList.Length - 1; i++)
-        {
-            rows[i] = new(_settingList[i].Name, _settingList[i].Values[SettingValue(i)]);
-        }
-
-        rows[^1] = new(_settingList[^1].Name, string.Empty);
-
-        return new(header, rows, _highlightedItem, footer);
-    }
-
-    // The enums behind these settings all run contiguously from zero, so
-    // cycling one is the next value modulo the count.
-    protected static TEnum Next<TEnum>(TEnum value)
-        where TEnum : struct, Enum
-        => (TEnum)Enum.ToObject(typeof(TEnum), (Convert.ToInt32(value, null) + 1) % Enum.GetValues<TEnum>().Length);
-
-    /// <summary>
-    /// Which of setting <paramref name="index"/>'s values is currently selected.
-    /// </summary>
-    /// <param name="index">The setting's row, in the order the screen listed them.</param>
-    /// <returns>The index of the selected value.</returns>
-    protected abstract int SettingValue(int index);
-
-    /// <summary>
-    /// Advance setting <paramref name="index"/> to its next value and apply it.
-    /// </summary>
-    /// <param name="index">The setting's row, in the order the screen listed them.</param>
-    protected abstract void ToggleSetting(int index);
-
-    // Left and Right cycle the highlighted setting's value, the same step
-    // Enter makes. The values run in one direction only - Next is all the
-    // enums behind them offer - so both keys advance rather than one going
-    // back. The Back row has no value, so they leave it alone.
-    private void Cycle()
-    {
-        if (_highlightedItem == _settingList.Length - 1)
-        {
-            return;
-        }
-
-        ToggleSetting(_highlightedItem);
-        configWriter.WriteConfig(State.Config);
-    }
-
-    private void Toggle()
-    {
-        if (_highlightedItem == _settingList.Length - 1)
-        {
-            State.SetView(Screen.Options);
-            return;
-        }
-
-        ToggleSetting(_highlightedItem);
-
-        // Every change is live and saved as it's made, so there's no save step.
-        configWriter.WriteConfig(State.Config);
-    }
-
     private void SelectDown()
     {
-        if (_highlightedItem < _settingList.Length - 1)
+        if (HighlightedItem < BackIndex)
         {
-            _highlightedItem++;
+            HighlightedItem++;
         }
     }
 
     private void SelectUp()
     {
-        if (_highlightedItem > 0)
+        if (HighlightedItem > 0)
         {
-            _highlightedItem--;
+            HighlightedItem--;
         }
     }
 }

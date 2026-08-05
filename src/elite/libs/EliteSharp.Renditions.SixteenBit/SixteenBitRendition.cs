@@ -41,13 +41,13 @@ public sealed class SixteenBitRendition : IRendition
         ArgumentNullException.ThrowIfNull(surface);
 
         ViewSet views = new ViewSet()
-            .Add<CommanderStatusModel>(new CommanderStatusView16Bit(surface))
-            .Add<EquipmentModel>(new EquipmentView16Bit(surface))
-            .Add<EscapeCapsuleModel>(new EscapeCapsuleView16Bit(surface))
-            .Add<GalacticChartModel>(new GalacticChartView16Bit(surface))
-            .Add<GameOverModel>(new GameOverView16Bit(surface))
-            .Add<Intro1Model>(new Intro1View16Bit(surface))
-            .Add<Intro2Model>(new Intro2View16Bit(surface));
+            .Add(new CommanderStatusView16Bit(surface))
+            .Add(new EquipmentView16Bit(surface))
+            .Add(new EscapeCapsuleView16Bit(surface))
+            .Add(new GalacticChartView16Bit(surface))
+            .Add(new GameOverView16Bit(surface))
+            .Add(new Intro1View16Bit(surface))
+            .Add(new Intro2View16Bit(surface));
 
         return AddFlightViews(views, surface);
     }
@@ -95,6 +95,9 @@ public sealed class SixteenBitRendition : IRendition
         return Ships(surface);
     }
 
+    public SettingsListStyle CreateSettingsListStyle(IViewSurface surface)
+        => SettingsListStyle16Bit.Create(surface);
+
     // Split from CreateViews to keep each method under CA1506's coupling
     // limit, which naming every screen in one place goes past.
     private static ViewSet AddFlightViews(ViewSet views, IViewSurface surface)
@@ -102,17 +105,16 @@ public sealed class SixteenBitRendition : IRendition
         ArgumentNullException.ThrowIfNull(views);
 
         return views
-            .Add<InventoryModel>(new InventoryView16Bit(surface))
-            .Add<LoadCommanderModel>(new LoadCommanderView16Bit(surface))
-            .Add<MarketModel>(new MarketView16Bit(surface))
-            .Add<OptionsModel>(new OptionsView16Bit(surface))
-            .Add<PilotModel>(new PilotView16Bit(surface))
-            .Add<PlanetDataModel>(new PlanetDataView16Bit(surface))
-            .Add<QuitModel>(new QuitView16Bit(surface))
-            .Add<SaveCommanderModel>(new SaveCommanderView16Bit(surface))
-            .Add<ScannerModel>(new ScannerView16Bit(surface, Ships(surface)))
-            .Add<SettingsListModel>(new SettingsListView16Bit(surface))
-            .Add<ShortRangeChartModel>(new ShortRangeChartView16Bit(surface));
+            .Add(new InventoryView16Bit(surface))
+            .Add(new LoadCommanderView16Bit(surface))
+            .Add(new MarketView16Bit(surface))
+            .Add(new OptionsView16Bit(surface))
+            .Add(new PilotView16Bit(surface))
+            .Add(new PlanetDataView16Bit(surface))
+            .Add(new QuitView16Bit(surface))
+            .Add(new SaveCommanderView16Bit(surface))
+            .Add(new ScannerView16Bit(surface, Ships(surface)))
+            .Add(new ShortRangeChartView16Bit(surface));
     }
 
     // One definition of what a ship is painted, read by the scanner and by the

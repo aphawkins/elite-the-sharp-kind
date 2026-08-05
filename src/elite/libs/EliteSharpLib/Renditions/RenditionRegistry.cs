@@ -38,7 +38,6 @@ internal sealed class RenditionRegistry
         typeof(QuitModel),
         typeof(SaveCommanderModel),
         typeof(ScannerModel),
-        typeof(SettingsListModel),
         typeof(ShortRangeChartModel),
     ];
 
@@ -51,6 +50,7 @@ internal sealed class RenditionRegistry
         BaseView = rendition.CreateBaseView(surface);
         MissionBriefingView = rendition.CreateMissionBriefingView(surface);
         Starfield = rendition.CreateStarfieldRenderer(surface);
+        SettingsListStyle = rendition.CreateSettingsListStyle(surface);
         _views = rendition.CreateViews(surface);
 
         string[] missing = [.. s_requiredModels
@@ -70,6 +70,14 @@ internal sealed class RenditionRegistry
     /// through and EliteMain the hyperspace countdown.
     /// </summary>
     internal IBaseView BaseView { get; }
+
+    /// <summary>
+    /// Gets how the settings screens look in this tier. They have no view of
+    /// their own - the game owns their widgets, because a setting's value is
+    /// not a rendition's to hold - so the tier contributes colours and
+    /// positions instead.
+    /// </summary>
+    internal SettingsListStyle SettingsListStyle { get; }
 
     /// <summary>
     /// Gets the screen every mission's messages are drawn on.

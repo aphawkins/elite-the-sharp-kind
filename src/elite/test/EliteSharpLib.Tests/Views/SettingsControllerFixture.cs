@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Abstractions.Views;
 using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Config;
 using EliteSharpLib.Conflict;
@@ -75,6 +76,15 @@ internal static class SettingsControllerFixture
             new SixteenBitRendition(),
             rng);
     }
+
+    // The settings screens have no view of their own: they build their own
+    // widgets over the surface, in the style the rendition supplies. The fake
+    // palette answers any colour name, so the real 16-bit style works here.
+    internal static IBaseView CreateBaseView(FakeEliteDraw draw)
+        => new SixteenBitRendition().CreateBaseView(draw);
+
+    internal static SettingsListStyle CreateStyle(FakeEliteDraw draw)
+        => new SixteenBitRendition().CreateSettingsListStyle(draw);
 
     internal static ConfigFile<EliteConfig> CreateConfigFile(string configFileName)
         => new(

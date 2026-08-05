@@ -40,8 +40,8 @@ internal class BaseView8Bit : IBaseView
     // bbc-micro cell - so a row is 8 pixels and a character is 8 wide, both
     // fixed, unlike the 16-bit proportional font. The viewport is a whole
     // number of these: 40 columns by 25 rows.
-    private const int CharacterWidth = 8;
-    private const int RowHeight = 8;
+    internal const int CharacterWidth = 8;
+    internal const int RowHeight = 8;
 
     private readonly FastColor _colorWhite;
     private readonly FastColor _colorYellow;

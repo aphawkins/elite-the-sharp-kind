@@ -40,13 +40,13 @@ public sealed class EightBitRendition : IRendition
         ArgumentNullException.ThrowIfNull(surface);
 
         ViewSet views = new ViewSet()
-            .Add<CommanderStatusModel>(new CommanderStatusView8Bit(surface))
-            .Add<EquipmentModel>(new EquipmentView8Bit(surface))
-            .Add<EscapeCapsuleModel>(new EscapeCapsuleView8Bit(surface))
-            .Add<GalacticChartModel>(new GalacticChartView8Bit(surface))
-            .Add<GameOverModel>(new GameOverView8Bit(surface))
-            .Add<Intro1Model>(new Intro1View8Bit(surface))
-            .Add<Intro2Model>(new Intro2View8Bit(surface));
+            .Add(new CommanderStatusView8Bit(surface))
+            .Add(new EquipmentView8Bit(surface))
+            .Add(new EscapeCapsuleView8Bit(surface))
+            .Add(new GalacticChartView8Bit(surface))
+            .Add(new GameOverView8Bit(surface))
+            .Add(new Intro1View8Bit(surface))
+            .Add(new Intro2View8Bit(surface));
 
         return AddFlightViews(views, surface);
     }
@@ -94,6 +94,9 @@ public sealed class EightBitRendition : IRendition
         return Ships(surface);
     }
 
+    public SettingsListStyle CreateSettingsListStyle(IViewSurface surface)
+        => SettingsListStyle8Bit.Create(surface);
+
     // Split from CreateViews to keep each method under CA1506's coupling
     // limit, which naming every screen in one place goes past.
     private static ViewSet AddFlightViews(ViewSet views, IViewSurface surface)
@@ -101,17 +104,16 @@ public sealed class EightBitRendition : IRendition
         ArgumentNullException.ThrowIfNull(views);
 
         return views
-            .Add<InventoryModel>(new InventoryView8Bit(surface))
-            .Add<LoadCommanderModel>(new LoadCommanderView8Bit(surface))
-            .Add<MarketModel>(new MarketView8Bit(surface))
-            .Add<OptionsModel>(new OptionsView8Bit(surface))
-            .Add<PilotModel>(new PilotView8Bit(surface))
-            .Add<PlanetDataModel>(new PlanetDataView8Bit(surface))
-            .Add<QuitModel>(new QuitView8Bit(surface))
-            .Add<SaveCommanderModel>(new SaveCommanderView8Bit(surface))
-            .Add<ScannerModel>(new ScannerView8Bit(surface, Ships(surface)))
-            .Add<SettingsListModel>(new SettingsListView8Bit(surface))
-            .Add<ShortRangeChartModel>(new ShortRangeChartView8Bit(surface));
+            .Add(new InventoryView8Bit(surface))
+            .Add(new LoadCommanderView8Bit(surface))
+            .Add(new MarketView8Bit(surface))
+            .Add(new OptionsView8Bit(surface))
+            .Add(new PilotView8Bit(surface))
+            .Add(new PlanetDataView8Bit(surface))
+            .Add(new QuitView8Bit(surface))
+            .Add(new SaveCommanderView8Bit(surface))
+            .Add(new ScannerView8Bit(surface, Ships(surface)))
+            .Add(new ShortRangeChartView8Bit(surface));
     }
 
     // One definition of what a ship is painted, read by the scanner and by the

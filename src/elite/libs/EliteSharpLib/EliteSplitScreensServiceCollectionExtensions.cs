@@ -113,7 +113,7 @@ internal static class EliteSplitScreensServiceCollectionExtensions
 
     // The menu screens: options, the market, equip-ship and the two settings
     // lists. All share the selection-cursor shape, and the settings pair
-    // additionally share one IView<SettingsListModel> registration.
+    // additionally share one SettingsListStyle registration.
     private static void AddSplitMenuScreens(this IServiceCollection services)
     {
         services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<OptionsModel>());
@@ -139,13 +139,17 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<ScannerController>(),
             sp.GetRequiredService<IView<EquipmentModel>>()));
 
-        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<SettingsListModel>());
+        // The settings screens have no view: the game owns their widgets and
+        // the rendition contributes only the style they are drawn in.
+        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().SettingsListStyle);
         services.AddSingleton(sp => new SettingsController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
             sp.GetRequiredService<Space>(),
             sp.GetRequiredService<ConfigFile<EliteConfig>>(),
-            sp.GetRequiredService<IView<SettingsListModel>>()));
+            sp.GetRequiredService<RenditionRegistry>().BaseView,
+            sp.GetRequiredService<IEliteDraw>(),
+            sp.GetRequiredService<SettingsListStyle>()));
         services.AddSingleton(sp => new EngineSettingsController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
@@ -153,7 +157,9 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<AudioController>(),
             sp.GetRequiredService<ConfigFile<EliteConfig>>(),
             sp.GetRequiredService<InstalledRenditions>(),
-            sp.GetRequiredService<IView<SettingsListModel>>()));
+            sp.GetRequiredService<RenditionRegistry>().BaseView,
+            sp.GetRequiredService<IEliteDraw>(),
+            sp.GetRequiredService<SettingsListStyle>()));
     }
 
     // The name-typing screens: load and save commander.

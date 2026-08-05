@@ -75,6 +75,16 @@ public interface IRendition
     public ViewSet CreateViews(IViewSurface surface);
 
     /// <summary>
+    /// How the settings screens look in this rendition. They have no view of
+    /// their own: the game builds their widgets and binds them to its own
+    /// settings, and a rendition supplies only the colours and positions -
+    /// the same division the planet and sun renderers use.
+    /// </summary>
+    /// <param name="surface">The surface whose palette the colours come from.</param>
+    /// <returns>This rendition's settings list style.</returns>
+    public SettingsListStyle CreateSettingsListStyle(IViewSurface surface);
+
+    /// <summary>
     /// Builds a renderer for one planet. Planets live in the universe rather
     /// than on a screen - they move, they are cloned - so the game keeps the
     /// planet and the rendition supplies only what it looks like.

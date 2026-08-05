@@ -10,6 +10,7 @@ using EliteSharp.Abstractions.Views.Stars;
 using EliteSharp.Abstractions.Views.Suns;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Renditions;
+using Useful.Widgets;
 
 namespace EliteSharpLib.Tests.Views;
 
@@ -64,10 +65,10 @@ public class RenditionRegistryTests
         // Arrange: one of the two would never draw, so it is a mistake rather
         // than an override.
         ViewSet views = new();
-        views.Add<MarketModel>(new NothingView<MarketModel>());
+        views.Add(new NothingView<MarketModel>());
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => views.Add<MarketModel>(new NothingView<MarketModel>()));
+        Assert.Throws<InvalidOperationException>(() => views.Add(new NothingView<MarketModel>()));
     }
 
     // Draws every screen except the ones it was told to leave out.
@@ -97,6 +98,14 @@ public class RenditionRegistryTests
         public ShipColours CreateShipColours(IViewSurface surface)
             => new(default, default, default, default, default);
 
+        public SettingsListStyle CreateSettingsListStyle(IViewSurface surface)
+        {
+            WidgetColors nothing = new(default, default);
+            WidgetStyle style = new("Small", nothing, nothing, nothing);
+
+            return new(style, style, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        }
+
         public ViewSet CreateViews(IViewSurface surface)
         {
             ViewSet views = new();
@@ -116,7 +125,6 @@ public class RenditionRegistryTests
             Add<QuitModel>(views);
             Add<SaveCommanderModel>(views);
             Add<ScannerModel>(views);
-            Add<SettingsListModel>(views);
             Add<ShortRangeChartModel>(views);
 
             return views;
@@ -126,7 +134,7 @@ public class RenditionRegistryTests
         {
             if (!omitted.Contains(typeof(TModel)))
             {
-                views.Add<TModel>(new NothingView<TModel>());
+                views.Add(new NothingView<TModel>());
             }
         }
     }
