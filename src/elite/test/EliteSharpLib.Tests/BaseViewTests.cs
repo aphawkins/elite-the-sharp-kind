@@ -31,7 +31,7 @@ public class BaseViewTests
 
     private static EliteDraw Draw()
     {
-        FakeGraphics graphics = new();
+        RecordingGraphics graphics = new();
         GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
         ZBufferRenderer shipRenderer = new(graphics);
         RNG rng = new(new Random(0));

@@ -105,6 +105,16 @@ public interface IGraphics
 
     public void DrawRectangleFilled(Vector2 position, float width, float height, FastColor color);
 
+    /// <summary>
+    /// The size <paramref name="text"/> would occupy if drawn in
+    /// <paramref name="fontType"/>. Lets a caller place text against something
+    /// other than the screen - inside a widget's own bounds, say - which the
+    /// Centre overloads below cannot do, since they measure against the screen
+    /// width. Whitespace-only text measures as the font's line height by zero
+    /// width, matching what the Draw methods put on screen for it.
+    /// </summary>
+    public Vector2 MeasureText(string text, string fontType);
+
     public void DrawTextCentre(float y, string text, string fontType, FastColor color);
 
     public void DrawTextLeft(Vector2 position, string text, string fontType, FastColor color);

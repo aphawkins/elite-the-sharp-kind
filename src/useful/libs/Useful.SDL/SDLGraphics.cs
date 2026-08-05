@@ -522,6 +522,28 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         });
     }
 
+    // TTF measures the string itself, so this asks the font rather than
+    // rendering: no texture is created for text that is only being measured.
+    public Vector2 MeasureText(string text, string fontType)
+    {
+        if (_isDisposed || string.IsNullOrWhiteSpace(text))
+        {
+            return new(0, _isDisposed ? 0 : TTF_GetFontHeight((TTF_Font*)_fonts[fontType]));
+        }
+
+        // Called directly rather than through SDLGuard: the out parameters are
+        // pointers, which a lambda cannot capture, so the failure check is
+        // spelled out here instead.
+        int width;
+        int height;
+        if (!TTF_GetStringSize((TTF_Font*)_fonts[fontType], text, 0, &width, &height))
+        {
+            SDLHelper.Throw(nameof(TTF_GetStringSize));
+        }
+
+        return new(width, height);
+    }
+
     public void DrawTextCentre(float y, string text, string fontType, FastColor color)
     {
         if (_isDisposed || string.IsNullOrWhiteSpace(text))

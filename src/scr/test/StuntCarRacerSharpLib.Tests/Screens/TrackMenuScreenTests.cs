@@ -4,6 +4,7 @@
 
 using StuntCarRacerSharpLib.Fakes;
 using Useful.Assets;
+using Useful.Graphics.Fakes;
 using Xunit;
 
 namespace StuntCarRacerSharpLib.Tests.Screens;

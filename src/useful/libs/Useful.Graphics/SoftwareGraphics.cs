@@ -386,6 +386,27 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
             (int)MathF.Floor(height),
             color);
 
+    // Measured from the font sheet rather than by generating the bitmap: the
+    // text cache is keyed on colour, so measuring through it would fill the
+    // cache with an entry per colour a caller happens to measure in.
+    public Vector2 MeasureText(string text, string fontType)
+    {
+        BitmapFont font = Fonts[fontType];
+
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return new(0, font.CellHeight);
+        }
+
+        int width = 0;
+        foreach (char letter in text)
+        {
+            width += font.IsProportional ? ProportionalGlyphWidth(font, letter) : font.CellWidth;
+        }
+
+        return new(width, font.CellHeight);
+    }
+
     public void DrawTextCentre(float y, string text, string fontType, FastColor color)
     {
         if (string.IsNullOrWhiteSpace(text))
@@ -750,6 +771,33 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
 
         return font.CellWidth;
+    }
+
+    // The width half of AppendProportionalGlyph, reading the sheet directly:
+    // Recolour leaves magenta alone, so the markers are in the same places
+    // whatever colour the text would be drawn in.
+    private static int ProportionalGlyphWidth(BitmapFont font, char letter)
+    {
+        (int originX, int originY) = font.CellOrigin(letter);
+        int charX = 0;
+        int charY = 0;
+        int maxCharWidth = 0;
+
+        do
+        {
+            do
+            {
+                charX++;
+            }
+            while (font.Image.GetPixel(originX + charX, originY + charY) != BaseColors.Magenta);
+
+            maxCharWidth = Math.Max(maxCharWidth, charX);
+            charX = 0;
+            charY++;
+        }
+        while (font.Image.GetPixel(originX, originY + charY) != BaseColors.Magenta);
+
+        return maxCharWidth;
     }
 
     // Variable width: a magenta marker ends each row of the glyph, and a

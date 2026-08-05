@@ -4,10 +4,10 @@
 
 using System.Numerics;
 using StuntCarRacerSharpLib.Cars;
-using StuntCarRacerSharpLib.Fakes;
 using StuntCarRacerSharpLib.Rendering;
 using StuntCarRacerSharpLib.Tracks;
 using Useful.Assets;
+using Useful.Graphics.Fakes;
 using Xunit;
 
 namespace StuntCarRacerSharpLib.Tests.Rendering;

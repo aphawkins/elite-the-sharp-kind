@@ -15,7 +15,7 @@ namespace StuntCarRacerSharpLib.Fakes;
 public sealed class FakeAbstraction(IGraphics graphics) : IAbstraction
 {
     public FakeAbstraction()
-        : this(new FakeGraphics())
+        : this(new RecordingGraphics())
     {
     }
 

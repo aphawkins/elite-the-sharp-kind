@@ -22,7 +22,7 @@ internal class FakeEliteDraw : IEliteDraw
 
     public float Focus => 512;
 
-    public IGraphics Graphics { get; set; } = new FakeGraphics();
+    public IGraphics Graphics { get; set; } = new RecordingGraphics();
 
     public IPaletteCollection Palette => new FakePalette();
 

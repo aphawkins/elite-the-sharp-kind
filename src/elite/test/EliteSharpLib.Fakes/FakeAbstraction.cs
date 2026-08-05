@@ -18,7 +18,7 @@ internal sealed class FakeAbstraction(IGraphics graphics) : IAbstraction
     // derives its layout (Centre, ScannerTop, ...) from these, and a 0x0
     // fake screen produces negative ranges that blow up star generation.
     public FakeAbstraction()
-        : this(new FakeGraphics(512, 512))
+        : this(new RecordingGraphics(512, 512))
     {
     }
 

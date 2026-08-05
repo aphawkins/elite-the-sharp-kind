@@ -1,15 +1,18 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
-// 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
-// Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
+// 'Useful Libraries' - Andy Hawkins 2023-2026.
 
 using System.Numerics;
-using Useful;
-using Useful.Graphics;
 
-namespace StuntCarRacerSharpLib.Fakes;
+namespace Useful.Graphics.Fakes;
 
-// Records drawing calls so tests can assert on rendered output.
-public sealed class RecordingGraphics(float screenWidth, float screenHeight) : IGraphics
+/// <summary>
+/// An <see cref="IGraphics"/> that draws nothing and remembers what it was
+/// asked to draw. The single test double for the interface: a test that only
+/// needs somewhere for drawing to go ignores the lists, and one checking
+/// rendered output asserts on them.
+/// </summary>
+/// <param name="screenWidth">Reported as <see cref="ScreenWidth"/>.</param>
+/// <param name="screenHeight">Reported as <see cref="ScreenHeight"/>.</param>
+public sealed class RecordingGraphics(float screenWidth = 0, float screenHeight = 0) : IGraphics
 {
     public IList<(Vector2[] Points, FastColor Colour)> FilledPolygons { get; } = [];
 
@@ -22,6 +25,8 @@ public sealed class RecordingGraphics(float screenWidth, float screenHeight) : I
     public IList<(Vector2 Position, string Text, string FontType, FastColor Colour)> LeftTexts { get; } = [];
 
     public IList<(Vector2 Position, string Text, string FontType, FastColor Colour)> RightTexts { get; } = [];
+
+    public IList<(float Y, string Text, string FontType, FastColor Colour)> CentredTexts { get; } = [];
 
     public int ClearCount { get; private set; }
 
@@ -103,9 +108,13 @@ public sealed class RecordingGraphics(float screenWidth, float screenHeight) : I
     public void DrawRectangleFilled(Vector2 position, float width, float height, FastColor color)
         => FilledRectangles.Add((position, width, height, color));
 
+    // A notional 8x8 cell per character, so a test can predict a measurement
+    // without loading a font sheet.
+    public Vector2 MeasureText(string text, string fontType)
+        => new(string.IsNullOrWhiteSpace(text) ? 0 : text.Length * 8, 8);
+
     public void DrawTextCentre(float y, string text, string fontType, FastColor color)
-    {
-    }
+        => CentredTexts.Add((y, text, fontType, color));
 
     public void DrawTextLeft(Vector2 position, string text, string fontType, FastColor color)
         => LeftTexts.Add((position, text, fontType, color));
