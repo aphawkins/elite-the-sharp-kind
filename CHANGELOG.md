@@ -7,6 +7,40 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (a widget library, and the settings screens built on it, 2026-08-05)
+
+- **`Useful.Widgets`**: `Label`, `Container<TWidget>` and `ComboBox`, each
+  owning its own bounds and drawing everything relative to them. A widget
+  holds how it draws and never what is true — a `ComboBox` reads and writes
+  its value through an injected `ISetting` and keeps no copy — which is what
+  lets the same widget serve two renditions without either one becoming the
+  authority on a setting. See [decisions.md](docs/decisions.md).
+- **`IGraphics.MeasureText`**: the size a string would occupy in a given font.
+  Text can now be aligned inside a widget's own bounds rather than against the
+  screen, which is what `DrawTextCentre` measures against.
+- **`Useful.Widgets.Gallery`**: a window showing every widget in every state,
+  with each one's bounds outlined, and the combo boxes live. Runs on either
+  backend — the software one draws from an 8x8 bitmap sheet and the hardware
+  one from a 12pt true-type face, and the gallery measures its row pitch so
+  the same layout fits both.
+
+  ```
+  dotnet run --project src/useful/apps/Useful.Widgets.Gallery
+  ```
+
+### Changed (settings screens, 2026-08-05)
+
+- **Left and Right now cycle a setting in opposite directions.** Both used to
+  advance, because the enums behind the settings only offered a "next"; a
+  setting bound to an index can go either way.
+- **A selected setting shows its value bracketed** — `< Wireframe >` — where
+  there is more than one value to cycle to.
+- The settings screens no longer have a view per rendition. A rendition
+  supplies a `SettingsListStyle` (colours and positions) and the game owns the
+  widgets, so `SettingsListModel`, `SettingsRow` and the two `SettingsListView*`
+  classes are gone, along with both screens' `SettingValue`/`ToggleSetting`
+  switch statements.
+
 ### Fixed (the benchmark suites actually run again, 2026-08-05)
 
 - **Every benchmark project was broken in a different way**, all of them

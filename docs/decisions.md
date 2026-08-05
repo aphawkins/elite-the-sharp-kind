@@ -9,6 +9,65 @@ decision may reshape items in either. Newest first. When a decision
 reshapes or unblocks backlog items, those items are updated in the backlog
 to reference the decision here rather than restating it.
 
+## Resolved (2026-08-05) — a widget owns the interaction, the binding owns the truth
+
+The settings screens were the first thing built out of the new `Useful.Widgets`
+library, and building them asked a question the widget shape kept failing to
+answer: a combo box needs the keyboard and the palette, and those live on
+opposite sides of the plugin door. Four shapes were tried before the split
+that works.
+
+**A widget may hold how it draws; it may not hold what is true.** That is the
+whole rule. `Label` keeps its bounds, its alignment and its colours — a brush,
+not the painting. `ComboBox` keeps no selected value at all: it reads its name,
+its values and its index through an `ISetting` at the moment it draws, and
+cycling assigns straight back through the same interface.
+
+**Why not the WinForms shape, which is where this started.** A WinForms
+`ComboBox` owns `Items` and `SelectedIndex` and publishes `SelectedIndexChanged`,
+and that works because a form has exactly one of each control. Here both
+renditions are loadable, so a widget-owned index would be one answer per
+rendition to "what is Graphic Style set to", with the config file still needing
+a third. Events were considered and dropped for the same reason: an event
+synchronises two copies, and the better move was to not have two.
+
+**So the rendition stops supplying view instances and supplies style.**
+`SettingsListStyle` is every colour and position the screen needs and nothing
+else; `IRendition.CreateSettingsListStyle` sits beside `CreateShipColours` and
+the planet renderers, which had already established that shape. The two
+`SettingsListView*` classes and the `SettingsListModel`/`SettingsRow` pair are
+gone — a screen whose tier-specific content is a set of numbers does not need
+an assembly's worth of drawing code in each rendition to express them.
+
+**The bindings absorbed two switch statements.** Each setting now names what it
+stores, what it is called on screen and what has to happen when it changes, in
+one place: `EnumSetting<TEnum>`, `ToggleSetting`, `ChoiceSetting`, each wrapped
+in a `SavedSetting` that writes the config file. `SettingValue`/`ToggleSetting`
+and the index-to-value and value-to-effect switches they needed are gone.
+Labels are paired with values rather than indexed by ordinal, because a screen
+does not always offer every member of its enum — Game Settings offers three of
+`PlanetType`'s three but none of `PlanetStyle`'s wireframe — and does not always
+call them what the enum does.
+
+Consequences:
+
+- **`IGraphics` gained `MeasureText`.** A widget cannot centre text inside its
+  own bounds without it; `DrawTextCentre` measures against the screen, which is
+  the wrong box for anything narrower. That makes `DrawTextCentre` and
+  `DrawRectangleCentre` the interface's only remaining `ScreenWidth` consumers,
+  and removable once the ~30 call sites migrate to widgets. Removing them now
+  was considered and deferred: it would hand-convert sixteen view files that
+  the widget migration will rewrite anyway.
+- **Left and Right now step opposite ways.** Both used to advance, because
+  `Next<TEnum>()` was all the enums offered. A bound index goes either way.
+- **A fourth widget state exists.** `SelectedDisabled` is not a combination but
+  a state, because the options menu leaves the cursor on a docked-only row
+  while flying and that row keeps its block while its text greys out.
+- **The Options screens are half-converted.** They use widgets but still hold
+  them in the view, which is what the third preserved property in
+  [architecture-principles.md](architecture-principles.md) had to be reworded
+  for. Converting them to the style-pack shape would close it.
+
 ## Resolved (2026-08-03) — a missile arrives in a box, not a sphere
 
 Missiles were slow to arrive and corkscrewed on the way, sometimes flying
