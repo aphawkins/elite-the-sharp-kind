@@ -2,7 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Collections.Immutable;
 using EliteSharp.Abstractions.Missions;
 using Xunit;
 
@@ -107,6 +106,6 @@ public class MissionBriefingTests
         Assert.Null(amended.Headline);
         Assert.Equal(MissionPortrait.Blake, amended.Portrait);
         Assert.Equal("Constrictor", amended.ShipName);
-        Assert.Equal<ImmutableArray<string>>(["One."], amended.Paragraphs);
+        Assert.Equal(["One."], amended.Paragraphs);
     }
 }

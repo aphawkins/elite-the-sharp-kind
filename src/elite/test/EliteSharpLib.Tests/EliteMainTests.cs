@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Useful.Abstraction;
-using Useful.Assets;
 
 namespace EliteSharpLib.Tests;
 
@@ -30,7 +29,7 @@ public class EliteMainTests
             services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Graphics);
             services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Sound);
             services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);
-            services.AddSingleton<IAssetLocator>(_ => TestAssets.Locator());
+            services.AddSingleton(_ => TestAssets.Locator());
             services.AddEliteConfig(configDirectory);
             services.AddEliteMain(EliteServiceCollectionExtensions.LoadRendition("16-bit", NullLoggerFactory.Instance));
 
