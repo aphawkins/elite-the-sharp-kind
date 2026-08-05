@@ -18,7 +18,7 @@ internal static class TestAssets
 
     // Where the test project's build drops the renditions, which is the same
     // arrangement the app ships.
-    private const string RenditionFolder = "Renditions\\EliteSharp.Renditions.SixteenBit";
+    private static readonly string RenditionFolder = Path.Combine("Renditions", "EliteSharp.Renditions.SixteenBit");
 
     internal static IAssetLocator Locator() => new RenditionAssets(
         AssetLocator.CreateFrom(Path.Combine(AppContext.BaseDirectory, RenditionFolder), Rendition),
