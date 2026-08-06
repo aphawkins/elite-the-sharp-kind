@@ -7,7 +7,7 @@ using EliteSharpLib.Fakes;
 using EliteSharpLib.Planets;
 using EliteSharpLib.Views;
 using Useful.Config;
-using Useful.Fakes.Controls;
+using Useful.Fakes.Input;
 using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Tests.Views;

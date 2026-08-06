@@ -6,7 +6,7 @@ using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
-using Useful.Fakes.Controls;
+using Useful.Fakes.Input;
 
 namespace EliteSharpLib.Tests.Views;
 

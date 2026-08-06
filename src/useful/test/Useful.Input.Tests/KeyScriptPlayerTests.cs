@@ -1,6 +1,6 @@
 // 'Useful Libraries' - Andy Hawkins 2023-2026.
 
-using Useful.Fakes.Controls;
+using Useful.Fakes.Input;
 
 namespace Useful.Input.Tests;
 

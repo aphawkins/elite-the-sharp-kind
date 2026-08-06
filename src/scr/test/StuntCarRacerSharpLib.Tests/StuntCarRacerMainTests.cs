@@ -6,7 +6,7 @@ using StuntCarRacerSharpLib.Fakes;
 using Useful.Assets;
 using Useful.Audio;
 using Useful.Fakes.Audio;
-using Useful.Fakes.Controls;
+using Useful.Fakes.Input;
 using Xunit;
 
 namespace StuntCarRacerSharpLib.Tests;

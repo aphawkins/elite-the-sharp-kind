@@ -2,7 +2,7 @@
 
 using Useful.Input;
 
-namespace Useful.Fakes.Controls;
+namespace Useful.Fakes.Input;
 
 public sealed class FakeInput : IInput
 {

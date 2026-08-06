@@ -5,8 +5,8 @@
 using StuntCarRacerSharpLib.Fakes;
 using StuntCarRacerSharpLib.Screens;
 using Useful.Assets;
-using Useful.Fakes.Controls;
 using Useful.Fakes.Harness;
+using Useful.Fakes.Input;
 
 namespace StuntCarRacerSharpLib.Tests;
 

@@ -2,7 +2,7 @@
 
 using Useful.Input;
 
-namespace Useful.Fakes.Controls;
+namespace Useful.Fakes.Input;
 
 // Minimal in-test fake implementation of IKeyboard to validate contract behavior.
 // Keys and modifiers are tracked apart, as SoftwareKeyboard tracks them, so a

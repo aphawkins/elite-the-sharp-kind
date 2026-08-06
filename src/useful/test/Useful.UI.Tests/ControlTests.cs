@@ -1,7 +1,7 @@
 ﻿// 'Useful Libraries' - Andy Hawkins 2023-2026.
 
 using System.Numerics;
-using Useful.Fakes.Controls;
+using Useful.Fakes.Input;
 using Useful.Graphics.Fakes;
 
 namespace Useful.UI.Tests;

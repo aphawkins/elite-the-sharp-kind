@@ -7,8 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Useful.Abstraction;
-using Useful.Fakes.Controls;
 using Useful.Fakes.Harness;
+using Useful.Fakes.Input;
 
 namespace EliteSharpLib.Tests;
 

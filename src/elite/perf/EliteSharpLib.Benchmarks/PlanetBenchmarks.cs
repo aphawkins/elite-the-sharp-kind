@@ -11,7 +11,7 @@ using EliteSharpLib.Planets;
 using Microsoft.Extensions.Logging.Abstractions;
 using Useful;
 using Useful.Assets;
-using Useful.Fakes.Controls;
+using Useful.Fakes.Input;
 using Useful.Graphics;
 using Useful.Graphics.Rendering;
 using Useful.Input;

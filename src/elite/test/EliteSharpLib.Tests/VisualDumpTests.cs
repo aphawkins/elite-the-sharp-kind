@@ -9,7 +9,7 @@ using EliteSharpLib.Ships;
 using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
-using Useful.Fakes.Controls;
+using Useful.Fakes.Input;
 using Useful.Graphics;
 using Useful.Graphics.Rendering;
 

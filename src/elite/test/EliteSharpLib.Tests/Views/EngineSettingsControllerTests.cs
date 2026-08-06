@@ -10,7 +10,7 @@ using EliteSharpLib.Renditions;
 using EliteSharpLib.Views;
 using Useful.Audio;
 using Useful.Config;
-using Useful.Fakes.Controls;
+using Useful.Fakes.Input;
 using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Tests.Views;

@@ -1,7 +1,7 @@
 // 'Useful Libraries' - Andy Hawkins 2023-2026.
 
 using Useful.Assets;
-using Useful.Fakes.Controls;
+using Useful.Fakes.Input;
 using Useful.Graphics;
 using Useful.Input;
 
