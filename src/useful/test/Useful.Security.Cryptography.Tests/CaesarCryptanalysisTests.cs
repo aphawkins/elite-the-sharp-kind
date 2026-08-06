@@ -13,7 +13,32 @@ public class CaesarCryptanalysisTests
     [InlineData("QFM", 12)]
     public void Crack(string ciphertext, int shift)
     {
-        (int bestShift, IDictionary<int, string> _) = CaesarCryptanalysis.Crack(ciphertext);
+        (int bestShift, IReadOnlyDictionary<int, string> allDecryptions) = CaesarCryptanalysis.Crack(ciphertext);
         Assert.Equal(shift, bestShift);
+        Assert.Equal(26, allDecryptions.Count);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("!!! ...")]
+    public void CrackWithoutLetters(string ciphertext)
+    {
+        (int bestShift, IReadOnlyDictionary<int, string> _) = CaesarCryptanalysis.Crack(ciphertext);
+        Assert.Equal(0, bestShift);
+    }
+
+    [Fact]
+    public void CrackIgnoresSpacingWhenScoring()
+    {
+        const string spaced = "MHILY LZA ZBHL XBPZXBL MVYABUHL HWWPBZ JSHBKPBZ JHLJBZ KPJABT HYJHUBT LZA ULBAYVU";
+
+        // Frequencies are scored over the letters alone, so removing the spaces cannot change
+        // the answer.
+        string unspaced = spaced.Replace(" ", string.Empty, StringComparison.Ordinal);
+
+        (int spacedShift, IReadOnlyDictionary<int, string> _) = CaesarCryptanalysis.Crack(spaced);
+        (int unspacedShift, IReadOnlyDictionary<int, string> _) = CaesarCryptanalysis.Crack(unspaced);
+
+        Assert.Equal(spacedShift, unspacedShift);
     }
 }

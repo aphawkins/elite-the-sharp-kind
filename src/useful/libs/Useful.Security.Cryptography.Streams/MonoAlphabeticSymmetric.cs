@@ -25,7 +25,7 @@ public class MonoAlphabeticSymmetric : SymmetricAlgorithm
     /// </summary>
     private static readonly Encoding s_encoding = new UnicodeEncoding(false, false);
 
-    private readonly MonoAlphabetic _algorithm;
+    private MonoAlphabetic _algorithm;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MonoAlphabeticSymmetric"/> class.
@@ -63,11 +63,11 @@ public class MonoAlphabeticSymmetric : SymmetricAlgorithm
             {
                 key = ParseKey(value);
 
-                _algorithm.Settings = new MonoAlphabeticSettings()
+                _algorithm = new MonoAlphabetic(new MonoAlphabeticSettings()
                 {
                     CharacterSet = key.CharacterSet,
                     Substitutions = key.Substitutions,
-                };
+                });
             }
             catch (ArgumentException ex)
             {

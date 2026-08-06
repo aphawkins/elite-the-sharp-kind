@@ -26,7 +26,7 @@ public sealed class EnigmaSymmetric : SymmetricAlgorithm
     /// </summary>
     private const char KeySeperator = '|';
 
-    private readonly Enigma _algorithm;
+    private Enigma _algorithm;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EnigmaSymmetric"/> class.
@@ -63,7 +63,7 @@ public sealed class EnigmaSymmetric : SymmetricAlgorithm
         {
             try
             {
-                _algorithm.Settings = GetSettingsKey(value);
+                _algorithm = new Enigma(GetSettingsKey(value));
             }
             catch (Exception ex)
             {
@@ -84,7 +84,7 @@ public sealed class EnigmaSymmetric : SymmetricAlgorithm
         {
             try
             {
-                _algorithm.Settings = GetSettingsIv(_algorithm.Settings, value);
+                _algorithm = new Enigma(GetSettingsIv(_algorithm.Settings, value));
             }
             catch (Exception ex)
             {

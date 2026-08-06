@@ -65,8 +65,9 @@ public class MonoAlphabeticSettingsTests
     }
 
     [Theory]
-    [InlineData("ABC", "ABC", 'Ø', 'A')]
-    public void GetSubstitutionsInvalid(string characterSet, string substitutions, char from, char to)
+    [InlineData("ABC", "ABC", 'Ø', 'A', "substitution")]
+    [InlineData("ABC", "ABC", 'A', 'Ø', "newSubstitution")]
+    public void GetSubstitutionsInvalid(string characterSet, string substitutions, char from, char to, string parameterName)
     {
         MonoAlphabeticSettings settings = new()
         {
@@ -74,7 +75,7 @@ public class MonoAlphabeticSettingsTests
             Substitutions = substitutions,
         };
 
-        Assert.Throws<ArgumentException>("newSubstitution", () => settings.SetSubstitution(from, to));
+        Assert.Throws<ArgumentException>(parameterName, () => settings.SetSubstitution(from, to));
     }
 
     [Theory]
@@ -106,6 +107,20 @@ public class MonoAlphabeticSettingsTests
         Assert.Equal('a', settings.Reverse('a'));
     }
 
+    [Fact]
+    public void ReverseUndoesEverySubstitution()
+    {
+        MonoAlphabeticSettings settings = new();
+        settings.SetSubstitution('A', 'D');
+        settings.SetSubstitution('B', 'Q');
+        settings.SetSubstitution('X', 'M');
+
+        foreach (char letter in settings.CharacterSet)
+        {
+            Assert.Equal(letter, settings.Reverse(settings.GetSubstitution(letter)));
+        }
+    }
+
     [Theory]
     [InlineData("ABC", "BAC", 'A', 'C', "CAB", 3)]
     [InlineData("ABC", "BCA", 'B', 'B', "CBA", 2)]
@@ -133,9 +148,15 @@ public class MonoAlphabeticSettingsTests
     }
 
     [Theory]
-    [InlineData("ABC", "ABC", 'A', 'Ø', 0)]
-    [InlineData("ABC", "ABC", 'Ø', 'A', 0)]
-    public void SetSubstitutionInvalid(string characterSet, string substitutions, char from, char to, int substitutionCount)
+    [InlineData("ABC", "ABC", 'A', 'Ø', 0, "newSubstitution")]
+    [InlineData("ABC", "ABC", 'Ø', 'A', 0, "substitution")]
+    public void SetSubstitutionInvalid(
+        string characterSet,
+        string substitutions,
+        char from,
+        char to,
+        int substitutionCount,
+        string parameterName)
     {
         MonoAlphabeticSettings settings = new()
         {
@@ -143,7 +164,7 @@ public class MonoAlphabeticSettingsTests
             Substitutions = substitutions,
         };
 
-        Assert.Throws<ArgumentException>("newSubstitution", () => settings.SetSubstitution(from, to));
+        Assert.Throws<ArgumentException>(parameterName, () => settings.SetSubstitution(from, to));
         Assert.Equal(substitutionCount, settings.SubstitutionCount);
         Assert.Equal(substitutions, settings.Substitutions);
     }

@@ -126,9 +126,15 @@ public class ReflectorSettingsTests
     }
 
     [Theory]
-    [InlineData("ABC", "ABC", 'A', 'Ø', 0)]
-    [InlineData("ABC", "ABC", 'Ø', 'A', 0)]
-    public void SetSubstitutionInvalid(string characterSet, string substitutions, char from, char to, int substitutionCount)
+    [InlineData("ABC", "ABC", 'A', 'Ø', 0, "newSubstitution")]
+    [InlineData("ABC", "ABC", 'Ø', 'A', 0, "substitution")]
+    public void SetSubstitutionInvalid(
+        string characterSet,
+        string substitutions,
+        char from,
+        char to,
+        int substitutionCount,
+        string parameterName)
     {
         ArgumentNullException.ThrowIfNull(characterSet);
         ArgumentNullException.ThrowIfNull(substitutions);
@@ -139,7 +145,7 @@ public class ReflectorSettingsTests
             Substitutions = substitutions.ToCharArray(),
         };
 
-        Assert.Throws<ArgumentException>("substitution", () => settings.SetSubstitution(from, to));
+        Assert.Throws<ArgumentException>(parameterName, () => settings.SetSubstitution(from, to));
         Assert.Equal([.. characterSet], settings.CharacterSet);
         Assert.Equal([.. substitutions], settings.Substitutions);
         Assert.Equal(substitutionCount, settings.SubstitutionCount);

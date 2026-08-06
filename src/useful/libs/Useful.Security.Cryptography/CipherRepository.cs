@@ -5,7 +5,12 @@ namespace Useful.Security.Cryptography;
 /// <summary>
 /// Holds all the ciphers.
 /// </summary>
-public class CipherRepository : IRepository<ICipher>
+/// <remarks>
+/// Ciphers are keyed on <see cref="ICipher.CipherName"/>, so the repository holds one entry per
+/// kind of cipher rather than one per configured instance. Adding two ciphers of the same kind
+/// leaves <see cref="Delete(ICipher)"/> unable to tell them apart.
+/// </remarks>
+public sealed class CipherRepository : IRepository<ICipher>
 {
     private readonly List<ICipher> _ciphers = [];
 
@@ -28,18 +33,9 @@ public class CipherRepository : IRepository<ICipher>
     {
         ArgumentNullException.ThrowIfNull(item);
 
-        int removeAt = -1;
+        int removeAt = _ciphers.FindIndex(x => x.CipherName == item.CipherName);
 
-        for (int i = 0; i < _ciphers.Count; i++)
-        {
-            if (_ciphers[i].CipherName == item.CipherName)
-            {
-                removeAt = i;
-                break;
-            }
-        }
-
-        if (removeAt > -1)
+        if (removeAt >= 0)
         {
             _ciphers.RemoveAt(removeAt);
         }
@@ -55,14 +51,12 @@ public class CipherRepository : IRepository<ICipher>
     /// Sets the <see cref="CurrentItem" /> according to the match criteria.
     /// </summary>
     /// <param name="match">The criteria to find the current cipher.</param>
+    /// <remarks><see cref="CurrentItem"/> is left unchanged if nothing matches.</remarks>
     public void SetCurrentItem(Func<ICipher, bool> match)
     {
-        if (_ciphers.Count == 0)
-        {
-            return;
-        }
+        ArgumentNullException.ThrowIfNull(match);
 
-        CurrentItem = _ciphers.First(match);
+        CurrentItem = _ciphers.FirstOrDefault(match) ?? CurrentItem;
     }
 
     /// <summary>

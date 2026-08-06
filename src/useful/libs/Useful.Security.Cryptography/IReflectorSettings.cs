@@ -3,7 +3,8 @@
 namespace Useful.Security.Cryptography;
 
 /// <summary>
-/// The monoalphabetic algorithm settings.
+/// The reflector algorithm settings. A reflector is a monoalphabetic substitution in which
+/// every substitution is its own inverse, so no letter substitutes to itself.
 /// </summary>
 public interface IReflectorSettings
 {
@@ -26,15 +27,16 @@ public interface IReflectorSettings
     public int SubstitutionCount { get; }
 
     /// <summary>
-    /// Gets the current substitutions.
+    /// Gets the letter that a letter substitutes to.
     /// </summary>
-    /// <param name="substitution">The substitution to get.</param>
-    public char GetSubstitution(char substitution);
+    /// <param name="letter">The letter to substitute.</param>
+    /// <returns>The substituted letter, or <paramref name="letter"/> if it is not in the character set.</returns>
+    public char GetSubstitution(char letter);
 
     /// <summary>
-    /// Sets the current substitutions.
+    /// Sets the letter that a letter substitutes to.
     /// </summary>
-    /// <param name="substitution">The position to set.</param>
+    /// <param name="substitution">The letter to substitute.</param>
     /// <param name="newSubstitution">The substitution to set.</param>
     public void SetSubstitution(char substitution, char newSubstitution);
 

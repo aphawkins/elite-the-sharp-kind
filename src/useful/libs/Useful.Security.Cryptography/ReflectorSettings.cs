@@ -71,10 +71,10 @@ public sealed record ReflectorSettings : IReflectorSettings
     }
 
     /// <inheritdoc />
-    public char GetSubstitution(char substitution)
+    public char GetSubstitution(char letter)
     {
-        int subsIndex = CharacterSet.IndexOf(substitution);
-        return subsIndex < 0 ? substitution : _substitutions[subsIndex];
+        int subsIndex = CharacterSet.IndexOf(letter);
+        return subsIndex < 0 ? letter : _substitutions[subsIndex];
     }
 
     /// <inheritdoc />
@@ -85,7 +85,7 @@ public sealed record ReflectorSettings : IReflectorSettings
 
         if (fromIndex < 0)
         {
-            throw new ArgumentException("Substitution must be an valid character.", nameof(substitution));
+            throw new ArgumentException("Substitution must be a valid character.", nameof(substitution));
         }
 
         char to = newSubstitution;
@@ -93,7 +93,7 @@ public sealed record ReflectorSettings : IReflectorSettings
 
         if (toIndex < 0)
         {
-            throw new ArgumentException("Substitution must be an valid character.", nameof(substitution));
+            throw new ArgumentException("Substitution must be a valid character.", nameof(newSubstitution));
         }
 
         if (_substitutions[fromIndex] == to)

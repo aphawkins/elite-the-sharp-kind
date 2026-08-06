@@ -45,6 +45,41 @@ public class EnigmaTests
     }
 
     [Fact]
+    public void ResetRewindsTheRotors()
+    {
+        EnigmaSettings settings = new();
+        Enigma cipher = new(settings);
+
+        string ciphertext = cipher.Encrypt("HELLOWORLD");
+        Assert.Equal('K', settings.Rotors[EnigmaRotorPosition.Fastest].CurrentSetting);
+
+        cipher.Reset();
+        Assert.Equal('A', settings.Rotors[EnigmaRotorPosition.Fastest].CurrentSetting);
+
+        // Having rewound the rotors, the same key round trips the message.
+        Assert.Equal("HELLOWORLD", cipher.Decrypt(ciphertext));
+    }
+
+    [Fact]
+    public void ResetReturnsToTheGeneratedRotorPositions()
+    {
+        Enigma cipher = new(new EnigmaSettings());
+        cipher.GenerateSettings();
+
+        List<char> generated = [.. EnigmaRotors.RotorPositions
+            .Select(position => cipher.Settings.Rotors[position].CurrentSetting)];
+
+        string ciphertext = cipher.Encrypt("HELLOWORLD");
+        cipher.Reset();
+
+        List<char> afterReset = [.. EnigmaRotors.RotorPositions
+            .Select(position => cipher.Settings.Rotors[position].CurrentSetting)];
+
+        Assert.Equal(generated, afterReset);
+        Assert.Equal("HELLOWORLD", cipher.Decrypt(ciphertext));
+    }
+
+    [Fact]
     public void Enigma19410707T1925()
     {
         string ciphertext = new StringBuilder()

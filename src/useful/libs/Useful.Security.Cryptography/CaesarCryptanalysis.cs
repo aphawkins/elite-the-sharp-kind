@@ -7,6 +7,10 @@ namespace Useful.Security.Cryptography;
 /// </summary>
 public static class CaesarCryptanalysis
 {
+    /// <summary>
+    /// The relative frequency, as a percentage, of each letter A-Z in English text.
+    /// Taken from Robert Lewand, "Cryptological Mathematics" (2000).
+    /// </summary>
     private static readonly double[] s_letterFrequencies
         = [8.2,
             1.5,
@@ -38,53 +42,69 @@ public static class CaesarCryptanalysis
     /// <summary>
     /// Calculates the optimal settings.
     /// </summary>
+    /// <remarks>
+    /// The ciphertext is assumed to be English, as the letter frequencies it is scored against
+    /// are those of English text.
+    /// </remarks>
     /// <param name="ciphertext">The text to crack.</param>
-    /// <returns>The best guess crack.</returns>
-    public static (int BestShift, IDictionary<int, string> AllDecryptions) Crack(string ciphertext)
+    /// <returns>The best guess crack, along with the decryption for every possible shift.</returns>
+    public static (int BestShift, IReadOnlyDictionary<int, string> AllDecryptions) Crack(string ciphertext)
     {
         ArgumentNullException.ThrowIfNull(ciphertext);
 
-        Dictionary<int, string> shifts = [];
+        Dictionary<int, string> shifts = new(Alphabet.Length);
         CaesarSettings settings = new();
         Caesar cipher = new(settings);
-        for (int i = 0; i < 26; i++)
+
+        for (int i = 0; i < Alphabet.Length; i++)
         {
-            cipher.Settings.RightShift = i;
+            settings.RightShift = i;
             shifts.Add(i, cipher.Decrypt(ciphertext));
         }
 
-        return (BestShift(ciphertext.ToUpperInvariant()), shifts);
+        return (BestShift(ciphertext), shifts);
     }
 
     private static int BestShift(string ciphertext)
     {
-        double[] cipherFrequencies = new double[26];
+        double[] cipherFrequencies = new double[Alphabet.Length];
+        int letterCount = 0;
 
         // Totals for each letter
-        foreach (char c in ciphertext)
+        foreach (char letter in ciphertext)
         {
-            if (c is >= 'A' and <= 'Z')
+            int index = Alphabet.IndexOf(letter);
+
+            if (index >= 0)
             {
-                cipherFrequencies[c % 'A']++;
+                cipherFrequencies[index]++;
+                letterCount++;
             }
         }
 
-        // Frequencies for each letter
-        for (int i = 0; i < 26; i++)
+        if (letterCount == 0)
         {
-            cipherFrequencies[i] = 100.0 * cipherFrequencies[i] / ciphertext.Length;
+            return 0;
+        }
+
+        // Frequencies for each letter, as a percentage of the letters present rather than of the
+        // whole ciphertext, so that spacing and punctuation don't deflate every frequency.
+        for (int i = 0; i < Alphabet.Length; i++)
+        {
+            cipherFrequencies[i] = 100.0 * cipherFrequencies[i] / letterCount;
         }
 
         double bestDifference = double.MaxValue;
         int bestShift = 0;
 
         // Test all the shifts to find the best difference
-        for (int shift = 0; shift < 26; shift++)
+        for (int shift = 0; shift < Alphabet.Length; shift++)
         {
             double difference = 0.0;
-            for (int i = 0; i < 26; i++)
+
+            for (int i = 0; i < Alphabet.Length; i++)
             {
-                difference += Math.Abs(s_letterFrequencies[i] - cipherFrequencies[(i + shift) % 26]);
+                difference += Math.Abs(s_letterFrequencies[i] - cipherFrequencies[(i + shift) % Alphabet.Length]);
             }
 
             if (difference < bestDifference)

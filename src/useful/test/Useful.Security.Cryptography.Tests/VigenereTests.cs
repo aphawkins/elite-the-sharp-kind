@@ -41,21 +41,46 @@ public class VigenereTests
         Assert.Equal(ciphertext, cipher.Encrypt(plaintext));
     }
 
-    ////[Fact]
-    ////public void GenerateSettings()
-    ////{
-    ////    Vigenere cipher = new(new VigenereSettings());
+    [Fact]
+    public void GenerateSettings()
+    {
+        Vigenere cipher = new(new VigenereSettings());
 
-    ////    const int testsCount = 5;
-    ////    string[] keywords = new string[testsCount];
-    ////    for (int i = 0; i < testsCount; i++)
-    ////    {
-    ////        cipher.GenerateSettings();
-    ////        keywords[i] = cipher.Settings.Keyword;
-    ////    }
+        const int testsCount = 5;
+        string[] keywords = new string[testsCount];
+        for (int i = 0; i < testsCount; i++)
+        {
+            cipher.GenerateSettings();
+            keywords[i] = cipher.Settings.Keyword;
+        }
 
-    ////    Assert.True(keywords.Distinct().Count() > 1);
-    ////}
+        Assert.True(keywords.Distinct().Count() > 1);
+        Assert.All(keywords, keyword => Assert.Matches("^[A-Z]{1,25}$", keyword));
+    }
+
+    [Theory]
+    [InlineData("LEM0N")] // Digit
+    [InlineData("LEM ON")] // Space
+    [InlineData("LEM-ON")] // Punctuation
+    public void KeywordInvalidCharacters(string keyword)
+        => Assert.Throws<ArgumentException>("Keyword", () => new VigenereSettings() { Keyword = keyword });
+
+    [Fact]
+    public void KeywordTooLong()
+        => Assert.Throws<ArgumentOutOfRangeException>(
+            "Keyword",
+            () => new VigenereSettings() { Keyword = new string('A', 26) });
+
+    [Theory]
+    [InlineData("ATTACK AT DAWN!", "LXFOPV EF RNHR!", "LEMON")] // Non-letters pass through and don't consume the keyword
+    public void EncryptSkipsNonLetters(string plaintext, string ciphertext, string keyword)
+    {
+        ArgumentNullException.ThrowIfNull(plaintext);
+
+        Vigenere cipher = new(new VigenereSettings() { Keyword = keyword });
+        Assert.Equal(ciphertext, cipher.Encrypt(plaintext));
+        Assert.Equal(plaintext.ToUpperInvariant(), cipher.Decrypt(ciphertext));
+    }
 
     [Fact]
     public void Name()

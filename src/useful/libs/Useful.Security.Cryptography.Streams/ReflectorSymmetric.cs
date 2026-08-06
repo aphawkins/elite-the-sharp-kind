@@ -25,7 +25,7 @@ public class ReflectorSymmetric : SymmetricAlgorithm
     /// </summary>
     private static readonly Encoding s_encoding = new UnicodeEncoding(false, false);
 
-    private readonly Reflector _algorithm;
+    private Reflector _algorithm;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ReflectorSymmetric"/> class.
@@ -68,7 +68,7 @@ public class ReflectorSymmetric : SymmetricAlgorithm
                 throw new ArgumentException("Argument exception.", nameof(Key), ex);
             }
 
-            _algorithm.Settings = new ReflectorSettings() { CharacterSet = key.CharacterSet, Substitutions = key.Substitutions };
+            _algorithm = new Reflector(new ReflectorSettings() { CharacterSet = key.CharacterSet, Substitutions = key.Substitutions });
             base.Key = value;
         }
     }

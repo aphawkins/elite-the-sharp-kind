@@ -26,15 +26,16 @@ public interface IMonoAlphabeticSettings
     public int SubstitutionCount { get; }
 
     /// <summary>
-    /// Gets the current substitutions.
+    /// Gets the letter that a letter substitutes to.
     /// </summary>
-    /// <param name="substitution">The position to set.</param>
-    public char GetSubstitution(char substitution);
+    /// <param name="letter">The letter to substitute.</param>
+    /// <returns>The substituted letter, or <paramref name="letter"/> if it is not in the character set.</returns>
+    public char GetSubstitution(char letter);
 
     /// <summary>
-    /// Sets the current substitutions.
+    /// Sets the letter that a letter substitutes to.
     /// </summary>
-    /// <param name="substitution">The position to set.</param>
+    /// <param name="substitution">The letter to substitute.</param>
     /// <param name="newSubstitution">The substitution to set.</param>
     public void SetSubstitution(char substitution, char newSubstitution);
 

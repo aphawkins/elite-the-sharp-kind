@@ -17,9 +17,9 @@ public sealed class Reflector(IReflectorSettings settings) : ICipher
     public string CipherName => "Reflector";
 
     /// <summary>
-    /// Gets or sets settings.
+    /// Gets settings.
     /// </summary>
-    public IReflectorSettings Settings { get; set; } = settings;
+    public IReflectorSettings Settings { get; private set; } = settings;
 
     /// <inheritdoc />
     public string Decrypt(string ciphertext)

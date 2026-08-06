@@ -17,9 +17,9 @@ public sealed class MonoAlphabetic(IMonoAlphabeticSettings settings) : ICipher
     public string CipherName => "MonoAlphabetic";
 
     /// <summary>
-    /// Gets or sets settings.
+    /// Gets settings.
     /// </summary>
-    public IMonoAlphabeticSettings Settings { get; set; } = settings;
+    public IMonoAlphabeticSettings Settings { get; private set; } = settings;
 
     /// <inheritdoc />
     public string Decrypt(string ciphertext)

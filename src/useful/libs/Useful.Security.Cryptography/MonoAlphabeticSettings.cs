@@ -48,10 +48,10 @@ public sealed record MonoAlphabeticSettings : IMonoAlphabeticSettings
     }
 
     /// <inheritdoc />
-    public char GetSubstitution(char substitution)
+    public char GetSubstitution(char letter)
     {
-        int subsIndex = CharacterSet.IndexOf(substitution, StringComparison.InvariantCulture);
-        return subsIndex < 0 ? substitution : Substitutions[subsIndex];
+        int subsIndex = CharacterSet.IndexOf(letter, StringComparison.InvariantCulture);
+        return subsIndex < 0 ? letter : Substitutions[subsIndex];
     }
 
     /// <inheritdoc />
@@ -62,7 +62,7 @@ public sealed record MonoAlphabeticSettings : IMonoAlphabeticSettings
 
         if (fromIndex < 0)
         {
-            throw new ArgumentException("Substitution must be an valid character.", nameof(newSubstitution));
+            throw new ArgumentException("Substitution must be a valid character.", nameof(substitution));
         }
 
         char to = newSubstitution;
@@ -70,7 +70,7 @@ public sealed record MonoAlphabeticSettings : IMonoAlphabeticSettings
 
         if (toIndex < 0)
         {
-            throw new ArgumentException("Substitution must be an valid character.", nameof(newSubstitution));
+            throw new ArgumentException("Substitution must be a valid character.", nameof(newSubstitution));
         }
 
         if (Substitutions[fromIndex] == to)
@@ -82,11 +82,6 @@ public sealed record MonoAlphabeticSettings : IMonoAlphabeticSettings
         char fromSubs = Substitutions[fromIndex];
         int toInvIndex = Substitutions.IndexOf(to, StringComparison.InvariantCulture);
 
-        if (Substitutions[fromIndex] == to)
-        {
-            return;
-        }
-
         char[] temp = [.. Substitutions];
         temp[fromIndex] = to;
         temp[toInvIndex] = fromSubs;
@@ -95,9 +90,17 @@ public sealed record MonoAlphabeticSettings : IMonoAlphabeticSettings
 
     /// <inheritdoc />
     public char Reverse(char letter)
-        => CharacterSet.IndexOf(letter, StringComparison.InvariantCulture) < 0
-            ? letter
-            : Substitutions.First(x => GetSubstitution(x) == letter);
+    {
+        if (CharacterSet.IndexOf(letter, StringComparison.InvariantCulture) < 0)
+        {
+            return letter;
+        }
+
+        // Substitutions is a permutation of CharacterSet, so the letter that substitutes to this
+        // one sits at the same position in CharacterSet as this one does in Substitutions.
+        int index = Substitutions.IndexOf(letter, StringComparison.InvariantCulture);
+        return index < 0 ? letter : CharacterSet[index];
+    }
 
     private static string ParseCharacterSet(string characterSet)
     {

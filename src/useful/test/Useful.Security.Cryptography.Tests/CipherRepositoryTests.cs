@@ -58,4 +58,24 @@ public class CipherRepositoryTests
         repository.SetCurrentItem(x => x.CipherName == "MoqCipherName");
         Assert.Equal(repository.CurrentItem, _moqCipher.Object);
     }
+
+    [Fact]
+    public void RepositorySetCurrentItemNoMatch()
+    {
+        CipherRepository repository = new();
+        repository.Create(_moqCipher.Object);
+        repository.SetCurrentItem(x => x.CipherName == "MoqCipherName");
+
+        // No match leaves the current item alone rather than throwing.
+        repository.SetCurrentItem(x => x.CipherName == "NoSuchCipher");
+        Assert.Equal(repository.CurrentItem, _moqCipher.Object);
+    }
+
+    [Fact]
+    public void RepositorySetCurrentItemEmpty()
+    {
+        CipherRepository repository = new();
+        repository.SetCurrentItem(x => x.CipherName == "NoSuchCipher");
+        Assert.Null(repository.CurrentItem);
+    }
 }

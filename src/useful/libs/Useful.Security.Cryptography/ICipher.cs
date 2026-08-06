@@ -5,6 +5,12 @@ namespace Useful.Security.Cryptography;
 /// <summary>
 /// Interface that all ciphers should implement.
 /// </summary>
+/// <remarks>
+/// These are classical ciphers, which have no notion of case: enciphered letters are always
+/// returned in upper case, whatever the case of the input. Round tripping text through
+/// <see cref="Encrypt(string)"/> and <see cref="Decrypt(string)"/> therefore returns the
+/// original letters, but upper cased.
+/// </remarks>
 public interface ICipher
 {
     /// <summary>
