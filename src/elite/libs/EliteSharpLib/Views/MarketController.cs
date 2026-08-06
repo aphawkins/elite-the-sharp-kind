@@ -4,7 +4,7 @@
 
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Trader;
-using Useful.Controls;
+using Useful.Input;
 
 namespace EliteSharpLib.Views;
 

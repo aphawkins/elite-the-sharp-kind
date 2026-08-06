@@ -2,13 +2,13 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using Useful.Widgets;
+using Useful.UI;
 
 namespace EliteSharp.Abstractions.Views;
 
 /// <summary>
 /// What a settings list looks like in one rendition: every colour and every
-/// position it needs, and nothing else. The game builds the widgets and binds
+/// position it needs, and nothing else. The game builds the controls and binds
 /// them to its settings; the rendition says only how they are to look, which
 /// is the same division ShipColours and the planet renderers already use.
 /// <para>
@@ -45,8 +45,8 @@ namespace EliteSharp.Abstractions.Views;
 /// font that has no grid to sit on.
 /// </param>
 public sealed record SettingsListStyle(
-    WidgetStyle RowStyle,
-    WidgetStyle ValueStyle,
+    ControlStyle RowStyle,
+    ControlStyle ValueStyle,
     float RowsLeft,
     float FirstRowY,
     float RowHeight,

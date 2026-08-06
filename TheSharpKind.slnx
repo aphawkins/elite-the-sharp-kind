@@ -61,32 +61,32 @@
   </Folder>
   <Folder Name="/src/useful/" />
   <Folder Name="/src/useful/apps/">
-    <Project Path="src/useful/apps/Useful.Widgets.Gallery/Useful.Widgets.Gallery.csproj" />
+    <Project Path="src/useful/apps/Useful.UI.Gallery/Useful.UI.Gallery.csproj" />
   </Folder>
   <Folder Name="/src/useful/libs/">
     <Project Path="src/useful/libs/Useful.Abstraction/Useful.Abstraction.csproj" />
     <Project Path="src/useful/libs/Useful.App/Useful.App.csproj" />
     <Project Path="src/useful/libs/Useful.Assets/Useful.Assets.csproj" />
     <Project Path="src/useful/libs/Useful.Audio/Useful.Audio.csproj" Id="f905b754-5b15-4e1e-95a5-0ae5c0543175" />
-    <Project Path="src/useful/libs/Useful.Controls/Useful.Controls.csproj" Id="06eb8143-9b04-4f33-ba8e-d1ec9357c9ea" />
+    <Project Path="src/useful/libs/Useful.Input/Useful.Input.csproj" Id="06eb8143-9b04-4f33-ba8e-d1ec9357c9ea" />
     <Project Path="src/useful/libs/Useful.Graphics/Useful.Graphics.csproj" />
     <Project Path="src/useful/libs/Useful.SDL/Useful.SDL.csproj" />
-    <Project Path="src/useful/libs/Useful.Widgets/Useful.Widgets.csproj" />
+    <Project Path="src/useful/libs/Useful.UI/Useful.UI.csproj" />
     <Project Path="src/useful/libs/Useful/Useful.csproj" />
   </Folder>
   <Folder Name="/src/useful/perf/">
-    <Project Path="src/useful/perf/Useful.Controls.Benchmarks/Useful.Controls.Benchmarks.csproj" />
+    <Project Path="src/useful/perf/Useful.Input.Benchmarks/Useful.Input.Benchmarks.csproj" />
     <Project Path="src/useful/perf/Useful.Graphics.Benchmarks/Useful.Graphics.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/src/useful/test/">
     <Project Path="src/useful/test/Useful.Assets.Tests/Useful.Assets.Tests.csproj" />
     <Project Path="src/useful/test/Useful.Audio.Tests/Useful.Audio.Tests.csproj" />
-    <Project Path="src/useful/test/Useful.Controls.Tests/Useful.Controls.Tests.csproj" Id="71806841-6acf-4385-9ca4-a722f492b109" />
+    <Project Path="src/useful/test/Useful.Input.Tests/Useful.Input.Tests.csproj" Id="71806841-6acf-4385-9ca4-a722f492b109" />
     <Project Path="src/useful/test/Useful.Fakes/Useful.Fakes.csproj" />
     <Project Path="src/useful/test/Useful.Graphics.Fakes/Useful.Graphics.Fakes.csproj" />
     <Project Path="src/useful/test/Useful.Graphics.Tests/Useful.Graphics.Tests.csproj" />
     <Project Path="src/useful/test/Useful.SDL.Tests/Useful.SDL.Tests.csproj" />
     <Project Path="src/useful/test/Useful.Tests/Useful.Tests.csproj" />
-    <Project Path="src/useful/test/Useful.Widgets.Tests/Useful.Widgets.Tests.csproj" />
+    <Project Path="src/useful/test/Useful.UI.Tests/Useful.UI.Tests.csproj" />
   </Folder>
 </Solution>

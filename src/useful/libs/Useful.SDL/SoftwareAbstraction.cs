@@ -5,8 +5,8 @@ using SDL;
 using Useful.Abstraction;
 using Useful.Assets;
 using Useful.Audio;
-using Useful.Controls;
 using Useful.Graphics;
+using Useful.Input;
 using static SDL.SDL3;
 
 namespace Useful.SDL;

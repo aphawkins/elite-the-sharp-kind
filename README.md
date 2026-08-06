@@ -29,8 +29,8 @@ dotnet run --project src/elite/apps/EliteSharp
 # Stunt Car Racer
 dotnet run --project src/scr/apps/StuntCarRacerSharp
 
-# Widget gallery — every shared UI widget, for looking at
-dotnet run --project src/useful/apps/Useful.Widgets.Gallery
+# Control gallery — every shared UI control, for looking at
+dotnet run --project src/useful/apps/Useful.UI.Gallery
 ```
 
 Both games can also be run and debugged directly from an IDE: open [TheSharpKind.slnx](TheSharpKind.slnx) in Visual Studio and set `EliteSharp` or `StuntCarRacerSharp` as the startup project, or open the repo root in VS Code and use the "Elite" / "Stunt Car Racer" launch configurations (`.vscode/launch.json`).

@@ -4,7 +4,7 @@
 
 using StuntCarRacerSharpLib.Cars;
 using Useful.Abstraction;
-using Useful.Controls;
+using Useful.Input;
 
 namespace StuntCarRacerSharpLib.Screens;
 

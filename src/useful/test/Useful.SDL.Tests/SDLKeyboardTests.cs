@@ -1,7 +1,7 @@
 // 'Useful Libraries' - Andy Hawkins 2023-2026.
 
-using Useful.Controls;
 using Useful.Fakes.Controls;
+using Useful.Input;
 
 namespace Useful.SDL.Tests;
 

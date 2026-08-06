@@ -245,7 +245,7 @@ order — each layer builds on the previous; reference implementation is
 `XBOXController.cpp/h` in the local ptitSeb checkout,
 `C:\code\github\ptitSeb\stuntcarremake`):
 
-- [ ] [Useful.Controls] Define the controller abstraction: an `IGamepad`
+- [ ] [Useful.Input] Define the controller abstraction: an `IGamepad`
       covering both target device classes — XInput-style pads (analog
       axes + buttons) and generic-HID digital joysticks (USB Competition
       Pro Extra: 8-way stick + fire buttons, no analog axes; digital

@@ -8,9 +8,9 @@ using EliteSharpLib.Renditions;
 using Useful.Abstraction;
 using Useful.Audio;
 using Useful.Config;
-using Useful.Controls;
 using Useful.Graphics.Rendering;
-using Useful.Widgets;
+using Useful.Input;
+using Useful.UI;
 
 namespace EliteSharpLib.Views;
 

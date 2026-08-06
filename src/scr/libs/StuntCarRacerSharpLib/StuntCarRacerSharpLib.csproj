@@ -9,7 +9,7 @@
 	  <ProjectReference Include="..\..\..\useful\libs\Useful.Abstraction\Useful.Abstraction.csproj" />
 	  <ProjectReference Include="..\..\..\useful\libs\Useful.Assets\Useful.Assets.csproj" />
 	  <ProjectReference Include="..\..\..\useful\libs\Useful.Audio\Useful.Audio.csproj" />
-	  <ProjectReference Include="..\..\..\useful\libs\Useful.Controls\Useful.Controls.csproj" />
+	  <ProjectReference Include="..\..\..\useful\libs\Useful.Input\Useful.Input.csproj" />
 	  <ProjectReference Include="..\..\..\useful\libs\Useful.Graphics\Useful.Graphics.csproj" />
 	  <ProjectReference Include="..\..\..\useful\libs\Useful\Useful.csproj" />
 	</ItemGroup>

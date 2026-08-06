@@ -10,9 +10,9 @@ using EliteSharpLib.Missions;
 using EliteSharpLib.Suns;
 using Microsoft.Extensions.Logging.Abstractions;
 using Useful.Assets;
-using Useful.Controls;
 using Useful.Graphics;
 using Useful.Graphics.Rendering;
+using Useful.Input;
 using Useful.SDL;
 
 namespace EliteSharpLib.Benchmarks;

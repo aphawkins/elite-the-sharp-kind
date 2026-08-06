@@ -11,10 +11,10 @@ using EliteSharpLib.Planets;
 using Microsoft.Extensions.Logging.Abstractions;
 using Useful;
 using Useful.Assets;
-using Useful.Controls;
 using Useful.Fakes.Controls;
 using Useful.Graphics;
 using Useful.Graphics.Rendering;
+using Useful.Input;
 
 namespace EliteSharpLib.Benchmarks;
 

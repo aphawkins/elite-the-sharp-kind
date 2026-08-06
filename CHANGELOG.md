@@ -7,9 +7,44 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (the control library, its namespaces and its bindings, 2026-08-06)
+
+- **`Useful.Widgets` is now `Useful.UI`, and `Useful.Controls` is now
+  `Useful.Input`.** The two were a namespace apart and a word from meaning the
+  same thing, while being opposite halves of the problem: one draws, the other
+  reads the keyboard. `WidgetStyle`, `WidgetState` and `WidgetColors` follow
+  the library into `ControlStyle`, `ControlState` and `ControlColors`.
+- **`UIControl`**, an abstract base, replaces the `IWidget` interface. Every
+  control is built the same way - `(IGraphics, ControlStyle, ISetting)` - and
+  a control that cannot be constructed without a binding cannot hold its own
+  copy of what it shows.
+- **`Label` is bound rather than told.** `Label.Text` was settable and is now
+  read from the binding at each draw, so a label whose content changes needs
+  nothing done to it. The gallery's clock is the demonstration: a setting that
+  answers with the time, and a label nobody touches after it is built.
+- **`ComboBox` takes one style, not two.** It strips the backgrounds itself
+  through `ControlStyle.WithoutBackground()`: that the value and arrows draw
+  over the row's own block is the row's rule about the order it draws in, not
+  something for a caller to know and supply a second style for.
+- **`ISetting.Value`**, a default-implemented current value in text, derived
+  from `Values`/`SelectedIndex` so no existing setting changes. It is what a
+  control showing or editing one value works in, where `SelectedIndex` is what
+  a control choosing between several works in.
+
+### Added (a button and a text box, 2026-08-06)
+
+- **`Button`**: a caption bound to a setting with one value; pressing it
+  applies that choice, and the setting's setter is where the consequence
+  lives. **`TextBox`**: a line of typed text written straight through to
+  `ISetting.Value`, with `TextSetting` as the free-text binding both it and a
+  fixed caption use.
+- The gallery grew a section for each, and the clock label; its cursor now
+  moves across every row that takes input, with Tab to leave the text box
+  (where S and X are typed rather than navigated with).
+
 ### Added (a widget library, and the settings screens built on it, 2026-08-05)
 
-- **`Useful.Widgets`**: `Label`, `Container<TWidget>` and `ComboBox`, each
+- **`Useful.UI`**: `Label`, `Container<TControl>` and `ComboBox`, each
   owning its own bounds and drawing everything relative to them. A widget
   holds how it draws and never what is true — a `ComboBox` reads and writes
   its value through an injected `ISetting` and keeps no copy — which is what
@@ -18,14 +53,14 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 - **`IGraphics.MeasureText`**: the size a string would occupy in a given font.
   Text can now be aligned inside a widget's own bounds rather than against the
   screen, which is what `DrawTextCentre` measures against.
-- **`Useful.Widgets.Gallery`**: a window showing every widget in every state,
+- **`Useful.UI.Gallery`**: a window showing every widget in every state,
   with each one's bounds outlined, and the combo boxes live. Runs on either
   backend — the software one draws from an 8x8 bitmap sheet and the hardware
   one from a 12pt true-type face, and the gallery measures its row pitch so
   the same layout fits both.
 
   ```
-  dotnet run --project src/useful/apps/Useful.Widgets.Gallery
+  dotnet run --project src/useful/apps/Useful.UI.Gallery
   ```
 
 ### Changed (settings screens, 2026-08-05)
@@ -63,7 +98,7 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
     with the game's assets through `RenditionAssets` - the same composition
     `EliteSharpLib.Tests` builds, and the one the benchmarks are supposed to
     be measuring. All six benchmarks now report real numbers.
-  - `EliteSharpLib.Benchmarks` and `Useful.Controls.Benchmarks` also both
+  - `EliteSharpLib.Benchmarks` and `Useful.Input.Benchmarks` also both
     refused to run at all whenever a git worktree checkout sits nested under
     the repo: BenchmarkDotNet's per-run project generation looks the project
     up by name across the whole tree and throws on more than one match.
@@ -73,7 +108,7 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 ### Fixed (benchmark artifacts path, 2026-08-05)
 
 - **All three benchmark projects wrote their reports where nothing looked
-  for them.** `EliteSharpLib.Benchmarks`, `Useful.Controls.Benchmarks` and
+  for them.** `EliteSharpLib.Benchmarks`, `Useful.Input.Benchmarks` and
   `Useful.Graphics.Benchmarks` each passed
   `WithArtifactsPath("../../../reports")`, which from the project directory
   resolves to `src/reports/`. Two things expected `<project>/reports/`
@@ -2084,7 +2119,7 @@ next implementation work rather than code to write.
   `using EliteSharp.SDL;` from `SDLProgram.cs`.
 - Removed the committed BenchmarkDotNet report files under
   `src/elite/perf/EliteSharpLib.Benchmarks/reports/`,
-  `src/useful/perf/Useful.Controls.Benchmarks/reports/`, and
+  `src/useful/perf/Useful.Input.Benchmarks/reports/`, and
   `src/useful/perf/Useful.Graphics.Benchmarks/reports/` — generated
   artifacts per the architecture doc's solution-hygiene rule — and added
   `src/*/perf/*/reports/` to `.gitignore` so they don't get recommitted.
@@ -2401,7 +2436,7 @@ next implementation work rather than code to write.
   (shared by both games) now supports two environment-variable-gated
   debug facilities, so default behaviour with neither var set is
   unchanged: `GAME_KEY_SCRIPT` (a file path, or the script text itself)
-  is parsed by the new `Useful.Controls.KeyScriptParser` and replayed
+  is parsed by the new `Useful.Input.KeyScriptParser` and replayed
   into the real keyboard sink tick-by-tick by the new
   `KeyScriptPlayer`, and `GAME_FRAME_DUMP_DIR` enables both an F12
   debug key and the script's `SaveFrame` command, both of which dump
@@ -2410,7 +2445,7 @@ next implementation work rather than code to write.
   writing its back buffer directly, and on `SDLGraphics` via
   `SDL_RenderReadPixels`, plus no-ops/recording on the two `IGraphics`
   test fakes). `KeyScriptEvent`/`KeyScriptAction` moved from
-  `Useful.Fakes.Harness` (test-only) to `Useful.Controls` (production)
+  `Useful.Fakes.Harness` (test-only) to `Useful.Input` (production)
   so both the headless harnesses and this real-app player share one
   definition instead of two; `KeyScriptAction` gained a `SaveFrame`
   member. Added `KeyScriptParserTests`, `KeyScriptPlayerTests`, and a
@@ -2692,7 +2727,7 @@ next implementation work rather than code to write.
   `--filter`/`--job` speedup above), at the cost of slightly less isolation
   between iterations than a separate process gives — an acceptable trade
   for a suite whose numbers are read as relative comparisons rather than
-  absolute ones. `Useful.Controls.Benchmarks` and `EliteSharpLib.Benchmarks`
+  absolute ones. `Useful.Input.Benchmarks` and `EliteSharpLib.Benchmarks`
   have the same hardcoded-`Main` pattern and would benefit from the same
   change; not done here since neither was needed for this investigation.
 
@@ -2841,13 +2876,13 @@ next implementation work rather than code to write.
 
 ### Changed (IKeyboard split into producer/consumer interfaces, 2026-07-21)
 
-- `IKeyboard` ([IKeyboard.cs](src/useful/libs/Useful.Controls/IKeyboard.cs)) mixed
+- `IKeyboard` ([IKeyboard.cs](src/useful/libs/Useful.Input/IKeyboard.cs)) mixed
   the producer API (`KeyDown`/`KeyUp`/settable `Close`, written by `SDLInput`
   as raw key events arrive) with the consumer API (`IsPressed`/`IsHeld`/
   `LastPressed`/`ClearPressed`/`Poll`/readable `Close`, polled by games) —
   game code holding an `IKeyboard` had no way to be stopped from also
   injecting key events. Split the producer side into a new
-  `IKeyboardSink` ([IKeyboardSink.cs](src/useful/libs/Useful.Controls/IKeyboardSink.cs));
+  `IKeyboardSink` ([IKeyboardSink.cs](src/useful/libs/Useful.Input/IKeyboardSink.cs));
   `IKeyboard` keeps the consumer API with `Close` now read-only.
   `SoftwareKeyboard` and `FakeKeyboard` implement both interfaces
   unchanged; `IInput.Register` (and its `SDLInput`/`FakeInput`/benchmark

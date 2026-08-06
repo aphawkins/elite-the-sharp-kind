@@ -76,7 +76,7 @@ public interface IRendition
 
     /// <summary>
     /// How the settings screens look in this rendition. They have no view of
-    /// their own: the game builds their widgets and binds them to its own
+    /// their own: the game builds their controls and binds them to its own
     /// settings, and a rendition supplies only the colours and positions -
     /// the same division the planet and sun renderers use.
     /// </summary>

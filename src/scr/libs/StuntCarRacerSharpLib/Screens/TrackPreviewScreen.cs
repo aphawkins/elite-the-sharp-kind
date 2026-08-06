@@ -6,8 +6,8 @@ using StuntCarRacerSharpLib.Rendering;
 using StuntCarRacerSharpLib.Tracks;
 using Useful;
 using Useful.Abstraction;
-using Useful.Controls;
 using Useful.Graphics;
+using Useful.Input;
 
 namespace StuntCarRacerSharpLib.Screens;
 

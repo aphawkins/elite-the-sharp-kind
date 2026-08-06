@@ -9,9 +9,50 @@ decision may reshape items in either. Newest first. When a decision
 reshapes or unblocks backlog items, those items are updated in the backlog
 to reference the decision here rather than restating it.
 
+## Resolved (2026-08-06) — every control is bound, and nothing is told
+
+The 2026-08-05 split below said a widget may hold how it draws but not what is
+true, and `ComboBox` was built that way. `Label` was not: its `Text` was a
+property the caller assigned, so a label showing something that changes had to
+be poked once a frame by whoever drew it. Adding a clock to the gallery made
+that visible - the "widget" was fine, and the drawing code had grown a piece of
+the model.
+
+**A control is constructed with its binding and reads through it at every
+draw.** `UIControl` is an abstract base rather than an interface for exactly
+this: the three things every control needs - a surface, a look, a binding - are
+its constructor, so a control with a private copy of its own content is not a
+thing that can be built. `Label.Text` is now a read-only view of
+`ISetting.Name`. The gallery's clock is a setting whose name is the time; the
+gallery never touches the label again after building it.
+
+**One binding interface, not a hierarchy.** `Label` takes an `ISetting` like
+everything else, rather than a narrower text source it alone would use.
+`ISetting` gained `Value` - the current value as text, default-implemented from
+`Values`/`SelectedIndex` - so a choice setting is unchanged and a free-text one
+(`TextSetting`) overrides it with real storage and leaves `Values` empty.
+`ComboBox` writes `SelectedIndex`; `TextBox` writes `Value`; `Button` applies
+the one choice its setting has. Note that a default interface member is not
+visible on the implementing type: `setting.Value` needs an `ISetting`-typed
+reference, which is why call sites go through `control.Setting`.
+
+**`Useful.Widgets` became `Useful.UI` and `Useful.Controls` became
+`Useful.Input`.** "Widget" and "control" were the same word for the same thing
+in two namespaces, and the old `Useful.Controls` - the keyboard - was one
+misread away from being taken for the UI half. The csproj comment warning not
+to confuse the two is gone with the reason for it.
+
+**What this cost.** `Container` is a control with a binding it never reads
+(`ISetting.None`) and a surface it never draws on, because uniformity of
+construction was the point; the alternative was a second base or an optional
+binding, and both give back the guarantee above. `ComboBox` and `TextBox` also
+grew small private adapters (`ValueOf`, `Shown`) so their inner labels can show
+a value or a value-plus-cursor - a label shows a binding's *name*, and these
+are the same binding seen from another end rather than a copy of it.
+
 ## Resolved (2026-08-05) — a widget owns the interaction, the binding owns the truth
 
-The settings screens were the first thing built out of the new `Useful.Widgets`
+The settings screens were the first thing built out of the new `Useful.UI`
 library, and building them asked a question the widget shape kept failing to
 answer: a combo box needs the keyboard and the palette, and those live on
 opposite sides of the plugin door. Four shapes were tried before the split

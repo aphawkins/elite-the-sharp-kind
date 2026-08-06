@@ -1,7 +1,7 @@
 // 'Useful Libraries' - Andy Hawkins 2023-2026.
 
 using SDL;
-using Useful.Controls;
+using Useful.Input;
 using static SDL.SDL3;
 
 namespace Useful.SDL;

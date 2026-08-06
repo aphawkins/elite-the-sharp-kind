@@ -5,7 +5,7 @@
 using System.Numerics;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Ships;
-using Useful.Controls;
+using Useful.Input;
 using Useful.Maths;
 
 namespace EliteSharpLib.Tests;

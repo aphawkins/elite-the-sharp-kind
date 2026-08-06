@@ -29,8 +29,8 @@ jobs:
         working-directory: src/elite/perf/EliteSharpLib.Benchmarks
         run: dotnet run --configuration Release
 
-      - name: Run Useful.Controls benchmarks
-        working-directory: src/useful/perf/Useful.Controls.Benchmarks
+      - name: Run Useful.Input benchmarks
+        working-directory: src/useful/perf/Useful.Input.Benchmarks
         run: dotnet run --configuration Release
 
       - name: Run Useful.Graphics benchmarks
@@ -60,12 +60,12 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           auto-push: true
 
-      - name: Record Useful.Controls Keyboard benchmark history
+      - name: Record Useful.Input Keyboard benchmark history
         uses: benchmark-action/github-action-benchmark@v1
         with:
           tool: 'benchmarkdotnet'
-          name: 'Useful.Controls: Keyboard'
-          output-file-path: src/useful/perf/Useful.Controls.Benchmarks/reports/results/Useful.Controls.Benchmarks.KeyboardBenchmarks-report-full-compressed.json
+          name: 'Useful.Input: Keyboard'
+          output-file-path: src/useful/perf/Useful.Input.Benchmarks/reports/results/Useful.Input.Benchmarks.KeyboardBenchmarks-report-full-compressed.json
           gh-pages-branch: gh-pages
           github-token: ${{ secrets.GITHUB_TOKEN }}
           auto-push: true

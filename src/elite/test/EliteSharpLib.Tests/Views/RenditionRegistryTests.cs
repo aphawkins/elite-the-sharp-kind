@@ -10,7 +10,7 @@ using EliteSharp.Abstractions.Views.Stars;
 using EliteSharp.Abstractions.Views.Suns;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Renditions;
-using Useful.Widgets;
+using Useful.UI;
 
 namespace EliteSharpLib.Tests.Views;
 
@@ -100,8 +100,8 @@ public class RenditionRegistryTests
 
         public SettingsListStyle CreateSettingsListStyle(IViewSurface surface)
         {
-            WidgetColors nothing = new(default, default);
-            WidgetStyle style = new("Small", nothing, nothing, nothing);
+            ControlColors nothing = new(default, default);
+            ControlStyle style = new("Small", nothing, nothing, nothing);
 
             return new(style, style, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }

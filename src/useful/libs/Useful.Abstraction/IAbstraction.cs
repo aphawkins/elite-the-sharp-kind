@@ -1,8 +1,8 @@
 // 'Useful Libraries' - Andy Hawkins 2023-2026.
 
 using Useful.Audio;
-using Useful.Controls;
 using Useful.Graphics;
+using Useful.Input;
 
 namespace Useful.Abstraction;
 

@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Useful.Controls.Tests\Useful.Controls.Tests.csproj" />
+    <ProjectReference Include="..\Useful.Input.Tests\Useful.Input.Tests.csproj" />
     <ProjectReference Include="..\..\libs\Useful.SDL\Useful.SDL.csproj" />
   </ItemGroup>
 

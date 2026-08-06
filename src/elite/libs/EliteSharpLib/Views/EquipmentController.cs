@@ -9,7 +9,7 @@ using EliteSharpLib.Lasers;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Types;
-using Useful.Controls;
+using Useful.Input;
 
 namespace EliteSharpLib.Views;
 

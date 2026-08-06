@@ -16,7 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Useful.Audio;
 using Useful.Config;
-using Useful.Controls;
+using Useful.Input;
 
 namespace EliteSharpLib;
 
@@ -139,7 +139,7 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<ScannerController>(),
             sp.GetRequiredService<IView<EquipmentModel>>()));
 
-        // The settings screens have no view: the game owns their widgets and
+        // The settings screens have no view: the game owns their controls and
         // the rendition contributes only the style they are drawn in.
         services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().SettingsListStyle);
         services.AddSingleton(sp => new SettingsController(

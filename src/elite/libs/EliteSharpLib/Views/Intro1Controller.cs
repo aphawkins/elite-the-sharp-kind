@@ -10,7 +10,7 @@ using EliteSharpLib.Ships;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Useful.Audio;
-using Useful.Controls;
+using Useful.Input;
 using Useful.Maths;
 
 namespace EliteSharpLib.Views;

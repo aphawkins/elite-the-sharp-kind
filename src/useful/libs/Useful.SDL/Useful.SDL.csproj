@@ -13,7 +13,7 @@
     <ProjectReference Include="..\Useful.Abstraction\Useful.Abstraction.csproj" />
     <ProjectReference Include="..\Useful.Assets\Useful.Assets.csproj" />
     <ProjectReference Include="..\Useful.Audio\Useful.Audio.csproj" />
-    <ProjectReference Include="..\Useful.Controls\Useful.Controls.csproj" />
+    <ProjectReference Include="..\Useful.Input\Useful.Input.csproj" />
     <ProjectReference Include="..\Useful.Graphics\Useful.Graphics.csproj" />
     <ProjectReference Include="..\Useful\Useful.csproj" />
   </ItemGroup>

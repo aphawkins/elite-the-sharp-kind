@@ -13,7 +13,7 @@ using EliteSharpLib.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Useful.Audio;
-using Useful.Controls;
+using Useful.Input;
 
 namespace EliteSharpLib;
 

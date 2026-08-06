@@ -7,7 +7,7 @@ using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Types;
-using Useful.Controls;
+using Useful.Input;
 
 namespace EliteSharpLib.Views;
 

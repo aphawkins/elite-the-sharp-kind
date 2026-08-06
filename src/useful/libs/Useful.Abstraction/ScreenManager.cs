@@ -1,6 +1,6 @@
 // 'Useful Libraries' - Andy Hawkins 2023-2026.
 
-using Useful.Controls;
+using Useful.Input;
 
 namespace Useful.Abstraction;
 

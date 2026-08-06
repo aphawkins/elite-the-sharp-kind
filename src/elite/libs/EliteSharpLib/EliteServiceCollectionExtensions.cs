@@ -21,9 +21,9 @@ using Useful.Abstraction.Config;
 using Useful.Assets;
 using Useful.Audio;
 using Useful.Config;
-using Useful.Controls;
 using Useful.Graphics;
 using Useful.Graphics.Rendering;
+using Useful.Input;
 
 namespace EliteSharpLib;
 

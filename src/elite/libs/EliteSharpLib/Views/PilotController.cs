@@ -8,8 +8,8 @@ using EliteSharp.Abstractions.Ships;
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Ships;
-using Useful.Controls;
 using Useful.Graphics.Rendering;
+using Useful.Input;
 
 namespace EliteSharpLib.Views;
 

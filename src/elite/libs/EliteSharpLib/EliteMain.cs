@@ -13,8 +13,8 @@ using EliteSharpLib.Ships;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
 using Useful.Audio;
-using Useful.Controls;
 using Useful.Graphics;
+using Useful.Input;
 
 [assembly: CLSCompliant(false)]
 

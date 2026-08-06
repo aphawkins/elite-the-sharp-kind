@@ -1,10 +1,10 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Abstractions.Assets;
 using EliteSharp.Abstractions.Views;
-using Useful.Widgets;
+using Useful.UI;
 
 namespace EliteSharp.Renditions.EightBit;
 
@@ -37,9 +37,9 @@ internal sealed class OptionsView8Bit : BaseView8Bit, IView<OptionsModel>
     private const int MaxCharsPerLine = 38;
 
     private readonly IViewSurface _surface;
-    private readonly WidgetStyle _style;
-    private readonly Container<Label> _options = new() { ChildAlignment = TextAlignment.Centre, Spacing = RowSpacingRows * RowHeight };
-    private readonly Container<Label> _credits = new() { ChildAlignment = TextAlignment.Centre, Spacing = RowHeight };
+    private readonly ControlStyle _style;
+    private readonly Container<Label> _options;
+    private readonly Container<Label> _credits;
     private readonly Label _version;
 
     internal OptionsView8Bit(IViewSurface surface)
@@ -49,11 +49,14 @@ internal sealed class OptionsView8Bit : BaseView8Bit, IView<OptionsModel>
 
         _style = new(
             nameof(FontType.Small),
-            WidgetColors.TextOnly(surface.Palette["White"]),
+            ControlColors.TextOnly(surface.Palette["White"]),
             new(surface.Palette["Red"], surface.Palette["White"]),
-            WidgetColors.TextOnly(surface.Palette["LightGray"]));
+            ControlColors.TextOnly(surface.Palette["LightGray"]));
 
-        _version = new(surface.Graphics, _style)
+        _options = new(surface.Graphics, _style) { ChildAlignment = TextAlignment.Centre, Spacing = RowSpacingRows * RowHeight };
+        _credits = new(surface.Graphics, _style) { ChildAlignment = TextAlignment.Centre, Spacing = RowHeight };
+
+        _version = new(surface.Graphics, _style, new TextSetting())
         {
             Alignment = TextAlignment.Centre,
             Width = surface.Layout.ViewportWidth,
@@ -86,7 +89,7 @@ internal sealed class OptionsView8Bit : BaseView8Bit, IView<OptionsModel>
         int creditsFirstRow = CreditsLastRow - lines.Count + 1;
 
         _version.Position = new(_surface.Layout.ViewportLeft, Row(creditsFirstRow - VersionGapRows));
-        _version.Text = model.Version;
+        _version.Setting.Value = model.Version;
         _version.Draw();
 
         FillCredits(lines);
@@ -105,7 +108,7 @@ internal sealed class OptionsView8Bit : BaseView8Bit, IView<OptionsModel>
             _options.Clear();
             for (int i = 0; i < model.Options.Count; i++)
             {
-                _options.Add(new Label(_surface.Graphics, _style)
+                _options.Add(new Label(_surface.Graphics, _style, new TextSetting())
                 {
                     Alignment = TextAlignment.Centre,
                     Width = OptionBarWidth,
@@ -118,13 +121,13 @@ internal sealed class OptionsView8Bit : BaseView8Bit, IView<OptionsModel>
         for (int i = 0; i < model.Options.Count; i++)
         {
             Label row = _options.Children[i];
-            row.Text = model.Options[i].Label;
+            row.Setting.Value = model.Options[i].Label;
             row.State = (i == model.HighlightedIndex, model.Options[i].IsEnabled) switch
             {
-                (true, true) => WidgetState.Selected,
-                (true, false) => WidgetState.SelectedDisabled,
-                (false, true) => WidgetState.Normal,
-                (false, false) => WidgetState.Disabled,
+                (true, true) => ControlState.Selected,
+                (true, false) => ControlState.SelectedDisabled,
+                (false, true) => ControlState.Normal,
+                (false, false) => ControlState.Disabled,
             };
         }
     }
@@ -136,7 +139,7 @@ internal sealed class OptionsView8Bit : BaseView8Bit, IView<OptionsModel>
             _credits.Clear();
             for (int i = 0; i < lines.Count; i++)
             {
-                _credits.Add(new Label(_surface.Graphics, _style)
+                _credits.Add(new Label(_surface.Graphics, _style, new TextSetting())
                 {
                     Alignment = TextAlignment.Centre,
                     Width = _surface.Layout.ViewportWidth,
@@ -147,7 +150,7 @@ internal sealed class OptionsView8Bit : BaseView8Bit, IView<OptionsModel>
 
         for (int i = 0; i < lines.Count; i++)
         {
-            _credits.Children[i].Text = lines[i];
+            _credits.Children[i].Setting.Value = lines[i];
         }
     }
 }

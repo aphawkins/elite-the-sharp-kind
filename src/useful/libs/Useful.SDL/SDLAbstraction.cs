@@ -4,8 +4,8 @@ using Microsoft.Extensions.Logging;
 using Useful.Abstraction;
 using Useful.Assets;
 using Useful.Audio;
-using Useful.Controls;
 using Useful.Graphics;
+using Useful.Input;
 
 namespace Useful.SDL;
 

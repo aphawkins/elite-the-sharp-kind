@@ -1,10 +1,10 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Abstractions.Views;
-using Useful.Controls;
-using Useful.Widgets;
+using Useful.Input;
+using Useful.UI;
 
 namespace EliteSharpLib.Views;
 
@@ -12,9 +12,9 @@ namespace EliteSharpLib.Views;
 /// A single-column list of settings with a Back row under it: the cursor and
 /// navigation the engine and game settings screens share. Each screen
 /// supplies its own settings, already bound to whatever stores them, and this
-/// owns the widgets that show and cycle them.
+/// owns the controls that show and cycle them.
 /// <para>
-/// The widgets live here rather than in a rendition because a setting's value
+/// The controls live here rather than in a rendition because a setting's value
 /// is not a rendition's to hold: both tiers can be installed, and one answer
 /// to "what is Graphic Style set to" has to serve both. What the rendition
 /// supplies is a <see cref="SettingsListStyle"/> - every colour and position,
@@ -22,7 +22,7 @@ namespace EliteSharpLib.Views;
 /// state being duplicated per tier.
 /// </para>
 /// <para>
-/// Cycling is the widget's: this moves the cursor and hands the keys to the
+/// Cycling is the control's: this moves the cursor and hands the keys to the
 /// row it is on. Left and Right now step opposite ways, which they did not
 /// before - the enums behind these settings only offered a Next, so both keys
 /// used to advance; a bound setting is an index, which can go either way.
@@ -35,7 +35,7 @@ internal abstract class SettingsListController : IScreenController
     private readonly IBaseView _baseView;
     private readonly string _header;
     private readonly string _footer;
-    private readonly Container<ComboBox> _rows = new() { ChildAlignment = TextAlignment.Left };
+    private readonly Container<ComboBox> _rows;
     private readonly Label _back;
     private readonly Label _footerLabel;
 
@@ -59,13 +59,17 @@ internal abstract class SettingsListController : IScreenController
         _header = header;
         _footer = footer;
 
-        _rows.Position = new(style.RowsLeft, style.FirstRowY);
-        _rows.Width = style.RowWidth;
-        _rows.Spacing = style.RowHeight;
+        _rows = new(surface.Graphics, style.RowStyle)
+        {
+            ChildAlignment = TextAlignment.Left,
+            Position = new(style.RowsLeft, style.FirstRowY),
+            Width = style.RowWidth,
+            Spacing = style.RowHeight,
+        };
 
         foreach (ISetting setting in settings)
         {
-            _rows.Add(new ComboBox(surface.Graphics, style.RowStyle, style.ValueStyle, setting)
+            _rows.Add(new ComboBox(surface.Graphics, style.RowStyle, setting)
             {
                 Width = style.RowWidth,
                 Height = style.RowHeight,
@@ -76,11 +80,10 @@ internal abstract class SettingsListController : IScreenController
         }
 
         // The Back row is the same on every screen, so it is here rather than
-        // repeated in each. It is a label, not a setting: there is nothing to
-        // cycle.
-        _back = new(surface.Graphics, style.RowStyle)
+        // repeated in each. A label rather than a combo box: its text is
+        // fixed, so its binding is only somewhere for that text to live.
+        _back = new(surface.Graphics, style.RowStyle, new TextSetting("Back"))
         {
-            Text = "Back",
             Alignment = TextAlignment.Centre,
             Position = new(surface.Layout.ViewportCentre.X - (style.BackRowWidth / 2), style.BackRowY),
             Width = style.BackRowWidth,
@@ -88,9 +91,8 @@ internal abstract class SettingsListController : IScreenController
             SnapToCell = style.SnapToCell,
         };
 
-        _footerLabel = new(surface.Graphics, style.ValueStyle)
+        _footerLabel = new(surface.Graphics, style.ValueStyle, new TextSetting(footer))
         {
-            Text = footer,
             Alignment = TextAlignment.Centre,
             Position = new(surface.Layout.ViewportLeft, style.FooterY),
             Width = surface.Layout.ViewportWidth,
@@ -113,12 +115,12 @@ internal abstract class SettingsListController : IScreenController
 
         for (int i = 0; i < _rows.Children.Count; i++)
         {
-            _rows.Children[i].State = i == HighlightedItem ? WidgetState.Selected : WidgetState.Normal;
+            _rows.Children[i].State = i == HighlightedItem ? ControlState.Selected : ControlState.Normal;
         }
 
         _rows.Draw();
 
-        _back.State = HighlightedItem == BackIndex ? WidgetState.Selected : WidgetState.Normal;
+        _back.State = HighlightedItem == BackIndex ? ControlState.Selected : ControlState.Normal;
         _back.Draw();
 
         if (_footer.Length > 0)

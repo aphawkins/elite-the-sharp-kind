@@ -4,7 +4,7 @@
 
 using EliteSharp.Abstractions.Assets;
 using EliteSharp.Abstractions.Views;
-using Useful.Widgets;
+using Useful.UI;
 
 namespace EliteSharp.Renditions.SixteenBit;
 
@@ -40,8 +40,8 @@ internal static class SettingsListStyle16Bit
 
         // A settings row is never greyed out, so there is no disabled look
         // here beyond the normal one.
-        WidgetColors text = WidgetColors.TextOnly(surface.Palette["White"]);
-        WidgetColors selected = new(surface.Palette["LightRed"], surface.Palette["White"]);
+        ControlColors text = ControlColors.TextOnly(surface.Palette["White"]);
+        ControlColors selected = new(surface.Palette["LightRed"], surface.Palette["White"]);
 
         float backRowY = surface.Layout.ViewportBottom - BackRowOffset;
 

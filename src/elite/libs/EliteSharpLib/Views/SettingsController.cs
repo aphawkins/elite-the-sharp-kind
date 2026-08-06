@@ -7,8 +7,8 @@ using EliteSharpLib.Config;
 using EliteSharpLib.Planets;
 using EliteSharpLib.Suns;
 using Useful.Config;
-using Useful.Controls;
-using Useful.Widgets;
+using Useful.Input;
+using Useful.UI;
 
 namespace EliteSharpLib.Views;
 

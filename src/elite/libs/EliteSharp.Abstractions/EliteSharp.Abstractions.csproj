@@ -18,7 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\useful\libs\Useful.Assets\Useful.Assets.csproj" />
     <ProjectReference Include="..\..\..\useful\libs\Useful.Graphics\Useful.Graphics.csproj" />
-    <ProjectReference Include="..\..\..\useful\libs\Useful.Widgets\Useful.Widgets.csproj" />
+    <ProjectReference Include="..\..\..\useful\libs\Useful.UI\Useful.UI.csproj" />
     <ProjectReference Include="..\..\..\useful\libs\Useful\Useful.csproj" />
   </ItemGroup>
 

@@ -73,7 +73,7 @@ internal sealed class RenditionRegistry
 
     /// <summary>
     /// Gets how the settings screens look in this tier. They have no view of
-    /// their own - the game owns their widgets, because a setting's value is
+    /// their own - the game owns their controls, because a setting's value is
     /// not a rendition's to hold - so the tier contributes colours and
     /// positions instead.
     /// </summary>
