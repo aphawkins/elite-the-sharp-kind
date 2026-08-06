@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- The stream ciphers live in the same public namespace as the ciphers
+         they wrap, which is the project name without the .Streams suffix. -->
+    <RootNamespace>Useful.Security.Cryptography</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Useful.Security.Cryptography\Useful.Security.Cryptography.csproj" />
+  </ItemGroup>
+
+</Project>
