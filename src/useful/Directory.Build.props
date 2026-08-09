@@ -16,5 +16,6 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>SharpKind;game-engine;dotnet</PackageTags>
+    <PackageIcon>packageicon.png</PackageIcon>
   </PropertyGroup>
 </Project>
