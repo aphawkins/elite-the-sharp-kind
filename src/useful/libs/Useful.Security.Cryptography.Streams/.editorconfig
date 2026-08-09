@@ -1,0 +1,11 @@
+# editorconfig.org
+
+# inherits higher configs
+
+[*.cs]
+
+# S2257: Use a standard cryptographic algorithm
+# Disabled for this project only: these SymmetricAlgorithm wrappers exist to
+# expose the classical ciphers (Atbash, Caesar, Enigma, ...) as streams. They
+# are historical/educational and are not meant to secure anything.
+dotnet_diagnostic.S2257.severity = none

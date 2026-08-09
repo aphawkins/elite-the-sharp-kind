@@ -71,6 +71,8 @@
     <Project Path="src/useful/libs/Useful.Input/Useful.Input.csproj" Id="06eb8143-9b04-4f33-ba8e-d1ec9357c9ea" />
     <Project Path="src/useful/libs/Useful.Graphics/Useful.Graphics.csproj" />
     <Project Path="src/useful/libs/Useful.SDL/Useful.SDL.csproj" />
+    <Project Path="src/useful/libs/Useful.Security.Cryptography.Streams/Useful.Security.Cryptography.Streams.csproj" />
+    <Project Path="src/useful/libs/Useful.Security.Cryptography/Useful.Security.Cryptography.csproj" />
     <Project Path="src/useful/libs/Useful.UI/Useful.UI.csproj" />
     <Project Path="src/useful/libs/Useful/Useful.csproj" />
   </Folder>
@@ -86,6 +88,8 @@
     <Project Path="src/useful/test/Useful.Graphics.Fakes/Useful.Graphics.Fakes.csproj" />
     <Project Path="src/useful/test/Useful.Graphics.Tests/Useful.Graphics.Tests.csproj" />
     <Project Path="src/useful/test/Useful.SDL.Tests/Useful.SDL.Tests.csproj" />
+    <Project Path="src/useful/test/Useful.Security.Cryptography.Streams.Tests/Useful.Security.Cryptography.Streams.Tests.csproj" />
+    <Project Path="src/useful/test/Useful.Security.Cryptography.Tests/Useful.Security.Cryptography.Tests.csproj" />
     <Project Path="src/useful/test/Useful.Tests/Useful.Tests.csproj" />
     <Project Path="src/useful/test/Useful.UI.Tests/Useful.UI.Tests.csproj" />
   </Folder>
