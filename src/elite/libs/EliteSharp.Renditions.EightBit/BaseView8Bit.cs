@@ -5,8 +5,8 @@
 using System.Numerics;
 using EliteSharp.Abstractions.Assets;
 using EliteSharp.Abstractions.Views;
-using Useful;
-using Useful.Graphics;
+using SharpKind;
+using SharpKind.Graphics;
 
 namespace EliteSharp.Renditions.EightBit;
 

@@ -2,11 +2,11 @@
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
+using SharpKind.Assets;
+using SharpKind.Fakes.Harness;
+using SharpKind.Fakes.Input;
 using StuntCarRacerSharpLib.Fakes;
 using StuntCarRacerSharpLib.Screens;
-using Useful.Assets;
-using Useful.Fakes.Harness;
-using Useful.Fakes.Input;
 
 namespace StuntCarRacerSharpLib.Tests;
 

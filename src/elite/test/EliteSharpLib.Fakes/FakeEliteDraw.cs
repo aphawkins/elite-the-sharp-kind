@@ -6,11 +6,11 @@ using System.Numerics;
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
-using Useful;
-using Useful.Assets.Palettes;
-using Useful.Fakes.Assets;
-using Useful.Graphics;
-using Useful.Graphics.Fakes;
+using SharpKind;
+using SharpKind.Assets.Palettes;
+using SharpKind.Fakes.Assets;
+using SharpKind.Graphics;
+using SharpKind.Graphics.Fakes;
 
 namespace EliteSharpLib.Fakes;
 

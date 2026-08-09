@@ -9,12 +9,12 @@ using EliteSharpLib.Graphics;
 using EliteSharpLib.Missions;
 using EliteSharpLib.Planets;
 using Microsoft.Extensions.Logging.Abstractions;
-using Useful;
-using Useful.Assets;
-using Useful.Fakes.Input;
-using Useful.Graphics;
-using Useful.Graphics.Rendering;
-using Useful.Input;
+using SharpKind;
+using SharpKind.Assets;
+using SharpKind.Fakes.Input;
+using SharpKind.Graphics;
+using SharpKind.Graphics.Rendering;
+using SharpKind.Input;
 
 namespace EliteSharpLib.Benchmarks;
 
@@ -35,7 +35,7 @@ public class PlanetBenchmarks : IDisposable
         FakeInput input = new();
         IAssetLocator assetLocator = BenchmarkAssets.Locator();
         SoftwareKeyboard keyboard = new(input);
-        Useful.Abstraction.ScreenManager<Views.Screen, Views.IScreenController> views = new(keyboard);
+        SharpKind.Abstraction.ScreenManager<Views.Screen, Views.IScreenController> views = new(keyboard);
 
         // These benchmarks are about planets and suns, so no missions are needed.
         GameState gameState = new(views, new MissionRegistry([], NullLogger<MissionRegistry>.Instance));

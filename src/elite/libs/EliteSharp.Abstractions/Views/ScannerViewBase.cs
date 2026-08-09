@@ -4,7 +4,7 @@
 
 using System.Numerics;
 using EliteSharp.Abstractions.Assets;
-using Useful;
+using SharpKind;
 
 namespace EliteSharp.Abstractions.Views;
 

@@ -9,8 +9,8 @@ using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Useful.Input;
-using Useful.Maths;
+using SharpKind.Input;
+using SharpKind.Maths;
 
 namespace EliteSharpLib.Views;
 

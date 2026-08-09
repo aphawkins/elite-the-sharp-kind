@@ -7,9 +7,9 @@ using EliteSharp.Abstractions.Views;
 using EliteSharp.Abstractions.Views.Suns;
 using EliteSharp.Renditions.SixteenBit;
 using Moq;
-using Useful;
-using Useful.Assets.Palettes;
-using Useful.Graphics;
+using SharpKind;
+using SharpKind.Assets.Palettes;
+using SharpKind.Graphics;
 
 namespace EliteSharpLib.Tests.Suns;
 

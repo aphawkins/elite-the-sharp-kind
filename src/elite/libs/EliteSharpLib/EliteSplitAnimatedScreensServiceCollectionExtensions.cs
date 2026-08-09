@@ -12,8 +12,8 @@ using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Useful.Audio;
-using Useful.Input;
+using SharpKind.Audio;
+using SharpKind.Input;
 
 namespace EliteSharpLib;
 

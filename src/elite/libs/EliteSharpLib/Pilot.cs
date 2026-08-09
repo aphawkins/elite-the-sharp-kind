@@ -6,9 +6,9 @@ using System.Numerics;
 using EliteSharpLib.Audio;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
-using Useful.Assets.Models;
-using Useful.Audio;
-using Useful.Maths;
+using SharpKind.Assets.Models;
+using SharpKind.Audio;
+using SharpKind.Maths;
 
 namespace EliteSharpLib;
 

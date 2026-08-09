@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="Serilog.Extensions.Logging" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+    <PackageReference Include="Serilog.Sinks.File" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SharpKind.Abstraction\SharpKind.Abstraction.csproj" />
+    <ProjectReference Include="..\SharpKind.SDL\SharpKind.SDL.csproj" />
+    <ProjectReference Include="..\SharpKind\SharpKind.csproj" />
+  </ItemGroup>
+
+</Project>

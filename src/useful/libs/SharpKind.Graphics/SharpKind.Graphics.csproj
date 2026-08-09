@@ -1,0 +1,6 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\SharpKind.Assets\SharpKind.Assets.csproj" />
+    <ProjectReference Include="..\SharpKind\SharpKind.csproj" />
+  </ItemGroup>
+</Project>

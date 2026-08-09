@@ -127,7 +127,7 @@ its manifest.
 
 ## Decoding
 
-Assets should not be restricted to one bitmap flavour. `Useful.Graphics`
+Assets should not be restricted to one bitmap flavour. `SharpKind.Graphics`
 gains an `ImageReader.Read` that sniffs magic bytes and dispatches to a
 per-format decoder.
 
@@ -283,9 +283,9 @@ image and bitmap font for the active tier, validates them, and hands
 both graphics backends the same `FastBitmap` instances. One code path,
 one place the tier rule is enforced.
 
-`AssetSet` lives in `Useful.Graphics`, not `Useful.Assets` as first
-sketched: it holds `FastBitmap`s, and `Useful.Graphics` already depends
-on `Useful.Assets`, so putting it the other way round would invert that
+`AssetSet` lives in `SharpKind.Graphics`, not `SharpKind.Assets` as first
+sketched: it holds `FastBitmap`s, and `SharpKind.Graphics` already depends
+on `SharpKind.Assets`, so putting it the other way round would invert that
 reference. `IAssetLocator` gained a `Tier` property, since the validator
 has to know which cap applies.
 

@@ -1,0 +1,16 @@
+// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
+
+using System.Text.Json;
+
+namespace SharpKind.Assets.Palettes;
+
+public static class PaletteReader
+{
+    public static IPaletteCollection Read(string filePath)
+    {
+        string lines = File.ReadAllText(filePath);
+        Dictionary<string, string> colors = JsonSerializer.Deserialize<Dictionary<string, string>>(lines) ?? [];
+        return new Palette(
+            colors.ToDictionary(x => x.Key, x => FastColor.FromUInt32(Convert.ToUInt32(x.Value, 16))));
+    }
+}

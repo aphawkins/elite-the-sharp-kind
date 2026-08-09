@@ -6,7 +6,7 @@ using System.Numerics;
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Ships;
-using Useful.Maths;
+using SharpKind.Maths;
 
 namespace EliteSharpLib.Views;
 

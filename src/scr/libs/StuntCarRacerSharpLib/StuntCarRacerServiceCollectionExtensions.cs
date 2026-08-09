@@ -4,13 +4,13 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SharpKind;
+using SharpKind.Abstraction;
+using SharpKind.Abstraction.Config;
+using SharpKind.Assets;
+using SharpKind.Audio;
+using SharpKind.Config;
 using StuntCarRacerSharpLib.Config;
-using Useful;
-using Useful.Abstraction;
-using Useful.Abstraction.Config;
-using Useful.Assets;
-using Useful.Audio;
-using Useful.Config;
 
 namespace StuntCarRacerSharpLib;
 
@@ -39,7 +39,7 @@ public static class StuntCarRacerServiceCollectionExtensions
 
     // Exposes the (public) engine settings from the (internal) ScrConfig, so
     // Program.Main - which picks between SoftwareAbstraction and SDLAbstraction
-    // and therefore needs to reference Useful.SDL, a dependency
+    // and therefore needs to reference SharpKind.SDL, a dependency
     // StuntCarRacerSharpLib itself deliberately does not have - can read the
     // backend, the tier and the window scale before the DI container exists.
     public static EngineConfigSettings ReadEngineSettings(string userDataPath, ILoggerFactory loggerFactory)

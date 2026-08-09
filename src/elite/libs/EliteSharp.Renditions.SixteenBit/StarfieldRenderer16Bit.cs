@@ -4,7 +4,7 @@
 
 using EliteSharp.Abstractions.Views;
 using EliteSharp.Abstractions.Views.Stars;
-using Useful;
+using SharpKind;
 
 namespace EliteSharp.Renditions.SixteenBit;
 
@@ -14,7 +14,7 @@ namespace EliteSharp.Renditions.SixteenBit;
 /// resolution a flat white square reads as a blocky dot rather than a bright
 /// point, so the growing pixels around a near star's core are drawn a shade
 /// dimmer than the core itself - a soft halo standing in for true
-/// anti-aliasing, which the shared <see cref="Useful.Graphics.IGraphics"/>
+/// anti-aliasing, which the shared <see cref="SharpKind.Graphics.IGraphics"/>
 /// pixel API has no alpha-blended path for.
 /// </summary>
 internal sealed class StarfieldRenderer16Bit : StarfieldRendererBase

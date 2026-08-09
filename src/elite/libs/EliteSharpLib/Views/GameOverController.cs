@@ -8,8 +8,8 @@ using EliteSharpLib.Conflict;
 using EliteSharpLib.Ships;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Useful.Audio;
-using Useful.Maths;
+using SharpKind.Audio;
+using SharpKind.Maths;
 
 namespace EliteSharpLib.Views;
 

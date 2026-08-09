@@ -3,7 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using Useful.Graphics;
+using SharpKind.Graphics;
 
 namespace EliteSharp.Abstractions.Views;
 

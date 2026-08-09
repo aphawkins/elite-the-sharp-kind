@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <Content Remove="C:\code\github\aphawkins\elite-the-sharp-kind\elite.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharpKind.Audio\SharpKind.Audio.csproj" />
+    <ProjectReference Include="..\SharpKind.Input\SharpKind.Input.csproj" />
+    <ProjectReference Include="..\SharpKind.Graphics\SharpKind.Graphics.csproj" />
+    <ProjectReference Include="..\SharpKind\SharpKind.csproj" />
+  </ItemGroup>
+</Project>

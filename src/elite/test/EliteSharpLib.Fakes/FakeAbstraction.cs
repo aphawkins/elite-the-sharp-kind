@@ -2,13 +2,13 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using Useful.Abstraction;
-using Useful.Audio;
-using Useful.Fakes.Audio;
-using Useful.Fakes.Input;
-using Useful.Graphics;
-using Useful.Graphics.Fakes;
-using Useful.Input;
+using SharpKind.Abstraction;
+using SharpKind.Audio;
+using SharpKind.Fakes.Audio;
+using SharpKind.Fakes.Input;
+using SharpKind.Graphics;
+using SharpKind.Graphics.Fakes;
+using SharpKind.Input;
 
 namespace EliteSharpLib.Fakes;
 

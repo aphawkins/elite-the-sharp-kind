@@ -4,7 +4,7 @@
 
 using EliteSharp.Missions.Classic;
 using EliteSharpLib.Views;
-using Useful.Input;
+using SharpKind.Input;
 
 namespace EliteSharpLib.Tests;
 

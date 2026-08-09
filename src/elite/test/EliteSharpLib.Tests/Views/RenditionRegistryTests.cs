@@ -10,7 +10,7 @@ using EliteSharp.Abstractions.Views.Stars;
 using EliteSharp.Abstractions.Views.Suns;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Renditions;
-using Useful.UI;
+using SharpKind.UI;
 
 namespace EliteSharpLib.Tests.Views;
 
@@ -168,7 +168,7 @@ public class RenditionRegistryTests
 
     private sealed class NothingBaseView : IBaseView
     {
-        public Useful.Graphics.IGraphics Graphics => throw new NotSupportedException();
+        public SharpKind.Graphics.IGraphics Graphics => throw new NotSupportedException();
 
         public ViewLayout Layout => throw new NotSupportedException();
 

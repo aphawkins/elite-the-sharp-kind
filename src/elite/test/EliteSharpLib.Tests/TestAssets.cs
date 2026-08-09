@@ -3,7 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Renditions;
-using Useful.Assets;
+using SharpKind.Assets;
 
 namespace EliteSharpLib.Tests;
 

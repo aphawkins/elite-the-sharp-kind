@@ -61,36 +61,36 @@
   </Folder>
   <Folder Name="/src/useful/" />
   <Folder Name="/src/useful/apps/">
-    <Project Path="src/useful/apps/Useful.UI.Gallery/Useful.UI.Gallery.csproj" />
+    <Project Path="src/useful/apps/SharpKind.UI.Gallery/SharpKind.UI.Gallery.csproj" />
   </Folder>
   <Folder Name="/src/useful/libs/">
-    <Project Path="src/useful/libs/Useful.Abstraction/Useful.Abstraction.csproj" />
-    <Project Path="src/useful/libs/Useful.App/Useful.App.csproj" />
-    <Project Path="src/useful/libs/Useful.Assets/Useful.Assets.csproj" />
-    <Project Path="src/useful/libs/Useful.Audio/Useful.Audio.csproj" Id="f905b754-5b15-4e1e-95a5-0ae5c0543175" />
-    <Project Path="src/useful/libs/Useful.Input/Useful.Input.csproj" Id="06eb8143-9b04-4f33-ba8e-d1ec9357c9ea" />
-    <Project Path="src/useful/libs/Useful.Graphics/Useful.Graphics.csproj" />
-    <Project Path="src/useful/libs/Useful.SDL/Useful.SDL.csproj" />
-    <Project Path="src/useful/libs/Useful.Security.Cryptography.Streams/Useful.Security.Cryptography.Streams.csproj" />
-    <Project Path="src/useful/libs/Useful.Security.Cryptography/Useful.Security.Cryptography.csproj" />
-    <Project Path="src/useful/libs/Useful.UI/Useful.UI.csproj" />
-    <Project Path="src/useful/libs/Useful/Useful.csproj" />
+    <Project Path="src/useful/libs/SharpKind.Abstraction/SharpKind.Abstraction.csproj" />
+    <Project Path="src/useful/libs/SharpKind.App/SharpKind.App.csproj" />
+    <Project Path="src/useful/libs/SharpKind.Assets/SharpKind.Assets.csproj" />
+    <Project Path="src/useful/libs/SharpKind.Audio/SharpKind.Audio.csproj" Id="f905b754-5b15-4e1e-95a5-0ae5c0543175" />
+    <Project Path="src/useful/libs/SharpKind.Input/SharpKind.Input.csproj" Id="06eb8143-9b04-4f33-ba8e-d1ec9357c9ea" />
+    <Project Path="src/useful/libs/SharpKind.Graphics/SharpKind.Graphics.csproj" />
+    <Project Path="src/useful/libs/SharpKind.SDL/SharpKind.SDL.csproj" />
+    <Project Path="src/useful/libs/SharpKind.Security.Cryptography.Streams/SharpKind.Security.Cryptography.Streams.csproj" />
+    <Project Path="src/useful/libs/SharpKind.Security.Cryptography/SharpKind.Security.Cryptography.csproj" />
+    <Project Path="src/useful/libs/SharpKind.UI/SharpKind.UI.csproj" />
+    <Project Path="src/useful/libs/SharpKind/SharpKind.csproj" />
   </Folder>
   <Folder Name="/src/useful/perf/">
-    <Project Path="src/useful/perf/Useful.Input.Benchmarks/Useful.Input.Benchmarks.csproj" />
-    <Project Path="src/useful/perf/Useful.Graphics.Benchmarks/Useful.Graphics.Benchmarks.csproj" />
+    <Project Path="src/useful/perf/SharpKind.Input.Benchmarks/SharpKind.Input.Benchmarks.csproj" />
+    <Project Path="src/useful/perf/SharpKind.Graphics.Benchmarks/SharpKind.Graphics.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/src/useful/test/">
-    <Project Path="src/useful/test/Useful.Assets.Tests/Useful.Assets.Tests.csproj" />
-    <Project Path="src/useful/test/Useful.Audio.Tests/Useful.Audio.Tests.csproj" />
-    <Project Path="src/useful/test/Useful.Input.Tests/Useful.Input.Tests.csproj" Id="71806841-6acf-4385-9ca4-a722f492b109" />
-    <Project Path="src/useful/test/Useful.Fakes/Useful.Fakes.csproj" />
-    <Project Path="src/useful/test/Useful.Graphics.Fakes/Useful.Graphics.Fakes.csproj" />
-    <Project Path="src/useful/test/Useful.Graphics.Tests/Useful.Graphics.Tests.csproj" />
-    <Project Path="src/useful/test/Useful.SDL.Tests/Useful.SDL.Tests.csproj" />
-    <Project Path="src/useful/test/Useful.Security.Cryptography.Streams.Tests/Useful.Security.Cryptography.Streams.Tests.csproj" />
-    <Project Path="src/useful/test/Useful.Security.Cryptography.Tests/Useful.Security.Cryptography.Tests.csproj" />
-    <Project Path="src/useful/test/Useful.Tests/Useful.Tests.csproj" />
-    <Project Path="src/useful/test/Useful.UI.Tests/Useful.UI.Tests.csproj" />
+    <Project Path="src/useful/test/SharpKind.Assets.Tests/SharpKind.Assets.Tests.csproj" />
+    <Project Path="src/useful/test/SharpKind.Audio.Tests/SharpKind.Audio.Tests.csproj" />
+    <Project Path="src/useful/test/SharpKind.Input.Tests/SharpKind.Input.Tests.csproj" Id="71806841-6acf-4385-9ca4-a722f492b109" />
+    <Project Path="src/useful/test/SharpKind.Fakes/SharpKind.Fakes.csproj" />
+    <Project Path="src/useful/test/SharpKind.Graphics.Fakes/SharpKind.Graphics.Fakes.csproj" />
+    <Project Path="src/useful/test/SharpKind.Graphics.Tests/SharpKind.Graphics.Tests.csproj" />
+    <Project Path="src/useful/test/SharpKind.SDL.Tests/SharpKind.SDL.Tests.csproj" />
+    <Project Path="src/useful/test/SharpKind.Security.Cryptography.Streams.Tests/SharpKind.Security.Cryptography.Streams.Tests.csproj" />
+    <Project Path="src/useful/test/SharpKind.Security.Cryptography.Tests/SharpKind.Security.Cryptography.Tests.csproj" />
+    <Project Path="src/useful/test/SharpKind.Tests/SharpKind.Tests.csproj" />
+    <Project Path="src/useful/test/SharpKind.UI.Tests/SharpKind.UI.Tests.csproj" />
   </Folder>
 </Solution>

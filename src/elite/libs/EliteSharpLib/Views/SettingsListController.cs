@@ -3,8 +3,8 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Abstractions.Views;
-using Useful.Input;
-using Useful.UI;
+using SharpKind.Input;
+using SharpKind.UI;
 
 namespace EliteSharpLib.Views;
 

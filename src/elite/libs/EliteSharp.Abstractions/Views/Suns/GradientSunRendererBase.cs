@@ -3,7 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using Useful;
+using SharpKind;
 
 namespace EliteSharp.Abstractions.Views.Suns;
 

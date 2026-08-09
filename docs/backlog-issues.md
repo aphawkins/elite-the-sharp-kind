@@ -41,7 +41,7 @@ there before starting an item that mentions a decision.
 Investigated and deliberately not fixed. Kept so the same ground isn't
 re-covered.
 
-- [ ] [Useful.Graphics] No frustum side-plane clipping — **profiled, not
+- [ ] [SharpKind.Graphics] No frustum side-plane clipping — **profiled, not
       worth fixing.** `NearPlaneClip` clips one plane; left/right/top/bottom
       are handled *after* projection by `SetClipRegion` plus the
       `Math.Max/Min` span clamps in `DrawTriangleFilled`, so a face off to
@@ -56,7 +56,7 @@ re-covered.
       legitimate full-screen fill, and it would take roughly 9,000 of them
       per frame to spend a 60fps budget; both games draw tens. Revisit only
       if a profile of real gameplay contradicts this.
-- [ ] [Useful.Graphics] Fan triangulation of concave polygons — **not
+- [ ] [SharpKind.Graphics] Fan triangulation of concave polygons — **not
       reachable with the current assets.** `DrawPolygonFilled` fans from
       vertex 0, which is wrong for a concave polygon. A 2026-07-31 sweep of
       every face with four or more vertices across both model sets

@@ -1,0 +1,1202 @@
+// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
+
+using System.Diagnostics;
+using System.Numerics;
+using Microsoft.Extensions.Logging;
+using SharpKind.Assets;
+
+namespace SharpKind.Graphics;
+
+public sealed class SoftwareGraphics : IGraphics, IDisposable
+{
+    // Bounded LRU cache of rendered text bitmaps, keyed by (font, colour,
+    // text). Elite draws ever-changing strings (bounties, countdowns) that
+    // would otherwise accumulate forever; capping the entry count and
+    // evicting the least-recently-used bitmap keeps memory bounded while
+    // keeping frequently redrawn text (HUD labels) warm.
+    private const int TextCacheCapacity = 256;
+
+    private readonly FastBitmap _screen;
+    private readonly Action<FastBitmap> _screenUpdate;
+    private readonly Dictionary<string, LinkedListNode<(string Key, FastBitmap Bitmap)>> _textCache = [];
+    private readonly LinkedList<(string Key, FastBitmap Bitmap)> _textCacheOrder = new();
+
+    // Inverse depth (1/z) per pixel, 0 = infinitely far; allocated on first
+    // use so purely 2D rendering pays nothing.
+    private float[]? _depth;
+
+    // The surface currently occupying each pixel, 0 = none. Only the
+    // hidden-line pass tags its fills, so this stays all-zero otherwise.
+    private int[]? _surfaceIds;
+    private bool _isDisposed;
+
+    // Clip rectangle every pixel write is tested against; defaults to the
+    // whole screen so callers that never call SetClipRegion see no change
+    // in behaviour. Always kept clamped to the screen bounds so the clip
+    // fields alone are sufficient to keep pixel writes in-bounds.
+    private float _clipLeft;
+    private float _clipTop;
+    private float _clipRight;
+    private float _clipBottom;
+
+    // True whenever the clip rectangle covers the whole screen (the default,
+    // and what most frames spend most of their time in - e.g. Elite only
+    // narrows the clip for the 3D view). Lets DrawPixel skip the clip
+    // comparisons entirely in the common case instead of reading four fields
+    // per pixel, which measurably regressed hot per-pixel paths
+    // (DrawLine/DrawCircleFilled) when the clip fields were unconditional.
+    private bool _clipIsFullScreen = true;
+
+    internal SoftwareGraphics(
+        float screenWidth,
+        float screenHeight,
+        Action<FastBitmap> screenUpdate,
+        Dictionary<string, FastBitmap> images,
+        Dictionary<string, BitmapFont> fonts)
+    {
+        ScreenWidth = screenWidth;
+        ScreenHeight = screenHeight;
+        _screen = new((int)screenWidth, (int)screenHeight);
+        _screenUpdate = screenUpdate;
+        Images = images;
+        Fonts = fonts;
+        _clipRight = screenWidth;
+        _clipBottom = screenHeight;
+        Clear();
+    }
+
+    public float ScreenHeight { get; }
+
+    public float ScreenWidth { get; }
+
+    internal Dictionary<string, BitmapFont> Fonts { get; }
+
+    internal Dictionary<string, FastBitmap> Images { get; }
+
+    public static SoftwareGraphics Create(
+        float screenWidth,
+        float screenHeight,
+        Action<FastBitmap> screenUpdate,
+        IAssetLocator assetLocator)
+        => Create(screenWidth, screenHeight, screenUpdate, assetLocator, null);
+
+    public static SoftwareGraphics Create(
+        float screenWidth,
+        float screenHeight,
+        Action<FastBitmap> screenUpdate,
+        IAssetLocator assetLocator,
+        ILogger? logger)
+    {
+        ArgumentNullException.ThrowIfNull(screenUpdate);
+        ArgumentNullException.ThrowIfNull(assetLocator);
+
+        AssetSet assets = AssetSet.Load(assetLocator, logger);
+
+        return new(screenWidth, screenHeight, screenUpdate, assets.Images, assets.BitmapFonts);
+    }
+
+    public void Clear() => _screen.Clear();
+
+    public void ClearDepth()
+    {
+        _depth ??= new float[(int)ScreenWidth * (int)ScreenHeight];
+        _surfaceIds ??= new int[(int)ScreenWidth * (int)ScreenHeight];
+        Array.Clear(_depth);
+        Array.Clear(_surfaceIds);
+    }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    public void DrawCircle(Vector2 centre, float radius, FastColor color)
+    {
+        float diameter = radius * 2;
+        float x = MathF.Floor(radius);
+        float y = 0;
+        float tx = 1;
+        float ty = 1;
+        float error = tx - diameter;
+
+        while (x >= y)
+        {
+            DrawPixel(new(centre.X + x, centre.Y + y), color);
+            DrawPixel(new(centre.X + x, centre.Y - y), color);
+            DrawPixel(new(centre.X - x, centre.Y + y), color);
+            DrawPixel(new(centre.X - x, centre.Y - y), color);
+            DrawPixel(new(centre.X + y, centre.Y + x), color);
+            DrawPixel(new(centre.X + y, centre.Y - x), color);
+            DrawPixel(new(centre.X - y, centre.Y + x), color);
+            DrawPixel(new(centre.X - y, centre.Y - x), color);
+
+            if (error <= 0)
+            {
+                y++;
+                error += ty;
+                ty += 2;
+            }
+
+            if (error > 0)
+            {
+                x--;
+                tx += 2;
+                error += tx - diameter;
+            }
+        }
+    }
+
+    public void DrawCircleFilled(Vector2 centre, float radius, FastColor color)
+    {
+        float diameter = MathF.Floor(radius) * 2;
+        float x = MathF.Floor(radius);
+        float y = 0;
+        float tx = 1;
+        float ty = 1;
+        float error = tx - diameter;
+
+        while (x >= y)
+        {
+            // Top of top half
+            DrawLine(new(centre.X - y, centre.Y - x), new(centre.X + y, centre.Y - x), color);
+
+            // Bottom of top half
+            DrawLine(new(centre.X - x, centre.Y - y), new(centre.X + x, centre.Y - y), color);
+
+            // Top of bottom half
+            DrawLine(new(centre.X - x, centre.Y + y), new(centre.X + x, centre.Y + y), color);
+
+            // Bottom of bottom half
+            DrawLine(new(centre.X - y, centre.Y + x), new(centre.X + y, centre.Y + x), color);
+
+            if (error <= 0)
+            {
+                y++;
+                error += ty;
+                ty += 2;
+            }
+
+            if (error > 0)
+            {
+                x--;
+                tx += 2;
+                error += tx - diameter;
+            }
+        }
+    }
+
+    public void DrawImage(string imageType, Vector2 position)
+    {
+        Debug.Assert(Images.ContainsKey(imageType), "Image has not been loaded");
+
+        FastBitmap bitmap = Images[imageType];
+        DrawImage(bitmap, position);
+    }
+
+    public void DrawImageCentre(string imageType, float y)
+    {
+        float x = (ScreenWidth - Images[imageType].Width) / 2;
+        DrawImage(imageType, new(x, y));
+    }
+
+    public void DrawImagePart(string imageType, Vector2 position, Vector2 size, Vector2 sourcePosition, Vector2 sourceSize)
+    {
+        Debug.Assert(Images.ContainsKey(imageType), "Image has not been loaded");
+
+        FastBitmap bitmap = Images[imageType];
+        bool mirrorX = sourceSize.X < 0;
+        float sourceWidth = Math.Abs(sourceSize.X);
+        float sourceHeight = sourceSize.Y;
+        int destWidth = (int)MathF.Round(size.X);
+        int destHeight = (int)MathF.Round(size.Y);
+        if (destWidth <= 0 || destHeight <= 0 || sourceWidth <= 0 || sourceHeight <= 0)
+        {
+            return;
+        }
+
+        for (int dy = 0; dy < destHeight; dy++)
+        {
+            int y = (int)(position.Y + dy);
+            if (y < 0 || y >= (int)ScreenHeight)
+            {
+                continue;
+            }
+
+            // nearest-neighbour sample from the centre of each destination pixel
+            int sy = (int)(sourcePosition.Y + ((dy + 0.5f) * sourceHeight / destHeight));
+            sy = Math.Clamp(sy, 0, bitmap.Height - 1);
+
+            DrawImagePartRow(bitmap, position.X, y, destWidth, sourcePosition.X, sourceWidth, mirrorX, sy);
+        }
+    }
+
+    public Vector2 ImageSize(string imageType)
+    {
+        Debug.Assert(Images.ContainsKey(imageType), "Image has not been loaded");
+
+        FastBitmap bitmap = Images[imageType];
+        return new(bitmap.Width, bitmap.Height);
+    }
+
+    public void DrawLineDepth(
+        Vector2 lineStart,
+        Vector2 lineEnd,
+        float depthStart,
+        float depthEnd,
+        FastColor color,
+        int surfaceId)
+        => DrawLineIntDepth(
+            (int)MathF.Floor(lineStart.X),
+            (int)MathF.Floor(lineStart.Y),
+            (int)MathF.Floor(lineEnd.X),
+            (int)MathF.Floor(lineEnd.Y),
+            1f / depthStart,
+            1f / depthEnd,
+            color,
+            surfaceId);
+
+    public void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor color)
+        => DrawLineInt(
+            (int)MathF.Floor(lineStart.X),
+            (int)MathF.Floor(lineStart.Y),
+            (int)MathF.Floor(lineEnd.X),
+            (int)MathF.Floor(lineEnd.Y),
+            color);
+
+    public void DrawPixel(Vector2 position, FastColor color)
+    {
+        if (_clipIsFullScreen)
+        {
+            if (position.X < 0 || position.Y < 0 || position.X >= ScreenWidth || position.Y >= ScreenHeight)
+            {
+                return;
+            }
+        }
+        else if (position.X < _clipLeft || position.Y < _clipTop || position.X >= _clipRight || position.Y >= _clipBottom)
+        {
+            return;
+        }
+
+        _screen.SetPixel((int)position.X, (int)position.Y, color);
+    }
+
+    public void DrawPolygon(Vector2[] points, FastColor lineColor)
+    {
+        if (points == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < points.Length - 1; i++)
+        {
+            DrawLine(points[i], points[i + 1], lineColor);
+        }
+
+        DrawLine(points[0], points[^1], lineColor);
+    }
+
+    public void DrawPolygonFilled(Vector2[] points, FastColor faceColor)
+    {
+        if (points == null)
+        {
+            return;
+        }
+
+        // Create triangles of which each share the first vertex
+        for (int i = 1; i < points.Length - 1; i++)
+        {
+            DrawTriangleFilled(points[0], points[i], points[i + 1], faceColor);
+        }
+    }
+
+    public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, FastColor faceColor)
+        => FillPolygonDepth(points, depths, faceColor, writeColor: true, surfaceId: 0);
+
+    public void FillDepth(Vector2[] points, float[] depths, int surfaceId)
+        => FillPolygonDepth(points, depths, BaseColors.Black, writeColor: false, surfaceId);
+
+    public void DrawPolygonTextured(Vector2[] points, Vector2[] textureCoords, FastBitmap texture)
+    {
+        if (points == null || textureCoords == null || texture == null || textureCoords.Length < points.Length)
+        {
+            return;
+        }
+
+        // Create triangles of which each share the first vertex
+        for (int i = 1; i < points.Length - 1; i++)
+        {
+            DrawTriangleTextured(
+                points[0],
+                points[i],
+                points[i + 1],
+                textureCoords[0],
+                textureCoords[i],
+                textureCoords[i + 1],
+                texture);
+        }
+    }
+
+    public void DrawPolygonTexturedDepth(Vector2[] points, float[] depths, Vector2[] textureCoords, FastBitmap texture)
+    {
+        if (points == null ||
+            depths == null ||
+            textureCoords == null ||
+            texture == null ||
+            depths.Length < points.Length ||
+            textureCoords.Length < points.Length)
+        {
+            return;
+        }
+
+        // Create triangles of which each share the first vertex
+        for (int i = 1; i < points.Length - 1; i++)
+        {
+            DrawTriangleTexturedDepth(
+                points[0],
+                points[i],
+                points[i + 1],
+                depths[0],
+                depths[i],
+                depths[i + 1],
+                textureCoords[0],
+                textureCoords[i],
+                textureCoords[i + 1],
+                texture);
+        }
+    }
+
+    public void DrawRectangle(Vector2 position, float width, float height, FastColor color)
+        => DrawRectangleInt(
+            (int)MathF.Floor(position.X),
+            (int)MathF.Floor(position.Y),
+            (int)MathF.Floor(width),
+            (int)MathF.Floor(height),
+            color);
+
+    public void DrawRectangleCentre(float y, float width, float height, FastColor color)
+        => DrawRectangle(new((ScreenWidth - width) / 2, y), width, height, color);
+
+    public void DrawRectangleFilled(Vector2 position, float width, float height, FastColor color)
+        => DrawRectangleFilledInt(
+            (int)MathF.Floor(position.X),
+            (int)MathF.Floor(position.Y),
+            (int)MathF.Floor(width),
+            (int)MathF.Floor(height),
+            color);
+
+    // Measured from the font sheet rather than by generating the bitmap: the
+    // text cache is keyed on colour, so measuring through it would fill the
+    // cache with an entry per colour a caller happens to measure in.
+    public Vector2 MeasureText(string text, string fontType)
+    {
+        BitmapFont font = Fonts[fontType];
+
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return new(0, font.CellHeight);
+        }
+
+        int width = 0;
+        foreach (char letter in text)
+        {
+            width += font.IsProportional ? ProportionalGlyphWidth(font, letter) : font.CellWidth;
+        }
+
+        return new(width, font.CellHeight);
+    }
+
+    public void DrawTextCentre(float y, string text, string fontType, FastColor color)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return;
+        }
+
+        FastBitmap bitmapText = GenerateTextBitmap(text, fontType, color);
+        int x = (int)((ScreenWidth / 2) - (bitmapText.Width / 2));
+        DrawImage(bitmapText, new(x, y));
+    }
+
+    public void DrawTextLeft(Vector2 position, string text, string fontType, FastColor color)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return;
+        }
+
+        FastBitmap bitmapText = GenerateTextBitmap(text, fontType, color);
+        DrawImage(bitmapText, position);
+    }
+
+    public void DrawTextRight(Vector2 position, string text, string fontType, FastColor color)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return;
+        }
+
+        FastBitmap bitmapText = GenerateTextBitmap(text, fontType, color);
+        DrawImage(bitmapText, position - new Vector2(bitmapText.Width, 0));
+    }
+
+    public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, FastColor color)
+    {
+        DrawLine(a, b, color);
+        DrawLine(b, c, color);
+        DrawLine(c, a, color);
+    }
+
+    public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, FastColor color)
+    {
+        // Sort the points so that a.Y <= b.Y <= c.Y
+        (a, b, c) = SortPointsByY(a, b, c);
+
+        // Clamp Y range to screen bounds
+        int firstY = Math.Max((int)MathF.Ceiling(a.Y), 0);
+        int lastY = Math.Min((int)MathF.Floor(c.Y), (int)ScreenHeight - 1);
+
+        // Evaluate the two edges crossing each scanline directly; the
+        // interpolation parameter is clamped to the edge's endpoints, so
+        // steep or near-horizontal edges can never overshoot.
+        for (int y = firstY; y <= lastY; y++)
+        {
+            // the long edge a-c, and either a-b (above b) or b-c (below)
+            float x0 = EdgeX(a, c, y);
+            float x1 = y < b.Y ? EdgeX(a, b, y) : EdgeX(b, c, y);
+
+            if (x0 > x1)
+            {
+                (x0, x1) = (x1, x0);
+            }
+
+            int start = Math.Max((int)MathF.Floor(x0), 0);
+            int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
+
+            for (int x = start; x <= end; x++)
+            {
+                DrawPixel(x, y, color);
+            }
+        }
+    }
+
+    public void ScreenUpdate() => _screenUpdate(_screen);
+
+    public void SaveScreen(string path)
+    {
+        ArgumentNullException.ThrowIfNull(path);
+
+        BitmapWriter.Write(_screen, path);
+    }
+
+    public void SetClipRegion(Vector2 position, float width, float height)
+    {
+        _clipLeft = Math.Clamp(position.X, 0, ScreenWidth);
+        _clipTop = Math.Clamp(position.Y, 0, ScreenHeight);
+        _clipRight = Math.Clamp(position.X + width, 0, ScreenWidth);
+        _clipBottom = Math.Clamp(position.Y + height, 0, ScreenHeight);
+        _clipIsFullScreen = _clipLeft <= 0 && _clipTop <= 0 && _clipRight >= ScreenWidth && _clipBottom >= ScreenHeight;
+    }
+
+    // Textured variant of DrawTriangleFilled: texture coordinates are
+    // interpolated affinely in screen space (no perspective correction,
+    // which is fine for the small triangles a scene decomposes into) and
+    // sampled with edge clamping.
+    internal void DrawTriangleTextured(
+        Vector2 a,
+        Vector2 b,
+        Vector2 c,
+        Vector2 ta,
+        Vector2 tb,
+        Vector2 tc,
+        FastBitmap texture)
+    {
+        // Sort the points so that a.Y <= b.Y <= c.Y, keeping each texture
+        // coordinate paired with its point
+        if (b.Y < a.Y)
+        {
+            (a, b, ta, tb) = (b, a, tb, ta);
+        }
+
+        if (c.Y < a.Y)
+        {
+            (a, c, ta, tc) = (c, a, tc, ta);
+        }
+
+        if (c.Y < b.Y)
+        {
+            (b, c, tb, tc) = (c, b, tc, tb);
+        }
+
+        // Clamp Y range to screen bounds
+        int firstY = Math.Max((int)MathF.Ceiling(a.Y), 0);
+        int lastY = Math.Min((int)MathF.Floor(c.Y), (int)ScreenHeight - 1);
+
+        // As DrawTriangleFilled: evaluate the two edges crossing each
+        // scanline directly, with the interpolation parameter clamped to the
+        // edge's endpoints, carrying the texture coordinates along
+        for (int y = firstY; y <= lastY; y++)
+        {
+            // the long edge a-c, and either a-b (above b) or b-c (below)
+            float t0 = EdgeT(a, c, y);
+            float x0 = a.X + ((c.X - a.X) * t0);
+            Vector2 uv0 = Vector2.Lerp(ta, tc, t0);
+
+            float x1;
+            Vector2 uv1;
+            if (y < b.Y)
+            {
+                float t1 = EdgeT(a, b, y);
+                x1 = a.X + ((b.X - a.X) * t1);
+                uv1 = Vector2.Lerp(ta, tb, t1);
+            }
+            else
+            {
+                float t1 = EdgeT(b, c, y);
+                x1 = b.X + ((c.X - b.X) * t1);
+                uv1 = Vector2.Lerp(tb, tc, t1);
+            }
+
+            if (x0 > x1)
+            {
+                (x0, x1) = (x1, x0);
+                (uv0, uv1) = (uv1, uv0);
+            }
+
+            int start = Math.Max((int)MathF.Floor(x0), 0);
+            int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
+            float span = x1 - x0;
+
+            for (int x = start; x <= end; x++)
+            {
+                float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
+                DrawPixel(x, y, SampleTexture(texture, Vector2.Lerp(uv0, uv1, t)));
+            }
+        }
+    }
+
+    // Depth-tested variant of DrawTriangleFilled: inverse depth (1/z) is
+    // interpolated linearly in screen space (which is perspective-correct
+    // for depth) and each pixel only draws when it passes the depth test.
+    // writeColor false runs the depth test and its writes but draws nothing,
+    // which is how a hidden-line pass primes the buffer.
+    internal void DrawTriangleFilledDepth(
+        Vector2 a,
+        Vector2 b,
+        Vector2 c,
+        float za,
+        float zb,
+        float zc,
+        in FastColor color,
+        bool writeColor = true,
+        int surfaceId = 0)
+    {
+        if (za <= 0 || zb <= 0 || zc <= 0)
+        {
+            return;
+        }
+
+        // Sort the points so that a.Y <= b.Y <= c.Y, keeping each depth
+        // paired with its point
+        if (b.Y < a.Y)
+        {
+            (a, b, za, zb) = (b, a, zb, za);
+        }
+
+        if (c.Y < a.Y)
+        {
+            (a, c, za, zc) = (c, a, zc, za);
+        }
+
+        if (c.Y < b.Y)
+        {
+            (b, c, zb, zc) = (c, b, zc, zb);
+        }
+
+        float ia = 1f / za;
+        float ib = 1f / zb;
+        float ic = 1f / zc;
+
+        // Clamp Y range to screen bounds
+        int firstY = Math.Max((int)MathF.Ceiling(a.Y), 0);
+        int lastY = Math.Min((int)MathF.Floor(c.Y), (int)ScreenHeight - 1);
+
+        // As DrawTriangleFilled: evaluate the two edges crossing each
+        // scanline directly, carrying the inverse depth along
+        for (int y = firstY; y <= lastY; y++)
+        {
+            // the long edge a-c, and either a-b (above b) or b-c (below)
+            float t0 = EdgeT(a, c, y);
+            float x0 = a.X + ((c.X - a.X) * t0);
+            float i0 = ia + ((ic - ia) * t0);
+
+            float x1;
+            float i1;
+            if (y < b.Y)
+            {
+                float t1 = EdgeT(a, b, y);
+                x1 = a.X + ((b.X - a.X) * t1);
+                i1 = ia + ((ib - ia) * t1);
+            }
+            else
+            {
+                float t1 = EdgeT(b, c, y);
+                x1 = b.X + ((c.X - b.X) * t1);
+                i1 = ib + ((ic - ib) * t1);
+            }
+
+            if (x0 > x1)
+            {
+                (x0, x1) = (x1, x0);
+                (i0, i1) = (i1, i0);
+            }
+
+            DrawSpanFilledDepth(y, x0, x1, i0, i1, color, writeColor, surfaceId);
+        }
+    }
+
+    // Depth-tested variant of DrawTriangleTextured: texture coordinates are
+    // interpolated divided by depth and recovered per pixel (perspective
+    // correct, unlike the affine DrawTriangleTextured), since the road
+    // polygons near the viewpoint cover large parts of the screen.
+    internal void DrawTriangleTexturedDepth(
+        Vector2 a,
+        Vector2 b,
+        Vector2 c,
+        float za,
+        float zb,
+        float zc,
+        Vector2 ta,
+        Vector2 tb,
+        Vector2 tc,
+        FastBitmap texture)
+    {
+        if (za <= 0 || zb <= 0 || zc <= 0)
+        {
+            return;
+        }
+
+        // Sort the points so that a.Y <= b.Y <= c.Y, keeping each depth and
+        // texture coordinate paired with its point
+        if (b.Y < a.Y)
+        {
+            (a, b, za, zb, ta, tb) = (b, a, zb, za, tb, ta);
+        }
+
+        if (c.Y < a.Y)
+        {
+            (a, c, za, zc, ta, tc) = (c, a, zc, za, tc, ta);
+        }
+
+        if (c.Y < b.Y)
+        {
+            (b, c, zb, zc, tb, tc) = (c, b, zc, zb, tc, tb);
+        }
+
+        float ia = 1f / za;
+        float ib = 1f / zb;
+        float ic = 1f / zc;
+        Vector2 ua = ta * ia;
+        Vector2 ub = tb * ib;
+        Vector2 uc = tc * ic;
+
+        // Clamp Y range to screen bounds
+        int firstY = Math.Max((int)MathF.Ceiling(a.Y), 0);
+        int lastY = Math.Min((int)MathF.Floor(c.Y), (int)ScreenHeight - 1);
+
+        for (int y = firstY; y <= lastY; y++)
+        {
+            // the long edge a-c, and either a-b (above b) or b-c (below)
+            float t0 = EdgeT(a, c, y);
+            float x0 = a.X + ((c.X - a.X) * t0);
+            float i0 = ia + ((ic - ia) * t0);
+            Vector2 uv0 = Vector2.Lerp(ua, uc, t0);
+
+            float x1;
+            float i1;
+            Vector2 uv1;
+            if (y < b.Y)
+            {
+                float t1 = EdgeT(a, b, y);
+                x1 = a.X + ((b.X - a.X) * t1);
+                i1 = ia + ((ib - ia) * t1);
+                uv1 = Vector2.Lerp(ua, ub, t1);
+            }
+            else
+            {
+                float t1 = EdgeT(b, c, y);
+                x1 = b.X + ((c.X - b.X) * t1);
+                i1 = ib + ((ic - ib) * t1);
+                uv1 = Vector2.Lerp(ub, uc, t1);
+            }
+
+            if (x0 > x1)
+            {
+                (x0, x1) = (x1, x0);
+                (i0, i1) = (i1, i0);
+                (uv0, uv1) = (uv1, uv0);
+            }
+
+            DrawSpanTexturedDepth(y, x0, x1, i0, i1, uv0, uv1, texture);
+        }
+    }
+
+    // The x position of the edge p0-p1 at scanline y, clamped to the
+    // edge's endpoints (p0.Y must not be greater than p1.Y).
+    // Ink takes the requested text colour, the sheet's background becomes
+    // transparent, and anything else is copied through - which is what lets a
+    // proportional glyph carry more than one colour.
+    private static FastColor Recolour(BitmapFont font, int x, int y, in FastColor color)
+    {
+        FastColor pixelColor = font.Image.GetPixel(x, y);
+
+        return pixelColor == font.Ink ? color
+            : pixelColor == font.Background ? BaseColors.TransparentBlack
+            : pixelColor;
+    }
+
+    // Monospaced: every glyph fills its cell, so there is nothing to measure
+    // and no marker to look for.
+    private static int AppendGridGlyph(BitmapFont font, FastBitmap temp, int left, char letter, in FastColor color)
+    {
+        (int originX, int originY) = font.CellOrigin(letter);
+
+        for (int y = 0; y < font.CellHeight; y++)
+        {
+            for (int x = 0; x < font.CellWidth; x++)
+            {
+                temp.SetPixel(left + x, y, Recolour(font, originX + x, originY + y, color));
+            }
+        }
+
+        return font.CellWidth;
+    }
+
+    // The width half of AppendProportionalGlyph, reading the sheet directly:
+    // Recolour leaves magenta alone, so the markers are in the same places
+    // whatever colour the text would be drawn in.
+    private static int ProportionalGlyphWidth(BitmapFont font, char letter)
+    {
+        (int originX, int originY) = font.CellOrigin(letter);
+        int charX = 0;
+        int charY = 0;
+        int maxCharWidth = 0;
+
+        do
+        {
+            do
+            {
+                charX++;
+            }
+            while (font.Image.GetPixel(originX + charX, originY + charY) != BaseColors.Magenta);
+
+            maxCharWidth = Math.Max(maxCharWidth, charX);
+            charX = 0;
+            charY++;
+        }
+        while (font.Image.GetPixel(originX, originY + charY) != BaseColors.Magenta);
+
+        return maxCharWidth;
+    }
+
+    // Variable width: a magenta marker ends each row of the glyph, and a
+    // magenta pixel where the next row would start ends the glyph.
+    private static int AppendProportionalGlyph(BitmapFont font, FastBitmap temp, int left, char letter, in FastColor color)
+    {
+        (int originX, int originY) = font.CellOrigin(letter);
+        int charX = 0;
+        int charY = 0;
+        int maxCharWidth = 0;
+        FastColor pixelColor = Recolour(font, originX, originY, color);
+
+        do
+        {
+            do
+            {
+                temp.SetPixel(left + charX, charY, pixelColor);
+                charX++;
+                pixelColor = Recolour(font, originX + charX, originY + charY, color);
+            }
+            while (pixelColor != BaseColors.Magenta);
+
+            maxCharWidth = Math.Max(maxCharWidth, charX);
+            charX = 0;
+            charY++;
+
+            pixelColor = Recolour(font, originX, originY + charY, color);
+        }
+        while (pixelColor != BaseColors.Magenta);
+
+        return maxCharWidth;
+    }
+
+    private static float EdgeX(Vector2 p0, Vector2 p1, float y)
+        => p0.X + ((p1.X - p0.X) * EdgeT(p0, p1, y));
+
+    // The interpolation parameter of the edge p0-p1 at scanline y, clamped
+    // to the edge's endpoints (p0.Y must not be greater than p1.Y). A
+    // horizontal or degenerate edge yields 0.
+    private static float EdgeT(Vector2 p0, Vector2 p1, float y)
+    {
+        float dy = p1.Y - p0.Y;
+        return dy <= 0 ? 0f : Math.Clamp((y - p0.Y) / dy, 0f, 1f);
+    }
+
+    // Sample the texture at a [0,1] coordinate, clamping at the edges.
+    private static FastColor SampleTexture(FastBitmap texture, Vector2 uv)
+    {
+        int x = Math.Clamp((int)(uv.X * texture.Width), 0, texture.Width - 1);
+        int y = Math.Clamp((int)(uv.Y * texture.Height), 0, texture.Height - 1);
+        return texture.GetPixel(x, y);
+    }
+
+    private static (Vector2 A, Vector2 B, Vector2 C) SortPointsByY(Vector2 a, Vector2 b, Vector2 c)
+    {
+        Vector2[] sorted = [a, b, c];
+        Array.Sort(sorted, (i, j) => i.Y.CompareTo(j.Y));
+        return (sorted[0], sorted[1], sorted[2]);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (!_isDisposed)
+        {
+            if (disposing)
+            {
+                // dispose managed state (managed objects)
+                _screen?.Dispose();
+
+                foreach ((string _, FastBitmap bitmap) in _textCacheOrder)
+                {
+                    bitmap.Dispose();
+                }
+
+                _textCache.Clear();
+                _textCacheOrder.Clear();
+            }
+
+            // free unmanaged resources (unmanaged objects) and override finalizer
+            // set large fields to null
+            _isDisposed = true;
+        }
+    }
+
+    private void DrawImage(FastBitmap bitmap, Vector2 position)
+    {
+        // Clipped once here rather than per pixel: DrawPixel only tests
+        // bounds while a clip region is set, so an image landing even partly
+        // off-screen would otherwise write outside the framebuffer. Narrowing
+        // the loops keeps the per-pixel path free of the extra comparisons.
+        int left = Math.Max(0, -(int)position.X);
+        int top = Math.Max(0, -(int)position.Y);
+        int right = Math.Min(bitmap.Width, (int)ScreenWidth - (int)position.X);
+        int bottom = Math.Min(bitmap.Height, (int)ScreenHeight - (int)position.Y);
+
+        for (int y = top; y < bottom; y++)
+        {
+            for (int x = left; x < right; x++)
+            {
+                FastColor color = bitmap.GetPixel(x, y);
+                if (color.A != 0)
+                {
+                    // TODO: should mix the transparent colors correctly here
+                    // but the only transparency being used is transparent or opaque
+                    DrawPixel((int)(position.X + x), (int)(position.Y + y), color);
+                }
+            }
+        }
+    }
+
+    // Draw one destination row of a scaled image part, sampling row sy of the
+    // source bitmap with nearest-neighbour filtering.
+    private void DrawImagePartRow(
+        FastBitmap bitmap,
+        float destX,
+        int y,
+        int destWidth,
+        float sourceX,
+        float sourceWidth,
+        bool mirrorX,
+        int sy)
+    {
+        for (int dx = 0; dx < destWidth; dx++)
+        {
+            int x = (int)(destX + dx);
+            if (x < 0 || x >= (int)ScreenWidth)
+            {
+                continue;
+            }
+
+            float fx = (dx + 0.5f) * sourceWidth / destWidth;
+            int sx = (int)(sourceX + (mirrorX ? sourceWidth - fx : fx));
+            sx = Math.Clamp(sx, 0, bitmap.Width - 1);
+
+            FastColor color = bitmap.GetPixel(sx, sy);
+            if (color.A != 0)
+            {
+                DrawPixel(x, y, color);
+            }
+        }
+    }
+
+    // Draw one depth-tested scanline of a flat-shaded triangle, interpolating
+    // inverse depth from i0 at x0 to i1 at x1.
+    private void FillPolygonDepth(Vector2[] points, float[] depths, in FastColor faceColor, bool writeColor, int surfaceId)
+    {
+        if (points == null || depths == null || depths.Length < points.Length)
+        {
+            return;
+        }
+
+        // Create triangles of which each share the first vertex
+        for (int i = 1; i < points.Length - 1; i++)
+        {
+            DrawTriangleFilledDepth(
+                points[0],
+                points[i],
+                points[i + 1],
+                depths[0],
+                depths[i],
+                depths[i + 1],
+                faceColor,
+                writeColor,
+                surfaceId);
+        }
+    }
+
+    private void DrawSpanFilledDepth(int y, float x0, float x1, float i0, float i1, in FastColor color, bool writeColor, int surfaceId)
+    {
+        int start = Math.Max((int)MathF.Floor(x0), 0);
+        int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
+        float span = x1 - x0;
+
+        for (int x = start; x <= end; x++)
+        {
+            float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
+            if (DepthTest(x, y, i0 + ((i1 - i0) * t), surfaceId) && writeColor)
+            {
+                DrawPixel(x, y, color);
+            }
+        }
+    }
+
+    // Draw one depth-tested scanline of a textured triangle. The texture
+    // coordinates arrive already divided by depth and are recovered per pixel.
+    private void DrawSpanTexturedDepth(
+        int y,
+        float x0,
+        float x1,
+        float i0,
+        float i1,
+        Vector2 uv0,
+        Vector2 uv1,
+        FastBitmap texture)
+    {
+        int start = Math.Max((int)MathF.Floor(x0), 0);
+        int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
+        float span = x1 - x0;
+
+        for (int x = start; x <= end; x++)
+        {
+            float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
+            float inverseDepth = i0 + ((i1 - i0) * t);
+            if (DepthTest(x, y, inverseDepth, surfaceId: 0))
+            {
+                Vector2 uv = Vector2.Lerp(uv0, uv1, t) / inverseDepth;
+                DrawPixel(x, y, SampleTexture(texture, uv));
+            }
+        }
+    }
+
+    private void DrawLineInt(int x0, int y0, int x1, int y1, in FastColor color)
+    {
+        int screenWidth = (int)ScreenWidth;   // Replace with actual screen width
+        int screenHeight = (int)ScreenHeight; // Replace with actual screen height
+
+        int dx = Math.Abs(x1 - x0);
+        int dy = Math.Abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy;
+
+        while (true)
+        {
+            if (x0 >= 0 && x0 < screenWidth && y0 >= 0 && y0 < screenHeight)
+            {
+                DrawPixel(x0, y0, color);
+            }
+
+            if (x0 == x1 && y0 == y1)
+            {
+                break;
+            }
+
+            int e2 = 2 * err;
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x0 += sx;
+            }
+
+            if (e2 < dx)
+            {
+                err += dx;
+                y0 += sy;
+            }
+        }
+    }
+
+    // Depth-tested variant of DrawLineInt: inverse depth (1/z) is
+    // interpolated along the Bresenham walk by its fraction of the major
+    // axis, matching how DrawSpanFilledDepth interpolates across a span.
+    private void DrawLineIntDepth(int x0, int y0, int x1, int y1, float inverseStart, float inverseEnd, in FastColor color, int surfaceId)
+    {
+        int dx = Math.Abs(x1 - x0);
+        int dy = Math.Abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy;
+        int steps = Math.Max(dx, dy);
+
+        for (int step = 0; step <= steps; step++)
+        {
+            float t = steps == 0 ? 0f : (float)step / steps;
+            PlotDepthTestedPixel(x0, y0, inverseStart + ((inverseEnd - inverseStart) * t), color, surfaceId);
+
+            int e2 = 2 * err;
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x0 += sx;
+            }
+
+            if (e2 < dx)
+            {
+                err += dx;
+                y0 += sy;
+            }
+        }
+    }
+
+    private void PlotDepthTestedPixel(int x, int y, float inverseDepth, in FastColor color, int surfaceId)
+    {
+        if (x < 0 || x >= (int)ScreenWidth || y < 0 || y >= (int)ScreenHeight)
+        {
+            return;
+        }
+
+        if (DepthTest(x, y, inverseDepth, surfaceId))
+        {
+            DrawPixel(x, y, color);
+        }
+    }
+
+    private void DrawPixel(int x, int y, in FastColor color)
+    {
+        if (!_clipIsFullScreen && (x < _clipLeft || y < _clipTop || x >= _clipRight || y >= _clipBottom))
+        {
+            return;
+        }
+
+        _screen.SetPixel(x, y, color);
+    }
+
+    // Test-and-set a pixel's inverse depth: the draw passes when at least
+    // as near as what is already there, so later draws win ties (as the
+    // original Direct3D LESSEQUAL depth test). A non-zero surfaceId also
+    // passes against itself - the caller is drawing the same surface that
+    // already owns the pixel, so there is nothing to hide it behind - and
+    // that case leaves the stored depth alone rather than pushing it back.
+    private bool DepthTest(int x, int y, float inverseDepth, int surfaceId)
+    {
+        _depth ??= new float[(int)ScreenWidth * (int)ScreenHeight];
+        _surfaceIds ??= new int[(int)ScreenWidth * (int)ScreenHeight];
+
+        int index = (y * (int)ScreenWidth) + x;
+        if (inverseDepth < _depth[index])
+        {
+            return surfaceId != 0 && _surfaceIds[index] == surfaceId;
+        }
+
+        _depth[index] = inverseDepth;
+        _surfaceIds[index] = surfaceId;
+        return true;
+    }
+
+    private void DrawRectangleFilledInt(int startX, int startY, int width, int height, in FastColor color)
+    {
+        startX = Math.Min(Math.Max(startX, 0), (int)ScreenWidth - 1);
+        startY = Math.Min(Math.Max(startY, 0), (int)ScreenHeight - 1);
+        int endX = Math.Min(Math.Max(startX + width - 1, 0), (int)ScreenWidth - 1);
+        int endY = Math.Min(Math.Max(startY + height - 1, 0), (int)ScreenHeight - 1);
+
+        // Draw horizontal lined
+        for (int x = startX; x <= endX; x++)
+        {
+            for (int y = startY; y <= endY; y++)
+            {
+                DrawPixel(x, y, color);
+            }
+        }
+    }
+
+    private void DrawRectangleInt(int startX, int startY, int width, int height, in FastColor color)
+    {
+        startX = Math.Min(Math.Max(startX, 0), (int)ScreenWidth - 1);
+        startY = Math.Min(Math.Max(startY, 0), (int)ScreenHeight - 1);
+        int endX = Math.Min(Math.Max(startX + width - 1, 0), (int)ScreenWidth - 1);
+        int endY = Math.Min(Math.Max(startY + height - 1, 0), (int)ScreenHeight - 1);
+
+        // Draw horizontal lines
+        for (int x = startX; x <= endX; x++)
+        {
+            DrawPixel(x, startY, color);
+            DrawPixel(x, endY, color);
+        }
+
+        for (int y = startY + 1; y <= endY - 1; y++)
+        {
+            DrawPixel(startX, y, color);
+            DrawPixel(endX, y, color);
+        }
+    }
+
+    private FastBitmap GenerateTextBitmap(string text, string fontType, in FastColor color)
+    {
+        string key = $"{fontType}_{color}_{text}";
+
+        if (_textCache.TryGetValue(key, out LinkedListNode<(string Key, FastBitmap Bitmap)>? cacheNode))
+        {
+            _textCacheOrder.Remove(cacheNode);
+            _textCacheOrder.AddFirst(cacheNode);
+            return cacheNode.Value.Bitmap;
+        }
+
+        BitmapFont font = Fonts[fontType];
+
+        using FastBitmap temp = new(text.Length * font.CellWidth, font.CellHeight);
+        int totalWidth = 0;
+
+        foreach (char letter in text)
+        {
+            totalWidth += font.IsProportional
+                ? AppendProportionalGlyph(font, temp, totalWidth, letter, color)
+                : AppendGridGlyph(font, temp, totalWidth, letter, color);
+        }
+
+        FastBitmap bitmap = temp.Resize(totalWidth, font.CellHeight);
+
+        if (_textCacheOrder.Count >= TextCacheCapacity)
+        {
+            LinkedListNode<(string Key, FastBitmap Bitmap)> lru = _textCacheOrder.Last!;
+            _textCacheOrder.RemoveLast();
+            _textCache.Remove(lru.Value.Key);
+            lru.Value.Bitmap.Dispose();
+        }
+
+        LinkedListNode<(string Key, FastBitmap Bitmap)> node = _textCacheOrder.AddFirst((key, bitmap));
+        _textCache.Add(key, node);
+        return bitmap;
+    }
+}

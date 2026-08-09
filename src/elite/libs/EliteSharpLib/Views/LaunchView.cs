@@ -6,7 +6,7 @@ using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Audio;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
-using Useful.Audio;
+using SharpKind.Audio;
 
 namespace EliteSharpLib.Views;
 

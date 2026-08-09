@@ -5,8 +5,8 @@
 using System.Numerics;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Ships;
-using Useful.Input;
-using Useful.Maths;
+using SharpKind.Input;
+using SharpKind.Maths;
 
 namespace EliteSharpLib.Tests;
 

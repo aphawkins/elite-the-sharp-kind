@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\useful\test\Useful.Fakes\Useful.Fakes.csproj" />
-    <ProjectReference Include="..\..\..\useful\test\Useful.Graphics.Fakes\Useful.Graphics.Fakes.csproj" />
+    <ProjectReference Include="..\..\..\useful\test\SharpKind.Fakes\SharpKind.Fakes.csproj" />
+    <ProjectReference Include="..\..\..\useful\test\SharpKind.Graphics.Fakes\SharpKind.Graphics.Fakes.csproj" />
     <ProjectReference Include="..\..\libs\EliteSharpLib\EliteSharpLib.csproj" />
   </ItemGroup>
 

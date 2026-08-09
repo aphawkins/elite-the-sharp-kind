@@ -12,12 +12,12 @@ using EliteSharpLib.Ships;
 using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
-using Useful.Abstraction;
-using Useful.Audio;
-using Useful.Config;
-using Useful.Fakes;
-using Useful.Fakes.Audio;
-using Useful.Fakes.Input;
+using SharpKind.Abstraction;
+using SharpKind.Audio;
+using SharpKind.Config;
+using SharpKind.Fakes;
+using SharpKind.Fakes.Audio;
+using SharpKind.Fakes.Input;
 
 namespace EliteSharpLib.Tests.Views;
 

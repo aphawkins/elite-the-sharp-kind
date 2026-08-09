@@ -5,7 +5,7 @@
 using System.Numerics;
 using EliteSharp.Abstractions.Assets;
 using EliteSharp.Abstractions.Ships;
-using Useful;
+using SharpKind;
 
 namespace EliteSharp.Abstractions.Views;
 

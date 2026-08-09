@@ -3,7 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Views;
-using Useful.Input;
+using SharpKind.Input;
 
 namespace EliteSharpLib.Tests;
 

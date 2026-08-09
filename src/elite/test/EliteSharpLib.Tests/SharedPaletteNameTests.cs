@@ -2,8 +2,8 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using Useful.Assets;
-using Useful.Assets.Palettes;
+using SharpKind.Assets;
+using SharpKind.Assets.Palettes;
 
 namespace EliteSharpLib.Tests;
 

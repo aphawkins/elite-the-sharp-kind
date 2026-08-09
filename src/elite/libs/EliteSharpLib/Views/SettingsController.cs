@@ -6,9 +6,9 @@ using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Config;
 using EliteSharpLib.Planets;
 using EliteSharpLib.Suns;
-using Useful.Config;
-using Useful.Input;
-using Useful.UI;
+using SharpKind.Config;
+using SharpKind.Input;
+using SharpKind.UI;
 
 namespace EliteSharpLib.Views;
 

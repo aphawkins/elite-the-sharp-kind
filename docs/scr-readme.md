@@ -4,7 +4,7 @@
 
 A C# port of the classic Geoff Crammond racing game 'Stunt Car Racer'.  It is converted from the C++/DirectX9 Windows remake of the Amiga version, and is meant to feel and play the same as the original.
 
-The port shares the `Useful` libraries with 'Elite - The Sharp Kind': hardware access is hidden behind interfaces, with a software renderer drawing through SDL3.  The physics uses the original Amiga fixed-point algorithms and track data.
+The port shares the `SharpKind` libraries with 'Elite - The Sharp Kind': hardware access is hidden behind interfaces, with a software renderer drawing through SDL3.  The physics uses the original Amiga fixed-point algorithms and track data.
 
 Part of [The Sharp Kind](../README.md), alongside [Elite - The Sharp Kind](elite-readme.md).  Remaining conversion work is tracked in the [backlog](backlog-roadmap.md).
 
@@ -90,11 +90,11 @@ Stunt Car Racer's own diagnostic opt-in, read at runtime rather than compiled in
 ## Porting notes
 
 - Source of the conversion: `github.com/ptitSeb/stuntcarremake` (C++, DirectX9/DXUT + SDL2), a maintained fork of `fluffyfreak/stuntcarracer`.  Earlier work was ported from fluffyfreak before the switch; where the two diverge, ptitSeb's is the source of truth — see [reference-sources.md](reference-sources.md).
-- Hardware access stays behind the `Useful.Abstraction` interfaces (`IGraphics`, `IKeyboard`, `ISound`); the software rasterizer (`Useful.Graphics.SoftwareGraphics`) is the primary rendering path.
+- Hardware access stays behind the `SharpKind.Abstraction` interfaces (`IGraphics`, `IKeyboard`, `ISound`); the software rasterizer (`SharpKind.Graphics.SoftwareGraphics`) is the primary rendering path.
 - Before writing SCR-specific code, check whether the equivalent already exists in `src/useful/*` and extend that library instead of duplicating it.  A genuine SCR-only need (e.g. track-segment collision) is fine to keep local.
 - Behavioural fidelity ("feels like the original"), not bit-exact numerical replication, is the bar — there is no requirement to match the original's frame-by-frame physics output.
 - The original's binary asset formats (tracks/bitmaps/sounds) are read-once inputs to a one-time conversion step, not a live format the C# code must parse identically forever.
-- The original remake's Windows-only infrastructure (DXUT registry prefs, clipboard, DirectSound path, `MessageBox` dialogs) is deliberately not ported — it belongs to the DirectX stack this port bypasses in favour of SDL3 + `Useful.Audio`.
+- The original remake's Windows-only infrastructure (DXUT registry prefs, clipboard, DirectSound path, `MessageBox` dialogs) is deliberately not ported — it belongs to the DirectX stack this port bypasses in favour of SDL3 + `SharpKind.Audio`.
 
 ## Credits
 

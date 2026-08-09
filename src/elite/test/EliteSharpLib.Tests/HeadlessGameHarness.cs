@@ -6,9 +6,9 @@ using EliteSharpLib.Fakes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Useful.Abstraction;
-using Useful.Fakes.Harness;
-using Useful.Fakes.Input;
+using SharpKind.Abstraction;
+using SharpKind.Fakes.Harness;
+using SharpKind.Fakes.Input;
 
 namespace EliteSharpLib.Tests;
 

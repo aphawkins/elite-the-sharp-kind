@@ -4,7 +4,7 @@
 
 using System.Numerics;
 using EliteSharpLib.Ships;
-using Useful.Maths;
+using SharpKind.Maths;
 
 namespace EliteSharpLib;
 

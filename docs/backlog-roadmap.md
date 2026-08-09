@@ -95,7 +95,7 @@ departure from the source material, not a correction. Nothing here should
 start before the issues file is clear, and the maintainer should decide
 per item whether authenticity or modernity wins.
 
-- [ ] [Useful.Graphics] **[LARGE]** Homogeneous clip-space pipeline: neither
+- [ ] [SharpKind.Graphics] **[LARGE]** Homogeneous clip-space pipeline: neither
       game builds view/projection matrices or carries a `w`. Elite does
       `Vector4.Transform(...) + Location` then divides by `Z` directly
       ([ShipBase.ProjectPoint](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs));
@@ -109,9 +109,9 @@ per item whether authenticity or modernity wins.
       "convert angles and trig" step of the SCR float-physics conversion
       below — sequence after that, and re-scope against the shared-projector
       cleanup below, which is the small first slice of the same idea.
-- [ ] [Useful.Graphics] Flat (Lambert) per-face lighting: there is no
+- [ ] [SharpKind.Graphics] Flat (Lambert) per-face lighting: there is no
       lighting of any kind today — a grep across both game libs and
-      `Useful.Graphics` finds no light vector, no ambient/diffuse/specular
+      `SharpKind.Graphics` finds no light vector, no ambient/diffuse/specular
       term, no shading normals. Every polygon is a constant `FastColor` from
       the model asset. Elite computes face normals in `ShipBase.FindFaceRoots`
       but only to detect coplanar decals. The cheapest meaningful step is a
@@ -122,42 +122,42 @@ per item whether authenticity or modernity wins.
       the 8-bit tier's colour budget (see
       [asset-structure.md](asset-structure.md)) has no room for shaded ramps,
       so this may be a 16-bit-and-above feature only.
-- [ ] [Useful.Graphics] Gouraud shading: strictly follow-on from flat
+- [ ] [SharpKind.Graphics] Gouraud shading: strictly follow-on from flat
       lighting, and much larger — needs per-vertex normals, which the `.obj`
       assets don't carry and which would have to be derived by averaging
       adjacent face normals at load. Only worth scoping once flat lighting
       has answered the palette question above.
-- [ ] [Useful.Graphics] Far-plane and bounding-volume culling: no far plane
+- [ ] [SharpKind.Graphics] Far-plane and bounding-volume culling: no far plane
       exists (distance handling is `Universe`'s object removal and Elite's
       `VanishPoint`), and there is no per-object bounding-sphere-versus-
       frustum test — every object in the universe list is transformed face
       by face every frame whether or not any part of it can be on screen. A
       sphere test using the existing `IShip.Size` in front of the per-face
       loop is the cheap version.
-- [ ] [Useful.Graphics] Texture filtering and mipmaps: `SampleTexture` is
+- [ ] [SharpKind.Graphics] Texture filtering and mipmaps: `SampleTexture` is
       nearest-neighbour with edge clamping. Bilinear filtering plus a mip
       chain would stop SCR's distant road aliasing (recorded as a
       deliberate non-fix under Won't in
       [backlog-issues.md](backlog-issues.md), since the Amiga had neither).
       Elite is untextured entirely and gains nothing here.
-- [ ] [Useful.Graphics] Level of detail: the `ShipBase.Draw` docstring has
+- [ ] [SharpKind.Graphics] Level of detail: the `ShipBase.Draw` docstring has
       flagged "not showing detail at distance" as unimplemented since the
       port began. The New Kind's models carry the data to do it. Cheap
       version: skip 2-point detail lines and decal faces past a distance
       threshold, which also relieves the polygon-cap pressure recorded in
       the issues file.
-- [ ] [Useful.Graphics] Alpha blending: no transparency of any kind — the
+- [ ] [SharpKind.Graphics] Alpha blending: no transparency of any kind — the
       `DrawImage` path still carries a TODO admitting "should mix the
       transparent colors correctly here but the only transparency being
       used is transparent or opaque". A real alpha path would let the
       Elite explosion cloud and SCR's shadow quad stop being solid fills.
-- [ ] [Useful.Graphics] Sub-pixel rasterisation precision: triangle edges
+- [ ] [SharpKind.Graphics] Sub-pixel rasterisation precision: triangle edges
       snap to integer scanlines (`MathF.Ceiling`/`Floor` in
       `DrawTriangleFilled` and its variants), so geometry jitters as it
       moves rather than sliding smoothly. Fixing it means carrying
       fractional edge coverage through all four triangle routines — worth
       it only alongside anti-aliasing, which is separately absent.
-- [ ] [Useful.Graphics] Per-frame allocation in the polygon renderers:
+- [ ] [SharpKind.Graphics] Per-frame allocation in the polygon renderers:
       `Submit` does `new Vector2[points.Length]` (plus `new float[...]` in
       the z-buffer path) for every polygon every frame, and
       `ShipBase.BuildFacePolygon` returns a fresh `Vector2[]` — which
@@ -182,7 +182,7 @@ independently. Both games now clip against a shared near plane
 Elite's filled ships off the painter's chain landed 2026-07-14, and real
 face clipping followed, see CHANGELOG):
 
-- [ ] [Useful.Graphics] Extract a shared perspective-projection helper
+- [ ] [SharpKind.Graphics] Extract a shared perspective-projection helper
       (centre + focus·x/z): Elite now writes exactly that form, but
       inlines it at five sites — `ShipBase.ProjectPoint`,
       `EliteDraw.ProjectExplosionPoints`,
@@ -196,7 +196,7 @@ face clipping followed, see CHANGELOG):
       `Scale`, which is now coordinate/window magnification only. This is
       the smallest useful slice of the clip-space item above — do it first
       and let it inform that one.
-- [ ] [Useful.Graphics] Shared text/HUD-panel helper for the two games'
+- [ ] [SharpKind.Graphics] Shared text/HUD-panel helper for the two games'
       ad-hoc HUD code (Elite's `EliteDraw` header/border/text helpers,
       SCR's `HudRenderer`) — the smaller sibling of the original item;
       survey both HUDs first and only lift what both actually use (e.g.
@@ -245,22 +245,22 @@ order — each layer builds on the previous; reference implementation is
 `XBOXController.cpp/h` in the local ptitSeb checkout,
 `C:\code\github\ptitSeb\stuntcarremake`):
 
-- [ ] [Useful.Input] Define the controller abstraction: an `IGamepad`
+- [ ] [SharpKind.Input] Define the controller abstraction: an `IGamepad`
       covering both target device classes — XInput-style pads (analog
       axes + buttons) and generic-HID digital joysticks (USB Competition
       Pro Extra: 8-way stick + fire buttons, no analog axes; digital
       devices report axes as -1/0/+1) — with the same
       pressed-vs-held semantics `IKeyboard` documents, a software
       implementation mirroring `SoftwareKeyboard`, and a fake in
-      `Useful.Fakes`. Design the producer(sink)/consumer split up front —
+      `SharpKind.Fakes`. Design the producer(sink)/consumer split up front —
       the `IKeyboard` interface-segregation item above is the same
       shape, so align (or do that item first).
-- [ ] [Useful.SDL] SDL plumbing: initialise the joystick +
+- [ ] [SharpKind.SDL] SDL plumbing: initialise the joystick +
       game-controller subsystems, handle
       `SDL_JOYDEVICEADDED`/`REMOVED` hotplug, and translate both
       `SDL_CONTROLLER*` events (XInput-class devices) and raw
       `SDL_JOY*` events (generic HID sticks that have no controller
-      mapping) in [SDLInput.cs](../src/useful/libs/Useful.SDL/SDLInput.cs)
+      mapping) in [SDLInput.cs](../src/useful/libs/SharpKind.SDL/SDLInput.cs)
       into the `IGamepad` sink. `ppy.SDL2-CS` exposes the full SDL2 API
       including `SDL_GameController`/`SDL_Joystick`, so no binding work
       is expected — verify first.
@@ -381,8 +381,8 @@ concern only** — the 8-bit and 16-bit tiers are fixed-width, so the
 widescreen half of these items applies to the modern tier alone. See
 [decisions.md](decisions.md).**):
 
-- [ ] [Useful.SDL] Resizable window with letterboxed scaling: add
-      `SDL_WINDOW_RESIZABLE` in [SDLWindow.cs:23-29](../src/useful/libs/Useful.SDL/SDLWindow.cs)
+- [ ] [SharpKind.SDL] Resizable window with letterboxed scaling: add
+      `SDL_WINDOW_RESIZABLE` in [SDLWindow.cs:23-29](../src/useful/libs/SharpKind.SDL/SDLWindow.cs)
       and handle `SDL_EVENT_WINDOW_RESIZED` in the event loop, so the
       window can be any size while both games keep rendering at their
       native 512x512 / 640x400 — zero game-code changes. Most of this
@@ -453,10 +453,10 @@ widescreen half of these items applies to the modern tier alone. See
       drive the native SDL window via Win32 `PostMessage`/
       `CopyFromScreen`, since Playwright can't see a raw SDL window
       (no DOM, no meaningful UI Automation tree — same reason
-      WinAppDriver wouldn't help either). `Useful.Graphics`/
-      `Useful.Audio`'s Software backends and both game libs are
+      WinAppDriver wouldn't help either). `SharpKind.Graphics`/
+      `SharpKind.Audio`'s Software backends and both game libs are
       already pure managed C# with no SDL dependency, so a
-      browser-hosted build (new `Useful.Wasm` + per-game `*.Wasm` app
+      browser-hosted build (new `SharpKind.Wasm` + per-game `*.Wasm` app
       targeting `browser-wasm`) could turn the app into an actual web
       page and let Playwright drive it for real: `page.goto()`,
       `page.keyboard.press()`, `page.screenshot()`, headless, no real
@@ -472,7 +472,7 @@ widescreen half of these items applies to the modern tier alone. See
 
 ## Won't
 
-- [ ] [Useful.Graphics] Programmable shading stages, stencil buffer, fog /
+- [ ] [SharpKind.Graphics] Programmable shading stages, stencil buffer, fog /
       depth cueing, anti-aliasing, post-processing and instancing
       (2026-07-31 modern-pipeline gap analysis) — all absent, all
       deliberately so. These are the parts of a modern pipeline that
@@ -507,7 +507,7 @@ widescreen half of these items applies to the modern tier alone. See
       hardcoded constants (`* 256 / vec.Z`, etc.) are endemic to the
       ported algorithms. Revisit only if a specific project is scoped for
       it.
-- [ ] [Useful.Graphics] Software rasterizer throughput (per-pixel `SetPixel`,
+- [ ] [SharpKind.Graphics] Software rasterizer throughput (per-pixel `SetPixel`,
       insertion-sorted painter chain of ≤100 polys, no spans/SIMD) — the game
       is fixed at 13.5fps by design and none of this is a bottleneck at that
       rate; revisit only if the "performance as secondary objective" goal is

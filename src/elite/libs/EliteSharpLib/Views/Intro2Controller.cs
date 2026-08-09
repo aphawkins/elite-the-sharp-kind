@@ -9,9 +9,9 @@ using EliteSharpLib.Conflict;
 using EliteSharpLib.Ships;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Useful.Audio;
-using Useful.Input;
-using Useful.Maths;
+using SharpKind.Audio;
+using SharpKind.Input;
+using SharpKind.Maths;
 
 namespace EliteSharpLib.Views;
 
