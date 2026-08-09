@@ -4,6 +4,8 @@
 
 Classic 8/16-bit computer games re-engineered in C# / .NET, sharing a common set of `SharpKind.*` game-engine libraries. The games are meant to look, feel and play like the originals while running cross-platform on modern hardware.
 
+[Project site](https://aphawkins.github.io/the-sharp-kind/)
+
 ## Games
 
 ### [Elite - The Sharp Kind](docs/elite-readme.md)
