@@ -206,15 +206,17 @@ internal sealed class EliteDraw : IEliteDraw
     {
         int np = 0;
 
+        // Through the interface: Projector is a default implementation, so it
+        // is not in scope on the implementing class.
+        PerspectiveProjector projector = ((IEliteDraw)this).Projector;
+
         for (int i = 0; i < ship.Model.Points.Count; i++)
         {
             if (ship.Model.Points[i].FaceNormals.Any(x => x.Visible))
             {
                 Vector4 vec = Vector4.Transform(ship.Model.Points[i].Coords, ship.Rotmat);
                 Vector4 r = vec + ship.Location;
-                Vector2 position = new(r.X, -r.Y);
-                position *= Focus / r.Z;
-                position += Layout.ViewportCentre;
+                Vector2 position = projector.Project(r.X, r.Y, r.Z);
                 _pointList[np].X = position.X;
                 _pointList[np].Y = position.Y;
                 np++;

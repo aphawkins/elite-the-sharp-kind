@@ -107,8 +107,9 @@ per item whether authenticity or modernity wins.
       the structural root of several items here and of the side-plane
       clipping item in the issues file. It also overlaps heavily with the
       "convert angles and trig" step of the SCR float-physics conversion
-      below — sequence after that, and re-scope against the shared-projector
-      cleanup below, which is the small first slice of the same idea.
+      below — sequence after that, and build on
+      `SharpKind.Graphics.PerspectiveProjector`, the small first slice of the
+      same idea that landed 2026-08-09 (see [CHANGELOG.md](../CHANGELOG.md)).
 - [ ] [SharpKind.Graphics] Flat (Lambert) per-face lighting: there is no
       lighting of any kind today — a grep across both game libs and
       `SharpKind.Graphics` finds no light vector, no ambient/diffuse/specular
@@ -182,20 +183,6 @@ independently. Both games now clip against a shared near plane
 Elite's filled ships off the painter's chain landed 2026-07-14, and real
 face clipping followed, see CHANGELOG):
 
-- [ ] [SharpKind.Graphics] Extract a shared perspective-projection helper
-      (centre + focus·x/z): Elite now writes exactly that form, but
-      inlines it at five sites — `ShipBase.ProjectPoint`,
-      `EliteDraw.ProjectExplosionPoints`,
-      `PlanetRenderer.GetPlanetPosition`, `SolidSun.Draw` and
-      `GradientSun.Draw` (see CHANGELOG, 2026-07-29) — against SCR's
-      `Scene3D.ProjectPoint`
-      ([Scene3D.cs:116-125](../src/scr/libs/StuntCarRacerSharpLib/Rendering/Scene3D.cs));
-      a small `focus`+`centre` projector type serves both. Note the
-      radius conversions in the planet/sun sites (`* Focus / 256`) are
-      Elite-specific and stay on the Elite side of the boundary, as does
-      `Scale`, which is now coordinate/window magnification only. This is
-      the smallest useful slice of the clip-space item above — do it first
-      and let it inform that one.
 - [ ] [SharpKind.Graphics] Shared text/HUD-panel helper for the two games'
       ad-hoc HUD code (Elite's `EliteDraw` header/border/text helpers,
       SCR's `HudRenderer`) — the smaller sibling of the original item;

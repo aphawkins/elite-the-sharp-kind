@@ -3,6 +3,7 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using System.Numerics;
+using SharpKind.Graphics;
 using StuntCarRacerSharpLib.Cars;
 using StuntCarRacerSharpLib.Tracks;
 
@@ -29,9 +30,7 @@ public sealed class Scene3D
     private int _cameraX;
     private int _cameraY;
     private int _cameraZ;
-    private float _focus;
-    private float _halfWidth;
-    private float _halfHeight;
+    private PerspectiveProjector _projector;
 
     public void SetView(SceneCamera camera, float screenWidth, float screenHeight)
     {
@@ -43,9 +42,7 @@ public sealed class Scene3D
 
         _trig.CalculateYXZ(camera.XAngle, camera.YAngle, camera.ZAngle);
 
-        _focus = screenWidth * FocusFactor;
-        _halfWidth = screenWidth / 2;
-        _halfHeight = screenHeight / 2;
+        _projector = new(screenWidth * FocusFactor, new(screenWidth / 2, screenHeight / 2));
     }
 
     // Transform a world point (track units, y up) into camera space.
@@ -66,11 +63,5 @@ public sealed class Scene3D
     public Vector2 ProjectPoint(Coord3D cameraPoint)
         => ProjectPoint(new Vector3(cameraPoint.X, cameraPoint.Y, cameraPoint.Z));
 
-    public Vector2 ProjectPoint(Vector3 cameraPoint)
-    {
-        float z = cameraPoint.Z;
-        return new(
-            _halfWidth + (_focus * cameraPoint.X / z),
-            _halfHeight - (_focus * cameraPoint.Y / z));
-    }
+    public Vector2 ProjectPoint(Vector3 cameraPoint) => _projector.Project(cameraPoint);
 }

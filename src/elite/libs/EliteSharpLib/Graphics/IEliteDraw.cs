@@ -6,6 +6,7 @@ using System.Numerics;
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Ships;
 using SharpKind;
+using SharpKind.Graphics;
 
 namespace EliteSharpLib.Graphics;
 
@@ -25,6 +26,13 @@ internal interface IEliteDraw : IViewSurface
     /// at every tier, and independent of <see cref="ViewLayout.Scale"/>.
     /// </summary>
     public float Focus { get; }
+
+    /// <summary>
+    /// Gets the perspective projection itself - <see cref="Focus"/> about the
+    /// viewport centre. Everything that puts a camera-space point on screen
+    /// goes through this, so there is one projection and not five.
+    /// </summary>
+    public PerspectiveProjector Projector => new(Focus, Layout.ViewportCentre);
 
     /// <summary>
     /// Gets what the rendition paints each sort of ship. The scanner reads it

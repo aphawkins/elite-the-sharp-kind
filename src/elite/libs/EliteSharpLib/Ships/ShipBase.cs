@@ -179,15 +179,14 @@ internal class ShipBase : IShip
             vec.Z = 1;
         }
 
-        vec.X = _draw.Layout.ViewportCentre.X + (vec.X * _draw.Focus / vec.Z);
-        vec.Y = _draw.Layout.ViewportCentre.Y - (vec.Y * _draw.Focus / vec.Z);
+        Vector2 screen = _draw.Projector.Project(vec.X, vec.Y, vec.Z);
+        vec.X = screen.X;
+        vec.Y = screen.Y;
 
         return vec;
     }
 
-    private Vector2 ProjectCameraPoint(Vector3 cameraPoint) => new(
-        _draw.Layout.ViewportCentre.X + (cameraPoint.X * _draw.Focus / cameraPoint.Z),
-        _draw.Layout.ViewportCentre.Y - (cameraPoint.Y * _draw.Focus / cameraPoint.Z));
+    private Vector2 ProjectCameraPoint(Vector3 cameraPoint) => _draw.Projector.Project(cameraPoint);
 
     private void DrawModelFaces(Vector4[] pointList)
     {

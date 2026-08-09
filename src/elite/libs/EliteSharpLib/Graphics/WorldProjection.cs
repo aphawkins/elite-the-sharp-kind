@@ -33,9 +33,7 @@ internal static class WorldProjection
         out float radius,
         out float unitScale)
     {
-        centre = new Vector2(location.X, -location.Y);
-        centre *= draw.Focus / location.Z;
-        centre += draw.Layout.ViewportCentre;
+        centre = draw.Projector.Project(location.X, location.Y, location.Z);
 
         // Planets are BIG! The radius is in the original's 256-wide space, so
         // it follows the projection's focal length rather than the scale.

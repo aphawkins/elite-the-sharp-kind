@@ -7,6 +7,26 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (one shared perspective projection, 2026-08-09)
+
+- **`SharpKind.Graphics.PerspectiveProjector`** is the projection both games
+  were writing out by hand: a focal length and a viewport centre, and
+  `Project` putting a camera-space point on screen as
+  `centre + focus * x / z` with y inverted. It sits beside `NearPlaneClip`,
+  which is the stage that has to run before it.
+- **Elite's five inlined copies are down to one.** `IEliteDraw.Projector`
+  builds it from the `Focus` and viewport it already exposed, and
+  `ShipBase.ProjectPoint`, `ShipBase.ProjectCameraPoint`,
+  `EliteDraw.ProjectExplosionPoints` and `WorldProjection.TryProject` all go
+  through it. The near-plane depth clamp stays in `ShipBase` and the
+  `Focus / 256` world-radius scale stays in `WorldProjection`: neither is
+  part of projecting a point, and both are Elite's alone.
+- **SCR's `Scene3D` holds one** instead of a `_focus`/`_halfWidth`/
+  `_halfHeight` triple, set in `SetView`. Its fixed-point view transform is
+  untouched - only the projection at the end of it was ever shared.
+- This is the first slice of the clip-space pipeline item still open in the
+  [backlog](docs/backlog-roadmap.md).
+
 ### Changed (`IGraphics` no longer reports the screen size, 2026-08-09)
 
 - **`IGraphics.ScreenWidth` and `IGraphics.ScreenHeight` are gone.** The
