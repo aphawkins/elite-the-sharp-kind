@@ -5,7 +5,7 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
-using Useful.Assets.Models;
+using SharpKind.Assets.Models;
 
 namespace EliteSharpLib.Fakes;
 

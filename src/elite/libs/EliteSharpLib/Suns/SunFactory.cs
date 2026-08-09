@@ -6,7 +6,7 @@ using EliteSharp.Abstractions.Renditions;
 using EliteSharp.Abstractions.Views.Suns;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
-using Useful.Graphics.Rendering;
+using SharpKind.Graphics.Rendering;
 
 namespace EliteSharpLib.Suns;
 

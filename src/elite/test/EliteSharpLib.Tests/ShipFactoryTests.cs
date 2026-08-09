@@ -5,8 +5,8 @@
 using System.Reflection;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Ships;
-using Useful.Fakes;
-using Useful.Fakes.Assets;
+using SharpKind.Fakes;
+using SharpKind.Fakes.Assets;
 
 namespace EliteSharpLib.Tests;
 

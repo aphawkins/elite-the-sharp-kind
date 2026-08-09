@@ -6,8 +6,8 @@ using EliteSharp.Abstractions.Missions;
 using EliteSharp.Missions.Classic;
 using EliteSharpLib.Types;
 using EliteSharpLib.Views;
-using Useful.Abstraction;
-using Useful.Fakes.Input;
+using SharpKind.Abstraction;
+using SharpKind.Fakes.Input;
 
 namespace EliteSharpLib.Tests.Missions;
 

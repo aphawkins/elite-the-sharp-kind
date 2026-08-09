@@ -8,10 +8,10 @@ using EliteSharpLib.Fakes;
 using EliteSharpLib.Planets;
 using EliteSharpLib.Renditions;
 using EliteSharpLib.Views;
-using Useful.Audio;
-using Useful.Config;
-using Useful.Fakes.Input;
-using Useful.Graphics.Rendering;
+using SharpKind.Audio;
+using SharpKind.Config;
+using SharpKind.Fakes.Input;
+using SharpKind.Graphics.Rendering;
 
 namespace EliteSharpLib.Tests.Views;
 

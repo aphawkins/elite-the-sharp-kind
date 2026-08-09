@@ -29,12 +29,12 @@ jobs:
         working-directory: src/elite/perf/EliteSharpLib.Benchmarks
         run: dotnet run --configuration Release
 
-      - name: Run Useful.Input benchmarks
-        working-directory: src/useful/perf/Useful.Input.Benchmarks
+      - name: Run SharpKind.Input benchmarks
+        working-directory: src/useful/perf/SharpKind.Input.Benchmarks
         run: dotnet run --configuration Release
 
-      - name: Run Useful.Graphics benchmarks
-        working-directory: src/useful/perf/Useful.Graphics.Benchmarks
+      - name: Run SharpKind.Graphics benchmarks
+        working-directory: src/useful/perf/SharpKind.Graphics.Benchmarks
         run: dotnet run --configuration Release
 
       # Each benchmark class gets its own JSON report and its own chart on
@@ -60,22 +60,22 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           auto-push: true
 
-      - name: Record Useful.Input Keyboard benchmark history
+      - name: Record SharpKind.Input Keyboard benchmark history
         uses: benchmark-action/github-action-benchmark@v1
         with:
           tool: 'benchmarkdotnet'
-          name: 'Useful.Input: Keyboard'
-          output-file-path: src/useful/perf/Useful.Input.Benchmarks/reports/results/Useful.Input.Benchmarks.KeyboardBenchmarks-report-full-compressed.json
+          name: 'SharpKind.Input: Keyboard'
+          output-file-path: src/useful/perf/SharpKind.Input.Benchmarks/reports/results/SharpKind.Input.Benchmarks.KeyboardBenchmarks-report-full-compressed.json
           gh-pages-branch: gh-pages
           github-token: ${{ secrets.GITHUB_TOKEN }}
           auto-push: true
 
-      - name: Record Useful.Graphics SoftwareGraphics benchmark history
+      - name: Record SharpKind.Graphics SoftwareGraphics benchmark history
         uses: benchmark-action/github-action-benchmark@v1
         with:
           tool: 'benchmarkdotnet'
-          name: 'Useful.Graphics: SoftwareGraphics'
-          output-file-path: src/useful/perf/Useful.Graphics.Benchmarks/reports/results/Useful.Graphics.Benchmarks.SoftwareGraphicsBenchmarks-report-full-compressed.json
+          name: 'SharpKind.Graphics: SoftwareGraphics'
+          output-file-path: src/useful/perf/SharpKind.Graphics.Benchmarks/reports/results/SharpKind.Graphics.Benchmarks.SoftwareGraphicsBenchmarks-report-full-compressed.json
           gh-pages-branch: gh-pages
           github-token: ${{ secrets.GITHUB_TOKEN }}
           auto-push: true

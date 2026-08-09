@@ -6,7 +6,7 @@ using EliteSharpLib.Config;
 using EliteSharpLib.Missions;
 using EliteSharpLib.Types;
 using EliteSharpLib.Views;
-using Useful.Abstraction;
+using SharpKind.Abstraction;
 
 namespace EliteSharpLib;
 

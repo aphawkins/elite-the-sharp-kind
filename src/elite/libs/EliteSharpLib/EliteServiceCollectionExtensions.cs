@@ -16,14 +16,14 @@ using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Useful.Abstraction;
-using Useful.Abstraction.Config;
-using Useful.Assets;
-using Useful.Audio;
-using Useful.Config;
-using Useful.Graphics;
-using Useful.Graphics.Rendering;
-using Useful.Input;
+using SharpKind.Abstraction;
+using SharpKind.Abstraction.Config;
+using SharpKind.Assets;
+using SharpKind.Audio;
+using SharpKind.Config;
+using SharpKind.Graphics;
+using SharpKind.Graphics.Rendering;
+using SharpKind.Input;
 
 namespace EliteSharpLib;
 
@@ -43,7 +43,7 @@ public static class EliteServiceCollectionExtensions
 
     // Exposes the (public) engine settings from the (internal) EliteConfig, so
     // Program.Main - which picks between SoftwareAbstraction and SDLAbstraction
-    // and therefore needs to reference Useful.SDL, a dependency EliteSharpLib
+    // and therefore needs to reference SharpKind.SDL, a dependency EliteSharpLib
     // itself deliberately does not have - can read the backend, the tier and
     // the window scale before the DI container (and its own
     // ConfigFile<EliteConfig> registration via AddEliteConfig) exists.

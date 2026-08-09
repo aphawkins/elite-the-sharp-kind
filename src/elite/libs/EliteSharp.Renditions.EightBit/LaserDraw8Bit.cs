@@ -4,7 +4,7 @@
 
 using EliteSharp.Abstractions.Ships;
 using EliteSharp.Abstractions.Views;
-using Useful;
+using SharpKind;
 
 namespace EliteSharp.Renditions.EightBit;
 

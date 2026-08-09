@@ -3,7 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
-using Useful;
+using SharpKind;
 
 namespace EliteSharpLib;
 

@@ -5,12 +5,12 @@
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Config;
 using EliteSharpLib.Renditions;
-using Useful.Abstraction;
-using Useful.Audio;
-using Useful.Config;
-using Useful.Graphics.Rendering;
-using Useful.Input;
-using Useful.UI;
+using SharpKind.Abstraction;
+using SharpKind.Audio;
+using SharpKind.Config;
+using SharpKind.Graphics.Rendering;
+using SharpKind.Input;
+using SharpKind.UI;
 
 namespace EliteSharpLib.Views;
 

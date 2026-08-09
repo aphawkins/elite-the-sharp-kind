@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\libs\SharpKind.Graphics\SharpKind.Graphics.csproj" />
+  </ItemGroup>
+</Project>

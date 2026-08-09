@@ -3,15 +3,15 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using System.Runtime.CompilerServices;
+using SharpKind;
+using SharpKind.Abstraction;
+using SharpKind.Assets;
+using SharpKind.Audio;
+using SharpKind.Graphics;
+using SharpKind.Input;
 using StuntCarRacerSharpLib.Rendering;
 using StuntCarRacerSharpLib.Screens;
 using StuntCarRacerSharpLib.Tracks;
-using Useful;
-using Useful.Abstraction;
-using Useful.Assets;
-using Useful.Audio;
-using Useful.Graphics;
-using Useful.Input;
 
 [assembly: CLSCompliant(false)]
 [assembly: InternalsVisibleTo("StuntCarRacerSharpLib.Tests")]

@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>SharpKind.Input</PackageId>
+    <Description>Keyboard input and key-script recording/playback for SharpKind-based games.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharpKind\SharpKind.csproj" />
+  </ItemGroup>
+</Project>

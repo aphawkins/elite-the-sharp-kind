@@ -11,10 +11,10 @@ using EliteSharpLib.Graphics;
 using EliteSharpLib.Save;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Views;
-using Useful.Abstraction;
-using Useful.Audio;
-using Useful.Graphics;
-using Useful.Input;
+using SharpKind.Abstraction;
+using SharpKind.Audio;
+using SharpKind.Graphics;
+using SharpKind.Input;
 
 [assembly: CLSCompliant(false)]
 

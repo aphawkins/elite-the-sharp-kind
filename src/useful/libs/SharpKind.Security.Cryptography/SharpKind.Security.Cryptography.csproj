@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>SharpKind.Security.Cryptography</PackageId>
+    <Description>Classical cipher implementations (Caesar, Vigenere, Atbash, Enigma, ROT13, monoalphabetic) with settings, generators and cryptanalysis helpers.</Description>
+  </PropertyGroup>
+
+</Project>

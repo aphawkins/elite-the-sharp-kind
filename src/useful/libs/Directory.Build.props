@@ -1,0 +1,11 @@
+<Project>
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <!-- Every project under src/useful/libs is a publishable SharpKind
+       library: opt back in to packing here, on top of the src/useful
+       default of IsPackable=false. Each project still supplies its own
+       PackageId/Description. -->
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+</Project>

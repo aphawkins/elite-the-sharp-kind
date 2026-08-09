@@ -4,8 +4,8 @@
 
 using EliteSharp.Abstractions.Views;
 using EliteSharp.Abstractions.Views.Suns;
-using Useful;
-using Useful.Maths;
+using SharpKind;
+using SharpKind.Maths;
 
 namespace EliteSharp.Renditions.EightBit;
 

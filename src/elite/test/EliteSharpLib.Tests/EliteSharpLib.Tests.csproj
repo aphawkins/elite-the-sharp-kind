@@ -24,8 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\useful\libs\Useful.Graphics\Useful.Graphics.csproj" />
-    <ProjectReference Include="..\..\..\useful\test\Useful.Fakes\Useful.Fakes.csproj" />
+    <ProjectReference Include="..\..\..\useful\libs\SharpKind.Graphics\SharpKind.Graphics.csproj" />
+    <ProjectReference Include="..\..\..\useful\test\SharpKind.Fakes\SharpKind.Fakes.csproj" />
     <!-- Referenced directly, unlike the game, because these tests are about
          what the two shipped missions do rather than about finding them. -->
     <ProjectReference Include="..\..\libs\EliteSharp.Missions.Classic\EliteSharp.Missions.Classic.csproj" />

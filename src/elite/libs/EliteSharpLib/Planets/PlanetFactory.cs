@@ -6,8 +6,8 @@ using EliteSharp.Abstractions.Renditions;
 using EliteSharp.Abstractions.Views.Planets;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
-using Useful;
-using Useful.Graphics.Rendering;
+using SharpKind;
+using SharpKind.Graphics.Rendering;
 
 namespace EliteSharpLib.Planets;
 

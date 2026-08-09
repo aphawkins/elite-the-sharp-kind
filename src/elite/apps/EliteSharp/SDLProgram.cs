@@ -6,8 +6,8 @@ using EliteSharpLib;
 using EliteSharpLib.Renditions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Useful.Abstraction.Config;
-using Useful.App;
+using SharpKind.Abstraction.Config;
+using SharpKind.App;
 
 [assembly: CLSCompliant(false)]
 

@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\libs\SharpKind.Assets\SharpKind.Assets.csproj" />
+    <ProjectReference Include="..\..\libs\SharpKind.Audio\SharpKind.Audio.csproj" />
+    <ProjectReference Include="..\..\libs\SharpKind.Input\SharpKind.Input.csproj" />
+    <ProjectReference Include="..\..\libs\SharpKind.Graphics\SharpKind.Graphics.csproj" />
+    <ProjectReference Include="..\..\libs\SharpKind\SharpKind.csproj" />
+  </ItemGroup>
+</Project>

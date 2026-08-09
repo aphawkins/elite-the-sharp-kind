@@ -6,10 +6,10 @@ using System.Numerics;
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Trader;
-using Useful;
-using Useful.Assets.Models;
-using Useful.Graphics;
-using Useful.Maths;
+using SharpKind;
+using SharpKind.Assets.Models;
+using SharpKind.Graphics;
+using SharpKind.Maths;
 
 namespace EliteSharpLib.Ships;
 

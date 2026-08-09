@@ -13,12 +13,12 @@ using EliteSharpLib.Suns;
 using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
-using Useful.Abstraction;
-using Useful.Audio;
-using Useful.Fakes;
-using Useful.Fakes.Audio;
-using Useful.Fakes.Input;
-using Useful.Graphics.Rendering;
+using SharpKind.Abstraction;
+using SharpKind.Audio;
+using SharpKind.Fakes;
+using SharpKind.Fakes.Audio;
+using SharpKind.Fakes.Input;
+using SharpKind.Graphics.Rendering;
 
 namespace EliteSharpLib.Tests;
 

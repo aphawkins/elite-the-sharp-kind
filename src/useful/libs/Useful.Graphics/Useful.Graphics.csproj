@@ -1,6 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <ProjectReference Include="..\Useful.Assets\Useful.Assets.csproj" />
-    <ProjectReference Include="..\Useful\Useful.csproj" />
-  </ItemGroup>
-</Project>

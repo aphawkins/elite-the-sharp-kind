@@ -15,8 +15,8 @@
   </ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\useful\libs\Useful.App\Useful.App.csproj" />
-	  <ProjectReference Include="..\..\..\useful\libs\Useful.SDL\Useful.SDL.csproj" />
+	  <ProjectReference Include="..\..\..\useful\libs\SharpKind.App\SharpKind.App.csproj" />
+	  <ProjectReference Include="..\..\..\useful\libs\SharpKind.SDL\SharpKind.SDL.csproj" />
 	  <ProjectReference Include="..\..\libs\EliteSharpLib\EliteSharpLib.csproj" />
 	</ItemGroup>
 

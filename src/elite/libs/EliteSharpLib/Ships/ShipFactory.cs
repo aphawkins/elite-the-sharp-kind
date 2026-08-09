@@ -3,8 +3,8 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
-using Useful.Assets;
-using Useful.Assets.Models;
+using SharpKind.Assets;
+using SharpKind.Assets.Models;
 
 namespace EliteSharpLib.Ships;
 

@@ -9,8 +9,8 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ### Changed (the control library, its namespaces and its bindings, 2026-08-06)
 
-- **`Useful.Widgets` is now `Useful.UI`, and `Useful.Controls` is now
-  `Useful.Input`.** The two were a namespace apart and a word from meaning the
+- **`SharpKind.Widgets` is now `SharpKind.UI`, and `SharpKind.Controls` is now
+  `SharpKind.Input`.** The two were a namespace apart and a word from meaning the
   same thing, while being opposite halves of the problem: one draws, the other
   reads the keyboard. `WidgetStyle`, `WidgetState` and `WidgetColors` follow
   the library into `ControlStyle`, `ControlState` and `ControlColors`.
@@ -44,7 +44,7 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ### Added (a widget library, and the settings screens built on it, 2026-08-05)
 
-- **`Useful.UI`**: `Label`, `Container<TControl>` and `ComboBox`, each
+- **`SharpKind.UI`**: `Label`, `Container<TControl>` and `ComboBox`, each
   owning its own bounds and drawing everything relative to them. A widget
   holds how it draws and never what is true — a `ComboBox` reads and writes
   its value through an injected `ISetting` and keeps no copy — which is what
@@ -53,14 +53,14 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 - **`IGraphics.MeasureText`**: the size a string would occupy in a given font.
   Text can now be aligned inside a widget's own bounds rather than against the
   screen, which is what `DrawTextCentre` measures against.
-- **`Useful.UI.Gallery`**: a window showing every widget in every state,
+- **`SharpKind.UI.Gallery`**: a window showing every widget in every state,
   with each one's bounds outlined, and the combo boxes live. Runs on either
   backend — the software one draws from an 8x8 bitmap sheet and the hardware
   one from a 12pt true-type face, and the gallery measures its row pitch so
   the same layout fits both.
 
   ```
-  dotnet run --project src/useful/apps/Useful.UI.Gallery
+  dotnet run --project src/useful/apps/SharpKind.UI.Gallery
   ```
 
 ### Changed (settings screens, 2026-08-05)
@@ -82,14 +82,14 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   invisibly, because the benchmark-history workflow is manually triggered
   and the failures are not build failures. Found while fixing the artifacts
   path below, and fixed together since none of them is worth much alone:
-  - `Useful.Graphics.Benchmarks`: `SoftwareGraphicsBenchmarks.Create` threw
+  - `SharpKind.Graphics.Benchmarks`: `SoftwareGraphicsBenchmarks.Create` threw
     "The 16-bit asset set is missing its palette" - `FakeAssetLocator`
     points `PalettePath` at the consuming project's own output and this
     project had no palette there. One throwing benchmark suppresses the
     whole class's summary export, so the class produced no results at all.
     It now carries an `Assets/Palette/palette.json` fixture of its own,
     copied to output. Not a project reference to a rendition, which is how
-    the Elite benchmarks get theirs: Useful does not depend on either game.
+    the Elite benchmarks get theirs: SharpKind does not depend on either game.
   - `EliteSharpLib.Benchmarks`: every benchmark threw in its constructor
     with `KeyNotFoundException: 'Scanner'`. `EliteDraw` needs the
     rendition's artwork and a bare `FakeAssetLocator` has none. The project
@@ -98,18 +98,18 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
     with the game's assets through `RenditionAssets` - the same composition
     `EliteSharpLib.Tests` builds, and the one the benchmarks are supposed to
     be measuring. All six benchmarks now report real numbers.
-  - `EliteSharpLib.Benchmarks` and `Useful.Input.Benchmarks` also both
+  - `EliteSharpLib.Benchmarks` and `SharpKind.Input.Benchmarks` also both
     refused to run at all whenever a git worktree checkout sits nested under
     the repo: BenchmarkDotNet's per-run project generation looks the project
     up by name across the whole tree and throws on more than one match.
-    Both now use `InProcessNoEmitToolchain`, as `Useful.Graphics.Benchmarks`
+    Both now use `InProcessNoEmitToolchain`, as `SharpKind.Graphics.Benchmarks`
     already did.
 
 ### Fixed (benchmark artifacts path, 2026-08-05)
 
 - **All three benchmark projects wrote their reports where nothing looked
-  for them.** `EliteSharpLib.Benchmarks`, `Useful.Input.Benchmarks` and
-  `Useful.Graphics.Benchmarks` each passed
+  for them.** `EliteSharpLib.Benchmarks`, `SharpKind.Input.Benchmarks` and
+  `SharpKind.Graphics.Benchmarks` each passed
   `WithArtifactsPath("../../../reports")`, which from the project directory
   resolves to `src/reports/`. Two things expected `<project>/reports/`
   instead: `.gitignore`'s `src/*/perf/*/reports/` rule, so every local run
@@ -127,7 +127,7 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   an item saying left/right/top/bottom clipping happens after projection, in
   the per-scanline span clamps of `DrawTriangleFilled`, and asked for a
   profile before anything was changed. New `OffScreenTriangleBenchmarks`
-  (`src/useful/perf/Useful.Graphics.Benchmarks`) measures a face wholly off
+  (`src/useful/perf/SharpKind.Graphics.Benchmarks`) measures a face wholly off
   to the side (1.79 us), one straddling an edge (1.78 us) and one off the
   top (8 ns - already rejected by the Y clamp), against a full-screen fill
   (93.7 us) and a small on-screen face (536 ns) at 512x512. The wasted work
@@ -675,8 +675,8 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 ### Changed (shared near-plane clipping, 2026-07-31)
 
 - `Scene3D.ClipPolygonToNearPlane` moved out of SCR into
-  `Useful.Graphics.NearPlaneClip.Clip`
-  ([NearPlaneClip.cs](src/useful/libs/Useful.Graphics/NearPlaneClip.cs)). Both
+  `SharpKind.Graphics.NearPlaneClip.Clip`
+  ([NearPlaneClip.cs](src/useful/libs/SharpKind.Graphics/NearPlaneClip.cs)). Both
   overloads (plain, and the one interpolating texture coordinates) were
   already pure static Sutherland-Hodgman with no SCR dependencies; the plane
   distance is now a parameter rather than a constant, because the two games
@@ -705,7 +705,7 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ### Added (startup diagnostics shared by both games, 2026-07-31)
 
-- `GameApp.Run` ([GameApp.cs](src/useful/libs/Useful.App/GameApp.cs)) now logs
+- `GameApp.Run` ([GameApp.cs](src/useful/libs/SharpKind.App/GameApp.cs)) now logs
   two facts right after "Starting {title}", once per process, so a bug
   report's log file carries what fixing it usually needs first without
   asking the reporter for their machine spec or config: the build's
@@ -732,7 +732,7 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   starting commander in debug builds and `.Jameson()` otherwise, so trying
   the debug commander meant a debug build. It's now a runtime check against
   a new `ELITE_DEBUG_COMMANDER` environment variable (presence-checked, same
-  convention as `Useful.Abstraction.GameHost`'s `GAME_KEY_SCRIPT`/
+  convention as `SharpKind.Abstraction.GameHost`'s `GAME_KEY_SCRIPT`/
   `GAME_FRAME_DUMP_DIR`), so `Jameson()` is the default in every build and
   `Max()` is an opt-in without recompiling. The other site the backlog item
   named, a commented-out `////#if QHD` block in `SDLProgram.cs`, had already
@@ -750,8 +750,8 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   dictionary indexer, so an effect name absent from the sample dictionary
   threw `KeyNotFoundException` out of whatever gameplay code asked for the
   sound. It now uses `TryGetValue` and logs a Warning no-op instead, via a
-  new `Useful.Audio.LogMessages.MissingSfxSample` following the same
-  `[LoggerMessage]` pattern as `Useful.Graphics`.
+  new `SharpKind.Audio.LogMessages.MissingSfxSample` following the same
+  `[LoggerMessage]` pattern as `SharpKind.Graphics`.
 - The logger reaches it through a second constructor taking `ILogger?`
   (the existing three-argument one delegates with `null`, so tests and any
   other caller are unchanged); Elite's DI registration passes a real
@@ -1269,15 +1269,15 @@ next implementation work rather than code to write.
   zero, negative, or past 4 (larger than any display the game could be
   shown on) goes back to 1 rather than failing at startup.
 
-### Added (Useful.App: one shared composition root, 2026-07-29)
+### Added (SharpKind.App: one shared composition root, 2026-07-29)
 
 - The two `SDLProgram.cs` files were about half duplicate: `Main` and
   `CreateSeriLogger` were identical between the games apart from four
-  strings. They move to `GameApp.Run` in a new `Useful.App` assembly,
+  strings. They move to `GameApp.Run` in a new `SharpKind.App` assembly,
   which each `Main` now calls with its title, log file name, log-level
   environment variable and its own `BuildServices`. Everything left in
   the two files is genuinely game-specific.
-- `Useful.App` is the app layer as an assembly rather than as a pair of
+- `SharpKind.App` is the app layer as an assembly rather than as a pair of
   entry points: it is the only place Serilog is referenced now (the two
   app projects drop their four Serilog package references and their
   duplicate `LogMessages`), and no game or engine library references it.
@@ -1286,7 +1286,7 @@ next implementation work rather than code to write.
   the backend the config selects, the graphics/sound/keyboard it
   exposes, and the tier's asset locator - becomes
   `AddGameEngine(engine, width, height, title, loggerFactory)` in
-  `Useful.App`. Each game's `BuildServices` is now its resolution, that
+  `SharpKind.App`. Each game's `BuildServices` is now its resolution, that
   one call, and its own three or four registrations. Stunt Car Racer
   gains `AddScrMain()` so its game registrations live in its own library
   as Elite's already did, rather than being spelled out in the app.
@@ -1307,7 +1307,7 @@ next implementation work rather than code to write.
   each one opened, bound, repaired and possibly rewrote the whole config
   file for a single value. They collapse to one `ReadEngineSettings` per
   game returning the whole `EngineConfigSettings`, over a shared
-  `EngineConfigReader.Read<TConfig>` in `Useful.Abstraction`. Startup now
+  `EngineConfigReader.Read<TConfig>` in `SharpKind.Abstraction`. Startup now
   reads the file once instead of three times, and a new engine setting no
   longer means a new method in both games.
 - `ConfigSettings<TGameSettings>` gains a non-generic `ConfigSettings`
@@ -1574,8 +1574,8 @@ next implementation work rather than code to write.
   against the 4096 cap, `Atlas` 2676 and `Large` 2431, plus 2765
   partial-alpha pixels. Elite's 2481 passes silently.
 - `IAssetLocator` gains `Tier` so the validator knows which cap applies.
-  `AssetSet` lives in `Useful.Graphics` rather than `Useful.Assets` — it
-  holds `FastBitmap`s, and putting it in `Useful.Assets` would invert
+  `AssetSet` lives in `SharpKind.Graphics` rather than `SharpKind.Assets` — it
+  holds `FastBitmap`s, and putting it in `SharpKind.Assets` would invert
   that project reference.
 
 ### Added (Per-tier asset resolution, 2026-07-28)
@@ -1872,7 +1872,7 @@ next implementation work rather than code to write.
 - Enabled `CA5394` (do not use insecure randomness), scoped off in the
   two assemblies that must reach `System.Random` directly rather than
   repo-wide:
-  - `Useful` (its own `.editorconfig`) — `RandomSource` is the single
+  - `SharpKind` (its own `.editorconfig`) — `RandomSource` is the single
     wrapper every game and test goes through, deliberately the fast,
     seedable kind of randomness rather than a cryptographic one.
   - `StuntCarRacerSharpLib.Tests` (its own `.editorconfig`) —
@@ -1897,7 +1897,7 @@ next implementation work rather than code to write.
     fakes library consumed by `StuntCarRacerSharpLib.Tests`. `CA1515`
     fires there only because `Microsoft.NET.Test.Sdk` generates an entry
     point, which makes the assembly look like an application; the Elite
-    and Useful fakes projects do not reference it and stayed silent.
+    and SharpKind fakes projects do not reference it and stayed silent.
   - `SoftwareSoundTests.AudioAssetFixture`, folded into the `CA1034`
     `#pragma` already covering it — xUnit1000 requires a public test
     class and CS0051 then forces the fixture public too.
@@ -1913,7 +1913,7 @@ next implementation work rather than code to write.
   (`// '[^']+' - Andy Hawkins \d{4}(-\d{4})?\.`), so it stays valid as
   years advance and covers all three header variants.
 - Copyright years brought up to date in the `file_header_template`
-  values and across all files: Elite `2023` → `2023-2026`, Useful
+  values and across all files: Elite `2023` → `2023-2026`, SharpKind
   `2025` → `2023-2026`. SCR keeps `2026`, and gained the
   `src/scr/.editorconfig` `file_header_template` it never had — until
   now `IDE0073` was not checking SCR's headers at all.
@@ -2052,18 +2052,18 @@ next implementation work rather than code to write.
 ### Changed (Remove Vector4.Cloner(), 2026-07-24)
 
 - `Vector4.Cloner()`
-  ([MathsExtensions.cs](src/useful/libs/Useful/Maths/MathsExtensions.cs))
+  ([MathsExtensions.cs](src/useful/libs/SharpKind/Maths/MathsExtensions.cs))
   new'd up a copy of a `Vector4`, but `Vector4` is a struct, so plain
   assignment already copies; replaced its four call sites in
   [Extensions.cs](src/elite/libs/EliteSharpLib/Extensions.cs) and
   [Space.cs](src/elite/libs/EliteSharpLib/Space.cs) with direct
   assignment and deleted the method. Dropped the now-unused
-  `using Useful.Maths;` from `Extensions.cs`.
+  `using SharpKind.Maths;` from `Extensions.cs`.
 
 ### Fixed (Remove debug log spam from DrawCircleFilled, 2026-07-24)
 
 - `SoftwareGraphics.DrawCircleFilled`
-  ([SoftwareGraphics.cs](src/useful/libs/Useful.Graphics/SoftwareGraphics.cs))
+  ([SoftwareGraphics.cs](src/useful/libs/SharpKind.Graphics/SoftwareGraphics.cs))
   left a `Debug.WriteLine($"{x},{y}")` in its scanline loop, logging every
   scanline of every filled circle (planets, suns) every debug-build frame;
   removed.
@@ -2075,7 +2075,7 @@ next implementation work rather than code to write.
   resampler, where a managed callback running on the audio thread read a
   pitch field the game thread wrote. The 2026-07-23 SDL2→SDL3 migration
   (see below) replaced that whole mechanism: `SDLSound.PlayLoop`
-  ([SDLSound.cs](src/useful/libs/Useful.SDL/SDLSound.cs)) now calls
+  ([SDLSound.cs](src/useful/libs/SharpKind.SDL/SDLSound.cs)) now calls
   `MIX_SetTrackFrequencyRatio` directly, a native SDL3_mixer API with no
   managed callback and no field shared across threads — confirmed no
   `Mix_RegisterEffect` usage remains anywhere in `src/`. Nothing left to
@@ -2119,8 +2119,8 @@ next implementation work rather than code to write.
   `using EliteSharp.SDL;` from `SDLProgram.cs`.
 - Removed the committed BenchmarkDotNet report files under
   `src/elite/perf/EliteSharpLib.Benchmarks/reports/`,
-  `src/useful/perf/Useful.Input.Benchmarks/reports/`, and
-  `src/useful/perf/Useful.Graphics.Benchmarks/reports/` — generated
+  `src/useful/perf/SharpKind.Input.Benchmarks/reports/`, and
+  `src/useful/perf/SharpKind.Graphics.Benchmarks/reports/` — generated
   artifacts per the architecture doc's solution-hygiene rule — and added
   `src/*/perf/*/reports/` to `.gitignore` so they don't get recommitted.
   How to record and monitor historical benchmark numbers over time (e.g. a
@@ -2133,7 +2133,7 @@ next implementation work rather than code to write.
 - `FastBitmap` pinned its pixel array with a `GCHandle` in the constructor
   unconditionally, even though `BitmapHandle` (the only reader of the pin) is
   never touched by short-lived bitmaps such as the LRU text-glyph cache
-  ([SoftwareGraphics.cs](src/useful/libs/Useful.Graphics/SoftwareGraphics.cs))
+  ([SoftwareGraphics.cs](src/useful/libs/SharpKind.Graphics/SoftwareGraphics.cs))
   or the intermediates `FastBitmap.Resize` creates — only the screen
   framebuffer and SDL's depth-layer bitmap ever cross into native code.
   `BitmapHandle` now allocates the pinned `GCHandle` on first access instead
@@ -2213,7 +2213,7 @@ next implementation work rather than code to write.
 ### Changed (Remove analyzer suppressions in favour of real fixes or scoped disables, 2026-07-24)
 
 - Worked through the backlog's suppression list: CA2227 collection
-  properties ([ThreeDModel.cs](src/useful/libs/Useful.Assets/Models/ThreeDModel.cs),
+  properties ([ThreeDModel.cs](src/useful/libs/SharpKind.Assets/Models/ThreeDModel.cs),
   `Point.cs`, `Face.cs`, `AssetManifest.cs`,
   [SaveState.cs](src/elite/libs/EliteSharpLib/Save/SaveState.cs)) became
   init-only, since `System.Text.Json` supports that natively. CA1308
@@ -2222,8 +2222,8 @@ next implementation work rather than code to write.
   SA1401's exposed field
   ([PlanetRenderer.cs](src/elite/libs/EliteSharpLib/Planets/PlanetRenderer.cs))
   became a property. CA5394
-  ([RandomSource.cs](src/useful/libs/Useful/RandomSource.cs),
-  `FractalPlanet.cs`) and S6640 (assembly-scoped in `Useful.SDL`, unsafe
+  ([RandomSource.cs](src/useful/libs/SharpKind/RandomSource.cs),
+  `FractalPlanet.cs`) and S6640 (assembly-scoped in `SharpKind.SDL`, unsafe
   interop only) are verified false positives for this codebase, so
   they're now disabled via `.editorconfig` instead of scattered local
   suppressions — a more honest opt-out. CA1034
@@ -2238,19 +2238,19 @@ next implementation work rather than code to write.
 
 ### Changed (Replace custom Guard.ArgumentNull with ArgumentNullException.ThrowIfNull, 2026-07-24)
 
-- `Guard.ArgumentNull` ([Guard.cs](src/useful/libs/Useful/Guard.cs)) was a
+- `Guard.ArgumentNull` ([Guard.cs](src/useful/libs/SharpKind/Guard.cs)) was a
   hand-rolled null-check helper predating .NET's
   `ArgumentNullException.ThrowIfNull`, which does the same job as a framework
   intrinsic (per the architecture doc's "prefer dotnet framework intrinsics"
-  rule). Replaced all call sites across `Useful.*`, `EliteSharpLib`, and
+  rule). Replaced all call sites across `SharpKind.*`, `EliteSharpLib`, and
   `StuntCarRacerSharpLib` with `ArgumentNullException.ThrowIfNull`, then
   deleted `Guard.cs`, `ValidatedNotNullAttribute.cs`, and `GuardTests.cs`.
-  Dropped the now-unused `using Useful;` this left behind in nine files.
+  Dropped the now-unused `using SharpKind;` this left behind in nine files.
 
 ### Fixed (Config file never written to %AppData% until a setting was changed, 2026-07-24)
 
 - `ConfigFile<T>.ReadConfig()`
-  ([ConfigFile.cs](src/useful/libs/Useful/Config/ConfigFile.cs)) only ever
+  ([ConfigFile.cs](src/useful/libs/SharpKind/Config/ConfigFile.cs)) only ever
   read from disk, falling back to `new T()` in memory when no file existed;
   it never wrote that file back out. Both games only call `WriteConfig`
   from their Settings/Options screen, so on a fresh install
@@ -2262,7 +2262,7 @@ next implementation work rather than code to write.
   (`elitesharp.cfg`) and SCR (`stuntcarracersharp.cfg`). Corrupt/invalid
   existing files are untouched, since the write only happens when the file
   was missing beforehand. Verified via the existing `ConfigFileTests` in
-  both `Useful.Tests` and `EliteSharpLib.Tests`.
+  both `SharpKind.Tests` and `EliteSharpLib.Tests`.
 
 ### Changed (Extract a shared BaseConfigSettings to deduplicate the two games' config types, 2026-07-23)
 
@@ -2270,8 +2270,8 @@ next implementation work rather than code to write.
   duplicating the same three properties — `EffectsOn`, `GraphicsBackend`,
   `MusicOn` — with identical defaults and comments. Added
   `BaseConfigSettings`
-  ([BaseConfigSettings.cs](src/useful/libs/Useful.Abstraction/Config/BaseConfigSettings.cs))
-  to `Useful.Abstraction.Config` — the only assembly already referenced by
+  ([BaseConfigSettings.cs](src/useful/libs/SharpKind.Abstraction/Config/BaseConfigSettings.cs))
+  to `SharpKind.Abstraction.Config` — the only assembly already referenced by
   both game libraries that can also see the `GraphicsBackend` enum — and had
   both settings types inherit from it instead. `ScrConfigSettings` had
   nothing game-specific left, so it collapsed to
@@ -2281,7 +2281,7 @@ next implementation work rather than code to write.
   `EliteConfigSettings`
   ([EliteConfigSettings.cs](src/elite/libs/EliteSharpLib/Config/EliteConfigSettings.cs))
   to match the SCR naming and avoid confusion with the generic
-  `Useful.Config.ConfigFile<T>` machinery it's used with. `ConfigFile<T>`
+  `SharpKind.Config.ConfigFile<T>` machinery it's used with. `ConfigFile<T>`
   itself needed no changes — it was already generic. Verified both games'
   libs, both test projects, and the config round-trip tests still pass.
 
@@ -2290,7 +2290,7 @@ next implementation work rather than code to write.
 - Selecting `GraphicsBackend: Hardware` for StuntCarRacerSharp crashed at
   startup with `KeyNotFoundException: The given key 'Small' was not present
   in the dictionary` from `SDLGraphics.DrawTextLeft`
-  ([SDLGraphics.cs:375](src/useful/libs/Useful.SDL/SDLGraphics.cs)), reached
+  ([SDLGraphics.cs:375](src/useful/libs/SharpKind.SDL/SDLGraphics.cs)), reached
   via `TrackMenuScreen.Draw()`. `SDLGraphics` loads its `_fonts` dictionary
   from `IAssetLocator.FontTrueTypePaths`, which is populated from the
   manifest's `FontsTrueType` section — but SCR's
@@ -2309,10 +2309,10 @@ next implementation work rather than code to write.
 ### Added (GraphicsBackend config switch between Software and SDL3_mixer-backed Hardware audio, 2026-07-23)
 
 - The in-progress SDL2→SDL3 migration had staged `SDLAbstraction.cs`/`SDLSound.cs`
-  ([SDLAbstraction.cs](src/useful/libs/Useful.SDL/SDLAbstraction.cs),
-  [SDLSound.cs](src/useful/libs/Useful.SDL/SDLSound.cs)) for deletion: `SDLSound`
+  ([SDLAbstraction.cs](src/useful/libs/SharpKind.SDL/SDLAbstraction.cs),
+  [SDLSound.cs](src/useful/libs/SharpKind.SDL/SDLSound.cs)) for deletion: `SDLSound`
   was built entirely on the old `SDL2.SDL_mixer` API, which no longer compiles
-  now that `Useful.SDL` has moved to `ppy.SDL3-CS`/`ppy.SDL3_mixer-CS`, and
+  now that `SharpKind.SDL` has moved to `ppy.SDL3-CS`/`ppy.SDL3_mixer-CS`, and
   `SDLAbstraction` only failed to compile because of that. Both games were left
   hardcoded to `SoftwareAbstraction`, with no way to opt into hardware-accelerated
   rendering at all. Restored `SDLAbstraction` unchanged and rewrote `SDLSound`
@@ -2323,15 +2323,15 @@ next implementation work rather than code to write.
   voices in the one-shot pool can now carry their own pitch, matching
   `SoftwareSound`'s capabilities instead of a subset of them.
 
-  Added a `GraphicsBackend` enum (`Useful.Abstraction`,
-  [GraphicsBackend.cs](src/useful/libs/Useful.Abstraction/GraphicsBackend.cs):
+  Added a `GraphicsBackend` enum (`SharpKind.Abstraction`,
+  [GraphicsBackend.cs](src/useful/libs/SharpKind.Abstraction/GraphicsBackend.cs):
   `Software` or `Hardware`) and a matching `GraphicsBackend` property (default
   `Software`) on both games' settings —
   [EliteConfigSettings.cs](src/elite/libs/EliteSharpLib/Config/EliteConfigSettings.cs) and
   [ScrConfigSettings.cs](src/scr/libs/StuntCarRacerSharpLib/Config/ScrConfigSettings.cs).
   Since those settings types are internal (so `Program.Main` can't reference them
   directly — the same reason `AddEliteConfig`/`AddScrConfig` exist) and
-  `Useful.SDL` is deliberately not a dependency of either game-logic library,
+  `SharpKind.SDL` is deliberately not a dependency of either game-logic library,
   each library instead exposes a `ReadGraphicsBackend(userDataPath, loggerFactory)`
   helper
   ([EliteServiceCollectionExtensions.cs](src/elite/libs/EliteSharpLib/EliteServiceCollectionExtensions.cs),
@@ -2352,7 +2352,7 @@ next implementation work rather than code to write.
   hands the result to the mixer as raw PCM via `MIX_LoadRawAudio`; `.ogg` SFX
   still load through SDL3_mixer's native decoder unchanged. Docs
   (`elite-readme.md`, `scr-readme.md`) Configuration sections updated with the
-  new setting. Built the full solution (`Useful.SDL` and both apps/libs/test
+  new setting. Built the full solution (`SharpKind.SDL` and both apps/libs/test
   projects) and ran `EliteSharp` against the real `%AppData%\TheSharpKind\elitesharp.cfg`
   (`GraphicsBackend: Hardware`) that had previously crashed it, confirming it now
   starts cleanly.
@@ -2436,7 +2436,7 @@ next implementation work rather than code to write.
   (shared by both games) now supports two environment-variable-gated
   debug facilities, so default behaviour with neither var set is
   unchanged: `GAME_KEY_SCRIPT` (a file path, or the script text itself)
-  is parsed by the new `Useful.Input.KeyScriptParser` and replayed
+  is parsed by the new `SharpKind.Input.KeyScriptParser` and replayed
   into the real keyboard sink tick-by-tick by the new
   `KeyScriptPlayer`, and `GAME_FRAME_DUMP_DIR` enables both an F12
   debug key and the script's `SaveFrame` command, both of which dump
@@ -2445,7 +2445,7 @@ next implementation work rather than code to write.
   writing its back buffer directly, and on `SDLGraphics` via
   `SDL_RenderReadPixels`, plus no-ops/recording on the two `IGraphics`
   test fakes). `KeyScriptEvent`/`KeyScriptAction` moved from
-  `Useful.Fakes.Harness` (test-only) to `Useful.Input` (production)
+  `SharpKind.Fakes.Harness` (test-only) to `SharpKind.Input` (production)
   so both the headless harnesses and this real-app player share one
   definition instead of two; `KeyScriptAction` gained a `SaveFrame`
   member. Added `KeyScriptParserTests`, `KeyScriptPlayerTests`, and a
@@ -2471,10 +2471,10 @@ next implementation work rather than code to write.
   copy-pasted code (`KeyScriptEvent`, `KeyScriptAction`, and the
   tap/hold/release scripting loop in `Step`/`Run`/`SaveFrame`) that would
   only have grown more duplicated as more games got one. Extracted the
-  shared parts into `Useful.Fakes`
-  ([Harness/HeadlessGameHarnessBase.cs](src/useful/test/Useful.Fakes/Harness/HeadlessGameHarnessBase.cs),
-  `KeyScriptEvent.cs`, `KeyScriptAction.cs`, new `Useful.Fakes.Harness`
-  namespace; added a `Useful.Graphics` project reference to `Useful.Fakes`
+  shared parts into `SharpKind.Fakes`
+  ([Harness/HeadlessGameHarnessBase.cs](src/useful/test/SharpKind.Fakes/Harness/HeadlessGameHarnessBase.cs),
+  `KeyScriptEvent.cs`, `KeyScriptAction.cs`, new `SharpKind.Fakes.Harness`
+  namespace; added a `SharpKind.Graphics` project reference to `SharpKind.Fakes`
   for `SoftwareGraphics`/`BitmapWriter`): a public generic
   `HeadlessGameHarnessBase<TState>` owns the `SoftwareGraphics`, the
   scripted-input `Step`/`Run` loop, and `SaveFrame`, via two abstract hooks
@@ -2490,15 +2490,15 @@ next implementation work rather than code to write.
   behaviour changed beyond the new `EliteMain.State` accessor, so no live
   smoke test was needed.
 
-### Added (BitmapWriter + BitmapReader rename in Useful.Graphics, 2026-07-22)
+### Added (BitmapWriter + BitmapReader rename in SharpKind.Graphics, 2026-07-22)
 
 - `BitmapFile.Read` was the only half of a load/save pair, and the
   BMP-dumping code duplicated itself across both games' `VisualDumpTests`.
   Renamed `BitmapFile` to `BitmapReader`
-  ([BitmapReader.cs](src/useful/libs/Useful.Graphics/BitmapReader.cs),
+  ([BitmapReader.cs](src/useful/libs/SharpKind.Graphics/BitmapReader.cs),
   updating its `SoftwareGraphics.Create` call sites and test file to
   match) and added `BitmapWriter.Write`
-  ([BitmapWriter.cs](src/useful/libs/Useful.Graphics/BitmapWriter.cs)): a
+  ([BitmapWriter.cs](src/useful/libs/SharpKind.Graphics/BitmapWriter.cs)): a
   standard 32bpp `BITMAPV5HEADER` BGRA bottom-up BMP, padded to
   `BitmapReader`'s fixed pixel-data offset so a written file reads back
   correctly, and valid enough to open in an ordinary image viewer too.
@@ -2552,7 +2552,7 @@ next implementation work rather than code to write.
   and runs one `Update()` tick, asserting it doesn't throw and
   `IsRunning` stays true. Added `FakeAbstraction` to `EliteSharpLib.Fakes`
   (mirroring SCR's), and gave the shared `FakeGraphics`
-  ([FakeGraphics.cs](src/useful/test/Useful.Graphics.Fakes/FakeGraphics.cs))
+  ([FakeGraphics.cs](src/useful/test/SharpKind.Graphics.Fakes/FakeGraphics.cs))
   an optional width/height constructor (default 0, unchanged for existing
   callers) — `Stars.CreateNewStar` derives its random ranges from
   `EliteDraw.Centre`, which comes from `IGraphics.ScreenWidth/Height`, and a
@@ -2608,7 +2608,7 @@ next implementation work rather than code to write.
 
 ### Fixed (AssetLocator.Create no longer exclusively locks AssetManifest.json, 2026-07-21)
 
-- `AssetLocator.Create()` ([AssetLocator.cs](src/useful/libs/Useful.Assets/AssetLocator.cs))
+- `AssetLocator.Create()` ([AssetLocator.cs](src/useful/libs/SharpKind.Assets/AssetLocator.cs))
   opened `AssetManifest.json` via `File.Open(path, FileMode.Open)`, which
   defaults to `FileAccess.ReadWrite`/`FileShare.None` — an exclusive lock for
   a read-only operation. Two concurrent callers (e.g. two test classes each
@@ -2663,7 +2663,7 @@ next implementation work rather than code to write.
   file threw `IndexOutOfRangeException`/`FormatException` there instead.
   Added `IsValidSave`, checking the array lengths `SaveStateToGameState`
   assumes and that both enum strings parse, following `ConfigFile<T>.ReadConfig`'s
-  read-validate-fallback shape ([ConfigFile.cs](src/useful/libs/Useful/Config/ConfigFile.cs));
+  read-validate-fallback shape ([ConfigFile.cs](src/useful/libs/SharpKind/Config/ConfigFile.cs));
   `LoadCommander` now validates before calling `SaveStateToGameState`,
   returns `false` on any read/parse/validation failure, and resets to
   Jameson without rethrowing. `SaveFile` takes an optional
@@ -2702,8 +2702,8 @@ next implementation work rather than code to write.
 
 ### Changed (Let SoftwareGraphicsBenchmarks take CLI filter/job arguments, 2026-07-21)
 
-- `Useful.Graphics.Benchmarks`'s `Program.Main`
-  ([Program.cs](src/useful/perf/Useful.Graphics.Benchmarks/Program.cs)) called
+- `SharpKind.Graphics.Benchmarks`'s `Program.Main`
+  ([Program.cs](src/useful/perf/SharpKind.Graphics.Benchmarks/Program.cs)) called
   `BenchmarkRunner.Run<T>()` directly, so `dotnet run -c Release` always ran
   all 23 benchmarks under the full `DefaultConfig` job (~10 minutes) with no
   way to narrow it down — the friction that made the clip-region regression
@@ -2727,14 +2727,14 @@ next implementation work rather than code to write.
   `--filter`/`--job` speedup above), at the cost of slightly less isolation
   between iterations than a separate process gives — an acceptable trade
   for a suite whose numbers are read as relative comparisons rather than
-  absolute ones. `Useful.Input.Benchmarks` and `EliteSharpLib.Benchmarks`
+  absolute ones. `SharpKind.Input.Benchmarks` and `EliteSharpLib.Benchmarks`
   have the same hardcoded-`Main` pattern and would benefit from the same
   change; not done here since neither was needed for this investigation.
 
 ### Fixed (Implement SoftwareGraphics.SetClipRegion, 2026-07-21)
 
 - `SoftwareGraphics.SetClipRegion`
-  ([SoftwareGraphics.cs](src/useful/libs/Useful.Graphics/SoftwareGraphics.cs))
+  ([SoftwareGraphics.cs](src/useful/libs/SharpKind.Graphics/SoftwareGraphics.cs))
   was an empty no-op, while Elite actively relies on clip regions
   (`EliteDraw.SetViewClipRegion`) to keep view drawing inside the border and
   off the scanner area — in the software renderer this protection silently
@@ -2767,7 +2767,7 @@ next implementation work rather than code to write.
 ### Fixed (Bound the text bitmap cache with LRU eviction, 2026-07-21)
 
 - `SoftwareGraphics._textCache`
-  ([SoftwareGraphics.cs](src/useful/libs/Useful.Graphics/SoftwareGraphics.cs))
+  ([SoftwareGraphics.cs](src/useful/libs/SharpKind.Graphics/SoftwareGraphics.cs))
   cached one bitmap per distinct (font, colour, text) forever, and Elite
   renders ever-changing strings (bounty amounts, countdowns), so long
   sessions leaked memory steadily. The cache is now a bounded
@@ -2781,7 +2781,7 @@ next implementation work rather than code to write.
 ### Fixed (Stop disposing cached text bitmaps on every draw, 2026-07-21)
 
 - `DrawTextCentre`/`DrawTextLeft`/`DrawTextRight`
-  ([SoftwareGraphics.cs](src/useful/libs/Useful.Graphics/SoftwareGraphics.cs))
+  ([SoftwareGraphics.cs](src/useful/libs/SharpKind.Graphics/SoftwareGraphics.cs))
   wrapped the bitmap returned by `GenerateTextBitmap` in `using`, but that
   same bitmap is stored in `_textCache` and handed back again on the next
   call with the same (font, colour, text) — so every cached bitmap was
@@ -2797,9 +2797,9 @@ next implementation work rather than code to write.
   ad-hoc take on injectable randomness (see the entry below for Elite's), and
   SCR's `CarPhysics` had none at all (`private readonly Random _random =
   new(0);`, no constructor seam). The generic part is now a shared
-  `Useful.IRandomSource`/`Useful.RandomSource` (`NextInt`/`Random`/
+  `SharpKind.IRandomSource`/`SharpKind.RandomSource` (`NextInt`/`Random`/
   `TrueOrFalse`/`GaussianRandom`, wrapping an injected `System.Random`), with
-  a `Useful.Fakes.FakeRandomSource` that returns fixed, test-set values so a
+  a `SharpKind.Fakes.FakeRandomSource` that returns fixed, test-set values so a
   test can force an exact branch (e.g. "the 1-in-256 roll succeeds")
   without hunting for a seed. `EliteSharpLib.RNG` keeps only what's
   genuinely Elite-specific — `Seed`, `GenerateRandomNumber` (6502),
@@ -2852,15 +2852,15 @@ next implementation work rather than code to write.
 
 - `SDLSound` required a separate `Initialize(assetLocator)` call after
   construction to load music/sfx — `SDLAbstraction`
-  ([SDLAbstraction.cs](src/useful/libs/Useful.SDL/SDLAbstraction.cs)) had
+  ([SDLAbstraction.cs](src/useful/libs/SharpKind.SDL/SDLAbstraction.cs)) had
   silently skipped that call, so any code path through it would have thrown
   `KeyNotFoundException` the first time it tried to play a sound.
   `SDLSound`'s constructor now takes `IAssetLocator` directly and loads
-  music/sfx itself ([SDLSound.cs](src/useful/libs/Useful.SDL/SDLSound.cs));
+  music/sfx itself ([SDLSound.cs](src/useful/libs/SharpKind.SDL/SDLSound.cs));
   both `SDLAbstraction` and `SoftwareAbstraction`
-  ([SoftwareAbstraction.cs](src/useful/libs/Useful.SDL/SoftwareAbstraction.cs))
+  ([SoftwareAbstraction.cs](src/useful/libs/SharpKind.SDL/SoftwareAbstraction.cs))
   updated to pass the asset locator in. `SoftwareGraphics.Fonts`/`Images`
-  ([SoftwareGraphics.cs](src/useful/libs/Useful.Graphics/SoftwareGraphics.cs))
+  ([SoftwareGraphics.cs](src/useful/libs/SharpKind.Graphics/SoftwareGraphics.cs))
   were `internal`-settable properties populated after construction via an
   object initializer in `Create`, leaving them mutable by any other code in
   the assembly afterwards (the benchmark project did exactly that); they are
@@ -2876,13 +2876,13 @@ next implementation work rather than code to write.
 
 ### Changed (IKeyboard split into producer/consumer interfaces, 2026-07-21)
 
-- `IKeyboard` ([IKeyboard.cs](src/useful/libs/Useful.Input/IKeyboard.cs)) mixed
+- `IKeyboard` ([IKeyboard.cs](src/useful/libs/SharpKind.Input/IKeyboard.cs)) mixed
   the producer API (`KeyDown`/`KeyUp`/settable `Close`, written by `SDLInput`
   as raw key events arrive) with the consumer API (`IsPressed`/`IsHeld`/
   `LastPressed`/`ClearPressed`/`Poll`/readable `Close`, polled by games) —
   game code holding an `IKeyboard` had no way to be stopped from also
   injecting key events. Split the producer side into a new
-  `IKeyboardSink` ([IKeyboardSink.cs](src/useful/libs/Useful.Input/IKeyboardSink.cs));
+  `IKeyboardSink` ([IKeyboardSink.cs](src/useful/libs/SharpKind.Input/IKeyboardSink.cs));
   `IKeyboard` keeps the consumer API with `Close` now read-only.
   `SoftwareKeyboard` and `FakeKeyboard` implement both interfaces
   unchanged; `IInput.Register` (and its `SDLInput`/`FakeInput`/benchmark
@@ -2954,7 +2954,7 @@ next implementation work rather than code to write.
   the library went to `Debug.WriteLine`/`Debug.Fail`, which vanish in
   Release builds. Added a library-internal `LogMessages`
   `[LoggerMessage]` partial (`EliteSharpLib/LogMessages.cs`), following
-  the same pattern as `Useful.Config.LogMessages` and the apps'
+  the same pattern as `SharpKind.Config.LogMessages` and the apps'
   `LogMessages.cs`. `Microsoft.Extensions.Logging.Abstractions` was
   already referenced by `EliteSharpLib.csproj`, and `ILoggerFactory` was
   already registered in the DI container (`SDLProgram`/
@@ -2989,7 +2989,7 @@ next implementation work rather than code to write.
   `NullLogger<ConfigFile<T>>.Instance` — same pattern the backlog's
   library-logging item describes for `ILogger<T>` adoption) and a new
   library-internal `LogMessages` `[LoggerMessage]` partial
-  (`Useful/Config/LogMessages.cs`) logs:
+  (`SharpKind/Config/LogMessages.cs`) logs:
   - a Warning "Failed to read config file '{path}'; using defaults." —
     always visible at the apps' default Information level, no exception
     attached (so no stack-trace noise by default);
@@ -3004,7 +3004,7 @@ next implementation work rather than code to write.
 
   `AddEliteConfig`/`AddScrConfig` now resolve `ILoggerFactory` from the
   container (already registered by both `SDLProgram`s) and pass a
-  `CreateLogger<ConfigFile<T>>()` logger through; `Useful`,
+  `CreateLogger<ConfigFile<T>>()` logger through; `SharpKind`,
   `EliteSharpLib` and `StuntCarRacerSharpLib` each gained a
   `Microsoft.Extensions.Logging.Abstractions` package reference for
   this. `IsValidConfig` stayed `internal` (was already made so for the
@@ -3016,7 +3016,7 @@ next implementation work rather than code to write.
   `[WRN] Failed to read config file '...'; using defaults.` with no
   stack trace; with `ELITE_LOG_LEVEL=Debug` the full exception chain
   (down to `ConfigurationBinder.Bind`) appears too. Added
-  `Useful.Tests` coverage (`RecordingLogger<T>` fake — Moq's generic
+  `SharpKind.Tests` coverage (`RecordingLogger<T>` fake — Moq's generic
   `ILogger.Log<TState>` verification is awkward, a fake is simpler)
   asserting the Warning+Debug split on read failure and the
   no-exception Warning on validation failure.
@@ -3041,13 +3041,13 @@ next implementation work rather than code to write.
   (`elite-readme.md`, `scr-readme.md`) updated to mention log location
   alongside the existing config-file description.
 
-### Changed (Config file handling unified into a generic Useful type, 2026-07-21)
+### Changed (Config file handling unified into a generic SharpKind type, 2026-07-21)
 
 - Elite's `ConfigFile`/`IConfigWriter` and SCR's `ScrConfigFile` were
   near-identical (JSON read/write via `Microsoft.Extensions.Configuration`,
   same defaults-on-failure behaviour, same catch clauses) except for their
   settings type and filename — a DRY violation now that both games have
-  one. Replaced both with a single generic `Useful.Config.ConfigFile<T>`
+  one. Replaced both with a single generic `SharpKind.Config.ConfigFile<T>`
   (`where T : new()`), implementing a new generic `IConfigWriter<T>`, with
   the filename passed to the constructor and an optional
   `Func<T, bool> isValid` predicate for game-specific validation (Elite's
@@ -3058,18 +3058,18 @@ next implementation work rather than code to write.
   `AddScrConfig` and `SettingsView` (now `IConfigWriter<ConfigSettings>`)
   updated accordingly. `Microsoft.Extensions.Configuration`/`.Binder`/
   `.Json` package references moved from `EliteSharpLib.csproj`/
-  `StuntCarRacerSharpLib.csproj` to `Useful.csproj`, the only project that now
+  `StuntCarRacerSharpLib.csproj` to `SharpKind.csproj`, the only project that now
   uses them directly.
 
-  Adding those packages to `Useful` exposed a latent naming collision:
-  `Useful.Maths.Extensions` triggered CA1724 (type name conflicts with
+  Adding those packages to `SharpKind` exposed a latent naming collision:
+  `SharpKind.Maths.Extensions` triggered CA1724 (type name conflicts with
   the newly-referenced `Microsoft.Extensions` namespace) under this
   repo's warnings-as-errors build. Renamed it to `MathsExtensions` (pure
   rename — it's an extension-method container, so no call site needed
   updating) to unblock the build; unrelated to the config unification
   itself but a direct consequence of it.
 
-  Added generic coverage in `Useful.Tests/Config/ConfigFileTests.cs`
+  Added generic coverage in `SharpKind.Tests/Config/ConfigFileTests.cs`
   (defaults-when-missing, round-trip, mistyped-value fallback, failing
   validation) covering the shared logic once; `EliteSharpLib.Tests`/
   `StuntCarRacerSharpLib.Tests` keep their own `ConfigFileTests` but only for
@@ -3125,7 +3125,7 @@ next implementation work rather than code to write.
   at a user-data path, and a public
   `StuntCarRacerServiceCollectionExtensions.AddScrConfig(userDataPath)`
   (mirroring `AddEliteConfig`) registers it in DI and exposes the result
-  as `Useful.Audio.AudioOptions` — the type `StuntCarRacerMain` already
+  as `SharpKind.Audio.AudioOptions` — the type `StuntCarRacerMain` already
   took at its `AudioController` construction site. `StuntCarRacerMain`
   gained a new public constructor overload accepting `AudioOptions` (the
   existing no-option constructors now default to `new()`, unchanged
@@ -3152,7 +3152,7 @@ next implementation work rather than code to write.
   implementations, `SoftwareGraphics`/`SDLGraphics`), `IPolygonRenderer`
   and its three strategies (`ZBufferRenderer`/`PainterRenderer`/
   `WireframeRenderer`), `IPaletteCollection`/`Palette`/`PaletteReader`
-  (`Useful.Assets.Palettes`), `Face.Color` (`Useful.Assets.Models`), and
+  (`SharpKind.Assets.Palettes`), `Face.Color` (`SharpKind.Assets.Models`), and
   SCR's `WorldPolygon.Colour`/`CarPalette`. Only the declared surfaces
   changed — internal call sites across Elite's ~110 `uint`-typed colour
   locals/fields (Views, Planets, Suns, Ships) and SCR's `ScrPalette`/
@@ -3163,7 +3163,7 @@ next implementation work rather than code to write.
   checks the literal parameter type rather than tolerating implicit
   conversions.
 
-  Also resolves the open `[Useful.SDL] ToSDLColor decodes the colour as
+  Also resolves the open `[SharpKind.SDL] ToSDLColor decodes the colour as
   RGBA` defect: `ToSDLColor` now decodes via `FastColor.R`/`G`/`B`/`A`
   instead of hand-rolled bit-shifts, matching `SetRenderDrawColor` and
   every other colour in the codebase (ARGB).
@@ -3173,7 +3173,7 @@ next implementation work rather than code to write.
 - Phase 2 of the colour-handling unification: `ScrPalette`'s hardcoded
   42-entry `uint[]` replaced with a JSON asset
   (`StuntCarRacerSharpLib/Assets/Palette/palette.json`) loaded through
-  `Useful.Assets.Palettes.PaletteReader`/`IPaletteCollection` — the same
+  `SharpKind.Assets.Palettes.PaletteReader`/`IPaletteCollection` — the same
   mechanism `EliteDraw` already used for its named palette. `Colour(int)`
   stays static with a lazily-loaded backing store and keeps addressing
   colours positionally (`Track.ScrBaseColour + offset`, matching the
@@ -3183,14 +3183,14 @@ next implementation work rather than code to write.
   files address colours by numeric offset, so DI injection here would
   have meant a much larger, riskier change for the same goal.
 
-### Changed (FastColor moved into the base Useful library, 2026-07-20)
+### Changed (FastColor moved into the base SharpKind library, 2026-07-20)
 
 - Phase 1 of the colour-handling unification: `FastColor`/`BaseColors`
-  relocated from `Useful.Graphics` into the base `Useful` library, so
-  `Useful.Assets` (which sits below `Useful.Graphics` in the dependency
+  relocated from `SharpKind.Graphics` into the base `SharpKind` library, so
+  `SharpKind.Assets` (which sits below `SharpKind.Graphics` in the dependency
   graph and owns `IPaletteCollection`/`Face.Color`) can reference it in a
   later phase without a circular project reference. No call-site changes
-  needed elsewhere — `Useful.Graphics`/`Useful.SDL` already see it via
+  needed elsewhere — `SharpKind.Graphics`/`SharpKind.SDL` already see it via
   C#'s enclosing-namespace lookup. Added implicit `uint`↔`FastColor`
   conversions so existing ARGB literals and `uint`-typed fields kept
   compiling as call sites migrated to `FastColor` over the subsequent
@@ -3201,7 +3201,7 @@ next implementation work rather than code to write.
 - SCR's `CarMesh` (the opponent's wedge-body/wheel-quad geometry,
   previously hardcoded vertex/quad arrays) now loads from a Wavefront OBJ
   asset (`StuntCarRacerSharpLib/Assets/Models/car.obj`), mirroring how Elite
-  loads its ship models via `Useful.Assets.Models.ModelReader`. `CarMesh`
+  loads its ship models via `SharpKind.Assets.Models.ModelReader`. `CarMesh`
   changed from a static class to an instance constructed once (and
   injected into `OpponentRenderer`) instead of re-parsed on every track
   load; a new `CarPalette` resolves car.obj's five materials to
@@ -3211,16 +3211,16 @@ next implementation work rather than code to write.
   carved out as a genuine-OBJ exception; added SCR's models path
   alongside it.
 
-### Changed (Polygon renderers moved to Useful.Graphics, 2026-07-20)
+### Changed (Polygon renderers moved to SharpKind.Graphics, 2026-07-20)
 
 - `IShipRenderer`, `ShipRenderMode`, `PolygonData`, `WireframeRenderer`,
   `PainterRenderer` and `ZBufferRenderer` moved from
-  `EliteSharpLib.Graphics` to `Useful.Graphics.Rendering`
-  (`src/useful/libs/Useful.Graphics/Rendering/`) — after today's earlier
+  `EliteSharpLib.Graphics` to `SharpKind.Graphics.Rendering`
+  (`src/useful/libs/SharpKind.Graphics/Rendering/`) — after today's earlier
   work stripped their last Elite dependencies (`GameState`, the
   `ShipWireframe` check), none of the six referenced anything
   Elite-specific anymore; they only depend on `IGraphics`,
-  `IAssetLocator` and `PaletteReader`, all already public in `Useful.*`.
+  `IAssetLocator` and `PaletteReader`, all already public in `SharpKind.*`.
   Renamed the two type names that said "ship": `IShipRenderer` →
   `IPolygonRenderer`, `ShipRenderMode` → `PolygonRenderMode`
   (`SubmitFace`/`faceColor` → `Submit`/`color` too, and
@@ -3245,7 +3245,7 @@ next implementation work rather than code to write.
   if SCR ever wants the explicit start/submit/end lifecycle. Also
   checked the rest of this session's changes (`AudioOptions`,
   `ConfigSettings`/`ConfigFile`) for the same "no longer game-specific"
-  smell — `AudioOptions` was already correctly in `Useful.Audio`;
+  smell — `AudioOptions` was already correctly in `SharpKind.Audio`;
   `ConfigSettings`/`ConfigFile` hold genuinely Elite-only fields
   (`PlanetStyle`, `SunStyle`, the `elitesharp.cfg` filename) and stay put.
 
@@ -3356,7 +3356,7 @@ next implementation work rather than code to write.
 
 - `AudioController`'s `_musicOn`/`_effectsOn` were hardcoded `true` behind
   a pointless `#if DEBUG`/`#else` with identical branches; the constructor
-  now takes a new `Useful.Audio.AudioOptions` (`MusicOn`/`EffectsOn`, both
+  now takes a new `SharpKind.Audio.AudioOptions` (`MusicOn`/`EffectsOn`, both
   defaulting `true`) instead. Elite's `ConfigSettings` gained matching
   `MusicOn`/`EffectsOn` properties (default `true`, no behaviour change),
   and `EliteServiceCollectionExtensions`'s `AudioController` registration
@@ -3458,7 +3458,7 @@ next implementation work rather than code to write.
   the edge scrape) instead of playing at a flat pitch. Each effect also
   gets the original's fixed stereo pan (engine and Smash left,
   everything else right) and HitCar's fixed quieter volume.
-  `Useful.Audio` grew the plumbing for this: `ISound.Play` and
+  `SharpKind.Audio` grew the plumbing for this: `ISound.Play` and
   `AudioController.PlayEffect` take volume/pan/pitch, `SfxSample` carries
   a per-effect static volume/pan profile, and `SDLSound` implements
   pitch-shifted one-shots with the same resample-on-a-reserved-channel
@@ -3647,7 +3647,7 @@ next implementation work rather than code to write.
   `SoftwareAbstraction` switched to `SDLSound`, and `AudioController`'s
   `GenerateWaveFromMidi`/`WriteStereoWav` helpers were never called; deleted
   along with the `NAudio`/`NAudio.Vorbis`/`MeltySynth` package references in
-  `Useful.Audio.csproj` and `EliteSharpLib.csproj`.
+  `SharpKind.Audio.csproj` and `EliteSharpLib.csproj`.
 
 ### Fixed (2026-07-11 architecture review — all Must items, plus one Should)
 
@@ -3705,20 +3705,20 @@ conversion work now lives in the [backlog](docs/backlog-roadmap.md).
 - Opponent AI: scripted speeds, wheel-spring dynamics, steering,
   obstruct/push/move-aside interaction, lap counting and win calculation.
 - 3D projection/camera pipeline (`Scene3D`, `SceneCamera`, `ScrPalette`)
-  with flat-shaded and textured polygons via `Useful.Graphics`.
+  with flat-shaded and textured polygons via `SharpKind.Graphics`.
 - Backdrop/horizon/scenery rendering, five scenery types, N cycles them.
 - Car mesh (wheels + wedge body) used to draw the opponent.
 - HUD: bitmap-font text overlays plus the graphical cockpit dashboard
   ported from ptitSeb's `DrawCockpit`, sprited from one converted
   `atlas.bmp` via the new `IGraphics.DrawImagePart`.
 - Track menu background drawing ptitSeb's `menu.png` over the 3D world.
-- Sound via `Useful.Audio`: variable-pitch engine loop, effect triggers,
+- Sound via `SharpKind.Audio`: variable-pitch engine loop, effect triggers,
   samples converted to WAV assets.
 - Game-mode/screen flow (TrackMenu, TrackPreview, Race, GameOver) with
   camera orbit/preview logic and track selection; full game loop wired up,
   all eight tracks drivable end-to-end, keyboard-controlled.
 - Fixed-timestep game loop, screen state machine and sound-effect
-  throttling shared with Elite (`Useful.Timing.GameLoop`,
+  throttling shared with Elite (`SharpKind.Timing.GameLoop`,
   `ScreenManager<TId, TScreen>`, `AudioController`/`SfxSample`).
 - Floating-track and spurious-triangle rendering bugs fixed with
   regression coverage; road-line textures regenerated from the palette and

@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>SharpKind.Security.Cryptography.Streams</PackageId>
+    <Description>SymmetricAlgorithm/Stream adapters over the SharpKind.Security.Cryptography classical ciphers.</Description>
+    <!-- The stream ciphers live in the same public namespace as the ciphers
+         they wrap, which is the project name without the .Streams suffix. -->
+    <RootNamespace>SharpKind.Security.Cryptography</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SharpKind.Security.Cryptography\SharpKind.Security.Cryptography.csproj" />
+  </ItemGroup>
+
+</Project>

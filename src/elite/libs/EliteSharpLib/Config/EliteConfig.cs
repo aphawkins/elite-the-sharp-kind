@@ -4,7 +4,7 @@
 
 using EliteSharpLib.Planets;
 using EliteSharpLib.Suns;
-using Useful.Abstraction.Config;
+using SharpKind.Abstraction.Config;
 
 namespace EliteSharpLib.Config;
 

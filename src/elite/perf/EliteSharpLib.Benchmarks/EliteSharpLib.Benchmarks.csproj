@@ -9,8 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\useful\libs\Useful.SDL\Useful.SDL.csproj" />
-    <ProjectReference Include="..\..\..\useful\test\Useful.Fakes\Useful.Fakes.csproj" />
+    <ProjectReference Include="..\..\..\useful\libs\SharpKind.SDL\SharpKind.SDL.csproj" />
+    <ProjectReference Include="..\..\..\useful\test\SharpKind.Fakes\SharpKind.Fakes.csproj" />
     <ProjectReference Include="..\..\libs\EliteSharpLib\EliteSharpLib.csproj" />
     <!-- A rendition to construct EliteDraw against: it needs one for the scale
          it draws at. Any would do; this is the one the benchmarks measure. -->

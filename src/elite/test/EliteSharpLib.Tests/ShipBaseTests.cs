@@ -5,9 +5,9 @@
 using System.Numerics;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Ships;
-using Useful;
-using Useful.Assets.Models;
-using Useful.Fakes;
+using SharpKind;
+using SharpKind.Assets.Models;
+using SharpKind.Fakes;
 
 namespace EliteSharpLib.Tests;
 

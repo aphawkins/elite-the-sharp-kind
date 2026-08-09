@@ -4,9 +4,9 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SharpKind.Abstraction.Config;
+using SharpKind.App;
 using StuntCarRacerSharpLib;
-using Useful.Abstraction.Config;
-using Useful.App;
 
 [assembly: CLSCompliant(false)]
 

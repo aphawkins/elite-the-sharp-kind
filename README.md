@@ -2,7 +2,7 @@
 
 ![Line coverage](docs/images/coverage-badge.svg)
 
-Classic 8/16-bit computer games re-engineered in C# / .NET, sharing a common set of `Useful.*` game-engine libraries. The games are meant to look, feel and play like the originals while running cross-platform on modern hardware.
+Classic 8/16-bit computer games re-engineered in C# / .NET, sharing a common set of `SharpKind.*` game-engine libraries. The games are meant to look, feel and play like the originals while running cross-platform on modern hardware.
 
 ## Games
 
@@ -30,7 +30,7 @@ dotnet run --project src/elite/apps/EliteSharp
 dotnet run --project src/scr/apps/StuntCarRacerSharp
 
 # Control gallery — every shared UI control, for looking at
-dotnet run --project src/useful/apps/Useful.UI.Gallery
+dotnet run --project src/useful/apps/SharpKind.UI.Gallery
 ```
 
 Both games can also be run and debugged directly from an IDE: open [TheSharpKind.slnx](TheSharpKind.slnx) in Visual Studio and set `EliteSharp` or `StuntCarRacerSharp` as the startup project, or open the repo root in VS Code and use the "Elite" / "Stunt Car Racer" launch configurations (`.vscode/launch.json`).

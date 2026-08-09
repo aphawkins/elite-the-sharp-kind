@@ -9,13 +9,13 @@ using EliteSharp.Abstractions.Renditions;
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Views;
-using Useful;
-using Useful.Assets;
-using Useful.Assets.Models;
-using Useful.Assets.Palettes;
-using Useful.Graphics;
-using Useful.Graphics.Rendering;
-using Useful.Maths;
+using SharpKind;
+using SharpKind.Assets;
+using SharpKind.Assets.Models;
+using SharpKind.Assets.Palettes;
+using SharpKind.Graphics;
+using SharpKind.Graphics.Rendering;
+using SharpKind.Maths;
 
 namespace EliteSharpLib.Graphics;
 

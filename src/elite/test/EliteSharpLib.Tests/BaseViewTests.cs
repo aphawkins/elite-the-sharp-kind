@@ -6,10 +6,10 @@ using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Views;
-using Useful.Abstraction;
-using Useful.Fakes.Input;
-using Useful.Graphics.Fakes;
-using Useful.Graphics.Rendering;
+using SharpKind.Abstraction;
+using SharpKind.Fakes.Input;
+using SharpKind.Graphics.Fakes;
+using SharpKind.Graphics.Rendering;
 
 namespace EliteSharpLib.Tests;
 

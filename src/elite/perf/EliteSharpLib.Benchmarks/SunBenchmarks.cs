@@ -9,11 +9,11 @@ using EliteSharpLib.Graphics;
 using EliteSharpLib.Missions;
 using EliteSharpLib.Suns;
 using Microsoft.Extensions.Logging.Abstractions;
-using Useful.Assets;
-using Useful.Graphics;
-using Useful.Graphics.Rendering;
-using Useful.Input;
-using Useful.SDL;
+using SharpKind.Assets;
+using SharpKind.Graphics;
+using SharpKind.Graphics.Rendering;
+using SharpKind.Input;
+using SharpKind.SDL;
 
 namespace EliteSharpLib.Benchmarks;
 
@@ -31,7 +31,7 @@ public class SunBenchmarks : IDisposable
     {
         IAssetLocator assetLocator = BenchmarkAssets.Locator();
         SoftwareKeyboard keyboard = new(new SDLInput());
-        Useful.Abstraction.ScreenManager<Views.Screen, Views.IScreenController> views = new(keyboard);
+        SharpKind.Abstraction.ScreenManager<Views.Screen, Views.IScreenController> views = new(keyboard);
 
         // These benchmarks are about planets and suns, so no missions are needed.
         GameState gameState = new(views, new MissionRegistry([], NullLogger<MissionRegistry>.Instance));

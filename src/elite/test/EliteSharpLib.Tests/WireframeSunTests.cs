@@ -9,11 +9,11 @@ using EliteSharpLib.Graphics;
 using EliteSharpLib.Suns;
 using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Views;
-using Useful;
-using Useful.Abstraction;
-using Useful.Fakes.Input;
-using Useful.Graphics;
-using Useful.Graphics.Rendering;
+using SharpKind;
+using SharpKind.Abstraction;
+using SharpKind.Fakes.Input;
+using SharpKind.Graphics;
+using SharpKind.Graphics.Rendering;
 
 namespace EliteSharpLib.Tests;
 

@@ -3,10 +3,10 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using Useful;
-using Useful.Assets;
-using Useful.Graphics;
-using Useful.Graphics.Rendering;
+using SharpKind;
+using SharpKind.Assets;
+using SharpKind.Graphics;
+using SharpKind.Graphics.Rendering;
 
 namespace EliteSharpLib.Graphics;
 

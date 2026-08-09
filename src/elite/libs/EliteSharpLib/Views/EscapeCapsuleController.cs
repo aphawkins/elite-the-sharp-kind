@@ -10,8 +10,8 @@ using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Useful.Audio;
-using Useful.Maths;
+using SharpKind.Audio;
+using SharpKind.Maths;
 
 namespace EliteSharpLib.Views;
 

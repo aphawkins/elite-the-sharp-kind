@@ -36,9 +36,9 @@ the one choice its setting has. Note that a default interface member is not
 visible on the implementing type: `setting.Value` needs an `ISetting`-typed
 reference, which is why call sites go through `control.Setting`.
 
-**`Useful.Widgets` became `Useful.UI` and `Useful.Controls` became
-`Useful.Input`.** "Widget" and "control" were the same word for the same thing
-in two namespaces, and the old `Useful.Controls` - the keyboard - was one
+**`SharpKind.Widgets` became `SharpKind.UI` and `SharpKind.Controls` became
+`SharpKind.Input`.** "Widget" and "control" were the same word for the same thing
+in two namespaces, and the old `SharpKind.Controls` - the keyboard - was one
 misread away from being taken for the UI half. The csproj comment warning not
 to confuse the two is gone with the reason for it.
 
@@ -52,7 +52,7 @@ are the same binding seen from another end rather than a copy of it.
 
 ## Resolved (2026-08-05) — a widget owns the interaction, the binding owns the truth
 
-The settings screens were the first thing built out of the new `Useful.UI`
+The settings screens were the first thing built out of the new `SharpKind.UI`
 library, and building them asked a question the widget shape kept failing to
 answer: a combo box needs the keyboard and the palette, and those live on
 opposite sides of the plugin door. Four shapes were tried before the split
@@ -221,7 +221,7 @@ Consequences:
 
 - **The game no longer knows which renditions exist.** No switch anywhere
   names one. Adding a third is a folder.
-- **`Useful` is free of tiers**, which is what lets Stunt Car Racer grow
+- **`SharpKind` is free of tiers**, which is what lets Stunt Car Racer grow
   renditions later without forking `AssetLocator`. Its own vestigial
   `SixteenBit` folders were flattened in passing.
 - **A rendition is now a large thing to write** - every screen, every world
@@ -614,7 +614,7 @@ settling how assets are laid out and constrained per tier. Full design in
   tier — per game, not per image. Transparent pixels are excluded; alpha
   must be 0 or 255.
 - **Enforced eagerly**: assets are never loaded on demand. A single
-  eager `AssetSet` load in `Useful.Assets` replaces the separate loads in
+  eager `AssetSet` load in `SharpKind.Assets` replaces the separate loads in
   `SoftwareGraphics` and `SDLGraphics` (the SDL path currently decodes
   via SDL and would bypass validation entirely) and fails startup on an
   over-budget set.
@@ -643,7 +643,7 @@ settling how assets are laid out and constrained per tier. Full design in
   layer — game code needs to know about scale for individual elements.
   This aligns with the existing Scale/centring cleanup already in
   backlog-roadmap.md's Could section (move scale policy out of
-  `Useful.Graphics` into the game).
+  `SharpKind.Graphics` into the game).
 - **Data-driven game content**: `EquipmentType`, `StockType`, ship
   definitions, and similar currently hardcoded/`AssetManifest.json`-driven
   game data (including `ShipFactory.CreateShipFromName`'s reflection-based
@@ -730,7 +730,7 @@ functionality. Conclusions:
 - **Claimed platforms**: win-x64, linux-x64, linux-arm64. macOS stays
   unclaimed (untested).
 - **Coverage visibility**: add a badge (see Could in backlog-roadmap.md).
-- **NuGet packaging of `Useful.*`**: defer until an external consumer
+- **NuGet packaging of `SharpKind.*`**: defer until an external consumer
   exists.
 - **Elite Intro2 parade**: keep mission ships (Cougar, Constrictor, Lone
   variants) out of the parade — status quo confirmed intentional, not a bug

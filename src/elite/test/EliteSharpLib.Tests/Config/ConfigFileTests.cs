@@ -4,8 +4,8 @@
 
 using EliteSharpLib.Config;
 using EliteSharpLib.Suns;
-using Useful.Abstraction.Config;
-using Useful.Config;
+using SharpKind.Abstraction.Config;
+using SharpKind.Config;
 
 namespace EliteSharpLib.Tests.Config;
 

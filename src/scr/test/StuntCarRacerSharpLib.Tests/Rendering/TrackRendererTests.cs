@@ -3,11 +3,11 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using System.Numerics;
+using SharpKind.Assets;
+using SharpKind.Graphics.Fakes;
 using StuntCarRacerSharpLib.Cars;
 using StuntCarRacerSharpLib.Rendering;
 using StuntCarRacerSharpLib.Tracks;
-using Useful.Assets;
-using Useful.Graphics.Fakes;
 using Xunit;
 
 namespace StuntCarRacerSharpLib.Tests.Rendering;
