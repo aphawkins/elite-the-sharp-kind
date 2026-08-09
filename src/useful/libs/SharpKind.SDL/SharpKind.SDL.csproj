@@ -1,5 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <PackageId>SharpKind.SDL</PackageId>
+    <Description>SDL3-backed windowing, input, audio and hardware-accelerated rendering abstraction for SharpKind-based games.</Description>
     <!-- Required by ppy.SDL3-CS / ppy.SDL3_ttf-CS / ppy.SDL3_mixer-CS, which expose raw unmanaged pointers. -->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>

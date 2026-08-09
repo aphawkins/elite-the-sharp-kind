@@ -85,6 +85,21 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Pack SharpKind libraries
+        # Pack only the publishable SharpKind.* libraries under src/useful/libs
+        # (IsPackable=true there) - not the EliteSharp/StuntCarRacerSharp game
+        # projects, which are not meant to be published as NuGet packages.
+        run: |
+          for proj in src/useful/libs/*/*.csproj; do
+            dotnet pack "$proj" --configuration Release --no-build --output ./nupkg
+          done
+
+      - name: Upload SharpKind NuGet packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: SharpKind-nupkgs-${{ steps.vars.outputs.version }}
+          path: ./nupkg/*.nupkg
+
       - name: Publish EliteSharp Windows
         run: dotnet publish ./src/elite/apps/EliteSharp/EliteSharp.csproj /p:PublishProfile=PublishProfileWindows
 

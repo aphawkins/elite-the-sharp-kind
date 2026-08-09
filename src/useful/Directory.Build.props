@@ -1,0 +1,20 @@
+<Project>
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <!-- Shared NuGet packaging metadata for the SharpKind libraries. Actual
+       packing/pushing is done explicitly in CI, not on every build - see
+       GeneratePackageOnBuild below. Individual library projects opt in with
+       IsPackable=true and supply their own PackageId/Description; everything
+       else under src/useful (apps, test, fakes, perf) stays unpackable. -->
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Authors>Andy Hawkins</Authors>
+    <Company>Andy Hawkins</Company>
+    <PackageProjectUrl>https://github.com/aphawkins/the-sharp-kind</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/aphawkins/the-sharp-kind</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>SharpKind;game-engine;dotnet</PackageTags>
+  </PropertyGroup>
+</Project>

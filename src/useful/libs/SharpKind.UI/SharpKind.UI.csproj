@@ -6,6 +6,11 @@
        Knows about IGraphics and nothing above it, so it has no idea which
        game or which rendition is drawing with it. -->
 
+  <PropertyGroup>
+    <PackageId>SharpKind.UI</PackageId>
+    <Description>Lightweight on-screen controls (buttons, labels, text/combo boxes) drawn through SharpKind.Graphics.</Description>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\SharpKind.Input\SharpKind.Input.csproj" />
     <ProjectReference Include="..\SharpKind.Graphics\SharpKind.Graphics.csproj" />

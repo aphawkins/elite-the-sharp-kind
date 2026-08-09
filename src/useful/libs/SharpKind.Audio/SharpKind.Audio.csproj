@@ -1,5 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+	<PropertyGroup>
+		<PackageId>SharpKind.Audio</PackageId>
+		<Description>Software audio playback (WAV/SoundFont/Vorbis mixing) for SharpKind-based games.</Description>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<PackageReference Include="MeltySynth" />
 		<PackageReference Include="NVorbis" />

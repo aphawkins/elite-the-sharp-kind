@@ -1,4 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>SharpKind.Graphics</PackageId>
+    <Description>Software rasteriser (bitmaps, fonts, polygon/wireframe/z-buffer rendering) for SharpKind-based games.</Description>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharpKind.Assets\SharpKind.Assets.csproj" />
     <ProjectReference Include="..\SharpKind\SharpKind.csproj" />

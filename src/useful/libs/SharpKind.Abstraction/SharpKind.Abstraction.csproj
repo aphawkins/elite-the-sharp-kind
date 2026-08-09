@@ -1,4 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>SharpKind.Abstraction</PackageId>
+    <Description>Game/screen/config abstractions (IGame, IGameScreen, ScreenManager, GameHost) that the SharpKind SDL and App layers build on.</Description>
+  </PropertyGroup>
   <ItemGroup>
     <Content Remove="C:\code\github\aphawkins\elite-the-sharp-kind\elite.ico" />
   </ItemGroup>

@@ -1,5 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <PackageId>SharpKind.Assets</PackageId>
+    <Description>Asset loading (models, palettes, fonts, manifest) for SharpKind-based games.</Description>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\SharpKind\SharpKind.csproj" />
   </ItemGroup>
