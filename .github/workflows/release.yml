@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   publish-release:
@@ -23,6 +24,24 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
+
+      - name: Pack SharpKind libraries
+        # Pack only the publishable SharpKind.* libraries under src/useful/libs
+        # (IsPackable=true there) - not the EliteSharp/StuntCarRacerSharp game
+        # projects, which are not meant to be published as NuGet packages.
+        run: |
+          for proj in src/useful/libs/*/*.csproj; do
+            dotnet pack "$proj" --configuration Release --output ./nupkg
+          done
+
+      - name: NuGet login (OIDC -> temp API key)
+        uses: NuGet/login@v1
+        id: nuget_login
+        with:
+          user: Hawky
+
+      - name: Push SharpKind packages to NuGet.org
+        run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ steps.nuget_login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
 
       - name: Publish EliteSharp win-x64
         run: dotnet publish ./src/elite/apps/EliteSharp/EliteSharp.csproj /p:PublishProfile=PublishProfileWindows
