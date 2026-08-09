@@ -1,4 +1,4 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
+﻿// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
@@ -38,7 +38,7 @@ public class BackdropRendererTests
         ScrPalette palette = new(AssetLocator.Create());
         FastBitmap? frame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(Width, Height, b => frame = b, new FakeAssetLocator());
-        BackdropRenderer backdrop = new(graphics, palette);
+        BackdropRenderer backdrop = new(graphics, new(Width, Height), palette);
         SceneCamera camera = new();
 
         // camera above the world centre looking down at a ground point ahead

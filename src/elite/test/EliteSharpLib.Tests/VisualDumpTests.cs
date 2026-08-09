@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -32,7 +32,7 @@ public class VisualDumpTests
         GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
         ZBufferRenderer shipRenderer = new(graphics);
         RNG rng = new(new Random(0));
-        EliteDraw draw = new(gameState, graphics, TestAssets.Locator(), new SixteenBitRendition(), shipRenderer, rng);
+        EliteDraw draw = new(gameState, graphics, new(512, 512), TestAssets.Locator(), new SixteenBitRendition(), shipRenderer, rng);
         ShipFactory factory = ShipFactory.Create(TestAssets.Locator(), draw, rng);
 
         void RenderAndSave(string name, params IShip[] ships)
@@ -119,7 +119,7 @@ public class VisualDumpTests
         WireframeRenderer shipRenderer = new(graphics, TestAssets.Locator());
         GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
         RNG rng = new(new Random(0));
-        EliteDraw draw = new(gameState, graphics, TestAssets.Locator(), new SixteenBitRendition(), shipRenderer, rng);
+        EliteDraw draw = new(gameState, graphics, new(512, 512), TestAssets.Locator(), new SixteenBitRendition(), shipRenderer, rng);
         ShipFactory factory = ShipFactory.Create(TestAssets.Locator(), draw, rng);
 
         IShip missile = factory.CreateShip("Missile");
@@ -142,7 +142,14 @@ public class VisualDumpTests
 
         // the same poses filled, as the reference for what should be visible
         ZBufferRenderer solidRenderer = new(graphics);
-        EliteDraw solidDraw = new(gameState, graphics, TestAssets.Locator(), new SixteenBitRendition(), solidRenderer, rng);
+        EliteDraw solidDraw = new(
+            gameState,
+            graphics,
+            new(512, 512),
+            TestAssets.Locator(),
+            new SixteenBitRendition(),
+            solidRenderer,
+            rng);
         IShip solidMissile = ShipFactory.Create(TestAssets.Locator(), solidDraw, rng).CreateShip("Missile");
         solidMissile.Location = new(0, 0, 120, 0);
 
@@ -178,7 +185,7 @@ public class VisualDumpTests
             IPolygonRenderer shipRenderer = createRenderer(graphics);
             GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
             RNG rng = new(new Random(0));
-            EliteDraw draw = new(gameState, graphics, TestAssets.Locator(), new SixteenBitRendition(), shipRenderer, rng);
+            EliteDraw draw = new(gameState, graphics, new(512, 512), TestAssets.Locator(), new SixteenBitRendition(), shipRenderer, rng);
             ShipFactory factory = ShipFactory.Create(TestAssets.Locator(), draw, rng);
 
             IShip asteroid = factory.CreateShip("Asteroid");

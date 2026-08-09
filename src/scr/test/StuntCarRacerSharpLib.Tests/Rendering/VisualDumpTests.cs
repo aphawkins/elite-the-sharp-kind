@@ -1,4 +1,4 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
+﻿// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
@@ -31,8 +31,9 @@ public class VisualDumpTests
         ScrPalette palette = new(AssetLocator.Create());
         FastBitmap? lastFrame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(640, 400, b => lastFrame = b, AssetLocator.Create());
-        TrackRenderer renderer = new(track, graphics, palette, new(palette));
-        BackdropRenderer backdrop = new(graphics, palette);
+        ScreenLayout screen = new(640, 400);
+        TrackRenderer renderer = new(track, graphics, screen, palette, new(palette));
+        BackdropRenderer backdrop = new(graphics, screen, palette);
         OpponentRenderer opponentRenderer = new(opponent, new(palette), palette);
         SceneCamera camera = new();
         List<WorldPolygon> worldPolygons = [];
@@ -97,7 +98,7 @@ public class VisualDumpTests
 
         // the driving frame with the in-game cockpit overlay: wheels,
         // engine, a part-grown damage crack, speed bar and read-outs
-        HudRenderer hud = new(graphics);
+        HudRenderer hud = new(graphics, screen);
         camera.FollowCar(car);
         graphics.Clear();
         backdrop.Draw(camera);
@@ -146,7 +147,7 @@ public class VisualDumpTests
         graphics.DrawImagePart(
             "Menu",
             new(0, 0),
-            new(graphics.ScreenWidth, graphics.ScreenHeight),
+            screen.ScreenSize,
             new(0, 0),
             new(320, 200));
         graphics.ScreenUpdate();

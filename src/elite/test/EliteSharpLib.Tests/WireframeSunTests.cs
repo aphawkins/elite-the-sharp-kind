@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -76,7 +76,14 @@ public class WireframeSunTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(ScreenSize, ScreenSize, b => lastFrame = b, TestAssets.Locator());
         GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
         RNG rng = new(new Random(0));
-        EliteDraw draw = new(gameState, graphics, TestAssets.Locator(), new SixteenBitRendition(), new ZBufferRenderer(graphics), rng);
+        EliteDraw draw = new(
+            gameState,
+            graphics,
+            new(ScreenSize, ScreenSize),
+            TestAssets.Locator(),
+            new SixteenBitRendition(),
+            new ZBufferRenderer(graphics),
+            rng);
         Sun sun = new(draw, new SixteenBitRendition().CreateSunRenderer(draw, new(SunStyle.Wireframe, rng)))
         {
             Location = new(0, 0, Distance, 0),

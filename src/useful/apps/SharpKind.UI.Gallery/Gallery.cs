@@ -73,7 +73,7 @@ internal sealed class Gallery
 
     private int _focus;
 
-    internal Gallery(IGraphics graphics)
+    internal Gallery(IGraphics graphics, ScreenLayout screen)
     {
         _graphics = graphics;
 
@@ -81,7 +81,7 @@ internal sealed class Gallery
         // was sized from an estimate of the font's height, and an estimate a
         // pixel short would otherwise push the last rows off the bottom.
         float lineHeight = MathF.Max(Cell, graphics.MeasureText(MeasuringText, Font).Y);
-        _pitch = MathF.Min(lineHeight, graphics.ScreenHeight / LayoutRows);
+        _pitch = MathF.Min(lineHeight, screen.ScreenHeight / LayoutRows);
 
         // A proportional font has no grid to sit on, so nothing snaps to one:
         // a line taller than the cell is how this tells the two apart, which

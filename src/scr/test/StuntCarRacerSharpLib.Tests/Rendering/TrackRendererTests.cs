@@ -1,4 +1,4 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
+﻿// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
@@ -34,7 +34,7 @@ public class TrackRendererTests
 
         ScrPalette palette = new(AssetLocator.Create());
         RecordingGraphics graphics = new(640, 400);
-        TrackRenderer renderer = new(track, graphics, palette, new(palette));
+        TrackRenderer renderer = new(track, graphics, graphics.Layout, palette, new(palette));
         renderer.Draw(camera);
 
         // Track geometry ahead of the car must produce filled polygons.
@@ -57,10 +57,10 @@ public class TrackRendererTests
         ScrPalette palette = new(AssetLocator.Create());
         RoadTextures roadTextures = new(palette);
         RecordingGraphics graphics1 = new(640, 400);
-        new TrackRenderer(track, graphics1, palette, roadTextures).Draw(camera);
+        new TrackRenderer(track, graphics1, graphics1.Layout, palette, roadTextures).Draw(camera);
 
         RecordingGraphics graphics2 = new(640, 400);
-        new TrackRenderer(track, graphics2, palette, roadTextures).Draw(camera);
+        new TrackRenderer(track, graphics2, graphics2.Layout, palette, roadTextures).Draw(camera);
 
         Assert.Equal(graphics1.FilledPolygons.Count, graphics2.FilledPolygons.Count);
     }
@@ -75,7 +75,7 @@ public class TrackRendererTests
         SceneCamera camera = new();
         ScrPalette palette = new(AssetLocator.Create());
         RecordingGraphics graphics = new(640, 400);
-        TrackRenderer renderer = new(track, graphics, palette, new(palette));
+        TrackRenderer renderer = new(track, graphics, graphics.Layout, palette, new(palette));
 
         for (int frame = 0; frame < 200; frame++)
         {
@@ -102,12 +102,12 @@ public class TrackRendererTests
 
         // without a player position no road is textured
         RecordingGraphics untextured = new(640, 400);
-        new TrackRenderer(track, untextured, palette, roadTextures).Draw(camera);
+        new TrackRenderer(track, untextured, untextured.Layout, palette, roadTextures).Draw(camera);
         Assert.Empty(untextured.TexturedPolygons);
 
         // with the player's position the nearby road draws textured
         RecordingGraphics textured = new(640, 400);
-        new TrackRenderer(track, textured, palette, roadTextures).Draw(camera, null, car.CurrentPiece, car.CurrentSegment);
+        new TrackRenderer(track, textured, textured.Layout, palette, roadTextures).Draw(camera, null, car.CurrentPiece, car.CurrentSegment);
         Assert.NotEmpty(textured.TexturedPolygons);
         Assert.All(textured.TexturedPolygons, p => Assert.Contains(p.Texture, roadTextures.Textures));
         Assert.All(textured.TexturedPolygons, p => Assert.Equal(p.Points.Length, p.TextureCoords.Length));
@@ -125,7 +125,7 @@ public class TrackRendererTests
 
         ScrPalette palette = new(AssetLocator.Create());
         RecordingGraphics graphics = new(640, 400);
-        new TrackRenderer(track, graphics, palette, new(palette)).Draw(camera, null, car.CurrentPiece, car.CurrentSegment);
+        new TrackRenderer(track, graphics, graphics.Layout, palette, new(palette)).Draw(camera, null, car.CurrentPiece, car.CurrentSegment);
 
         // 11 segments each side of the player plus the player's own, two
         // road triangles each (clipping can split a triangle once more)
@@ -155,7 +155,7 @@ public class TrackRendererTests
         SceneCamera camera = new();
         ScrPalette palette = new(AssetLocator.Create());
         RecordingGraphics graphics = new(640, 400);
-        TrackRenderer renderer = new(track, graphics, palette, new(palette));
+        TrackRenderer renderer = new(track, graphics, graphics.Layout, palette, new(palette));
 
         for (int frame = 0; frame < 150; frame++)
         {

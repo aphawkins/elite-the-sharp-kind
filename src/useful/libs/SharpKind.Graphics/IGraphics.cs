@@ -6,10 +6,6 @@ namespace SharpKind.Graphics;
 
 public interface IGraphics
 {
-    public float ScreenHeight { get; }
-
-    public float ScreenWidth { get; }
-
     public void Clear();
 
     /// <summary>

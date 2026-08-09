@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -78,6 +78,7 @@ public class LaserDrawTests
         EliteDraw eliteDraw = new(
             gameState,
             graphics,
+            new(512, 512),
             TestAssets.Locator(),
             new SixteenBitRendition(),
             new ZBufferRenderer(graphics),

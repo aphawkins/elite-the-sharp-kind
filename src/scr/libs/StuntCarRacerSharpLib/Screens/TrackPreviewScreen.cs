@@ -1,4 +1,4 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
+﻿// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
@@ -19,6 +19,7 @@ internal sealed class TrackPreviewScreen : IGameScreen
     private readonly IKeyboard _keyboard;
     private readonly ScreenManager<GameMode, IGameScreen> _screens;
     private readonly IGraphics _graphics;
+    private readonly ScreenLayout _screen;
     private readonly ScrPalette _palette;
 
     internal TrackPreviewScreen(
@@ -26,12 +27,14 @@ internal sealed class TrackPreviewScreen : IGameScreen
         IKeyboard keyboard,
         ScreenManager<GameMode, IGameScreen> screens,
         IGraphics graphics,
+        ScreenLayout screen,
         ScrPalette palette)
     {
         _race = race;
         _keyboard = keyboard;
         _screens = screens;
         _graphics = graphics;
+        _screen = screen;
         _palette = palette;
     }
 
@@ -80,7 +83,7 @@ internal sealed class TrackPreviewScreen : IGameScreen
         _race.DrawWorld(showOpponent: true);
 
         FastColor yellow = _palette.Colour(Track.ScrBaseColour + 3);
-        float height = _graphics.ScreenHeight;
+        float height = _screen.ScreenHeight;
 
         _graphics.DrawTextLeft(
             new(2, height - 130),

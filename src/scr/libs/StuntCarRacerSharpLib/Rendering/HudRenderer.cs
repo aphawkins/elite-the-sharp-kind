@@ -75,19 +75,22 @@ internal sealed class HudRenderer
     private static readonly int[] s_engineFlameFrames = [0, 0, 0, 1, 2, 2, 2, 1];
 
     private readonly IGraphics _graphics;
+    private readonly ScreenLayout _screen;
 
     private int _engineFlameTick;
 
-    internal HudRenderer(IGraphics graphics)
+    internal HudRenderer(IGraphics graphics, ScreenLayout screen)
     {
         ArgumentNullException.ThrowIfNull(graphics);
+        ArgumentNullException.ThrowIfNull(screen);
         _graphics = graphics;
+        _screen = screen;
     }
 
     internal void Draw(in CockpitState state)
     {
-        float scaleX = _graphics.ScreenWidth / BaseWidth;
-        float scaleY = _graphics.ScreenHeight / BaseHeight;
+        float scaleX = _screen.ScreenWidth / BaseWidth;
+        float scaleY = _screen.ScreenHeight / BaseHeight;
 
         if (state.OnChains)
         {

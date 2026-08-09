@@ -1,4 +1,4 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
+﻿// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
@@ -36,15 +36,18 @@ public sealed class BackdropRenderer
     ];
 
     private readonly IGraphics _graphics;
+    private readonly ScreenLayout _screen;
     private readonly ScrPalette _palette;
 
     private int _currentSceneryType = MaxSceneryType;
 
-    public BackdropRenderer(IGraphics graphics, ScrPalette palette)
+    public BackdropRenderer(IGraphics graphics, ScreenLayout screen, ScrPalette palette)
     {
         ArgumentNullException.ThrowIfNull(graphics);
+        ArgumentNullException.ThrowIfNull(screen);
         ArgumentNullException.ThrowIfNull(palette);
         _graphics = graphics;
+        _screen = screen;
         _palette = palette;
     }
 
@@ -84,8 +87,8 @@ public sealed class BackdropRenderer
 
     private void DrawHorizon(int viewpointY, int angleX, int angleZ)
     {
-        float width = _graphics.ScreenWidth;
-        float height = _graphics.ScreenHeight;
+        float width = _screen.ScreenWidth;
+        float height = _screen.ScreenHeight;
 
         // y adjustment depending upon the viewpoint x angle - needed because
         // only two horizon points are used rather than four (when the rotated
@@ -162,7 +165,7 @@ public sealed class BackdropRenderer
 
     private void DrawScenery(int viewpointY, int angleX, int angleY, int angleZ)
     {
-        float width = _graphics.ScreenWidth;
+        float width = _screen.ScreenWidth;
 
         // same focus as the track and ground projections (see DrawHorizon)
         float focus = width * Scene3D.FocusFactor;
@@ -212,8 +215,8 @@ public sealed class BackdropRenderer
         int sinZ,
         int cosZ)
     {
-        float width = _graphics.ScreenWidth;
-        float height = _graphics.ScreenHeight;
+        float width = _screen.ScreenWidth;
+        float height = _screen.ScreenHeight;
 
         for (int i = 0; i < coords.Length; i++)
         {

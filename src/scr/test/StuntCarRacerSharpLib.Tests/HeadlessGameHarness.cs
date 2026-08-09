@@ -1,4 +1,4 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
+﻿// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
@@ -20,7 +20,7 @@ internal sealed class HeadlessGameHarness : HeadlessGameHarnessBase<GameStateSum
     public HeadlessGameHarness(int width = 640, int height = 400)
         : base(width, height, AssetLocator.Create())
     {
-        FakeAbstraction abstraction = new(Graphics);
+        FakeAbstraction abstraction = new(Graphics, new(width, height));
         Keyboard = (FakeKeyboard)abstraction.Keyboard;
         Game = new(abstraction, AssetLocator.Create());
     }

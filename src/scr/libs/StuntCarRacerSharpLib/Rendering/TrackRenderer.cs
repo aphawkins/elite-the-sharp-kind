@@ -32,6 +32,8 @@ public sealed class TrackRenderer
 
     private readonly IGraphics _graphics;
 
+    private readonly ScreenLayout _screen;
+
     private readonly ScrPalette _palette;
 
     private readonly Scene3D _scene = new();
@@ -40,15 +42,17 @@ public sealed class TrackRenderer
 
     private readonly int[] _segmentTextures;
 
-    public TrackRenderer(Track track, IGraphics graphics, ScrPalette palette, RoadTextures roadTextures)
+    public TrackRenderer(Track track, IGraphics graphics, ScreenLayout screen, ScrPalette palette, RoadTextures roadTextures)
     {
         ArgumentNullException.ThrowIfNull(track);
         ArgumentNullException.ThrowIfNull(graphics);
+        ArgumentNullException.ThrowIfNull(screen);
         ArgumentNullException.ThrowIfNull(palette);
         ArgumentNullException.ThrowIfNull(roadTextures);
 
         _track = track;
         _graphics = graphics;
+        _screen = screen;
         _palette = palette;
         _roadTextures = roadTextures;
         _segmentTextures = RoadTextures.SegmentTextures(track);
@@ -67,7 +71,7 @@ public sealed class TrackRenderer
     // (playerPiece -1 disables the road lines entirely).
     public void Draw(SceneCamera camera, IEnumerable<WorldPolygon>? extraPolygons, int playerPiece, int playerSegment)
     {
-        _scene.SetView(camera, _graphics.ScreenWidth, _graphics.ScreenHeight);
+        _scene.SetView(camera, _screen.ScreenWidth, _screen.ScreenHeight);
         _graphics.ClearDepth();
 
         int playerGlobalSegment = playerPiece < 0

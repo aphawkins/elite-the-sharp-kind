@@ -1,4 +1,4 @@
-// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
+﻿// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
 
 using System.Numerics;
 
@@ -10,8 +10,8 @@ namespace SharpKind.Graphics.Fakes;
 /// needs somewhere for drawing to go ignores the lists, and one checking
 /// rendered output asserts on them.
 /// </summary>
-/// <param name="screenWidth">Reported as <see cref="ScreenWidth"/>.</param>
-/// <param name="screenHeight">Reported as <see cref="ScreenHeight"/>.</param>
+/// <param name="screenWidth">The width reported by <see cref="Layout"/>.</param>
+/// <param name="screenHeight">The height reported by <see cref="Layout"/>.</param>
 public sealed class RecordingGraphics(float screenWidth = 0, float screenHeight = 0) : IGraphics
 {
     public IList<(Vector2[] Points, FastColor Colour)> FilledPolygons { get; } = [];
@@ -36,9 +36,9 @@ public sealed class RecordingGraphics(float screenWidth = 0, float screenHeight 
 
     public IList<string> SavedScreenPaths { get; } = [];
 
-    public float ScreenHeight { get; } = screenHeight;
-
-    public float ScreenWidth { get; } = screenWidth;
+    // The screen size is not IGraphics' to report, so a test that hands this
+    // fake to something laying out against the screen passes this alongside.
+    public ScreenLayout Layout { get; } = new(screenWidth, screenHeight);
 
     public void Clear() => ClearCount++;
 

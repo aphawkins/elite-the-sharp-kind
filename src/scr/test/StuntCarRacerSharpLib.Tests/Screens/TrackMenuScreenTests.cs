@@ -1,4 +1,4 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
+﻿// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
@@ -15,7 +15,7 @@ public class TrackMenuScreenTests
     public void DrawsTheMenuBackgroundOverTheWorld()
     {
         RecordingGraphics graphics = new(640, 400);
-        FakeAbstraction abstraction = new(graphics);
+        FakeAbstraction abstraction = new(graphics, graphics.Layout);
         StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
 
         game.Draw();
@@ -29,7 +29,7 @@ public class TrackMenuScreenTests
     public void MenuOverlayFillsTheWholeScreen()
     {
         RecordingGraphics graphics = new(640, 400);
-        FakeAbstraction abstraction = new(graphics);
+        FakeAbstraction abstraction = new(graphics, graphics.Layout);
         StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
 
         game.Draw();
@@ -44,7 +44,7 @@ public class TrackMenuScreenTests
     public void TrackListTextStaysWithinScreenBounds()
     {
         RecordingGraphics graphics = new(640, 400);
-        FakeAbstraction abstraction = new(graphics);
+        FakeAbstraction abstraction = new(graphics, graphics.Layout);
         StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
 
         game.Draw();
@@ -54,8 +54,8 @@ public class TrackMenuScreenTests
             graphics.LeftTexts,
             t =>
             {
-                Assert.InRange(t.Position.X, 0, graphics.ScreenWidth);
-                Assert.InRange(t.Position.Y, 0, graphics.ScreenHeight);
+                Assert.InRange(t.Position.X, 0, graphics.Layout.ScreenWidth);
+                Assert.InRange(t.Position.Y, 0, graphics.Layout.ScreenHeight);
             });
 
         // eight track names plus the title and two footer lines

@@ -7,6 +7,25 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (`IGraphics` no longer reports the screen size, 2026-08-09)
+
+- **`IGraphics.ScreenWidth` and `IGraphics.ScreenHeight` are gone.** The
+  interface is a set of drawing operations; where a thing goes is the caller's
+  decision, and a caller needing the screen's extent to make it now says so.
+  The two implementations keep the size for their own clipping, buffers and
+  the `Centre` overloads, which is where it was always actually used.
+- **`SharpKind.Graphics.ScreenLayout`**, a record of the render target's size,
+  is what those callers ask for instead. `IAbstraction` exposes one - it is
+  constructed with the size already - and `AddGameEngine` registers it, so
+  nothing has to be told the size twice.
+- **Elite's `ViewLayout` derives from it** rather than repeating the two
+  fields, keeping its scanner-derived viewport on top of the shared metrics.
+  SCR's renderers and screens, and the UI gallery, take a `ScreenLayout`
+  alongside the `IGraphics` they draw with.
+- **`EliteRenderingServiceCollectionExtensions`** holds the rendering
+  registrations, split out of `EliteServiceCollectionExtensions` because the
+  extra type pushed that class over CA1506's coupling limit.
+
 ### Changed (the control library, its namespaces and its bindings, 2026-08-06)
 
 - **`SharpKind.Widgets` is now `SharpKind.UI`, and `SharpKind.Controls` is now

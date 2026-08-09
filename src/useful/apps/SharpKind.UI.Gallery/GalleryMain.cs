@@ -18,7 +18,7 @@ internal sealed class GalleryMain(IAbstraction abstraction, EngineConfigSettings
     // a key press feels immediate.
     private const double TicksPerSecond = 30;
 
-    private readonly Gallery _gallery = new(abstraction.Graphics);
+    private readonly Gallery _gallery = new(abstraction.Graphics, abstraction.Layout);
 
     public bool IsRunning { get; private set; } = true;
 

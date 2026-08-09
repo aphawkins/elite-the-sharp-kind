@@ -1,4 +1,4 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
+﻿// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
@@ -12,14 +12,16 @@ using SharpKind.Input;
 
 namespace StuntCarRacerSharpLib.Fakes;
 
-public sealed class FakeAbstraction(IGraphics graphics) : IAbstraction
+public sealed class FakeAbstraction(IGraphics graphics, ScreenLayout layout) : IAbstraction
 {
     public FakeAbstraction()
-        : this(new RecordingGraphics())
+        : this(new RecordingGraphics(), new(0, 0))
     {
     }
 
     public IGraphics Graphics { get; } = graphics;
+
+    public ScreenLayout Layout { get; } = layout;
 
     public ISound Sound { get; } = new FakeSound();
 

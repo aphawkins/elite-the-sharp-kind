@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -27,6 +27,7 @@ public class EliteMainTests
             services.AddSingleton<ILoggerFactory>(NullLoggerFactory.Instance);
             services.AddSingleton<IAbstraction>(_ => new FakeAbstraction());
             services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Graphics);
+            services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Layout);
             services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Sound);
             services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);
             services.AddSingleton(_ => TestAssets.Locator());

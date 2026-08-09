@@ -38,20 +38,22 @@ internal sealed class EliteDraw : IEliteDraw
     internal EliteDraw(
         GameState gameState,
         IGraphics graphics,
+        ScreenLayout screen,
         IAssetLocator assetLocator,
         IRendition rendition,
         IPolygonRenderer shipRenderer,
         RNG rng)
     {
         ArgumentNullException.ThrowIfNull(rendition);
+        ArgumentNullException.ThrowIfNull(screen);
 
         _gameState = gameState;
         Graphics = graphics;
         _shipRenderer = shipRenderer;
         _rng = rng;
         Layout = new(
-            graphics.ScreenWidth,
-            graphics.ScreenHeight,
+            screen.ScreenWidth,
+            screen.ScreenHeight,
             graphics.ImageSize(nameof(ImageType.Scanner)),
             rendition.Scale);
         Palette = PaletteReader.Read(assetLocator.PalettePath);
@@ -70,7 +72,7 @@ internal sealed class EliteDraw : IEliteDraw
     // 2026-07-29; deriving it from the width instead narrows the vertical view
     // as the screen widens). It is deliberately not tied to Scale, which is
     // window/coordinate magnification, not zoom.
-    public float Focus => Graphics.ScreenHeight * FocusFactor;
+    public float Focus => Layout.ScreenHeight * FocusFactor;
 
     public IGraphics Graphics { get; }
 
@@ -87,7 +89,7 @@ internal sealed class EliteDraw : IEliteDraw
     public void DrawPolygonFilled(Vector2[] points, float[] depths, FastColor faceColor, float z)
         => _shipRenderer.Submit(points, depths, faceColor, z);
 
-    public void SetFullScreenClipRegion() => Graphics.SetClipRegion(new(0, 0), Graphics.ScreenWidth, Graphics.ScreenHeight);
+    public void SetFullScreenClipRegion() => Graphics.SetClipRegion(new(0, 0), Layout.ScreenWidth, Layout.ScreenHeight);
 
     public void SetViewClipRegion() => Graphics.SetClipRegion(
         new(Layout.ViewportLeft, Layout.ViewportTop),

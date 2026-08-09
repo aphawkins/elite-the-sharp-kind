@@ -10,6 +10,10 @@ public interface IAbstraction
 {
     public IGraphics Graphics { get; }
 
+    // The render target's size, which IGraphics deliberately does not
+    // expose - see ScreenLayout.
+    public ScreenLayout Layout { get; }
+
     public ISound Sound { get; }
 
     public IKeyboard Keyboard { get; }

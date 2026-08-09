@@ -1,4 +1,4 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
+﻿// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
@@ -74,6 +74,7 @@ public sealed class StuntCarRacerMain : IGame, IGameApp
 
         _abstraction = abstraction;
         Graphics = abstraction.Graphics;
+        Layout = abstraction.Layout;
         Keyboard = abstraction.Keyboard;
         Sound = abstraction.Sound;
         Palette = new(assetLocator);
@@ -99,11 +100,11 @@ public sealed class StuntCarRacerMain : IGame, IGameApp
             },
             audioOptions);
 
-        Race = new(Graphics, Palette, Sound, audio, trackId, randomSource);
+        Race = new(Graphics, Layout, Palette, Sound, audio, trackId, randomSource);
 
         Screens = new(Keyboard);
-        Screens.Add(GameMode.TrackMenu, new TrackMenuScreen(Race, Keyboard, Screens, Graphics, Palette));
-        Screens.Add(GameMode.TrackPreview, new TrackPreviewScreen(Race, Keyboard, Screens, Graphics, Palette));
+        Screens.Add(GameMode.TrackMenu, new TrackMenuScreen(Race, Keyboard, Screens, Graphics, Layout, Palette));
+        Screens.Add(GameMode.TrackPreview, new TrackPreviewScreen(Race, Keyboard, Screens, Graphics, Layout, Palette));
         Screens.Add(GameMode.GameInProgress, new RaceScreen(Race, Keyboard, Screens));
         Screens.Add(GameMode.GameOver, new GameOverScreen(Race, Keyboard, Sound, Screens));
         Screens.Set(GameMode.TrackMenu);
@@ -120,6 +121,8 @@ public sealed class StuntCarRacerMain : IGame, IGameApp
     internal ISound Sound { get; }
 
     internal IGraphics Graphics { get; }
+
+    internal ScreenLayout Layout { get; }
 
     internal ScrPalette Palette { get; }
 

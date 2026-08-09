@@ -1,4 +1,4 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
+﻿// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
@@ -21,6 +21,7 @@ internal sealed class Race
     private const int DefaultFrameGap = 4;
 
     private readonly IGraphics _graphics;
+    private readonly ScreenLayout _screen;
     private readonly ScrPalette _palette;
     private readonly ISound _sound;
     private readonly AudioController _audio;
@@ -35,14 +36,22 @@ internal sealed class Race
     private OpponentRenderer _opponentRenderer;
     private int _frameCount;
 
-    internal Race(IGraphics graphics, ScrPalette palette, ISound sound, AudioController audio, TrackId trackId, IRandomSource randomSource)
+    internal Race(
+        IGraphics graphics,
+        ScreenLayout screen,
+        ScrPalette palette,
+        ISound sound,
+        AudioController audio,
+        TrackId trackId,
+        IRandomSource randomSource)
     {
         _graphics = graphics;
+        _screen = screen;
         _palette = palette;
         _sound = sound;
         _audio = audio;
-        _backdrop = new(graphics, palette);
-        _hud = new(graphics);
+        _backdrop = new(graphics, screen, palette);
+        _hud = new(graphics, screen);
         _carMesh = new(palette);
         _roadTextures = new(palette);
         _randomSource = randomSource;
@@ -110,7 +119,7 @@ internal sealed class Race
         Car = new(Track, _randomSource);
         Opponent = new(Track, Car, _randomSource);
         Bridge = new(Track);
-        _renderer = new(Track, _graphics, _palette, _roadTextures);
+        _renderer = new(Track, _graphics, _screen, _palette, _roadTextures);
         _opponentRenderer = new(Opponent, _carMesh, _palette);
     }
 
@@ -213,7 +222,7 @@ internal sealed class Race
     internal void DrawHud(bool gameOver)
     {
         FastColor white = _palette.Colour(Track.ScrBaseColour + 15);
-        float height = _graphics.ScreenHeight;
+        float height = _screen.ScreenHeight;
 
         _hud.Draw(new(
             Car.LeftWheelFrame,

@@ -81,6 +81,8 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
             assetLocator,
             logger);
 
+        Layout = new(screenWidth, screenHeight);
+
         SoftwareSound sound = new(assetLocator);
         _soundOutput = new SoftwareSoundOutput(sound);
         Sound = sound;
@@ -89,6 +91,8 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
     }
 
     public IGraphics Graphics { get; }
+
+    public ScreenLayout Layout { get; }
 
     public ISound Sound { get; }
 

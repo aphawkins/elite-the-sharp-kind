@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -12,17 +12,19 @@ using SharpKind.Input;
 
 namespace EliteSharpLib.Fakes;
 
-internal sealed class FakeAbstraction(IGraphics graphics) : IAbstraction
+internal sealed class FakeAbstraction(IGraphics graphics, ScreenLayout layout) : IAbstraction
 {
     // 512x512, matching SDLProgram's real ScreenWidth/ScreenHeight: EliteDraw
     // derives its layout (Centre, ScannerTop, ...) from these, and a 0x0
     // fake screen produces negative ranges that blow up star generation.
     public FakeAbstraction()
-        : this(new RecordingGraphics(512, 512))
+        : this(new RecordingGraphics(512, 512), new(512, 512))
     {
     }
 
     public IGraphics Graphics { get; } = graphics;
+
+    public ScreenLayout Layout { get; } = layout;
 
     public ISound Sound { get; } = new FakeSound();
 

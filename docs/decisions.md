@@ -98,7 +98,10 @@ Consequences:
   `DrawRectangleCentre` the interface's only remaining `ScreenWidth` consumers,
   and removable once the ~30 call sites migrate to widgets. Removing them now
   was considered and deferred: it would hand-convert sixteen view files that
-  the widget migration will rewrite anyway.
+  the widget migration will rewrite anyway. (2026-08-09: the two properties
+  have since gone from `IGraphics` regardless - the Centre overloads read the
+  size from the implementation, and callers that lay out against the screen
+  ask for a `ScreenLayout`.)
 - **Left and Right now step opposite ways.** Both used to advance, because
   `Next<TEnum>()` was all the enums offered. A bound index goes either way.
 - **A fourth widget state exists.** `SelectedDisabled` is not a combination but

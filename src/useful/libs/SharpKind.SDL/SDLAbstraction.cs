@@ -40,12 +40,15 @@ public sealed class SDLAbstraction : IAbstraction, IDisposable
         _renderer.SetLogicalSize(screenWidth, screenHeight);
 
         Graphics = SDLGraphics.Create(_renderer, screenWidth, screenHeight, assetLocator, logger);
+        Layout = new(screenWidth, screenHeight);
         Sound = new SDLSound(assetLocator);
         SDLInput input = new();
         Keyboard = new SoftwareKeyboard(input);
     }
 
     public IGraphics Graphics { get; }
+
+    public ScreenLayout Layout { get; }
 
     public ISound Sound { get; }
 

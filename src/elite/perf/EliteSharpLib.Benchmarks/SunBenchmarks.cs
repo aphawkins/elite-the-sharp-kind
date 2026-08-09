@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -38,7 +38,14 @@ public class SunBenchmarks : IDisposable
         _graphics = SoftwareGraphics.Create(ScreenWidth, ScreenHeight, (_) => { }, assetLocator);
         ZBufferRenderer shipRenderer = new(_graphics);
         RNG rng = new(Random.Shared);
-        EliteDraw draw = new(gameState, _graphics, assetLocator, new SixteenBitRendition(), shipRenderer, rng);
+        EliteDraw draw = new(
+            gameState,
+            _graphics,
+            new(ScreenWidth, ScreenHeight),
+            assetLocator,
+            new SixteenBitRendition(),
+            shipRenderer,
+            rng);
         SixteenBitRendition rendition = new();
         _gradientSun = Sun(draw, rendition, rng, SunStyle.Gradient);
         _solidSun = Sun(draw, rendition, rng, SunStyle.Solid);

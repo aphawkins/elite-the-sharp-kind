@@ -1,4 +1,4 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
+﻿// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
@@ -19,7 +19,7 @@ public class HudRendererTests
     public void DrawsFrameWheelsAndEngineEveryFrame()
     {
         RecordingGraphics graphics = new(640, 480);
-        HudRenderer hud = new(graphics);
+        HudRenderer hud = new(graphics, graphics.Layout);
 
         hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, false, false, 0, 0, null));
 
@@ -32,7 +32,7 @@ public class HudRendererTests
     public void RightWheelIsMirroredAndLeftIsNot()
     {
         RecordingGraphics graphics = new(640, 480);
-        HudRenderer hud = new(graphics);
+        HudRenderer hud = new(graphics, graphics.Layout);
 
         hud.Draw(new CockpitState(2, 3, 0, 0, false, 0, 0, 0, 0, 0, 0, false, false, 0, 0, null));
 
@@ -48,10 +48,10 @@ public class HudRendererTests
     public void WheelBounceRaisesTheSpriteByTheBounceAmount()
     {
         RecordingGraphics graphics1 = new(640, 480);
-        new HudRenderer(graphics1).Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, false, false, 0, 0, null));
+        new HudRenderer(graphics1, graphics1.Layout).Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, false, false, 0, 0, null));
 
         RecordingGraphics graphics2 = new(640, 480);
-        new HudRenderer(graphics2).Draw(new CockpitState(0, 0, 20, 0, false, 0, 0, 0, 0, 0, 0, false, false, 0, 0, null));
+        new HudRenderer(graphics2, graphics2.Layout).Draw(new CockpitState(0, 0, 20, 0, false, 0, 0, 0, 0, 0, 0, false, false, 0, 0, null));
 
         float y1 = graphics1.ImageParts.First(p => IsClose(p.SourceSize.Y, 56) && p.SourceSize.X > 0).Position.Y;
         float y2 = graphics2.ImageParts.First(p => IsClose(p.SourceSize.Y, 56) && p.SourceSize.X > 0).Position.Y;
@@ -63,7 +63,7 @@ public class HudRendererTests
     public void EngineFlameAnimatesOnlyWhileBoostIsActive()
     {
         RecordingGraphics graphics = new(640, 480);
-        HudRenderer hud = new(graphics);
+        HudRenderer hud = new(graphics, graphics.Layout);
 
         hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, false, false, 0, 0, null));
         Vector2 noBoostSource = graphics.ImageParts.First(p => IsClose(p.SourceSize.Y, 35)).SourcePosition;
@@ -79,7 +79,7 @@ public class HudRendererTests
     public void NoDamageDrawsNoCrack()
     {
         RecordingGraphics graphics = new(640, 480);
-        HudRenderer hud = new(graphics);
+        HudRenderer hud = new(graphics, graphics.Layout);
 
         hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, false, false, 0, 0, null));
 
@@ -93,7 +93,7 @@ public class HudRendererTests
     public void DamageRevealsAProportionalCrackWidth(int newDamage)
     {
         RecordingGraphics graphics = new(640, 480);
-        HudRenderer hud = new(graphics);
+        HudRenderer hud = new(graphics, graphics.Layout);
 
         hud.Draw(new CockpitState(0, 0, 0, 0, false, newDamage, 0, 0, 0, 0, 0, false, false, 0, 0, null));
 
@@ -111,7 +111,7 @@ public class HudRendererTests
     public void SmashHolesDrawOneImagePartEach()
     {
         RecordingGraphics graphics = new(640, 480);
-        HudRenderer hud = new(graphics);
+        HudRenderer hud = new(graphics, graphics.Layout);
 
         hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 3, 0, 0, 0, 0, false, false, 0, 0, null));
 
@@ -131,7 +131,7 @@ public class HudRendererTests
     public void SpeedBarWidthMatchesDisplaySpeed(int displaySpeed, int expectedUnits)
     {
         RecordingGraphics graphics = new(640, 480);
-        HudRenderer hud = new(graphics);
+        HudRenderer hud = new(graphics, graphics.Layout);
 
         hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, displaySpeed, 0, 0, 0, false, false, 0, 0, null));
 
@@ -151,7 +151,7 @@ public class HudRendererTests
     public void ReadoutsShowLapBoostAndSignedDistance()
     {
         RecordingGraphics graphics = new(640, 480);
-        HudRenderer hud = new(graphics);
+        HudRenderer hud = new(graphics, graphics.Layout);
 
         hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, 0, 3, 15, -340, false, false, 0, 0, null));
 
@@ -164,7 +164,7 @@ public class HudRendererTests
     public void LapTimesShowCurrentAlwaysAndBestOnlyWhenSet()
     {
         RecordingGraphics graphics = new(640, 480);
-        HudRenderer hud = new(graphics);
+        HudRenderer hud = new(graphics, graphics.Layout);
 
         hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, false, false, 0, 130, null));
 
@@ -182,7 +182,7 @@ public class HudRendererTests
     public void DrawsWithArbitraryValuesWithoutExceptions()
     {
         RecordingGraphics graphics = new(640, 480);
-        HudRenderer hud = new(graphics);
+        HudRenderer hud = new(graphics, graphics.Layout);
 
         // wheel frame is always 0-5 in practice (CarPhysics masks the
         // rotation angle to a non-negative value); other fields can still

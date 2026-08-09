@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using SharpKind.Graphics;
 
 namespace EliteSharp.Abstractions.Views;
 
@@ -36,6 +37,7 @@ namespace EliteSharp.Abstractions.Views;
 /// fractional value would put HUD text and ship vertices on half-pixels.
 /// </param>
 public sealed record ViewLayout(float ScreenWidth, float ScreenHeight, Vector2 ScannerSize, float Scale)
+    : ScreenLayout(ScreenWidth, ScreenHeight)
 {
     // Left/Top/Right/Bottom are inclusive pixel bounds - Right and Bottom are
     // the last pixel that is still inside - while Width/Height are the extents

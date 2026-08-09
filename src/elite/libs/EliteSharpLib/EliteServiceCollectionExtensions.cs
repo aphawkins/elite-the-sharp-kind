@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -21,8 +21,6 @@ using SharpKind.Abstraction.Config;
 using SharpKind.Assets;
 using SharpKind.Audio;
 using SharpKind.Config;
-using SharpKind.Graphics;
-using SharpKind.Graphics.Rendering;
 using SharpKind.Input;
 
 namespace EliteSharpLib;
@@ -163,25 +161,6 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<Trade>(),
             sp.GetRequiredService<MissionRegistry>(),
             sp.GetRequiredService<PlanetController>()));
-    }
-
-    private static void AddEliteRendering(this IServiceCollection services)
-    {
-        services.AddSingleton<IPolygonRenderer>(sp => new ConfigPolygonRenderer(
-            sp.GetRequiredService<GameState>(),
-            sp.GetRequiredService<IGraphics>(),
-            sp.GetRequiredService<IAssetLocator>()));
-        services.AddSingleton<IEliteDraw>(sp => new EliteDraw(
-            sp.GetRequiredService<GameState>(),
-            sp.GetRequiredService<IGraphics>(),
-            sp.GetRequiredService<IAssetLocator>(),
-            sp.GetRequiredService<IRendition>(),
-            sp.GetRequiredService<IPolygonRenderer>(),
-            sp.GetRequiredService<RNG>()));
-        services.AddSingleton<IShipFactory>(sp => ShipFactory.Create(
-            sp.GetRequiredService<IAssetLocator>(),
-            sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<RNG>()));
     }
 
     private static void AddEliteSimulation(this IServiceCollection services)
