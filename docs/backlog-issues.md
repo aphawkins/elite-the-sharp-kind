@@ -75,10 +75,19 @@ re-covered.
       ([ShipFactory.cs:80-111](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs))
       — Cougar, Constrictor and the Lone variants are mission-specific ships,
       deliberately excluded from the parade; confirmed intentional, not a bug.
-- [ ] [Assets] Selecting the `EightBit` tier in SCR throws at startup — SCR's
-      manifest lists `[ "SixteenBit" ]` only. Closing it is an asset-authoring
-      job, not a code fix; see the SCR 8-bit asset set item under Won't in
-      [backlog-roadmap.md](backlog-roadmap.md) for what it would take.
+- [ ] [Assets] Selecting an 8-bit rendition in SCR does nothing — **not a
+      throw, and the reason it once was has gone.** Re-checked 2026-08-09:
+      SCR has one asset set rather than a rendition per machine, and
+      `AssetLocator.Create(engine.Rendition)` reads it from beside the
+      executable whatever the name says, using that name only to label the
+      set in messages. The `Tiers` list this entry relied on was removed
+      with the tier rework (see [asset-structure.md](asset-structure.md)),
+      so nothing validates the name and nothing fails. What is left is
+      cosmetic — the setting reads back a rendition SCR is not drawing as.
+      Authoring a real 8-bit set is the item under Won't in
+      [backlog-roadmap.md](backlog-roadmap.md); short of that, the honest
+      fix is for SCR to say the value is ignored rather than appear to
+      accept it.
 - [ ] [EliteSharpLib] Equipment tech-level gating for E.C.M., Fuel Scoops,
       Escape Pod, Energy Bomb, Energy Unit, Docking Computer and Galactic
       Hyperdrive — **not a bug.** A 2026-08-04 re-derivation of the

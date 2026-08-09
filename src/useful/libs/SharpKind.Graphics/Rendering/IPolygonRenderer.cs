@@ -15,6 +15,10 @@ public interface IPolygonRenderer
     // order polygons rather than pixels.
     public void Submit(Vector2[] points, float[] depths, FastColor color, float z);
 
+    // As Submit, carrying a quantiser the fill has to ask per pixel - which
+    // only a dither does. Null when the caller already resolved the colour.
+    public void Submit(Vector2[] points, float[] depths, FastColor color, float z, IColourQuantiser? dither);
+
     public void StartFrame();
 
     public void EndFrame();

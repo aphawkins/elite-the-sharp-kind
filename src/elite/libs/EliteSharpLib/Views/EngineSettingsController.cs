@@ -60,13 +60,13 @@ internal sealed class EngineSettingsController : SettingsListController
         return
         [
             new SavedSetting(
-                new EnumSetting<GraphicStyle>(
-                    "Graphic Style:",
-                    [(GraphicStyle.Wireframe, "Wireframe"), (GraphicStyle.Solid, "Solid")],
-                    () => config.Engine.Graphics.GraphicStyle,
+                new EnumSetting<FillMode>(
+                    "Fill Mode:",
+                    [(FillMode.Wireframe, "Wireframe"), (FillMode.Solid, "Solid")],
+                    () => config.Engine.Graphics.FillMode,
                     value =>
                     {
-                        config.Engine.Graphics.GraphicStyle = value;
+                        config.Engine.Graphics.FillMode = value;
 
                         // The planet and sun styles only apply in a solid
                         // world, so both have to be rebuilt when that flips
@@ -81,6 +81,25 @@ internal sealed class EngineSettingsController : SettingsListController
                     [(DepthSort.Painter, "Painter"), (DepthSort.ZBuffer, "ZBuffer")],
                     () => config.Engine.Graphics.DepthSort,
                     value => config.Engine.Graphics.DepthSort = value),
+                Save),
+
+            // Both shown whether or not the rendition in use shades - the same
+            // way Depth Sort is shown in a wireframe world. A setting that
+            // reads back what it was set to is honest; hiding the row would
+            // leave the commander wondering where it went.
+            new SavedSetting(
+                new EnumSetting<ShadingModelKind>(
+                    "Shading:",
+                    [(ShadingModelKind.Unlit, "Unlit"), (ShadingModelKind.Lambert, "Lambert")],
+                    () => config.Engine.Graphics.Shading,
+                    value => config.Engine.Graphics.Shading = value),
+                Save),
+            new SavedSetting(
+                new EnumSetting<Quantisation>(
+                    "Quantisation:",
+                    [(Quantisation.Nearest, "Nearest"), (Quantisation.Ordered, "Ordered")],
+                    () => config.Engine.Graphics.Quantisation,
+                    value => config.Engine.Graphics.Quantisation = value),
                 Save),
             new SavedSetting(
                 new ToggleSetting(

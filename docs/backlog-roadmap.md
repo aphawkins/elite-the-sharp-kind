@@ -39,21 +39,6 @@ that mentions a decision.
 
 ## Should
 
-### Rendition presentation architecture
-
-The controller/view split, the per-rendition split and the move of every
-renderer into a rendition plugin are all **done** (see
-[CHANGELOG.md](../CHANGELOG.md) for what landed when); the rules that came out
-of them live in [architecture-principles.md](architecture-principles.md)'s
-"Screens and renderers". What is left open:
-
-- [ ] [EliteSharpLib] `ShortRangeChartController.CrossBounds` derives both
-      renditions' cross-hair clamps from `Scale` (`18 * scale + 1` and
-      `Height - (16 * scale + 1)`), which reproduces the previous per-tier
-      constants exactly at scale 1 and 2. If a rendition ever wants clamps that
-      are not a straight multiple of the 8-bit ones, this goes back to being
-      per-rendition data on the model.
-
 ### Release engineering (from the retired release plan)
 
 (none open — see [CHANGELOG.md](../CHANGELOG.md) for completed items)
@@ -110,24 +95,13 @@ per item whether authenticity or modernity wins.
       below — sequence after that, and build on
       `SharpKind.Graphics.PerspectiveProjector`, the small first slice of the
       same idea that landed 2026-08-09 (see [CHANGELOG.md](../CHANGELOG.md)).
-- [ ] [SharpKind.Graphics] Flat (Lambert) per-face lighting: there is no
-      lighting of any kind today — a grep across both game libs and
-      `SharpKind.Graphics` finds no light vector, no ambient/diffuse/specular
-      term, no shading normals. Every polygon is a constant `FastColor` from
-      the model asset. Elite computes face normals in `ShipBase.FindFaceRoots`
-      but only to detect coplanar decals. The cheapest meaningful step is a
-      single directional light dotted against the existing per-face normal,
-      modulating the face colour — no new geometry data needed. Gate it on a
-      config setting alongside `GraphicStyle`/`DepthSort` so the flat-shaded
-      original look stays selectable, and check it against both palettes:
-      the 8-bit tier's colour budget (see
-      [asset-structure.md](asset-structure.md)) has no room for shaded ramps,
-      so this may be a 16-bit-and-above feature only.
 - [ ] [SharpKind.Graphics] Gouraud shading: strictly follow-on from flat
-      lighting, and much larger — needs per-vertex normals, which the `.obj`
-      assets don't carry and which would have to be derived by averaging
-      adjacent face normals at load. Only worth scoping once flat lighting
-      has answered the palette question above.
+      lighting (landed 2026-08-09 on both tiers), and much larger — needs
+      per-vertex normals, which the `.obj` assets don't carry and which would
+      have to be derived by averaging adjacent face normals at load. Worth
+      scoping for the 16-bit tier first: the 8-bit tier quantises a lit face
+      to the nearest of sixteen palette colours, so smoothing the term it
+      quantises buys much less there.
 - [ ] [SharpKind.Graphics] Far-plane and bounding-volume culling: no far plane
       exists (distance handling is `Universe`'s object removal and Elite's
       `VanishPoint`), and there is no per-object bounding-sphere-versus-

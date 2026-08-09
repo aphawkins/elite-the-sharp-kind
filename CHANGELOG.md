@@ -7,6 +7,91 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (flat per-face lighting on the 16-bit tier, 2026-08-09)
+
+- **`SharpKind.Graphics.Rendering.LambertShading`** is the first lighting of
+  any kind in either game: one directional light dotted against a face's own
+  normal, modulating the face's colour. The light is fixed in camera space,
+  and the Lambert term is lifted onto an ambient floor so a face turned away
+  goes dim rather than to a black silhouette.
+- **Elite's ships light for free.** `ShipBase` already rotated each face's
+  normal into camera space for the backface cull; `IsFacingCamera` now hands
+  that vector back instead of discarding it, so shading costs a dot product
+  and no extra transform. A detail line, which has no normal of its own, has
+  no direction to light and keeps its flat colour.
+- **The models' hand-painted shading is taken back out first.** They pre-date
+  lighting and fake it by giving a face a darker shade of its material - the
+  Coriolis station is eight faces of one grey, four of a lighter one, two
+  lighter again. Lighting those directly lit an already-lit model twice, and
+  the hand-picked shades read as flicker rather than form. `UnlitBase` scales
+  a face back to full brightness first, so a model's whole grey family becomes
+  one grey and comes apart again by facing. No model asset changed: face
+  colours resolve from material names through the rendition's palette, so this
+  is derived at draw time and works for any rendition.
+- **A lit model stays near the brightness its artist painted it.** The rescale
+  goes to the brightest channel the model uses anywhere plus a quarter of
+  headroom - `0xAA` for the 16-bit station, painted in greys no lighter than
+  `0x88` - rather than to a flat 255, which turned the station white. The
+  headroom buys shades where a tier quantises: stopping dead at `0x88` leaves
+  only six of the 16-bit tier's sixteen greys, and adjacent faces then round
+  to the same one about one time in six; `0xAA` gives eight and measurably
+  fewer. The peak is found once per model, beside the face roots.
+- **The pipeline's three stages are three independent choices**, as they are
+  in any rasteriser: how a primitive is filled (`FillMode`), what colour a
+  face gets (`IShadingModel` - `LambertShading` or `UnlitShading`), and how
+  that colour is reduced to what the display can show (`IColourQuantiser` -
+  `ChannelGridQuantiser` or `PaletteQuantiser`, either wrapped in
+  `OrderedDitherQuantiser`). Shading and quantisation were branches inside
+  `EliteDraw` and are now the two interfaces, so Gouraud is a second shading
+  model rather than a new flag. Only `Solid` gates the other two, the way
+  lighting is meaningless when drawing outlines; dithering and shading are
+  otherwise free of each other.
+- **A rendition decides whether it shades at all**, via `IRendition.ShadesShips`
+  - a fact about the machine being stood in for, not a setting. Both tiers
+  shade, and each quantises the result the way its hardware would: the 16-bit
+  tier to the nearest level its DAC drives, the 8-bit tier to the nearest
+  colour its palette names, because an indexed machine could show nothing
+  else. Lighting therefore cannot invent a colour the asset validator would
+  have rejected in a bitmap.
+- **The 8-bit greys are evenly spaced**, `000000` through `FFFFFF` in six
+  steps. They were `.NET` colour names whose values bunched (`DimGray` 105 and
+  `Gray` 128 nearly together, then a gap to 169), which left two of the six
+  entries unreachable when a lit face picked the nearest - the station came
+  out in three tones where the 16-bit tier had nine. `scanner.bmp` carries two
+  of those greys in its own indexed palette and was remapped to match, since
+  the tier's palette is its whole colour set.
+- **The three stages are three settings**, named for what they are:
+  `engine.graphics.fillMode` (was `graphicStyle`), `shading` (`Unlit` or
+  `Lambert`, replacing the `lighting` bool) and `quantisation` (`Nearest` or
+  `Ordered`). All three have a row on the Engine Settings screen - **Fill
+  Mode**, **Shading**, **Quantisation** - saved the moment they change, read
+  per frame so they take effect on the next one, and shown whether or not the
+  rendition in use shades, the same way Depth Sort is shown in a wireframe
+  world. `GraphicStyle` the type is now `FillMode`.
+- **Ordered (Bayer) dithering**, `OrderedDitherQuantiser`: nudge the wanted
+  colour by where the pixel falls in a 4x4 threshold matrix, then take the
+  nearest displayable colour as usual, so a colour between two of them
+  resolves to a mix of both. It decorates whichever quantiser the rendition
+  already uses rather than replacing it, since what a display can show is not
+  the commander's choice. Each quantiser reports its own `LevelGap` - exact
+  for an evenly spaced DAC, measured from the entries for a hand-picked
+  palette - and the nudge spans one gap, so a dither reaches the colour either
+  side and no further. On the 16-bit station it turns five greys into eight,
+  mixed within each face.
+- **The fill asks a dither per pixel.** `IPolygonRenderer.Submit` and the two
+  `IGraphics` polygon fills gained an overload carrying the quantiser down to
+  `DrawSpanFilledDepth`, where it is applied per pixel; a quantiser that is
+  not position-dependent still resolves once per face and nothing travels.
+  The SDL backend ignores it - it fills on the GPU and has no per-pixel hook,
+  so dithering is a Software-backend feature.
+- Verified live against the Coriolis station, the model whose hand-painted
+  greys showed the problem: it reads as one lit solid on both tiers and keeps
+  its grey cast, spanning 0x33-0x88 at 16-bit and 0x66-0xCC at 8-bit - each
+  tier topping out at its own model's lightest painted grey, which is why the
+  two differ. With the setting off the flat fill returns exactly.
+- Follow-on left open in the [backlog](docs/backlog-roadmap.md): Gouraud
+  shading.
+
 ### Changed (one shared perspective projection, 2026-08-09)
 
 - **`SharpKind.Graphics.PerspectiveProjector`** is the projection both games

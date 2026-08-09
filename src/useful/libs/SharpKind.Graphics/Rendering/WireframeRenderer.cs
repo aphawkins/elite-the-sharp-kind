@@ -30,7 +30,11 @@ public sealed class WireframeRenderer : IPolygonRenderer
         _colorWhite = PaletteReader.Read(assetLocator.PalettePath)["White"];
     }
 
+    // dither is ignored: an outline has no fill to dither.
     public void Submit(Vector2[] points, float[] depths, FastColor color, float z)
+        => Submit(points, depths, color, z, dither: null);
+
+    public void Submit(Vector2[] points, float[] depths, FastColor color, float z, IColourQuantiser? dither)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(depths);

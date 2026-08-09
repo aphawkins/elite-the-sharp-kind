@@ -167,7 +167,7 @@ internal sealed class Space
         _stars.CreateNewStars();
 
         IObject planet = PlanetFactory.Create(
-            _gameState.Config.Engine.Graphics.GraphicStyle,
+            _gameState.Config.Engine.Graphics.FillMode,
             _gameState.Config.Game.PlanetStyle,
             _draw,
             _rendition,
@@ -194,7 +194,7 @@ internal sealed class Space
         }
 
         IObject planet = PlanetFactory.Create(
-            _gameState.Config.Engine.Graphics.GraphicStyle,
+            _gameState.Config.Engine.Graphics.FillMode,
             _gameState.Config.Game.PlanetStyle,
             _draw,
             _rendition,
@@ -767,7 +767,7 @@ internal sealed class Space
         }
 
         IObject planet = PlanetFactory.Create(
-            _gameState.Config.Engine.Graphics.GraphicStyle,
+            _gameState.Config.Engine.Graphics.FillMode,
             _gameState.Config.Game.PlanetStyle,
             _draw,
             _rendition,

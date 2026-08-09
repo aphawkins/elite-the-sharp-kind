@@ -42,7 +42,7 @@ public class SettingsControllerTests
 
         controller.HandleInput();
 
-        Assert.Equal(GraphicStyle.Solid, gameState.Config.Engine.Graphics.GraphicStyle);
+        Assert.Equal(FillMode.Solid, gameState.Config.Engine.Graphics.FillMode);
     }
 
     [Fact]

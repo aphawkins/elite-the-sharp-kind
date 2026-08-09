@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using SDL;
 using SharpKind.Assets;
 using SharpKind.Graphics;
+using SharpKind.Graphics.Rendering;
 using static SDL.SDL3;
 using static SDL.SDL3_ttf;
 
@@ -389,6 +390,11 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     }
 
     public void DrawPolygonFilled(Vector2[] points, FastColor faceColor)
+        => DrawPolygonFilled(points, faceColor, dither: null);
+
+    // dither is ignored: this backend fills on the GPU and has no per-pixel
+    // hook to ask it at. Dithering is a Software-backend feature.
+    public void DrawPolygonFilled(Vector2[] points, FastColor faceColor, IColourQuantiser? dither)
     {
         if (points == null)
         {
@@ -404,6 +410,10 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     }
 
     public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, FastColor faceColor)
+        => DrawPolygonFilledDepth(points, depths, faceColor, dither: null);
+
+    // As DrawPolygonFilled: no per-pixel hook on this backend.
+    public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, FastColor faceColor, IColourQuantiser? dither)
         => FillPolygonDepth(points, depths, faceColor, writeColor: true, surfaceId: 0);
 
     public void FillDepth(Vector2[] points, float[] depths, int surfaceId)

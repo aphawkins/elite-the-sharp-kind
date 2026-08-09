@@ -26,6 +26,12 @@ public sealed class EightBitRendition : IRendition
 
     public int Scale => 1;
 
+    // Sixteen colours is no budget for shaded ramps, but the palette's six
+    // greys are one, and a lit face lands on whichever entry is nearest. Reds
+    // and blues come apart into far fewer steps than the greys do - the cost
+    // of standing in for an indexed machine, not a fault in the shading.
+    public bool ShadesShips => true;
+
     public IBaseView CreateBaseView(IViewSurface surface) => new BaseView8Bit(surface);
 
     public IMissionBriefingView CreateMissionBriefingView(IViewSurface surface)

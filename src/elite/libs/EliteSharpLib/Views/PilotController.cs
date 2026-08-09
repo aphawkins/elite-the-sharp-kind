@@ -129,7 +129,7 @@ internal sealed class PilotController : IScreenController
             laserType,
             _drawLaserFrames > 0,
             laserAim,
-            _gameState.Config.Engine.Graphics.GraphicStyle == GraphicStyle.Wireframe);
+            _gameState.Config.Engine.Graphics.FillMode == FillMode.Wireframe);
     }
 
     private void HandleFlightControls()

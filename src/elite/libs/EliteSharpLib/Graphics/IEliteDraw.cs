@@ -41,6 +41,22 @@ internal interface IEliteDraw : IViewSurface
     /// </summary>
     public ShipColours Ships { get; }
 
+    /// <summary>
+    /// One face's colour as this rendition's lighting leaves it. Returns the
+    /// colour untouched when the rendition does not shade, when the commander
+    /// turned lighting off, or when the world is drawn as outlines - so a
+    /// caller shades by calling this and never by asking whether to.
+    /// </summary>
+    /// <param name="faceColour">The model's own colour for the face.</param>
+    /// <param name="cameraNormal">The face's normal, rotated into camera space.</param>
+    /// <param name="fullyLit">
+    /// The brightest channel the model paints anywhere, which is where a face
+    /// turned into the light tops out. Keeps a lit model no brighter than the
+    /// hand-painted one it replaces.
+    /// </param>
+    /// <returns>The colour to fill the face with.</returns>
+    public FastColor ShadeFace(FastColor faceColour, Vector3 cameraNormal, byte fullyLit);
+
     public void DrawObject(IObject obj);
 
     public void DrawPolygonFilled(Vector2[] points, float[] depths, FastColor faceColor, float z);

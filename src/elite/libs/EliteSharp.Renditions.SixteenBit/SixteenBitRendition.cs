@@ -27,6 +27,11 @@ public sealed class SixteenBitRendition : IRendition
 
     public int Scale => 2;
 
+    // 4096 colours, and a palette that does not have to name them all, so a
+    // lit face can take any tone its DAC reaches rather than the nearest one
+    // an artist named.
+    public bool ShadesShips => true;
+
     public IBaseView CreateBaseView(IViewSurface surface) => new BaseView16Bit(surface);
 
     public IMissionBriefingView CreateMissionBriefingView(IViewSurface surface)

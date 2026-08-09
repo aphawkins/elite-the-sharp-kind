@@ -17,6 +17,9 @@ public sealed class PainterRenderer(IGraphics graphics) : IPolygonRenderer
 
     // depths is unused: the chain order alone decides occlusion here.
     public void Submit(Vector2[] points, float[] depths, FastColor color, float z)
+        => Submit(points, depths, color, z, dither: null);
+
+    public void Submit(Vector2[] points, float[] depths, FastColor color, float z, IColourQuantiser? dither)
     {
         ArgumentNullException.ThrowIfNull(points);
 
@@ -28,6 +31,7 @@ public sealed class PainterRenderer(IGraphics graphics) : IPolygonRenderer
         _totalPolys++;
 
         _polyChain[x].Color = color;
+        _polyChain[x].Dither = dither;
         _polyChain[x].Z = z;
         _polyChain[x].Next = -1;
         _polyChain[x].PointList = new Vector2[points.Length];
@@ -85,7 +89,7 @@ public sealed class PainterRenderer(IGraphics graphics) : IPolygonRenderer
                 continue;
             }
 
-            _graphics.DrawPolygonFilled(_polyChain[i].PointList, _polyChain[i].Color);
+            _graphics.DrawPolygonFilled(_polyChain[i].PointList, _polyChain[i].Color, _polyChain[i].Dither);
         }
     }
 }

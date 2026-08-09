@@ -31,14 +31,17 @@ internal sealed class ConfigPolygonRenderer : IPolygonRenderer
         _current = Selected;
     }
 
-    private IPolygonRenderer Selected => _gameState.Config.Engine.Graphics.GraphicStyle == GraphicStyle.Wireframe
+    private IPolygonRenderer Selected => _gameState.Config.Engine.Graphics.FillMode == FillMode.Wireframe
         ? _wireframe
         : _gameState.Config.Engine.Graphics.DepthSort == DepthSort.Painter
             ? _painter
             : _zBuffer;
 
     public void Submit(Vector2[] points, float[] depths, FastColor color, float z)
-        => _current.Submit(points, depths, color, z);
+        => Submit(points, depths, color, z, dither: null);
+
+    public void Submit(Vector2[] points, float[] depths, FastColor color, float z, IColourQuantiser? dither)
+        => _current.Submit(points, depths, color, z, dither);
 
     public void StartFrame()
     {

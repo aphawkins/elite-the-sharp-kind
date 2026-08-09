@@ -22,6 +22,9 @@ public sealed class ZBufferRenderer(IGraphics graphics) : IPolygonRenderer
     private int _totalPolys;
 
     public void Submit(Vector2[] points, float[] depths, FastColor color, float z)
+        => Submit(points, depths, color, z, dither: null);
+
+    public void Submit(Vector2[] points, float[] depths, FastColor color, float z, IColourQuantiser? dither)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(depths);
@@ -32,6 +35,7 @@ public sealed class ZBufferRenderer(IGraphics graphics) : IPolygonRenderer
         _totalPolys++;
 
         _polys[x].Color = color;
+        _polys[x].Dither = dither;
         _polys[x].PointList = new Vector2[points.Length];
         _polys[x].Depths = new float[points.Length];
 
@@ -64,7 +68,7 @@ public sealed class ZBufferRenderer(IGraphics graphics) : IPolygonRenderer
                 continue;
             }
 
-            _graphics.DrawPolygonFilledDepth(_polys[i].PointList, _polys[i].Depths, _polys[i].Color);
+            _graphics.DrawPolygonFilledDepth(_polys[i].PointList, _polys[i].Depths, _polys[i].Color, _polys[i].Dither);
         }
     }
 }

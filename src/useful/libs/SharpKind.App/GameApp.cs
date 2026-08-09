@@ -140,7 +140,7 @@ public static class GameApp
             rendition = engine.Rendition,
             windowScale = engine.WindowScale,
             fps = engine.Graphics.Fps,
-            graphicStyle = engine.Graphics.GraphicStyle.ToString(),
+            graphicStyle = engine.Graphics.FillMode.ToString(),
             depthSort = engine.Graphics.DepthSort.ToString(),
             soundEffects = engine.Sound.Effects,
             soundMusic = engine.Sound.Music,

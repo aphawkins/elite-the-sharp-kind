@@ -15,7 +15,7 @@ internal sealed class EliteConfigSettings
     public PlanetDescriptions PlanetDescriptions { get; set; } = PlanetDescriptions.TreeGrubs;
 
     // The filled planet's surface style; ignored when the engine's
-    // GraphicStyle is Wireframe, which draws every planet as one.
+    // FillMode is Wireframe, which draws every planet as one.
     public PlanetType PlanetStyle { get; set; } = PlanetType.Fractal;
 
     // As PlanetStyle, for the sun.

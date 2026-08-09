@@ -69,7 +69,7 @@ The cockpit is drawn as a set of sprites over the track view: front wheels that 
 
 Game settings are held in the `stuntcarracer.sharp` file, stored in JSON format, in the user's application data directory (`%AppData%\The Sharp Kind` on Windows, `~/.config/The Sharp Kind` on Linux/macOS) — shared with [Elite - The Sharp Kind](elite-readme.md). Logs (`logs\scr-*.log`, daily rolling, 7 kept by default) live in the same directory. If the config file is missing or invalid the game falls back to defaults. There is no in-game settings screen yet, so `stuntcarracer.sharp` must be edited by hand.
 
-The file's `engine` element holds the settings shared by every game — the backend, the tier, the window scale, the frame rate, the sound switches and the logging levels among them — and is documented in the [main readme](../README.md#configuration). Of those, `graphicStyle`, `depthSort` and `showFps` are written out but not acted on yet: Stunt Car Racer draws its track through its own pipeline.
+The file's `engine` element holds the settings shared by every game — the backend, the tier, the window scale, the frame rate, the sound switches and the logging levels among them — and is documented in the [main readme](../README.md#configuration). Of those, `fillMode`, `depthSort`, `shading`, `quantisation` and `showFps` are written out but not acted on yet: Stunt Car Racer draws its track through its own pipeline.
 
 Stunt Car Racer's own settings would sit alongside under `game`, but it has none of its own yet, so the element is written out empty:
 

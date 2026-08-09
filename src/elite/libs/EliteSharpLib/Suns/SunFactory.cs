@@ -20,7 +20,7 @@ internal static class SunFactory
         ArgumentNullException.ThrowIfNull(gameState);
         ArgumentNullException.ThrowIfNull(rendition);
 
-        SunStyle sunStyle = gameState.Config.Engine.Graphics.GraphicStyle == GraphicStyle.Wireframe
+        SunStyle sunStyle = gameState.Config.Engine.Graphics.FillMode == FillMode.Wireframe
             ? SunStyle.Wireframe
             : gameState.Config.Game.SunStyle switch
             {

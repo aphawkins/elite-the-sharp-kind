@@ -18,4 +18,8 @@ internal struct PolygonData
     internal float[] Depths { get; set; }
 
     internal float Z { get; set; }
+
+    // Non-null only for a quantiser that has to be asked per pixel, i.e. a
+    // dither. The plain ones resolve the whole face before it gets here.
+    internal IColourQuantiser? Dither { get; set; }
 }

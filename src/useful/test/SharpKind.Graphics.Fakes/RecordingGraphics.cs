@@ -1,6 +1,7 @@
 ﻿// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
 
 using System.Numerics;
+using SharpKind.Graphics.Rendering;
 
 namespace SharpKind.Graphics.Fakes;
 
@@ -82,9 +83,15 @@ public sealed class RecordingGraphics(float screenWidth = 0, float screenHeight 
     }
 
     public void DrawPolygonFilled(Vector2[] points, FastColor faceColor)
+        => DrawPolygonFilled(points, faceColor, dither: null);
+
+    public void DrawPolygonFilled(Vector2[] points, FastColor faceColor, IColourQuantiser? dither)
         => FilledPolygons.Add((points, faceColor));
 
     public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, FastColor faceColor)
+        => DrawPolygonFilledDepth(points, depths, faceColor, dither: null);
+
+    public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, FastColor faceColor, IColourQuantiser? dither)
         => FilledPolygons.Add((points, faceColor));
 
     public void FillDepth(Vector2[] points, float[] depths, int surfaceId)

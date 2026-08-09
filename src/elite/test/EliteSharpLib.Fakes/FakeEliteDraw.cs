@@ -42,6 +42,9 @@ internal class FakeEliteDraw : IEliteDraw
     public void DrawPolygonFilled(Vector2[] points, float[] depths, FastColor faceColor, float z)
         => DrawnPolygons.Add((points, depths, faceColor, z));
 
+    // Unlit, so a test asserting on a drawn face's colour sees the model's own.
+    public FastColor ShadeFace(FastColor faceColour, Vector3 cameraNormal, byte fullyLit) => faceColour;
+
     public void RenderEnd()
     {
     }

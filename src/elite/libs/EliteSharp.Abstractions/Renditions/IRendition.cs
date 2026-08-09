@@ -56,6 +56,19 @@ public interface IRendition
     public int Scale { get; }
 
     /// <summary>
+    /// Gets a value indicating whether this rendition's ships are lit by a
+    /// directional light rather than filled with their flat model colour.
+    /// <para>
+    /// It is the rendition's answer and not a setting, because it is a fact
+    /// about the machine being stood in for: shading a face means colours
+    /// between the model's own, and a rendition whose palette is its whole
+    /// colour set has none to give. Renditions do not shade unless they say
+    /// so, which is why the default is <see langword="false"/>.
+    /// </para>
+    /// </summary>
+    public bool ShadesShips => false;
+
+    /// <summary>
     /// Builds the chrome every screen of this tier shares - the border, the
     /// header, the countdown, the word wrap.
     /// </summary>

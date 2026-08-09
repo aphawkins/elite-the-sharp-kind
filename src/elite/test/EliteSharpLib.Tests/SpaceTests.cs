@@ -448,7 +448,7 @@ public class SpaceTests
             out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
         FakeShip oldPlanet = new(draw, rng) { Type = ShipType.Planet };
         universe.AddNewShip(oldPlanet, new(0, 0, 65536, 0), Matrix4x4.Identity, 0, 0);
-        gameState.Config.Engine.Graphics.GraphicStyle = GraphicStyle.Wireframe;
+        gameState.Config.Engine.Graphics.FillMode = FillMode.Wireframe;
 
         space.RefreshPlanetStyle();
 
@@ -499,7 +499,7 @@ public class SpaceTests
             out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
         FakeShip oldSun = new(draw, rng) { Type = ShipType.Sun };
         universe.AddNewShip(oldSun, new(0, 0, 64000, 0), Matrix4x4.Identity, 0, 0);
-        gameState.Config.Engine.Graphics.GraphicStyle = GraphicStyle.Wireframe;
+        gameState.Config.Engine.Graphics.FillMode = FillMode.Wireframe;
         gameState.Config.Game.SunStyle = SunType.Gradient;
 
         space.RefreshSunStyle();
@@ -514,7 +514,7 @@ public class SpaceTests
             out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
         FakeShip oldPlanet = new(draw, rng) { Type = ShipType.Planet };
         universe.AddNewShip(oldPlanet, new(0, 0, 65536, 0), Matrix4x4.Identity, 0, 0);
-        gameState.Config.Engine.Graphics.GraphicStyle = GraphicStyle.Wireframe;
+        gameState.Config.Engine.Graphics.FillMode = FillMode.Wireframe;
         gameState.Config.Game.PlanetStyle = PlanetType.Fractal;
 
         space.RefreshPlanetStyle();

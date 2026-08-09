@@ -119,8 +119,8 @@ The file's `engine` element holds the settings shared by every game — the back
 ``` json
 {
     "game": {
-        "planetStyle": "Fractal",              // The render style of the filled planets (ignored when the engine's graphicStyle is Wireframe).  Solid or Striped or Fractal
-        "sunStyle": "Gradient",                // The render style of the filled sun (ignored when the engine's graphicStyle is Wireframe).  Solid or Gradient
+        "planetStyle": "Fractal",              // The render style of the filled planets (ignored when the engine's fillMode is Wireframe).  Solid or Striped or Fractal
+        "sunStyle": "Gradient",                // The render style of the filled sun (ignored when the engine's fillMode is Wireframe).  Solid or Gradient
         "planetDescriptions": "TreeGrubs",     // Description style used for the planets.  TreeGrubs (BBC) or HoopyCasinos (MSX)
         "instantDock": false                   // When the docking computer is engaged, instantly dock (true) or let the auto pilot fly in (false)
     }

@@ -9,6 +9,7 @@ using EliteSharpLib.Trader;
 using SharpKind;
 using SharpKind.Assets.Models;
 using SharpKind.Graphics;
+using SharpKind.Graphics.Rendering;
 using SharpKind.Maths;
 
 namespace EliteSharpLib.Ships;
@@ -47,6 +48,11 @@ internal class ShipBase : IShip
     private readonly RNG _rng;
     private int[]? _faceRoot;
     private Vector3[]? _faceNormal;
+
+    // The brightness a fully-lit face of this model takes. Found with the face
+    // roots, on the same first draw, and constant thereafter - the model's
+    // colours do not change.
+    private byte _fullyLit;
 
     // Reused across frames so drawing a ship doesn't allocate; grown to the
     // model's point count on first use.
@@ -193,6 +199,7 @@ internal class ShipBase : IShip
         if (_faceRoot == null)
         {
             (_faceRoot, _faceNormal) = FindFaceRoots();
+            _fullyLit = LambertShading.FullyLit(Model.Faces.Select(f => f.Color));
         }
 
         int maxPoints = 0;
@@ -206,13 +213,14 @@ internal class ShipBase : IShip
 
         for (int i = 0; i < Model.Faces.Count; i++)
         {
-            if (IsFacingCamera(i))
+            if (IsFacingCamera(i, out Vector3 cameraNormal))
             {
                 float bias = _faceRoot[i] == i ? 1f : DecalDepthBias;
                 Vector2[]? poly_list = BuildFacePolygon(Model.Faces[i], pointList, face, clipped, bias, out float[] depths);
                 if (poly_list != null)
                 {
-                    _draw.DrawPolygonFilled(poly_list, depths, Model.Faces[i].Color, FaceMeanZ(_faceRoot[i], pointList));
+                    FastColor color = _draw.ShadeFace(Model.Faces[i].Color, cameraNormal, _fullyLit);
+                    _draw.DrawPolygonFilled(poly_list, depths, color, FaceMeanZ(_faceRoot[i], pointList));
                 }
             }
         }
@@ -223,24 +231,40 @@ internal class ShipBase : IShip
     // outline keeps the decision off the near-plane depth clamp, which
     // produces meaningless X/Y for a face straddling the camera plane -
     // and no later clip can undo a cull already taken.
-    private bool IsFacingCamera(int faceIndex)
+    // cameraNormal is the rotated normal the cull already had to compute, handed
+    // back so lighting need not repeat the transform. It is Vector3.Zero for a
+    // face with no normal of its own - a detail line, culled below against the
+    // faces it lies on - which has no single direction to light and so takes
+    // the model's flat colour.
+    private bool IsFacingCamera(int faceIndex, out Vector3 cameraNormal)
     {
         Face face = Model.Faces[faceIndex];
         Vector3 surfacePoint = _cameraList[face.PointIndices[0]];
         Vector3 normal = _faceNormal![faceIndex];
 
-        return normal != Vector3.Zero
-            ? FacesCamera(normal, surfacePoint)
-            : AnySharedVertexNormalFacesCamera(face, surfacePoint);
+        if (normal == Vector3.Zero)
+        {
+            cameraNormal = Vector3.Zero;
+            return AnySharedVertexNormalFacesCamera(face, surfacePoint);
+        }
+
+        cameraNormal = RotateToCamera(normal);
+        return Vector3.Dot(cameraNormal, surfacePoint) <= 0;
+    }
+
+    // A model-space normal in view. Lighting wants the rotated vector itself
+    // and not just which side of the camera it falls, so the rotation is its
+    // own step.
+    private Vector3 RotateToCamera(Vector3 normal)
+    {
+        Vector4 rotated = Vector4.Transform(new Vector4(normal, 0), Rotmat);
+        return new(rotated.X, rotated.Y, rotated.Z);
     }
 
     // True when a model-space normal, rotated into view, turns towards the
     // camera at the given camera-space point on the surface.
     private bool FacesCamera(Vector3 normal, Vector3 surfacePoint)
-    {
-        Vector4 rotated = Vector4.Transform(new Vector4(normal, 0), Rotmat);
-        return ((rotated.X * surfacePoint.X) + (rotated.Y * surfacePoint.Y) + (rotated.Z * surfacePoint.Z)) <= 0;
-    }
+        => Vector3.Dot(RotateToCamera(normal), surfacePoint) <= 0;
 
     // A detail line lying on no other face's plane has no normal of its own,
     // so it cannot be culled the way a face is. The model still records, per

@@ -22,7 +22,7 @@ public class PolygonRendererCapacityTests
         SubmitFrame(renderer);
 
         graphics.Verify(
-            x => x.DrawPolygonFilled(It.IsAny<Vector2[]>(), It.IsAny<FastColor>()),
+            x => x.DrawPolygonFilled(It.IsAny<Vector2[]>(), It.IsAny<FastColor>(), It.IsAny<IColourQuantiser?>()),
             Times.Exactly(PolyCount));
     }
 
@@ -35,7 +35,7 @@ public class PolygonRendererCapacityTests
         SubmitFrame(renderer);
 
         graphics.Verify(
-            x => x.DrawPolygonFilledDepth(It.IsAny<Vector2[]>(), It.IsAny<float[]>(), It.IsAny<FastColor>()),
+            x => x.DrawPolygonFilledDepth(It.IsAny<Vector2[]>(), It.IsAny<float[]>(), It.IsAny<FastColor>(), It.IsAny<IColourQuantiser?>()),
             Times.Exactly(PolyCount));
     }
 
@@ -52,7 +52,7 @@ public class PolygonRendererCapacityTests
         SubmitFrame(renderer);
 
         graphics.Verify(
-            x => x.DrawPolygonFilledDepth(It.IsAny<Vector2[]>(), It.IsAny<float[]>(), It.IsAny<FastColor>()),
+            x => x.DrawPolygonFilledDepth(It.IsAny<Vector2[]>(), It.IsAny<float[]>(), It.IsAny<FastColor>(), It.IsAny<IColourQuantiser?>()),
             Times.Exactly(PolyCount));
     }
 

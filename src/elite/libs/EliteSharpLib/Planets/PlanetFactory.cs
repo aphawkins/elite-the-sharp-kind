@@ -21,7 +21,7 @@ internal static class PlanetFactory
     // in the settings - and what that style looks like is the rendition's.
     // This no longer knows which renditions exist.
     internal static IObject Create(
-        GraphicStyle style,
+        FillMode style,
         PlanetType type,
         IEliteDraw draw,
         IRendition rendition,
@@ -30,7 +30,7 @@ internal static class PlanetFactory
     {
         ArgumentNullException.ThrowIfNull(rendition);
 
-        PlanetStyle planetStyle = style == GraphicStyle.Wireframe
+        PlanetStyle planetStyle = style == FillMode.Wireframe
             ? PlanetStyle.Wireframe
             : type switch
             {

@@ -27,15 +27,61 @@ public class EngineSettingsControllerTests
             out GameState gameState, out FakeKeyboard keyboard, out _, out ConfigFile<EliteConfig> configFile);
         keyboard.KeyDown(ConsoleKey.Enter, default);
 
-        // Act: item 0 is Graphic Style.
+        // Act: item 0 is Fill Mode.
         controller.HandleInput();
 
         // Assert
-        Assert.Equal(GraphicStyle.Wireframe, gameState.Config.Engine.Graphics.GraphicStyle);
-        Assert.Equal(GraphicStyle.Wireframe, configFile.ReadConfig().Engine.Graphics.GraphicStyle);
+        Assert.Equal(FillMode.Wireframe, gameState.Config.Engine.Graphics.FillMode);
+        Assert.Equal(FillMode.Wireframe, configFile.ReadConfig().Engine.Graphics.FillMode);
     }
 
-    // Row 2 is Music: the config and the running AudioController have to move
+    // Row 2 is Shading, which defaults Unlit - the flat original is what ships
+    // - so stepping it once selects Lambert and saves that.
+    [Fact]
+    public void SelectingLambertShadingSavesIt()
+    {
+        EngineSettingsController controller = CreateController(
+            out GameState gameState, out FakeKeyboard keyboard, out _, out ConfigFile<EliteConfig> configFile);
+        controller.Reset();
+
+        for (int i = 0; i < 2; i++)
+        {
+            keyboard.KeyDown(ConsoleKey.DownArrow, default);
+            controller.HandleInput();
+        }
+
+        keyboard.KeyUp(ConsoleKey.DownArrow, default);
+        keyboard.KeyDown(ConsoleKey.Enter, default);
+        controller.HandleInput();
+
+        Assert.Equal(ShadingModelKind.Lambert, gameState.Config.Engine.Graphics.Shading);
+        Assert.Equal(ShadingModelKind.Lambert, configFile.ReadConfig().Engine.Graphics.Shading);
+    }
+
+    // Row 3 is Quantisation, added alongside Shading as the pipeline's output
+    // stage - the two are separate choices, so both get their own row.
+    [Fact]
+    public void SelectingOrderedQuantisationSavesIt()
+    {
+        EngineSettingsController controller = CreateController(
+            out GameState gameState, out FakeKeyboard keyboard, out _, out ConfigFile<EliteConfig> configFile);
+        controller.Reset();
+
+        for (int i = 0; i < 3; i++)
+        {
+            keyboard.KeyDown(ConsoleKey.DownArrow, default);
+            controller.HandleInput();
+        }
+
+        keyboard.KeyUp(ConsoleKey.DownArrow, default);
+        keyboard.KeyDown(ConsoleKey.Enter, default);
+        controller.HandleInput();
+
+        Assert.Equal(Quantisation.Ordered, gameState.Config.Engine.Graphics.Quantisation);
+        Assert.Equal(Quantisation.Ordered, configFile.ReadConfig().Engine.Graphics.Quantisation);
+    }
+
+    // Row 4 is Music: the config and the running AudioController have to move
     // together, or the setting only takes effect after a restart.
     [Fact]
     public void TurningMusicOffAppliesToTheRunningAudioController()
@@ -44,8 +90,8 @@ public class EngineSettingsControllerTests
             out GameState gameState, out FakeKeyboard keyboard, out AudioController audio, out _);
         controller.Reset();
 
-        // Down twice to row 2, then toggle.
-        for (int i = 0; i < 2; i++)
+        // Down four times to the Music row, then toggle.
+        for (int i = 0; i < 4; i++)
         {
             keyboard.KeyDown(ConsoleKey.DownArrow, default);
             controller.HandleInput();
@@ -78,7 +124,7 @@ public class EngineSettingsControllerTests
         controller.Reset();
 
         // Navigate to the last row - the Back row.
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < 8; i++)
         {
             keyboard.KeyDown(ConsoleKey.DownArrow, default);
             controller.HandleInput();
@@ -89,7 +135,7 @@ public class EngineSettingsControllerTests
         controller.HandleInput();
 
         Assert.Equal(Screen.Options, gameState.CurrentScreen);
-        Assert.Equal(GraphicStyle.Solid, gameState.Config.Engine.Graphics.GraphicStyle);
+        Assert.Equal(FillMode.Solid, gameState.Config.Engine.Graphics.FillMode);
     }
 
     private static EngineSettingsController CreateController(

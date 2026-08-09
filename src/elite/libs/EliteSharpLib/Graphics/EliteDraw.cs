@@ -10,6 +10,7 @@ using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Views;
 using SharpKind;
+using SharpKind.Abstraction.Config;
 using SharpKind.Assets;
 using SharpKind.Assets.Models;
 using SharpKind.Assets.Palettes;
@@ -34,6 +35,15 @@ internal sealed class EliteDraw : IEliteDraw
     private readonly Vector4[] _pointList = new Vector4[MaxModelPoints];
     private readonly IPolygonRenderer _shipRenderer;
     private readonly RNG _rng;
+    private readonly bool _shadesShips;
+
+    // The pipeline's shading and output stages. Which of each is in use comes
+    // from the live config, so the Settings view takes effect on the next
+    // frame; the instances themselves never change.
+    private readonly IShadingModel _unlit = new UnlitShading();
+    private readonly IShadingModel _lambert = new LambertShading();
+    private readonly IColourQuantiser _nearest;
+    private readonly IColourQuantiser _dithered;
 
     internal EliteDraw(
         GameState gameState,
@@ -57,6 +67,16 @@ internal sealed class EliteDraw : IEliteDraw
             graphics.ImageSize(nameof(ImageType.Scanner)),
             rendition.Scale);
         Palette = PaletteReader.Read(assetLocator.PalettePath);
+        _shadesShips = rendition.ShadesShips;
+
+        // Shading invents colours the assets never carried, so it answers to
+        // the same limits the asset validator holds the assets to: an indexed
+        // rendition can show only what its palette names, a direct-colour one
+        // anything its DAC reaches.
+        _nearest = assetLocator.Colours.PaletteNamesEveryColour
+            ? new PaletteQuantiser(Palette.Values)
+            : new ChannelGridQuantiser(assetLocator.Colours.ChannelBits);
+        _dithered = new OrderedDitherQuantiser(_nearest);
 
         // After Palette: the rendition looks its colours up through this.
         Ships = rendition.CreateShipColours(this);
@@ -80,6 +100,32 @@ internal sealed class EliteDraw : IEliteDraw
 
     public ShipColours Ships { get; }
 
+    // Read from the live config rather than cached, so the Settings view's
+    // rows show on the next frame - the same reason ConfigPolygonRenderer
+    // picks its strategy per frame. A wireframe world has no face to shade,
+    // and a rendition with no colours to spare for shading stays unlit
+    // whatever the commander asked for.
+    private IShadingModel Shading
+    {
+        get
+        {
+            GraphicsConfigSettings graphics = _gameState.Config.Engine.Graphics;
+
+            return _shadesShips
+                && graphics.FillMode == FillMode.Solid
+                && graphics.Shading == ShadingModelKind.Lambert
+                    ? _lambert
+                    : _unlit;
+        }
+    }
+
+    // Dithering an unshaded world would only dither the model's own colours,
+    // which are already displayable, so it follows the shading model.
+    private IColourQuantiser Quantiser
+        => _gameState.Config.Engine.Graphics.Quantisation == Quantisation.Ordered && Shading != _unlit
+            ? _dithered
+            : _nearest;
+
     // depths is the camera-space depth at each point, which the z-buffered
     // strategy interpolates per pixel; z is one whole-face key, which the
     // painter's strategy sorts the face by. Decal faces (cockpit windows
@@ -87,7 +133,29 @@ internal sealed class EliteDraw : IEliteDraw
     // their base face's z key to tie in the painter's order, and a small
     // near bias in depths to win outright under the per-pixel test.
     public void DrawPolygonFilled(Vector2[] points, float[] depths, FastColor faceColor, float z)
-        => _shipRenderer.Submit(points, depths, faceColor, z);
+    {
+        // A dither travels with the polygon because only the fill can apply
+        // it, one answer per pixel; anything else already resolved in
+        // ShadeFace and nothing needs to go down.
+        IColourQuantiser quantiser = Quantiser;
+
+        _shipRenderer.Submit(points, depths, faceColor, z, quantiser.IsPositionDependent ? quantiser : null);
+    }
+
+    // Read from the live config rather than cached, so the Settings view's
+    // toggle shows on the next frame - the same reason ConfigPolygonRenderer
+    // picks its strategy per frame. Wireframe has no faces to light.
+    public FastColor ShadeFace(FastColor faceColour, Vector3 cameraNormal, byte fullyLit)
+    {
+        FastColor shaded = Shading.Shade(faceColour, cameraNormal, fullyLit);
+
+        // A dither has to be asked per pixel, so it is left to the fill and
+        // the face colour travels unquantised; anything else resolves the
+        // whole face once, here.
+        IColourQuantiser quantiser = Quantiser;
+
+        return quantiser.IsPositionDependent ? shaded : quantiser.Quantise(shaded, 0, 0);
+    }
 
     public void SetFullScreenClipRegion() => Graphics.SetClipRegion(new(0, 0), Layout.ScreenWidth, Layout.ScreenHeight);
 

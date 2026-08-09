@@ -68,7 +68,7 @@ cycling assigns straight back through the same interface.
 `ComboBox` owns `Items` and `SelectedIndex` and publishes `SelectedIndexChanged`,
 and that works because a form has exactly one of each control. Here both
 renditions are loadable, so a widget-owned index would be one answer per
-rendition to "what is Graphic Style set to", with the config file still needing
+rendition to "what is Fill Mode set to", with the config file still needing
 a third. Events were considered and dropped for the same reason: an event
 synchronises two copies, and the better move was to not have two.
 

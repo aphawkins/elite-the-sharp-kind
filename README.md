@@ -60,12 +60,14 @@ Every file has the same three top-level elements: `version`, the schema version;
     "version": 1,                              // Schema version, so a later change to the file's shape can be migrated rather than reset.  Written automatically
     "engine": {
         "backend": "Software",                 // Which backend runs the game.  Software (CPU rasteriser blitted through SDL) or Hardware (SDL-accelerated).  It picks the mixer as well as the rasteriser, so it isn't graphics-only
-        "rendition": "SixteenBit",             // Which rendition the game draws itself as.  Any installed one - EightBit and SixteenBit ship with it.  A rendition brings its own artwork, fonts, palette and models, and its own resolution.  See docs/asset-structure.md
+        "rendition": "16-bit",                 // Which rendition the game draws itself as.  Any installed one - "8-bit" and "16-bit" ship with it, named as they name themselves.  A rendition brings its own artwork, fonts, palette and models, and its own resolution.  See below, and docs/asset-structure.md
         "windowScale": 1,                      // How many window pixels each rendered pixel occupies, 1 to 4.  Independent of the rendition: the game still renders at the rendition's own resolution and is magnified at presentation, so scale 2 is a window twice the size with the same pixels doubled, not more detail
         "graphics": {
             "fps": 60,                         // Maximum render frame rate, up to 1000.  The game speed is independent of it
-            "graphicStyle": "Solid",           // How the 3D world is drawn - every object together, so it can't end up half one and half the other.  Wireframe or Solid
-            "depthSort": "ZBuffer",            // Depth-sort strategy for filled rendering (ignored when graphicStyle is Wireframe).  Painter or ZBuffer
+            "fillMode": "Solid",               // How a primitive becomes pixels - every object together, so it can't end up half one and half the other.  Wireframe or Solid
+            "depthSort": "ZBuffer",            // Depth-sort strategy for filled rendering (ignored when fillMode is Wireframe).  Painter or ZBuffer
+            "shading": "Unlit",                // What colour a face takes (ignored when fillMode is Wireframe, or in a rendition that does not shade).  Unlit or Lambert
+            "quantisation": "Nearest",         // How a shaded colour is reduced to one the rendition can show.  Nearest, or Ordered to dither between the two either side of it
             "showFps": false                   // Overlay the measured frame rate.  A diagnostic, so off by default
         },
         "sound": {
@@ -88,7 +90,19 @@ A value that is out of range or unrecognised costs you that setting and nothing 
 
 The exception is a value the JSON binder cannot parse at all — a misspelt enum name, or a string where a number belongs. That fails the whole file, so every setting returns to its default; the `.bad` copy is what makes it recoverable.
 
-Note that Stunt Car Racer doesn't read `graphicStyle`, `depthSort` or `showFps` yet — they are written out with the rest of the engine settings, but only Elite acts on them.
+Note that Stunt Car Racer doesn't read `fillMode`, `depthSort`, `shading`, `quantisation` or `showFps` yet — they are written out with the rest of the engine settings, but only Elite acts on them.
+
+### What a rendition limits
+
+A rendition stands in for a class of machine, so it carries that machine's limits rather than just its artwork. They are deliberate, and they are checked: an asset set that breaks one fails at load with a `SharpKindException` naming the rendition and the assets at fault, rather than being quietly tolerated. The limits a rendition declares for itself live in the `Colours` element of its `AssetManifest.json`.
+
+| | `8-bit` | `16-bit` |
+| --- | --- | --- |
+| Render resolution (Elite) | 320 x 256 | 640 x 512 |
+| Max colours | 16 | 4096 |
+| Palette is the complete colour set | yes — an asset may only use colours the palette names | no — the palette only names the colours the geometry draws with |
+| Font | 8 x 8 fixed grid | proportional, 32 x 32 cells |
+| Shading | yes, to the nearest colour the palette names | yes, to the nearest level the DAC drives |
 
 ### Environment variables
 

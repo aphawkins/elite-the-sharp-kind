@@ -1,6 +1,7 @@
 // 'SharpKind Libraries' - Andy Hawkins 2023-2026.
 
 using System.Numerics;
+using SharpKind.Graphics.Rendering;
 
 namespace SharpKind.Graphics;
 
@@ -66,12 +67,24 @@ public interface IGraphics
     public void DrawPolygonFilled(Vector2[] points, FastColor faceColor);
 
     /// <summary>
+    /// As DrawPolygonFilled, with a quantiser the fill asks per pixel - which
+    /// only a dither needs. Null when the caller already resolved the colour.
+    /// </summary>
+    public void DrawPolygonFilled(Vector2[] points, FastColor faceColor, IColourQuantiser? dither);
+
+    /// <summary>
     /// Fill a polygon with per-pixel depth testing. Depths pair with points
     /// and hold each point's positive camera-space distance (larger is
     /// further away); a pixel only draws when it is at least as near as
     /// what is already drawn there since the last ClearDepth.
     /// </summary>
     public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, FastColor faceColor);
+
+    /// <summary>
+    /// As DrawPolygonFilledDepth, with a per-pixel quantiser - see the
+    /// DrawPolygonFilled overload.
+    /// </summary>
+    public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, FastColor faceColor, IColourQuantiser? dither);
 
     /// <summary>
     /// Write a polygon's depth without drawing it, tagging every pixel it
