@@ -15,13 +15,13 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           # MinVer needs full history (and tags) to compute the version.
           fetch-depth: 0
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
 
@@ -54,7 +54,7 @@ jobs:
           -reporttypes:"Cobertura;Badges" "-assemblyfilters:-*.Tests;-*.Fakes;-*.Benchmarks"
 
       - name: Upload coverage artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report
           path: coveragereport/Cobertura.xml
@@ -69,7 +69,7 @@ jobs:
       - name: Create coverage badge PR
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         id: badge-pr
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: "Update coverage badge [skip ci]"
           title: "Update coverage badge"
@@ -95,7 +95,7 @@ jobs:
           done
 
       - name: Upload SharpKind NuGet packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: SharpKind-nupkgs-${{ steps.vars.outputs.version }}
           path: ./nupkg/*.nupkg
@@ -107,7 +107,7 @@ jobs:
         run: find ./publish/EliteSharp/win-x64 \( -name "*.xml" -o -name "*.ico" \) -type f -delete
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: EliteSharp-Windows-${{ steps.vars.outputs.version }}
           path: ./publish/EliteSharp/win-x64/*
@@ -119,7 +119,7 @@ jobs:
         run: find ./publish/EliteSharp/linux-x64 \( -name "*.xml" -o -name "*.ico" \) -type f -delete
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: EliteSharp-Linux-${{ steps.vars.outputs.version }}
           path: ./publish/EliteSharp/linux-x64/*
@@ -131,7 +131,7 @@ jobs:
         run: find ./publish/StuntCarRacerSharp/win-x64 \( -name "*.xml" -o -name "*.ico" \) -type f -delete
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: StuntCarRacerSharp-Windows-${{ steps.vars.outputs.version }}
           path: ./publish/StuntCarRacerSharp/win-x64/*
@@ -143,7 +143,7 @@ jobs:
         run: find ./publish/StuntCarRacerSharp/linux-x64 \( -name "*.xml" -o -name "*.ico" \) -type f -delete
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: StuntCarRacerSharp-Linux-${{ steps.vars.outputs.version }}
           path: ./publish/StuntCarRacerSharp/linux-x64/*
