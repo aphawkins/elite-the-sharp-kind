@@ -102,6 +102,27 @@ per item whether authenticity or modernity wins.
       scoping for the 16-bit tier first: the 8-bit tier quantises a lit face
       to the nearest of sixteen palette colours, so smoothing the term it
       quantises buys much less there.
+
+      **The normal derivation landed 2026-08-10** and is not what is left:
+      `SharpKind.Graphics.Rendering.VertexNormals.Build` averages the faces
+      meeting at each corner, with a hardcoded 45-degree crease threshold so
+      the deliberately faceted hulls keep their edges, and `ShipBase` derives
+      the model's per-corner normals alongside its face roots (excluding
+      decals and detail lines, whose normal is the hull plane's and would
+      count twice). Nothing consumes them yet, so there is no visual change.
+      What remains is the fill path, in order:
+      - Make `NearPlaneClip` carry a per-vertex attribute, so a vertex the
+        clipper generates gets an interpolated colour at the same `t` it
+        already computes.
+      - Interpolate colour through `DrawTriangleFilledDepth` and
+        `DrawSpanFilledDepth`, mirroring how the textured variant already
+        carries `uv`, behind new per-vertex-colour `Submit` /
+        `DrawPolygonFilledDepth` overloads (`PolygonData.Colors`). Painter's
+        and wireframe fall back to the flat face colour.
+      - Only then add `ShadingModelKind.Gouraud`, the `EliteDraw` selection
+        (16-bit/modern renditions only) and the `EngineSettingsController`
+        row — deliberately held back so the setting never ships ahead of the
+        fill that honours it.
 - [ ] [SharpKind.Graphics] Far-plane and bounding-volume culling: no far plane
       exists (distance handling is `Universe`'s object removal and Elite's
       `VanishPoint`), and there is no per-object bounding-sphere-versus-

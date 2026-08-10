@@ -347,6 +347,73 @@ public class ShipBaseTests
         Assert.Equal(expectDrawn, draw.DrawnPolygons.Count == 1);
     }
 
+    // A hull face's corners take the average of the hull faces meeting there.
+    // The decal sitting in that face's plane is not one of them: its normal is
+    // that same plane's, so averaging it in would weight the plane twice and
+    // pull the corner back towards flat.
+    [Fact]
+    public void CornerNormalsExcludeADecalFromTheAveraging()
+    {
+        // Arrange: a small triangle exactly in the plane of a larger one.
+        Vector4[] points =
+        [
+            new(-100, -100, 0, 0),
+            new(100, -100, 0, 0),
+            new(0, 100, 0, 0),
+            new(-10, -10, 0, 0),
+            new(10, -10, 0, 0),
+            new(0, 10, 0, 0),
+        ];
+
+        FakeShip ship = new(new FakeEliteDraw(), new(new Random(0)))
+        {
+            Rotmat = Matrix4x4.Identity,
+            Location = new(0, 0, 1000, 0),
+            Model = BuildModel(points, [[0, 2, 1], [3, 5, 4]]),
+        };
+
+        // Act
+        ship.Draw();
+
+        // Assert: the hull face keeps its own normal at every corner, and the
+        // decal has no direction of its own to smooth.
+        Assert.All(ship.CornerNormals[0], n => AssertVector3AlmostEqual(new(0, 0, -1), n));
+        Assert.All(ship.CornerNormals[1], n => Assert.Equal(Vector3.Zero, n));
+    }
+
+    [Fact]
+    public void CornerNormalsSmoothTwoHullFacesMeetingAtAShallowAngle()
+    {
+        // Arrange: two triangles sharing the edge 0-1, the second tilted 30
+        // degrees about it - well inside the crease threshold.
+        Vector4[] points =
+        [
+            new(-10, 0, 0, 0),
+            new(10, 0, 0, 0),
+            new(0, 10, 0, 0),
+            new(0, 10 * MathF.Cos(MathF.PI / 6), -10 * MathF.Sin(MathF.PI / 6), 0),
+        ];
+
+        FakeShip ship = new(new FakeEliteDraw(), new(new Random(0)))
+        {
+            Rotmat = Matrix4x4.Identity,
+            Location = new(0, 0, 1000, 0),
+            Model = BuildModel(points, [[0, 1, 2], [0, 1, 3]]),
+        };
+
+        // Act
+        ship.Draw();
+
+        // Assert: the shared corners land halfway between the two faces, and
+        // the corner each face has to itself keeps that face's own normal.
+        Vector3 halfway = Vector3.Normalize(new(0, MathF.Sin(MathF.PI / 12), MathF.Cos(MathF.PI / 12)));
+
+        AssertVector3AlmostEqual(halfway, ship.CornerNormals[0][0]);
+        AssertVector3AlmostEqual(halfway, ship.CornerNormals[0][1]);
+        AssertVector3AlmostEqual(new(0, 0, 1), ship.CornerNormals[0][2]);
+        AssertVector3AlmostEqual(new(0, 0.5f, MathF.Sqrt(3) / 2), ship.CornerNormals[1][2]);
+    }
+
     private static ThreeDModel BuildModel(Vector4[] coords, int[][] faceIndices)
     {
         Point[] modelPoints = [.. coords.Select(c => new Point { Coords = c, FaceNormals = [] })];
@@ -400,5 +467,12 @@ public class ShipBaseTests
     {
         Assert.InRange(actual.X, expected.X - Tolerance, expected.X + Tolerance);
         Assert.InRange(actual.Y, expected.Y - Tolerance, expected.Y + Tolerance);
+    }
+
+    private static void AssertVector3AlmostEqual(Vector3 expected, Vector3 actual)
+    {
+        Assert.InRange(actual.X, expected.X - Tolerance, expected.X + Tolerance);
+        Assert.InRange(actual.Y, expected.Y - Tolerance, expected.Y + Tolerance);
+        Assert.InRange(actual.Z, expected.Z - Tolerance, expected.Z + Tolerance);
     }
 }

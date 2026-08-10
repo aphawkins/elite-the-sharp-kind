@@ -125,6 +125,12 @@ internal class ShipBase : IShip
 
     public ThreeDModel Model { get; set; }
 
+    // Gets the model's normal at each corner of each face, derived once with
+    // the face roots and constant thereafter - the geometry does not change. A
+    // Gouraud fill interpolates between these; a flat one has no use for
+    // them. Empty until the model has been drawn once.
+    internal Vector3[][] CornerNormals { get; private set; } = [];
+
     public IObject Clone()
     {
         ShipBase ship = new(this);
@@ -199,6 +205,7 @@ internal class ShipBase : IShip
         if (_faceRoot == null)
         {
             (_faceRoot, _faceNormal) = FindFaceRoots();
+            CornerNormals = BuildCornerNormals();
             _fullyLit = LambertShading.FullyLit(Model.Faces.Select(f => f.Color));
         }
 
@@ -463,6 +470,28 @@ internal class ShipBase : IShip
         }
 
         return (roots, normals);
+    }
+
+    // The model's per-corner normals, from the face normals and roots found
+    // above. Only a face that roots to itself takes part in the averaging: a
+    // decal or detail line lies in the plane of the hull face beneath it, so
+    // counting its normal too would weight that one plane twice at every
+    // corner it touches and flatten the corner back towards the hull face's
+    // own direction - which is the opposite of what smoothing is for. Such a
+    // face is still given corners; they just come out zero, the same "no
+    // direction here" the flat path already uses.
+    private Vector3[][] BuildCornerNormals()
+    {
+        IList<int>[] faces = new IList<int>[Model.Faces.Count];
+        Vector3[] smoothing = new Vector3[Model.Faces.Count];
+
+        for (int i = 0; i < faces.Length; i++)
+        {
+            faces[i] = Model.Faces[i].PointIndices;
+            smoothing[i] = _faceRoot![i] == i ? _faceNormal![i] : Vector3.Zero;
+        }
+
+        return VertexNormals.Build(faces, smoothing);
     }
 
     private void DrawLasers(Vector4[] pointList)
