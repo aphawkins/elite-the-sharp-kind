@@ -17,6 +17,8 @@ public sealed class RecordingGraphics(float screenWidth = 0, float screenHeight 
 {
     public IList<(Vector2[] Points, FastColor Colour)> FilledPolygons { get; } = [];
 
+    public IList<(Vector2[] Points, FastColor[] CornerColours)> ShadedPolygons { get; } = [];
+
     public IList<(Vector2[] Points, Vector2[] TextureCoords, FastBitmap Texture)> TexturedPolygons { get; } = [];
 
     public IList<(string ImageType, Vector2 Position, Vector2 Size, Vector2 SourcePosition, Vector2 SourceSize)> ImageParts { get; } = [];
@@ -93,6 +95,19 @@ public sealed class RecordingGraphics(float screenWidth = 0, float screenHeight 
 
     public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, FastColor faceColor, IColourQuantiser? dither)
         => FilledPolygons.Add((points, faceColor));
+
+    // Recorded against the colour the polygon would take flat, so a test that
+    // only cares that a face was drawn reads the same either way; the corner
+    // colours themselves land in ShadedPolygons.
+    public void DrawPolygonFilledDepth(
+        Vector2[] points,
+        float[] depths,
+        FastColor[] vertexColors,
+        IColourQuantiser? quantiser)
+    {
+        ShadedPolygons.Add((points, vertexColors));
+        FilledPolygons.Add((points, VertexColours.Flatten(vertexColors, quantiser)));
+    }
 
     public void FillDepth(Vector2[] points, float[] depths, int surfaceId)
     {

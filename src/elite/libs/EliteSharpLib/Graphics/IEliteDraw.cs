@@ -42,6 +42,15 @@ internal interface IEliteDraw : IViewSurface
     public ShipColours Ships { get; }
 
     /// <summary>
+    /// Gets a value indicating whether the colour varies within a face, so a
+    /// caller shades at each corner and lets the fill blend between them.
+    /// False for every flat model, and for a rendition with too few colours
+    /// for a blend to survive being quantised - so a caller asks this rather
+    /// than asking which shading model is in force.
+    /// </summary>
+    public bool ShadesPerVertex { get; }
+
+    /// <summary>
     /// One face's colour as this rendition's lighting leaves it. Returns the
     /// colour untouched when the rendition does not shade, when the commander
     /// turned lighting off, or when the world is drawn as outlines - so a
@@ -57,9 +66,28 @@ internal interface IEliteDraw : IViewSurface
     /// <returns>The colour to fill the face with.</returns>
     public FastColor ShadeFace(FastColor faceColour, Vector3 cameraNormal, byte fullyLit);
 
+    /// <summary>
+    /// One corner's colour as this rendition's lighting leaves it, unquantised
+    /// - the fill blends between the corners and reduces what it arrives at,
+    /// per pixel. Only meaningful when <see cref="ShadesPerVertex"/> is true.
+    /// </summary>
+    /// <param name="faceColour">The model's own colour for the face.</param>
+    /// <param name="cameraNormal">
+    /// The corner's normal, rotated into camera space.
+    /// </param>
+    /// <param name="fullyLit">As <see cref="ShadeFace"/>'s.</param>
+    /// <returns>The colour at that corner.</returns>
+    public FastColor ShadeVertex(FastColor faceColour, Vector3 cameraNormal, byte fullyLit);
+
     public void DrawObject(IObject obj);
 
     public void DrawPolygonFilled(Vector2[] points, float[] depths, FastColor faceColor, float z);
+
+    /// <summary>
+    /// As DrawPolygonFilled with a colour per point, which the fill blends
+    /// across the face. Pairs with <see cref="ShadeVertex"/>.
+    /// </summary>
+    public void DrawPolygonFilled(Vector2[] points, float[] depths, FastColor[] cornerColors, float z);
 
     public void RenderEnd();
 

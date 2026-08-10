@@ -19,6 +19,16 @@ public sealed class PainterRenderer(IGraphics graphics) : IPolygonRenderer
     public void Submit(Vector2[] points, float[] depths, FastColor color, float z)
         => Submit(points, depths, color, z, dither: null);
 
+    // A plain fill has no per-pixel hook to blend through, so a Gouraud face
+    // stands down to the one colour nearest what blending would have given.
+    public void Submit(Vector2[] points, float[] depths, FastColor[] colours, float z, IColourQuantiser? quantiser)
+        => Submit(
+            points,
+            depths,
+            VertexColours.Flatten(colours, quantiser),
+            z,
+            quantiser?.IsPositionDependent == true ? quantiser : null);
+
     public void Submit(Vector2[] points, float[] depths, FastColor color, float z, IColourQuantiser? dither)
     {
         ArgumentNullException.ThrowIfNull(points);

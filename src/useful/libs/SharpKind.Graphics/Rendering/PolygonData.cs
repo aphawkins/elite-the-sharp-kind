@@ -19,6 +19,10 @@ internal struct PolygonData
 
     internal float Z { get; set; }
 
+    // One colour per point for a Gouraud face, parallel to PointList. Null
+    // for the flat faces, which say everything they need to in Color.
+    internal FastColor[]? VertexColors { get; set; }
+
     // Non-null only for a quantiser that has to be asked per pixel, i.e. a
     // dither. The plain ones resolve the whole face before it gets here.
     internal IColourQuantiser? Dither { get; set; }

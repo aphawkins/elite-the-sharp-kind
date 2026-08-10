@@ -34,6 +34,12 @@ public sealed class WireframeRenderer : IPolygonRenderer
     public void Submit(Vector2[] points, float[] depths, FastColor color, float z)
         => Submit(points, depths, color, z, dither: null);
 
+    // An outline has no fill to blend across either, and draws white whatever
+    // colour arrives - so the flattening here is only for the surfaces the
+    // depth pass writes, which are never drawn at all.
+    public void Submit(Vector2[] points, float[] depths, FastColor[] colours, float z, IColourQuantiser? quantiser)
+        => Submit(points, depths, VertexColours.Flatten(colours, quantiser), z, dither: null);
+
     public void Submit(Vector2[] points, float[] depths, FastColor color, float z, IColourQuantiser? dither)
     {
         ArgumentNullException.ThrowIfNull(points);

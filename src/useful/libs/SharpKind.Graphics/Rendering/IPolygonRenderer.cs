@@ -19,6 +19,15 @@ public interface IPolygonRenderer
     // only a dither does. Null when the caller already resolved the colour.
     public void Submit(Vector2[] points, float[] depths, FastColor color, float z, IColourQuantiser? dither);
 
+    // As Submit, with a colour per point rather than one for the whole
+    // polygon (Gouraud shading): colours pairs with points, and the quantiser
+    // is asked per pixel whether or not it dithers, since an interpolated
+    // colour cannot be resolved once by the caller. A strategy that cannot
+    // blend across a face - the painter's chain, the wireframe outline -
+    // stands the colours down to one, so a caller submits per-vertex colours
+    // without first asking whether the strategy in force can use them.
+    public void Submit(Vector2[] points, float[] depths, FastColor[] colours, float z, IColourQuantiser? quantiser);
+
     public void StartFrame();
 
     public void EndFrame();

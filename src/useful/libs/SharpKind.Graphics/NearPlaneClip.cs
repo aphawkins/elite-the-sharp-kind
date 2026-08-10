@@ -1,6 +1,7 @@
 // 'SharpKind Libraries' - Andy Hawkins 2023-2026.
 
 using System.Numerics;
+using SharpKind.Graphics.Rendering;
 
 namespace SharpKind.Graphics;
 
@@ -18,6 +19,48 @@ public static class NearPlaneClip
         Span<Vector2> textureCoords = stackalloc Vector2[input.Length];
         Span<Vector2> clippedTextureCoords = stackalloc Vector2[input.Length + 1];
         return Clip(input, textureCoords, nearPlane, output, clippedTextureCoords);
+    }
+
+    // As above, interpolating a colour per point through the clip (colours
+    // pairs with input, outputColours with output). A Gouraud face is shaded
+    // at its own corners, so a corner the clipper invents has to be given the
+    // colour the face had where the near plane cut it.
+    public static int Clip(
+        in ReadOnlySpan<Vector3> input,
+        in ReadOnlySpan<FastColor> colours,
+        float nearPlane,
+        in Span<Vector3> output,
+        in Span<FastColor> outputColours)
+    {
+        int count = 0;
+
+        for (int i = 0; i < input.Length; i++)
+        {
+            int nextIndex = (i + 1) % input.Length;
+            Vector3 current = input[i];
+            Vector3 next = input[nextIndex];
+
+            bool currentInside = current.Z >= nearPlane;
+            bool nextInside = next.Z >= nearPlane;
+
+            if (currentInside)
+            {
+                outputColours[count] = colours[i];
+                output[count++] = current;
+            }
+
+            if (currentInside != nextInside)
+            {
+                float t = (nearPlane - current.Z) / (next.Z - current.Z);
+                outputColours[count] = VertexColours.Lerp(colours[i], colours[nextIndex], t);
+                output[count++] = new(
+                    current.X + ((next.X - current.X) * t),
+                    current.Y + ((next.Y - current.Y) * t),
+                    nearPlane);
+            }
+        }
+
+        return count;
     }
 
     // As above, interpolating a texture coordinate per point through the clip

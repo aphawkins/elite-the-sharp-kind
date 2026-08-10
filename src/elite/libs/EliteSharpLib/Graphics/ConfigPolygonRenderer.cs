@@ -43,6 +43,9 @@ internal sealed class ConfigPolygonRenderer : IPolygonRenderer
     public void Submit(Vector2[] points, float[] depths, FastColor color, float z, IColourQuantiser? dither)
         => _current.Submit(points, depths, color, z, dither);
 
+    public void Submit(Vector2[] points, float[] depths, FastColor[] colours, float z, IColourQuantiser? quantiser)
+        => _current.Submit(points, depths, colours, z, quantiser);
+
     public void StartFrame()
     {
         _current = Selected;

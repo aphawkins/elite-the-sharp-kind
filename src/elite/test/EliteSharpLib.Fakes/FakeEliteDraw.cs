@@ -11,6 +11,7 @@ using SharpKind.Assets.Palettes;
 using SharpKind.Fakes.Assets;
 using SharpKind.Graphics;
 using SharpKind.Graphics.Fakes;
+using SharpKind.Graphics.Rendering;
 
 namespace EliteSharpLib.Fakes;
 
@@ -35,6 +36,12 @@ internal class FakeEliteDraw : IEliteDraw
 
     public List<(Vector2[] Points, float[] Depths, FastColor FaceColor, float Z)> DrawnPolygons { get; } = [];
 
+    public List<(Vector2[] Points, float[] Depths, FastColor[] CornerColors, float Z)> DrawnShadedPolygons { get; } = [];
+
+    // Flat by default, so the existing tests see the flat path. A test of the
+    // per-corner path turns this on.
+    public bool ShadesPerVertex { get; set; }
+
     public void DrawObject(IObject obj)
     {
     }
@@ -42,8 +49,16 @@ internal class FakeEliteDraw : IEliteDraw
     public void DrawPolygonFilled(Vector2[] points, float[] depths, FastColor faceColor, float z)
         => DrawnPolygons.Add((points, depths, faceColor, z));
 
+    public void DrawPolygonFilled(Vector2[] points, float[] depths, FastColor[] cornerColors, float z)
+        => DrawnShadedPolygons.Add((points, depths, cornerColors, z));
+
     // Unlit, so a test asserting on a drawn face's colour sees the model's own.
     public FastColor ShadeFace(FastColor faceColour, Vector3 cameraNormal, byte fullyLit) => faceColour;
+
+    // Lambert against a light straight down -Z, so a test can predict a
+    // corner's colour from the normal it was handed.
+    public FastColor ShadeVertex(FastColor faceColour, Vector3 cameraNormal, byte fullyLit)
+        => LambertShading.Shade(faceColour, cameraNormal, new(0, 0, -1), LambertShading.DefaultAmbient, fullyLit);
 
     public void RenderEnd()
     {

@@ -12,7 +12,7 @@ using static SDL.SDL3_ttf;
 
 namespace SharpKind.SDL;
 
-public sealed unsafe class SDLGraphics : IGraphics, IDisposable
+public sealed unsafe partial class SDLGraphics : IGraphics, IDisposable
 {
     private const int CircleSegments = 32;
 

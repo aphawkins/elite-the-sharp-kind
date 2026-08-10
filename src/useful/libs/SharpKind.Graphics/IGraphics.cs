@@ -87,6 +87,23 @@ public interface IGraphics
     public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, FastColor faceColor, IColourQuantiser? dither);
 
     /// <summary>
+    /// As DrawPolygonFilledDepth with a colour per point rather than one for
+    /// the whole polygon (Gouraud shading), blended across the fill so a
+    /// curve drawn as facets shades as a curve.
+    /// </summary>
+    /// <remarks>
+    /// The quantiser is asked per pixel whether or not it dithers, since an
+    /// interpolated colour differs at every pixel and cannot be resolved once
+    /// by the caller. A backend with no per-pixel hook falls back to a flat
+    /// fill - see <see cref="VertexColours.Flatten"/>.
+    /// </remarks>
+    public void DrawPolygonFilledDepth(
+        Vector2[] points,
+        float[] depths,
+        FastColor[] vertexColors,
+        IColourQuantiser? quantiser);
+
+    /// <summary>
     /// Write a polygon's depth without drawing it, tagging every pixel it
     /// wins with <paramref name="surfaceId"/>. Primes the depth buffer so a
     /// later pass can be hidden by geometry that is never itself drawn —

@@ -8,7 +8,7 @@ using SharpKind.Graphics.Rendering;
 
 namespace SharpKind.Graphics;
 
-public sealed class SoftwareGraphics : IGraphics, IDisposable
+public sealed partial class SoftwareGraphics : IGraphics, IDisposable
 {
     // Bounded LRU cache of rendered text bitmaps, keyed by (font, colour,
     // text). Elite draws ever-changing strings (bounties, countdowns) that

@@ -78,6 +78,13 @@ internal sealed class EliteDraw : IEliteDraw
             : new ChannelGridQuantiser(assetLocator.Colours.ChannelBits);
         _dithered = new OrderedDitherQuantiser(_nearest);
 
+        // Blending a shade across a face is only worth doing where the
+        // rendition has shades to blend through. An indexed one can show no
+        // colour its palette does not name, so a smooth gradient quantises
+        // straight back to the same handful of steps a flat fill already
+        // gives - the same reasoning as _shadesShips, one tier further on.
+        BlendsShades = !assetLocator.Colours.PaletteNamesEveryColour;
+
         // After Palette: the rendition looks its colours up through this.
         Ships = rendition.CreateShipColours(this);
         _colorWhite = Palette["White"];
@@ -100,11 +107,24 @@ internal sealed class EliteDraw : IEliteDraw
 
     public ShipColours Ships { get; }
 
+    // Read from the live config for the same reason Shading is. Gouraud is
+    // the one model whose colour varies within a face, so it is the one that
+    // makes this true - and only where the rendition can show the difference.
+    public bool ShadesPerVertex
+        => BlendsShades
+            && Shading != _unlit
+            && _gameState.Config.Engine.Graphics.Shading == ShadingModelKind.Gouraud;
+
     // Read from the live config rather than cached, so the Settings view's
     // rows show on the next frame - the same reason ConfigPolygonRenderer
     // picks its strategy per frame. A wireframe world has no face to shade,
     // and a rendition with no colours to spare for shading stays unlit
     // whatever the commander asked for.
+    // Whether the rendition has enough colours for a blend across a face to
+    // survive being quantised. Set once: it is the rendition's, not the
+    // commander's.
+    private bool BlendsShades { get; }
+
     private IShadingModel Shading
     {
         get
@@ -113,7 +133,7 @@ internal sealed class EliteDraw : IEliteDraw
 
             return _shadesShips
                 && graphics.FillMode == FillMode.Solid
-                && graphics.Shading == ShadingModelKind.Lambert
+                && graphics.Shading is ShadingModelKind.Lambert or ShadingModelKind.Gouraud
                     ? _lambert
                     : _unlit;
         }
@@ -142,6 +162,13 @@ internal sealed class EliteDraw : IEliteDraw
         _shipRenderer.Submit(points, depths, faceColor, z, quantiser.IsPositionDependent ? quantiser : null);
     }
 
+    // As above with a colour per point. The quantiser always travels with the
+    // polygon here, dithering or not: a blended colour is a different colour
+    // at every pixel, so there is nothing ShadeVertex could have resolved for
+    // the whole face.
+    public void DrawPolygonFilled(Vector2[] points, float[] depths, FastColor[] cornerColors, float z)
+        => _shipRenderer.Submit(points, depths, cornerColors, z, Quantiser);
+
     // Read from the live config rather than cached, so the Settings view's
     // toggle shows on the next frame - the same reason ConfigPolygonRenderer
     // picks its strategy per frame. Wireframe has no faces to light.
@@ -156,6 +183,13 @@ internal sealed class EliteDraw : IEliteDraw
 
         return quantiser.IsPositionDependent ? shaded : quantiser.Quantise(shaded, 0, 0);
     }
+
+    // Deliberately unquantised, unlike ShadeFace: the fill blends between the
+    // corners and quantises what it arrives at, per pixel. Quantising here
+    // would reduce the ends of the gradient and then blend between the
+    // reduced values, which is a worse approximation of the same curve.
+    public FastColor ShadeVertex(FastColor faceColour, Vector3 cameraNormal, byte fullyLit)
+        => Shading.Shade(faceColour, cameraNormal, fullyLit);
 
     public void SetFullScreenClipRegion() => Graphics.SetClipRegion(new(0, 0), Layout.ScreenWidth, Layout.ScreenHeight);
 

@@ -217,21 +217,86 @@ internal class ShipBase : IShip
 
         Span<Vector3> face = maxPoints <= StackFacePoints ? stackalloc Vector3[StackFacePoints] : new Vector3[maxPoints];
         Span<Vector3> clipped = maxPoints <= StackFacePoints ? stackalloc Vector3[StackFacePoints + 1] : new Vector3[maxPoints + 1];
+        Span<FastColor> corners = maxPoints <= StackFacePoints ? stackalloc FastColor[StackFacePoints] : new FastColor[maxPoints];
+        Span<FastColor> clippedCorners = maxPoints <= StackFacePoints
+            ? stackalloc FastColor[StackFacePoints + 1]
+            : new FastColor[maxPoints + 1];
 
         for (int i = 0; i < Model.Faces.Count; i++)
         {
-            if (IsFacingCamera(i, out Vector3 cameraNormal))
+            if (!IsFacingCamera(i, out Vector3 cameraNormal))
             {
-                float bias = _faceRoot[i] == i ? 1f : DecalDepthBias;
-                Vector2[]? poly_list = BuildFacePolygon(Model.Faces[i], pointList, face, clipped, bias, out float[] depths);
-                if (poly_list != null)
-                {
-                    FastColor color = _draw.ShadeFace(Model.Faces[i].Color, cameraNormal, _fullyLit);
-                    _draw.DrawPolygonFilled(poly_list, depths, color, FaceMeanZ(_faceRoot[i], pointList));
-                }
+                continue;
             }
+
+            if (ShadesCorners(i))
+            {
+                DrawShadedFace(i, pointList, face, clipped, corners, clippedCorners);
+                continue;
+            }
+
+            DrawFlatFace(i, cameraNormal, pointList, face, clipped);
         }
     }
+
+    // One face as a single colour: the model's own, as this rendition's
+    // lighting leaves it.
+    private void DrawFlatFace(
+        int faceIndex,
+        Vector3 cameraNormal,
+        Vector4[] pointList,
+        in Span<Vector3> cameraPoints,
+        in Span<Vector3> clipped)
+    {
+        float bias = _faceRoot![faceIndex] == faceIndex ? 1f : DecalDepthBias;
+        Vector2[]? poly_list = BuildFacePolygon(
+            Model.Faces[faceIndex],
+            pointList,
+            cameraPoints,
+            clipped,
+            bias,
+            out float[] depths);
+
+        if (poly_list != null)
+        {
+            FastColor color = _draw.ShadeFace(Model.Faces[faceIndex].Color, cameraNormal, _fullyLit);
+            _draw.DrawPolygonFilled(poly_list, depths, color, FaceMeanZ(_faceRoot[faceIndex], pointList));
+        }
+    }
+
+    // One face shaded at each corner, for the fill to blend between.
+    private void DrawShadedFace(
+        int faceIndex,
+        Vector4[] pointList,
+        in Span<Vector3> cameraPoints,
+        in Span<Vector3> clipped,
+        in Span<FastColor> cornerColours,
+        in Span<FastColor> clippedColours)
+    {
+        Vector2[]? polygon = BuildShadedFacePolygon(
+            faceIndex,
+            cameraPoints,
+            clipped,
+            cornerColours,
+            clippedColours,
+            out float[] depths,
+            out FastColor[] colours);
+
+        if (polygon != null)
+        {
+            _draw.DrawPolygonFilled(polygon, depths, colours, FaceMeanZ(faceIndex, pointList));
+        }
+    }
+
+    // A face blends across itself only when the draw shades per corner and
+    // the face has corners of its own to shade. A decal or detail line was
+    // left out of the smoothing, so its corner normals are zero: it lies in
+    // one plane on top of another and fills flat, which is what it should do
+    // and what the depth bias in the flat path below assumes.
+    private bool ShadesCorners(int faceIndex)
+        => _draw.ShadesPerVertex
+            && CornerNormals[faceIndex].Length >= 3
+            && CornerNormals[faceIndex][0] != Vector3.Zero;
 
     // Backface cull in camera space, against the face's own model-space
     // normal rotated into view. Doing it here rather than on the projected
@@ -395,6 +460,56 @@ internal class ShipBase : IShip
         {
             polygon[j] = ProjectCameraPoint(clipped[j]);
             depths[j] = clipped[j].Z * depthBias;
+        }
+
+        return polygon;
+    }
+
+    // As BuildFacePolygon, shading each corner and carrying the colours
+    // through the clip so a corner the clipper invents gets the colour the
+    // face had where the near plane cut it. No depth bias: only a face that
+    // roots to itself gets here, and nothing sits in its plane to tie with.
+    private Vector2[]? BuildShadedFacePolygon(
+        int faceIndex,
+        in Span<Vector3> cameraPoints,
+        in Span<Vector3> clipped,
+        in Span<FastColor> cornerColours,
+        in Span<FastColor> clippedColours,
+        out float[] depths,
+        out FastColor[] colours)
+    {
+        Face face = Model.Faces[faceIndex];
+        Vector3[] cornerNormals = CornerNormals[faceIndex];
+        int numPoints = face.Points.Count;
+
+        for (int j = 0; j < numPoints; j++)
+        {
+            cameraPoints[j] = _cameraList[face.PointIndices[j]];
+            cornerColours[j] = _draw.ShadeVertex(face.Color, RotateToCamera(cornerNormals[j]), _fullyLit);
+        }
+
+        int count = NearPlaneClip.Clip(
+            cameraPoints[..numPoints],
+            cornerColours[..numPoints],
+            NearPlane,
+            clipped,
+            clippedColours);
+
+        if (count < 3)
+        {
+            depths = [];
+            colours = [];
+            return null;
+        }
+
+        Vector2[] polygon = new Vector2[count];
+        depths = new float[count];
+        colours = new FastColor[count];
+        for (int j = 0; j < count; j++)
+        {
+            polygon[j] = ProjectCameraPoint(clipped[j]);
+            depths[j] = clipped[j].Z;
+            colours[j] = clippedColours[j];
         }
 
         return polygon;

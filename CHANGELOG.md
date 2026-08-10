@@ -7,6 +7,47 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Gouraud shading, 2026-08-10)
+
+- **`SharpKind.Graphics.Rendering.VertexNormals`** derives the per-vertex
+  normals the `.obj` assets never carried, by averaging the faces meeting at
+  each corner. Per face *and* corner rather than per vertex, because the
+  vertex on a cube's corner has three right answers - one per face.
+- **A 45-degree crease keeps the models faceted where they mean to be.**
+  Averaging every adjacent face would round off edges the artist drew, and
+  both games' ships are faceted by design; faces only smooth together when
+  they turn through less than 45 degrees, so a curve drawn as facets shades
+  as a curve while a hull's real edges stay hard. Elite's missile still
+  renders as sharply as it did flat, which is the threshold working.
+- **Decals and detail lines are excluded from the averaging.** A cockpit
+  window lies in the plane of the hull face beneath it, so its normal is that
+  plane's; counting it would weight the plane twice at every corner it
+  touches and pull the corner back towards flat. They keep the flat fill and
+  the depth bias that settles them against the face they sit on.
+- **The near-plane clipper carries the colour.** `NearPlaneClip` gained a
+  colour-interpolating overload beside its texture-coordinate one, so a
+  corner the clipper invents gets the colour the face had where the plane cut
+  it - a face straddling the camera plane blends correctly rather than
+  jumping to a neighbour's shade.
+- **The fill blends and quantises per pixel.** `DrawPolygonFilledDepth` gained
+  a per-corner-colour overload in both backends - `SoftwareGraphics.Gouraud`
+  and the CPU depth layer in `SDLGraphics.Gouraud`, which mirrors it as the
+  rest of that layer mirrors the software one. Unlike the flat fill, the
+  quantiser is asked at every pixel whether it dithers or not: a blended
+  colour is a different colour at each pixel, so there is nothing the caller
+  could have resolved once for the whole face. The blend is affine rather
+  than divided by depth - a shade has no perspective to be correct about the
+  way a texture coordinate does.
+- **A strategy that cannot blend stands the face down to one colour.** The
+  painter's chain and the wireframe outline take `VertexColours.Flatten`, the
+  mean of the corners, so a caller submits per-vertex colours without first
+  asking which strategy is in force.
+- **Gouraud is offered only where it would show.** An indexed rendition can
+  display no colour its palette does not name, so a gradient quantises
+  straight back to the handful of steps a flat fill already gives; the 8-bit
+  tier keeps flat Lambert whatever the commander selects, the same way a
+  rendition with no colours to spare for shading stays Unlit.
+
 ### Added (flat per-face lighting on the 16-bit tier, 2026-08-09)
 
 - **`SharpKind.Graphics.Rendering.LambertShading`** is the first lighting of

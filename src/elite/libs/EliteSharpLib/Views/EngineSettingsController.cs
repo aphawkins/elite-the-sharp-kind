@@ -90,7 +90,11 @@ internal sealed class EngineSettingsController : SettingsListController
             new SavedSetting(
                 new EnumSetting<ShadingModelKind>(
                     "Shading:",
-                    [(ShadingModelKind.Unlit, "Unlit"), (ShadingModelKind.Lambert, "Lambert")],
+                    [
+                        (ShadingModelKind.Unlit, "Unlit"),
+                        (ShadingModelKind.Lambert, "Lambert"),
+                        (ShadingModelKind.Gouraud, "Gouraud"),
+                    ],
                     () => config.Engine.Graphics.Shading,
                     value => config.Engine.Graphics.Shading = value),
                 Save),

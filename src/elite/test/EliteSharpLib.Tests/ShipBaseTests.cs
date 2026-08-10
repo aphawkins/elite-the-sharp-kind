@@ -414,6 +414,87 @@ public class ShipBaseTests
         AssertVector3AlmostEqual(new(0, 0.5f, MathF.Sqrt(3) / 2), ship.CornerNormals[1][2]);
     }
 
+    [Fact]
+    public void DrawShadesEachCornerWhenTheDrawBlendsAcrossAFace()
+    {
+        // Arrange: two triangles sharing the edge 0-1, tilted 30 degrees
+        // apart, so the shared corners smooth and the outer ones do not - and
+        // a face therefore has corners of genuinely different colours.
+        Vector4[] points =
+        [
+            new(-10, 0, 0, 0),
+            new(10, 0, 0, 0),
+            new(0, 10, 0, 0),
+            new(0, 10 * MathF.Cos(MathF.PI / 6), -10 * MathF.Sin(MathF.PI / 6), 0),
+        ];
+
+        // Wound so both faces survive the backface cull, and painted: black
+        // has no brightness for a light to vary, so every corner of a black
+        // face shades alike however it turns.
+        ThreeDModel model = BuildModel(points, [[0, 2, 1], [0, 3, 1]]);
+        foreach (Face modelFace in model.Faces)
+        {
+            modelFace.Color = new(255, 255, 255, 255);
+        }
+
+        FakeEliteDraw draw = new() { ShadesPerVertex = true };
+        FakeShip ship = new(draw, new(new Random(0)))
+        {
+            Rotmat = Matrix4x4.Identity,
+            Location = new(0, 0, 1000, 0),
+            Model = model,
+        };
+
+        // Act
+        ship.Draw();
+
+        // Assert: drawn through the per-corner path, not the flat one.
+        Assert.Empty(draw.DrawnPolygons);
+        (Vector2[] facePoints, float[] _, FastColor[] cornerColors, float _) = draw.DrawnShadedPolygons[0];
+
+        Assert.Equal(facePoints.Length, cornerColors.Length);
+
+        // The first face's corner order is points 0, 2, 1: the middle one is
+        // its own, turned straight into the light, and the two either side
+        // are shared with the tilted face, so they smooth away from the light
+        // and come out darker - and identically so.
+        Assert.True(cornerColors[1].R > cornerColors[0].R);
+        Assert.Equal(cornerColors[0], cornerColors[2]);
+    }
+
+    // A decal lies in the plane of the hull face beneath it and was left out
+    // of the smoothing, so it has no corners of its own to shade and fills
+    // flat - keeping the depth bias that settles it against that face.
+    [Fact]
+    public void DrawKeepsADecalFlatWhileBlendingTheFaceBeneathIt()
+    {
+        Vector4[] points =
+        [
+            new(-100, -100, 0, 0),
+            new(100, -100, 0, 0),
+            new(0, 100, 0, 0),
+            new(-10, -10, 0, 0),
+            new(10, -10, 0, 0),
+            new(0, 10, 0, 0),
+        ];
+
+        FakeEliteDraw draw = new() { ShadesPerVertex = true };
+        FakeShip ship = new(draw, new(new Random(0)))
+        {
+            Rotmat = Matrix4x4.Identity,
+            Location = new(0, 0, 1000, 0),
+            Model = BuildModel(points, [[0, 2, 1], [3, 5, 4]]),
+        };
+
+        // Act
+        ship.Draw();
+
+        // Assert
+        Assert.Single(draw.DrawnShadedPolygons);
+        (Vector2[] _, float[] decalDepths, FastColor _, float _) = Assert.Single(draw.DrawnPolygons);
+        Assert.All(decalDepths, d => Assert.InRange(d, 990f, 999.9f));
+    }
+
     private static ThreeDModel BuildModel(Vector4[] coords, int[][] faceIndices)
     {
         Point[] modelPoints = [.. coords.Select(c => new Point { Coords = c, FaceNormals = [] })];
