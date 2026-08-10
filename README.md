@@ -61,12 +61,12 @@ Every file has the same three top-level elements: `version`, the schema version;
     "engine": {
         "backend": "Software",                 // Which backend runs the game.  Software (CPU rasteriser blitted through SDL) or Hardware (SDL-accelerated).  It picks the mixer as well as the rasteriser, so it isn't graphics-only
         "rendition": "16-bit",                 // Which rendition the game draws itself as.  Any installed one - "8-bit" and "16-bit" ship with it, named as they name themselves.  A rendition brings its own artwork, fonts, palette and models, and its own resolution.  See below, and docs/asset-structure.md
-        "windowScale": 1,                      // How many window pixels each rendered pixel occupies, 1 to 4.  Independent of the rendition: the game still renders at the rendition's own resolution and is magnified at presentation, so scale 2 is a window twice the size with the same pixels doubled, not more detail
+        "windowScale": 2,                      // How many window pixels each rendered pixel occupies.  The game still renders at the rendition's own resolution and is magnified at presentation, so scale 2 is a window twice the size with the same pixels doubled, not more detail.  Which scales are on offer is the rendition's own (see below); omit it and the rendition's default is used
         "graphics": {
             "fps": 60,                         // Maximum render frame rate, up to 1000.  The game speed is independent of it
             "fillMode": "Solid",               // How a primitive becomes pixels - every object together, so it can't end up half one and half the other.  Wireframe or Solid
             "depthSort": "ZBuffer",            // Depth-sort strategy for filled rendering (ignored when fillMode is Wireframe).  Painter or ZBuffer
-            "shading": "Unlit",                // What colour a face takes (ignored when fillMode is Wireframe, or in a rendition that does not shade).  Unlit or Lambert
+            "shading": "Unlit",                // What colour a face takes (ignored when fillMode is Wireframe, or in a rendition that does not shade).  Unlit (the model's flat colour), Lambert (one tone per face, from the angle it faces the light) or Gouraud (the tone blended across the face, from its corners)
             "quantisation": "Nearest",         // How a shaded colour is reduced to one the rendition can show.  Nearest, or Ordered to dither between the two either side of it
             "showFps": false                   // Overlay the measured frame rate.  A diagnostic, so off by default
         },
@@ -88,6 +88,8 @@ Property names are read case-insensitively, so a hand-edited file in any casing 
 
 A value that is out of range or unrecognised costs you that setting and nothing else: it goes back to its default, the rest of the file is kept, and the file as it was is copied alongside as `elite.sharp.bad` (or `stuntcarracer.sharp.bad`) so the original is still recoverable by hand.
 
+`windowScale` is the one that bends rather than breaks: a scale the chosen rendition does not offer is pegged to the nearest one it does (ties going to the larger), so asking the `8-bit` rendition for 3 opens at 4 rather than falling back to 1. Which scales exist is the rendition's answer, not the file's, so this is settled once the rendition has been loaded.
+
 The exception is a value the JSON binder cannot parse at all — a misspelt enum name, or a string where a number belongs. That fails the whole file, so every setting returns to its default; the `.bad` copy is what makes it recoverable.
 
 Note that Stunt Car Racer doesn't read `fillMode`, `depthSort`, `shading`, `quantisation` or `showFps` yet — they are written out with the rest of the engine settings, but only Elite acts on them.
@@ -103,6 +105,7 @@ A rendition stands in for a class of machine, so it carries that machine's limit
 | Palette is the complete colour set | yes — an asset may only use colours the palette names | no — the palette only names the colours the geometry draws with |
 | Font | 8 x 8 fixed grid | proportional, 32 x 32 cells |
 | Shading | yes, to the nearest colour the palette names | yes, to the nearest level the DAC drives |
+| Window scales (`windowScale`) | 1, 2 or 4 — default 4 | 1 or 2 — default 2 |
 
 ### Environment variables
 

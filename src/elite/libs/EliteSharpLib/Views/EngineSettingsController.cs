@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Globalization;
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Config;
 using EliteSharpLib.Renditions;
@@ -147,6 +148,20 @@ internal sealed class EngineSettingsController : SettingsListController
                     [(Backend.Software, "Software"), (Backend.Hardware, "Hardware")],
                     () => config.Engine.Backend,
                     value => config.Engine.Backend = value),
+                Save),
+
+            // How far the rendered pixels are magnified into the window. The
+            // scales offered are the chosen rendition's - a canvas that is
+            // already 640 wide has less room to grow than one that is 320 -
+            // so switching rendition changes what this row offers on the next
+            // launch, which is when either takes effect anyway.
+            new SavedSetting(
+                new NumberSetting(
+                    "Window Scale *:",
+                    renditions.Chosen.WindowScales,
+                    scale => scale.ToString(CultureInfo.InvariantCulture) + "x",
+                    () => config.Engine.WindowScale ?? renditions.Chosen.DefaultWindowScale,
+                    value => config.Engine.WindowScale = value),
                 Save),
 
             // The renditions offered are the ones installed, so a commander

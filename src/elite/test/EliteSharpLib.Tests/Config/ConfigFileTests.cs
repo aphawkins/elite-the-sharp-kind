@@ -25,7 +25,7 @@ public class ConfigFileTests
         // Assert
         Assert.Equal(60f, config.Engine.Graphics.Fps);
         Assert.False(config.Engine.Graphics.ShowFps);
-        Assert.Equal(1, config.Engine.WindowScale);
+        Assert.Null(config.Engine.WindowScale);
         Assert.True(config.Engine.Sound.Music);
         Assert.True(config.Engine.Sound.Effects);
     }
@@ -138,7 +138,7 @@ public class ConfigFileTests
         EliteConfig config = ReadWritten(
             $"{{\"engine\": {{\"windowScale\": {scale}, \"tier\": \"8Bit\"}}}}");
 
-        Assert.Equal(1, config.Engine.WindowScale);
+        Assert.Null(config.Engine.WindowScale);
         Assert.Equal("8-bit", config.Engine.Rendition);
     }
 

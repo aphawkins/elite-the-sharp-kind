@@ -110,6 +110,7 @@ public class RenditionRegistryTests
         {
             ViewSet views = new();
             Add<CommanderStatusModel>(views);
+            Add<CreditsModel>(views);
             Add<EquipmentModel>(views);
             Add<EscapeCapsuleModel>(views);
             Add<GalacticChartModel>(views);

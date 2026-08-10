@@ -66,6 +66,45 @@ public class SettingsControllerTests
         Assert.Equal(PlanetType.Fractal, gameState.Config.Game.PlanetStyle);
     }
 
+    // The cursor is a ring here as it is on the options menu, and Back is the
+    // last row: one press up from the first setting is the way out. Covers
+    // SettingsListController, which the engine settings screen shares.
+    [Fact]
+    public void TheCursorWrapsUpFromTheFirstSettingToBack()
+    {
+        SettingsController controller = CreateController(out GameState gameState, out FakeKeyboard keyboard, out _);
+        controller.Reset();
+
+        keyboard.KeyDown(ConsoleKey.UpArrow, default);
+        controller.HandleInput();
+        keyboard.KeyUp(ConsoleKey.UpArrow, default);
+        keyboard.KeyDown(ConsoleKey.Enter, default);
+        controller.HandleInput();
+
+        Assert.Equal(Screen.Options, gameState.CurrentScreen);
+        Assert.Equal(PlanetType.Fractal, gameState.Config.Game.PlanetStyle);
+    }
+
+    [Fact]
+    public void TheCursorWrapsDownFromBackToTheFirstSetting()
+    {
+        SettingsController controller = CreateController(out GameState gameState, out FakeKeyboard keyboard, out _);
+        controller.Reset();
+
+        // Past the Back row, which is one further down than there are settings.
+        for (int i = 0; i <= controller.Settings.Count; i++)
+        {
+            keyboard.KeyDown(ConsoleKey.DownArrow, default);
+            controller.HandleInput();
+            keyboard.KeyUp(ConsoleKey.DownArrow, default);
+        }
+
+        keyboard.KeyDown(ConsoleKey.Enter, default);
+        controller.HandleInput();
+
+        Assert.Equal(PlanetType.Solid, gameState.Config.Game.PlanetStyle);
+    }
+
     private static SettingsController CreateController(
         out GameState gameState,
         out FakeKeyboard keyboard,

@@ -108,6 +108,9 @@ internal abstract class SettingsListController : IScreenController
 
     private int BackIndex => _rows.Children.Count;
 
+    // The settings, plus the Back row under them.
+    private int RowCount => _rows.Children.Count + 1;
+
     public void Draw()
     {
         _baseView.DrawBorder();
@@ -160,19 +163,10 @@ internal abstract class SettingsListController : IScreenController
     {
     }
 
-    private void SelectDown()
-    {
-        if (HighlightedItem < BackIndex)
-        {
-            HighlightedItem++;
-        }
-    }
+    // The cursor wraps rather than stopping at the ends, as the options menu's
+    // does: Back is the last row on every one of these screens, so one press
+    // up from the first setting is the shortest way out.
+    private void SelectDown() => HighlightedItem = (HighlightedItem + 1) % RowCount;
 
-    private void SelectUp()
-    {
-        if (HighlightedItem > 0)
-        {
-            HighlightedItem--;
-        }
-    }
+    private void SelectUp() => HighlightedItem = (HighlightedItem + RowCount - 1) % RowCount;
 }

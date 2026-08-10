@@ -7,6 +7,46 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Credits screen, a way out of the options, and Window Scale, 2026-08-10)
+
+- **The credits are a screen of their own.** The version and the three
+  credit lines used to sit as a footer under the options rows, competing
+  with the menu for the screen; a Credits row now opens them on their own
+  page, with a Back row that returns to the options. Both tiers draw it -
+  8-bit word-wraps the names to its 40-column row, 16-bit gives each one a
+  line - and `CreditsModel` joins the screens a rendition has to supply.
+- **The options menu has a Back row.** It is the last row, under Quit,
+  where the settings screens put theirs, and it returns to the screen the
+  commander opened the options from rather than to a fixed one:
+  `GameState.EnterOptions` records that at the F11 press, so a settings
+  screen returning to the options with a plain `SetView` leaves it alone
+  and Back still leads all the way out. Before this, opening the options
+  from the title or ship-parade screens left no way back to them.
+- **The key that opens the options closes them.** F11 pressed on the options
+  does what Back does; pressed on a screen the options themselves led to, it
+  returns to the options without moving where Back leads. Both used to leave
+  Back returning into the menu it was trying to leave.
+- **The menu cursors wrap.** Up from the first row of the options menu or
+  either settings screen lands on Back, which is the last row on all three,
+  and down from Back returns to the first. The cursors used to stop at the
+  ends.
+- **Window Scale is a setting rather than a hand-edit.** It joins the
+  engine settings screen beside Backend and Rendition, marked `*` because
+  the window is made before the screen exists. The scales offered are the
+  rendition's - `IRendition.WindowScales` and `DefaultWindowScale`, with
+  8-bit offering 1x, 2x and 4x (4x by default) and 16-bit 1x and 2x (2x) -
+  since a canvas that is already 640 wide has less room to grow than one
+  that is 320.
+- **A hand-edited scale is pegged rather than discarded.** The config file
+  cannot judge one on its own: which scales exist is the chosen rendition's
+  answer, and the rendition is not loaded until after the file is read. So
+  `EngineConfigSettings.WindowScale` became nullable - null meaning the
+  commander has never chosen, which 1 cannot stand in for - and
+  `WindowScales.Resolve` settles it once the rendition is known, taking the
+  rendition's default when unchosen and the nearest offered scale (ties to
+  the larger) when not. A file asking for 3 on the 8-bit tier now opens at
+  4x instead of falling back to 1.
+
 ### Added (Gouraud shading, 2026-08-10)
 
 - **`SharpKind.Graphics.Rendering.VertexNormals`** derives the per-vertex

@@ -44,7 +44,7 @@ Use Left/Right cursor keys to scroll through ships on the ship parade screen
 | F8 | Stock market |
 | F9 | Commander information |
 | F10 | Inventory |
-| F11 | Options |
+| F11 | Options — pressed again on the options, closes them and returns to where they were opened from |
 | F12 | Dump the current frame as a BMP (needs `GAME_FRAME_DUMP_DIR` — see the [main readme](../README.md#environment-variables)) |
 | P | Pause game |
 | R | Resume game |
@@ -97,16 +97,24 @@ Use Left/Right cursor keys to scroll through ships on the ship parade screen
 ### Options Screen
 | Key | Function |
 | --- | -------- |
-| Arrow keys | Navigate options |
-| Enter | Change option |
+| S or Up Arrow | Select previous row |
+| X or Down Arrow | Select next row |
+| Enter | Choose the selected row |
+| F11 | Close the options, the same as the Back row |
+
+Its rows are Save Commander, Load Commander, Game Settings, Engine Settings, Credits, Quit and Back. Save and Load are greyed out while in flight rather than hidden, so a row never moves.
+
+The cursor is a ring: up from the first row lands on Back, which is the last, and down from Back returns to the first. **Back** returns to whichever screen the options were opened from — including the title and ship-parade screens, which have no other way back — and F11 pressed on the options does the same, so the key that opens them closes them.
+
+**Credits** is a screen of its own, holding the version and who wrote the game; Enter or Escape returns to the options.
 
 ### Settings Screens
-There are two, matching the two halves of the config file. Both are reached from the Options Screen (F11). Use the cursor keys to select a setting and Enter/Return to change it; every change takes effect immediately and is saved as it is made, so there is no save step.
+There are two, matching the two halves of the config file. Both are reached from the Options Screen (F11). Use the cursor keys to select a setting and Enter/Return to change it; every change takes effect immediately and is saved as it is made, so there is no save step. The cursor rings here too, so one press up from the first setting is the way to the Back row at the foot.
 
 - **Game Settings** — how Elite itself looks and plays: planet style, sun style, planet descriptions and instant docking.
-- **Engine Settings** — the settings shared by every game in the collection: graphic style (wireframe or solid), depth sort, music, sound effects, backend and rendition.
+- **Engine Settings** — the settings shared by every game in the collection: graphic style (wireframe or solid), depth sort, shading, quantisation, music, sound effects, backend, window scale and rendition.
 
-The last two are marked `*` on the screen: the backend picks the rendering and audio implementation and the rendition picks everything the game draws with, its resolution included, and both are read before the game is built, so a change to either is saved now and picked up the next time the game starts.
+The last three are marked `*` on the screen: the backend picks the rendering and audio implementation, the rendition picks everything the game draws with, its resolution included, and the window scale decides how far that is magnified into the window. All three are read before the game is built, so a change to any of them is saved now and picked up the next time the game starts.
 
 ## Configuration
 
@@ -187,6 +195,11 @@ Unlike the missions, this folder is not optional:
   commander can only switch to one that is really there. The change applies
   next time the game starts, since the window is made at the size the
   rendition asks for.
+- **A rendition also says how far it may be magnified.** The window scales on
+  offer are its own — `8-bit` offers 1, 2 and 4 (4 by default) against its
+  320 x 256 canvas, `16-bit` 1 and 2 (2 by default) against its 640 x 512 —
+  so the Engine Settings screen offers those, and a `windowScale` hand-edited
+  into the config file is pegged to the nearest one the rendition allows.
 
 Files written before renditions existed say `"tier": "8Bit"`. That is read and
 carried over to `"rendition": "EightBit"` the first time the file is saved, so

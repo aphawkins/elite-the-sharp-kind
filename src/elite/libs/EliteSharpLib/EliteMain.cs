@@ -375,7 +375,7 @@ public sealed class EliteMain : IGame, IGameApp
 
         if (_keyboard.IsPressed(ConsoleKey.F11))
         {
-            State.SetView(Screen.Options);
+            State.EnterOptions();
         }
     }
 

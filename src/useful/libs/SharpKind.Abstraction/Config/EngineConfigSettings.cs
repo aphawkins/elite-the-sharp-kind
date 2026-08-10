@@ -18,8 +18,6 @@ public sealed class EngineConfigSettings
     // shown on, so it is a typo rather than an intention.
     private const int MaxWindowScale = 4;
 
-    private const int DefaultWindowScale = 1;
-
     private static readonly Dictionary<string, string> s_legacyRenditionNames = new(StringComparer.Ordinal)
     {
         ["8Bit"] = "8-bit",
@@ -60,7 +58,12 @@ public sealed class EngineConfigSettings
     // magnified only at presentation, so scale 2 fills a window twice the
     // size with the same pixels doubled rather than with more detail.
     // Integer only - a fractional scale cannot double pixels evenly.
-    public int WindowScale { get; set; } = DefaultWindowScale;
+    //
+    // Null means the commander has never chosen one, which is not the same as
+    // choosing 1: what an unchosen scale should be is the app's to say, and
+    // Elite's answer depends on the rendition. Each app resolves it before
+    // the window is made.
+    public int? WindowScale { get; set; }
 
     /// <summary>
     /// Replaces any engine value that cannot be honoured with its default, in
@@ -106,9 +109,11 @@ public sealed class EngineConfigSettings
             repaired = true;
         }
 
+        // A scale outside what any display could show is a typo, so it goes
+        // back to unchosen and the app picks for the commander.
         if (WindowScale is < 1 or > MaxWindowScale)
         {
-            WindowScale = DefaultWindowScale;
+            WindowScale = null;
             repaired = true;
         }
 

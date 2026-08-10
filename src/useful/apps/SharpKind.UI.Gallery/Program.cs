@@ -69,10 +69,16 @@ internal static class Program
     {
         int height = Gallery.LayoutRows * (engine.Backend == Backend.Hardware ? TrueTypeRowHeight : BitmapRowHeight);
 
-        while (engine.WindowScale > 1 && height * engine.WindowScale > MaxWindowHeight)
+        // An unchosen scale is the gallery's own default; from there it shrinks
+        // to whatever fits.
+        int scale = engine.WindowScale ?? GalleryConfig.DefaultWindowScale;
+
+        while (scale > 1 && height * scale > MaxWindowHeight)
         {
-            engine.WindowScale--;
+            scale--;
         }
+
+        engine.WindowScale = scale;
 
         ServiceCollection services = new();
         services.AddGameEngine(engine, Width, height, Title, loggerFactory);

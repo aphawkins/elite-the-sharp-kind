@@ -48,14 +48,14 @@ public static class GameServiceCollectionExtensions
             ? new SDLAbstraction(
                 screenWidth,
                 screenHeight,
-                engine.WindowScale,
+                engine.WindowScale ?? 1,
                 title,
                 sp.GetRequiredService<IAssetLocator>(),
                 sp.GetRequiredService<ILoggerFactory>().CreateLogger(AssetLogCategory))
             : new SoftwareAbstraction(
                 screenWidth,
                 screenHeight,
-                engine.WindowScale,
+                engine.WindowScale ?? 1,
                 title,
                 sp.GetRequiredService<IAssetLocator>(),
                 sp.GetRequiredService<ILoggerFactory>().CreateLogger(AssetLogCategory)));

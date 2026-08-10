@@ -105,6 +105,32 @@ public class EngineSettingsControllerTests
         Assert.False(audio.MusicOn);
     }
 
+    // Row 7 is Window Scale. The 16-bit tier this fixture builds offers 1 and
+    // 2, so stepping off its default of 2 lands on 1 - and the row shows the
+    // scales as multipliers rather than bare numbers.
+    [Fact]
+    public void SelectingAWindowScaleSavesIt()
+    {
+        EngineSettingsController controller = CreateController(
+            out GameState gameState, out FakeKeyboard keyboard, out _, out ConfigFile<EliteConfig> configFile);
+        controller.Reset();
+
+        for (int i = 0; i < 7; i++)
+        {
+            keyboard.KeyDown(ConsoleKey.DownArrow, default);
+            controller.HandleInput();
+        }
+
+        Assert.Equal(["1x", "2x"], controller.Settings[7].Values);
+
+        keyboard.KeyUp(ConsoleKey.DownArrow, default);
+        keyboard.KeyDown(ConsoleKey.Enter, default);
+        controller.HandleInput();
+
+        Assert.Equal(1, gameState.Config.Engine.WindowScale);
+        Assert.Equal(1, configFile.ReadConfig().Engine.WindowScale);
+    }
+
     // The game's own settings belong to the other screen.
     [Fact]
     public void ChangingAnEngineSettingLeavesTheGameSettingsAlone()
@@ -124,7 +150,7 @@ public class EngineSettingsControllerTests
         controller.Reset();
 
         // Navigate to the last row - the Back row.
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 9; i++)
         {
             keyboard.KeyDown(ConsoleKey.DownArrow, default);
             controller.HandleInput();

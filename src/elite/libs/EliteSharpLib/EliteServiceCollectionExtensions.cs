@@ -133,11 +133,23 @@ public static class EliteServiceCollectionExtensions
         services.AddSingleton(sp => new RNG(sp.GetRequiredService<Random>()));
 
         services.AddSingleton(sp => new ScreenManager<Screen, IScreenController>(sp.GetRequiredService<IKeyboard>()));
-        services.AddSingleton(sp => new GameState(
-            sp.GetRequiredService<ScreenManager<Screen, IScreenController>>(),
-            sp.GetRequiredService<MissionRegistry>())
+        services.AddSingleton(sp =>
         {
-            Config = sp.GetRequiredService<ConfigFile<EliteConfig>>().ReadConfig(),
+            EliteConfig config = sp.GetRequiredService<ConfigFile<EliteConfig>>().ReadConfig();
+
+            // The same resolution the app made before the window was sized -
+            // the rendition owns the scales on offer - so the settings screen
+            // shows the scale the window was actually made at.
+            config.Engine.WindowScale = WindowScales.Resolve(
+                sp.GetRequiredService<IRendition>(),
+                config.Engine.WindowScale);
+
+            return new GameState(
+                sp.GetRequiredService<ScreenManager<Screen, IScreenController>>(),
+                sp.GetRequiredService<MissionRegistry>())
+            {
+                Config = config,
+            };
         });
         services.AddSingleton(_ => new PlayerShip());
         services.AddSingleton(sp => new Trade(sp.GetRequiredService<GameState>(), sp.GetRequiredService<PlayerShip>()));
@@ -250,6 +262,7 @@ public static class EliteServiceCollectionExtensions
         views.Add(Screen.Inventory, sp.GetRequiredService<InventoryController>());
         views.Add(Screen.EquipShip, sp.GetRequiredService<EquipmentController>());
         views.Add(Screen.Options, sp.GetRequiredService<OptionsController>());
+        views.Add(Screen.Credits, sp.GetRequiredService<CreditsController>());
         views.Add(Screen.LoadCommander, sp.GetRequiredService<LoadCommanderController>());
         views.Add(Screen.SaveCommander, sp.GetRequiredService<SaveCommanderController>());
         views.Add(Screen.Quit, sp.GetRequiredService<QuitController>());

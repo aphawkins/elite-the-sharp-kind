@@ -37,6 +37,19 @@ internal sealed class GameState
     /// </summary>
     internal const float LaserTempOverheated = 242 * LaserTempStep;
 
+    // The options menu and every screen reached from it. None of these is
+    // somewhere the options can return to: they are all inside it.
+    private static readonly Screen[] s_optionsFamily =
+    [
+        Screen.Options,
+        Screen.Credits,
+        Screen.Settings,
+        Screen.EngineSettings,
+        Screen.SaveCommander,
+        Screen.LoadCommander,
+        Screen.Quit,
+    ];
+
     private readonly ScreenManager<Screen, IScreenController> _views;
 
     internal GameState(ScreenManager<Screen, IScreenController> views, MissionRegistry missions)
@@ -93,7 +106,43 @@ internal sealed class GameState
 
     internal string PlanetName { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets the screen the options menu's Back row returns to: the one the
+    /// commander opened the options from. Only <see cref="EnterOptions"/>
+    /// writes it, so a settings screen returning to the options with a plain
+    /// <see cref="SetView"/> leaves it where it was and Back still goes all
+    /// the way out.
+    /// </summary>
+    internal Screen OptionsReturn { get; private set; } = Screen.FrontView;
+
     internal void DoExitGame() => ExitGame = true;
+
+    /// <summary>
+    /// Opens the options menu, remembering the screen it was opened from so
+    /// its Back row can return there. Pressing the key again on the options
+    /// closes them: the same key in and out, and the same place either way.
+    /// <para>
+    /// The screen to return to is only taken from outside the options family.
+    /// Taking it from a screen inside would make the way out lead back in - a
+    /// second press on the options themselves would leave Back returning to
+    /// the options - which is a menu with no way out of it at all.
+    /// </para>
+    /// </summary>
+    internal void EnterOptions()
+    {
+        if (CurrentScreen == Screen.Options)
+        {
+            SetView(OptionsReturn);
+            return;
+        }
+
+        if (!s_optionsFamily.Contains(CurrentScreen))
+        {
+            OptionsReturn = CurrentScreen;
+        }
+
+        SetView(Screen.Options);
+    }
 
     /// <summary>
     /// Game Over...

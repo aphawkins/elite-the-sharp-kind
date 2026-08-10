@@ -5,12 +5,7 @@
 namespace EliteSharp.Abstractions.Views;
 
 /// <summary>
-/// The options menu: its rows, which one the cursor is on, and the credits
-/// footer. <paramref name="Version"/> is read from the assembly, so it is
-/// content the controller supplies rather than something the view can derive.
+/// The options menu: its rows, and which one the cursor is on. The version and
+/// the credits are their own screen - see <see cref="CreditsModel"/>.
 /// </summary>
-public sealed record OptionsModel(
-    IReadOnlyList<OptionRow> Options,
-    int HighlightedIndex,
-    string Version,
-    IReadOnlyList<string> Credits);
+public sealed record OptionsModel(IReadOnlyList<OptionRow> Options, int HighlightedIndex);

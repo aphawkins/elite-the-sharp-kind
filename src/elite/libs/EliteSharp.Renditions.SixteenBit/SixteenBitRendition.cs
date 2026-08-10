@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -27,6 +27,12 @@ public sealed class SixteenBitRendition : IRendition
 
     public int Scale => 2;
 
+    // 640x512 doubled is 1280x1024; there is no room above that on a common
+    // display, so this tier stops where the 8-bit one keeps going.
+    public IReadOnlyList<int> WindowScales => [1, 2];
+
+    public int DefaultWindowScale => 2;
+
     // 4096 colours, and a palette that does not have to name them all, so a
     // lit face can take any tone its DAC reaches rather than the nearest one
     // an artist named.
@@ -47,6 +53,7 @@ public sealed class SixteenBitRendition : IRendition
 
         ViewSet views = new ViewSet()
             .Add(new CommanderStatusView16Bit(surface))
+            .Add(new CreditsView16Bit(surface))
             .Add(new EquipmentView16Bit(surface))
             .Add(new EscapeCapsuleView16Bit(surface))
             .Add(new GalacticChartView16Bit(surface))

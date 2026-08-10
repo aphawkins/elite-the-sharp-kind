@@ -8,25 +8,27 @@ using SharpKind.Input;
 namespace EliteSharpLib.Views;
 
 /// <summary>
-/// The options menu's behaviour: the cursor over its five rows, and choosing
-/// one greys out the docked-only rows while undocked rather than hiding them.
+/// The options menu's behaviour: the cursor over its rows, and choosing one.
+/// The docked-only rows are greyed out while undocked rather than hidden.
+/// <para>
+/// Back is the last row rather than the first, so the rows read as the things
+/// the commander came here to do with the way out under them - the same place
+/// the settings screens put theirs. Where it goes back to is the screen the
+/// commander opened the options from, which <see cref="GameState"/> keeps: F11
+/// works from the title screens too, and those had no way out before.
+/// </para>
 /// </summary>
 internal sealed class OptionsController : IScreenController
 {
-    private static readonly IReadOnlyList<string> s_credits =
-    [
-        "The Sharp Kind - A Hawkins",
-        "The New Kind - C Pinder",
-        "Original Game - I Bell & D Braben",
-    ];
-
     private readonly (string Label, bool DockedOnly)[] _optionList =
     [
         new("Save Commander", true),
         new("Load Commander", true),
         new("Game Settings", false),
         new("Engine Settings", false),
+        new("Credits", false),
         new("Quit", false),
+        new("Back", false),
     ];
 
     private readonly GameState _gameState;
@@ -46,14 +48,17 @@ internal sealed class OptionsController : IScreenController
 
     public void HandleInput()
     {
+        // The cursor wraps rather than stopping at the ends: Back is the last
+        // row, so one press up from the top is the shortest way to it, and the
+        // menu is short enough to read as a ring.
         if (_keyboard.IsPressed(ConsoleKey.S) || _keyboard.IsPressed(ConsoleKey.UpArrow))
         {
-            _highlightedItem = Math.Clamp(_highlightedItem - 1, 0, _optionList.Length - 1);
+            _highlightedItem = (_highlightedItem + _optionList.Length - 1) % _optionList.Length;
         }
 
         if (_keyboard.IsPressed(ConsoleKey.X) || _keyboard.IsPressed(ConsoleKey.DownArrow))
         {
-            _highlightedItem = Math.Clamp(_highlightedItem + 1, 0, _optionList.Length - 1);
+            _highlightedItem = (_highlightedItem + 1) % _optionList.Length;
         }
 
         if (_keyboard.IsPressed(ConsoleKey.Enter))
@@ -77,11 +82,7 @@ internal sealed class OptionsController : IScreenController
             rows[i] = new(_optionList[i].Label, _gameState.IsDocked || !_optionList[i].DockedOnly);
         }
 
-        return new(
-            rows,
-            _highlightedItem,
-            $"Version: {typeof(OptionsController).Assembly.GetName().Version}",
-            s_credits);
+        return new(rows, _highlightedItem);
     }
 
     private void ExecuteOption()
@@ -107,7 +108,15 @@ internal sealed class OptionsController : IScreenController
                     break;
 
                 case 4:
+                    _gameState.SetView(Screen.Credits);
+                    break;
+
+                case 5:
                     _gameState.SetView(Screen.Quit);
+                    break;
+
+                case 6:
+                    _gameState.SetView(_gameState.OptionsReturn);
                     break;
             }
         }

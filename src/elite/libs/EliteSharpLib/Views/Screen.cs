@@ -32,4 +32,5 @@ internal enum Screen
     Undocking = 24,
     Hyperspace = 25,
     EngineSettings = 26,
+    Credits = 27,
 }

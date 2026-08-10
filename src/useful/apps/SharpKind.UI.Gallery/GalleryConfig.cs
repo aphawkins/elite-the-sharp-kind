@@ -18,7 +18,7 @@ namespace SharpKind.UI.Gallery;
 /// </summary>
 internal sealed class GalleryConfig : ConfigSettings
 {
-    private const int DefaultWindowScale = 3;
+    internal const int DefaultWindowScale = 3;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GalleryConfig"/> class,

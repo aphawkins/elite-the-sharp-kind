@@ -56,6 +56,26 @@ public interface IRendition
     public int Scale { get; }
 
     /// <summary>
+    /// Gets the window scales this rendition offers, smallest first. A scale
+    /// magnifies the rendered pixels at presentation, so what is sensible
+    /// depends on how big this rendition already draws: a 320x256 canvas has
+    /// room to quadruple where a 512x512 one does not.
+    /// <para>
+    /// A rendition that says nothing offers only 1, which every display can
+    /// show.
+    /// </para>
+    /// </summary>
+    public IReadOnlyList<int> WindowScales => [1];
+
+    /// <summary>
+    /// Gets the window scale a commander who has never chosen one gets. Stated
+    /// rather than taken as the largest of <see cref="WindowScales"/>: which
+    /// window a rendition wants to open at is its own choice, not a
+    /// consequence of what it will tolerate.
+    /// </summary>
+    public int DefaultWindowScale => 1;
+
+    /// <summary>
     /// Gets a value indicating whether this rendition's ships are lit by a
     /// directional light rather than filled with their flat model colour.
     /// <para>
