@@ -1,9 +1,10 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
+﻿// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using System.Numerics;
 using SharpKind.Assets.Models;
+using SharpKind.Graphics.Rendering;
 using StuntCarRacerSharpLib.Tracks;
 
 namespace StuntCarRacerSharpLib.Rendering;
@@ -69,25 +70,41 @@ public sealed class CarMesh
         double originY = ((frontY + rearY) / 2) + (vertY * _bottomOffset);
         double originZ = ((frontZ + rearZ) / 2) + (vertZ * _bottomOffset);
 
-        Span<Coord3D> world = stackalloc Coord3D[_model.Points.Count];
-        for (int i = 0; i < _model.Points.Count; i++)
-        {
-            Vector4 v = _model.Points[i].Coords;
-            world[i] = new(
-                (int)(originX + (rightX * v.X) + (vertX * v.Y) + (forwardX * v.Z)),
-                (int)(originY + (rightY * v.X) + (vertY * v.Y) + (forwardY * v.Z)),
-                (int)(originZ + (rightZ * v.X) + (vertZ * v.Y) + (forwardZ * v.Z)));
-        }
+        // The frame's rows are where the model's own x, y and z axes end up:
+        // the model is authored x = right, y = up, z = forward.
+        Matrix4x4 frame = default;
+        frame.M11 = (float)rightX;
+        frame.M12 = (float)rightY;
+        frame.M13 = (float)rightZ;
+        frame.M21 = (float)vertX;
+        frame.M22 = (float)vertY;
+        frame.M23 = (float)vertZ;
+        frame.M31 = (float)forwardX;
+        frame.M32 = (float)forwardY;
+        frame.M33 = (float)forwardZ;
+        frame.M44 = 1;
 
-        foreach (Face face in _model.Faces)
+        Span<Vector3> world = stackalloc Vector3[_model.Points.Count];
+        MeshTransform.TransformPoints(
+            _model,
+            frame,
+            new((float)originX, (float)originY, (float)originZ),
+            world);
+
+        Span<Vector3> facePoints = stackalloc Vector3[MeshTransform.MaxFacePoints(_model)];
+        for (int i = 0; i < _model.Faces.Count; i++)
         {
-            Coord3D[] facePoints = new Coord3D[face.PointIndices.Count];
-            for (int j = 0; j < facePoints.Length; j++)
+            int count = MeshTransform.FacePoints(_model, i, world, facePoints);
+
+            // The track works in whole units, so the mesh lands on them here -
+            // the same rounding the hand-rolled transform did.
+            Coord3D[] points = new Coord3D[count];
+            for (int j = 0; j < count; j++)
             {
-                facePoints[j] = world[face.PointIndices[j]];
+                points[j] = new((int)facePoints[j].X, (int)facePoints[j].Y, (int)facePoints[j].Z);
             }
 
-            polygons.Add(new(facePoints, face.Color));
+            polygons.Add(new(points, _model.Faces[i].Color));
         }
     }
 

@@ -203,13 +203,21 @@ internal class ShipBase : IShip
         return frustum.Intersects(new(Location.X, Location.Y, Location.Z), _geometry.BoundingRadius);
     }
 
+    // The model placed in camera space, then projected. The placing is the
+    // step every renderer of a model starts with, so the library does it; the
+    // projection that follows is this game's own.
     private void TransformModelPoints(Matrix4x4 transform, Vector4[] pointList)
     {
+        MeshTransform.TransformPoints(
+            Model,
+            transform,
+            new(Location.X, Location.Y, Location.Z),
+            _cameraList);
+
         for (int i = 0; i < Model.Points.Count; i++)
         {
-            Vector4 camera = Vector4.Transform(Model.Points[i].Coords, transform) + Location;
-            _cameraList[i] = new(camera.X, camera.Y, camera.Z);
-            pointList[i] = ProjectPoint(camera);
+            Vector3 camera = _cameraList[i];
+            pointList[i] = ProjectPoint(new(camera, 1));
         }
     }
 
@@ -240,11 +248,7 @@ internal class ShipBase : IShip
 
     private void DrawModelFaces(Vector4[] pointList)
     {
-        int maxPoints = 0;
-        for (int i = 0; i < Model.Faces.Count; i++)
-        {
-            maxPoints = Math.Max(maxPoints, Model.Faces[i].Points.Count);
-        }
+        int maxPoints = MeshTransform.MaxFacePoints(Model);
 
         Span<Vector3> face = maxPoints <= StackFacePoints ? stackalloc Vector3[StackFacePoints] : new Vector3[maxPoints];
         Span<Vector3> clipped = maxPoints <= StackFacePoints ? stackalloc Vector3[StackFacePoints + 1] : new Vector3[maxPoints + 1];
@@ -281,7 +285,7 @@ internal class ShipBase : IShip
     {
         float bias = _geometry.FaceRoots[faceIndex] == faceIndex ? 1f : DecalDepthBias;
         Vector2[]? poly_list = BuildFacePolygon(
-            Model.Faces[faceIndex],
+            faceIndex,
             pointList,
             cameraPoints,
             clipped,
@@ -445,13 +449,14 @@ internal class ShipBase : IShip
     // entirely behind the near plane. depthBias scales those depths, to
     // settle a decal against the face it sits on.
     private Vector2[]? BuildFacePolygon(
-        Face face,
+        int faceIndex,
         Vector4[] pointList,
         in Span<Vector3> cameraPoints,
         in Span<Vector3> clipped,
         float depthBias,
         out float[] depths)
     {
+        Face face = Model.Faces[faceIndex];
         int numPoints = face.Points.Count;
 
         // A 2-point detail line is not a polygon - the cyclic clipper would
@@ -473,10 +478,7 @@ internal class ShipBase : IShip
             return line;
         }
 
-        for (int j = 0; j < numPoints; j++)
-        {
-            cameraPoints[j] = _cameraList[face.PointIndices[j]];
-        }
+        MeshTransform.FacePoints(Model, faceIndex, _cameraList, cameraPoints);
 
         int count = NearPlaneClip.Clip(cameraPoints[..numPoints], NearPlane, clipped);
         if (count < 3)
@@ -513,9 +515,10 @@ internal class ShipBase : IShip
         IReadOnlyList<Vector3> cornerNormals = CornerNormals[faceIndex];
         int numPoints = face.Points.Count;
 
+        MeshTransform.FacePoints(Model, faceIndex, _cameraList, cameraPoints);
+
         for (int j = 0; j < numPoints; j++)
         {
-            cameraPoints[j] = _cameraList[face.PointIndices[j]];
             cornerColours[j] = _draw.ShadeVertex(face.Color, RotateToCamera(cornerNormals[j]), _geometry.FullyLit);
         }
 

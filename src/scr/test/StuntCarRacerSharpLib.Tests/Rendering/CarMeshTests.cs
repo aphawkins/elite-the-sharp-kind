@@ -1,4 +1,4 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
+﻿// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
@@ -61,6 +61,42 @@ public class CarMeshTests
         Assert.Equal(0, lowestY);
     }
 
+    // The mesh is placed on a single-precision frame, far from the track
+    // origin and at an angle - where rounding has the most room to show. The
+    // shape must arrive intact: the car is rigid, so the distance between two
+    // of its points cannot change with where it sits or which way it faces.
+    [Fact]
+    public void TheMeshKeepsItsShapeOnAFarOffAngledFrame()
+    {
+        CarMesh carMesh = new(new ScrPalette(AssetLocator.Create()));
+        List<WorldPolygon> atOrigin = [];
+        List<WorldPolygon> farAway = [];
+
+        carMesh.Append(atOrigin, s_rearLeft, s_rearRight, s_frontLeft, s_frontRight);
+
+        // The same square frame, turned 45 degrees about y and moved a long
+        // way out along the track.
+        const int offset = 100_000;
+        carMesh.Append(
+            farAway,
+            Turned(s_rearLeft, offset),
+            Turned(s_rearRight, offset),
+            Turned(s_frontLeft, offset),
+            Turned(s_frontRight, offset));
+
+        Coord3D[] first = [.. atOrigin.SelectMany(p => p.Points.ToArray())];
+        Coord3D[] second = [.. farAway.SelectMany(p => p.Points.ToArray())];
+
+        Assert.Equal(first.Length, second.Length);
+
+        // Every edge of every face keeps its length, to within the whole unit
+        // the track rounds to.
+        for (int i = 1; i < first.Length; i++)
+        {
+            Assert.Equal(Separation(first[i - 1], first[i]), Separation(second[i - 1], second[i]), 2.0);
+        }
+    }
+
     [Fact]
     public void AppendThrowsOnNullPolygons()
     {
@@ -68,5 +104,23 @@ public class CarMeshTests
 
         Assert.Throws<ArgumentNullException>(
             () => carMesh.Append(null!, s_rearLeft, s_rearRight, s_frontLeft, s_frontRight));
+    }
+
+    private static Coord3D Turned(Coord3D corner, int offset)
+    {
+        const double angle = Math.PI / 4;
+        double x = (corner.X * Math.Cos(angle)) - (corner.Z * Math.Sin(angle));
+        double z = (corner.X * Math.Sin(angle)) + (corner.Z * Math.Cos(angle));
+
+        return new((int)x + offset, corner.Y + offset, (int)z + offset);
+    }
+
+    private static double Separation(Coord3D first, Coord3D second)
+    {
+        double dx = first.X - second.X;
+        double dy = first.Y - second.Y;
+        double dz = first.Z - second.Z;
+
+        return Math.Sqrt((dx * dx) + (dy * dy) + (dz * dz));
     }
 }
