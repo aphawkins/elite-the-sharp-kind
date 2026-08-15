@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -10,7 +10,6 @@ using SharpKind;
 using SharpKind.Assets.Models;
 using SharpKind.Graphics;
 using SharpKind.Graphics.Rendering;
-using SharpKind.Maths;
 
 namespace EliteSharpLib.Ships;
 
@@ -52,14 +51,10 @@ internal class ShipBase : IShip
 
     private readonly IEliteDraw _draw;
     private readonly RNG _rng;
-    private int[]? _faceRoot;
-    private Vector3[]? _faceNormal;
-    private float? _boundingRadius;
 
-    // The brightness a fully-lit face of this model takes. Found with the face
-    // roots, on the same first draw, and constant thereafter - the model's
-    // colours do not change.
-    private byte _fullyLit;
+    // What the model's shape implies. Derived whenever the model is set, so
+    // the two always agree.
+    private ModelGeometry _geometry = ModelGeometry.For(ModelReader.None);
 
     // Reused across frames so drawing a ship doesn't allocate; grown to the
     // model's point count on first use.
@@ -130,13 +125,20 @@ internal class ShipBase : IShip
 
     public float VelocityMax { get; set; }
 
-    public ThreeDModel Model { get; set; }
+    public ThreeDModel Model
+    {
+        get;
 
-    // Gets the model's normal at each corner of each face, derived once with
-    // the face roots and constant thereafter - the geometry does not change. A
-    // Gouraud fill interpolates between these; a flat one has no use for
-    // them. Empty until the model has been drawn once.
-    internal Vector3[][] CornerNormals { get; private set; } = [];
+        set
+        {
+            field = value;
+            _geometry = ModelGeometry.For(value);
+        }
+    }
+
+    // Gets the model's normal at each corner of each face. A Gouraud fill
+    // interpolates between these; a flat one has no use for them.
+    internal IReadOnlyList<IReadOnlyList<Vector3>> CornerNormals => _geometry.CornerNormals;
 
     public IObject Clone()
     {
@@ -198,25 +200,7 @@ internal class ShipBase : IShip
             NearPlane,
             FarPlane);
 
-        return frustum.Intersects(new(Location.X, Location.Y, Location.Z), BoundingRadius());
-    }
-
-    // The furthest any of the model's points sits from its origin. Found once
-    // per instance, like the face roots - the geometry does not change.
-    private float BoundingRadius()
-    {
-        if (_boundingRadius == null)
-        {
-            float furthest = 0;
-            for (int i = 0; i < Model.Points.Count; i++)
-            {
-                furthest = MathF.Max(furthest, Model.Points[i].Coords.Length());
-            }
-
-            _boundingRadius = furthest;
-        }
-
-        return _boundingRadius.Value;
+        return frustum.Intersects(new(Location.X, Location.Y, Location.Z), _geometry.BoundingRadius);
     }
 
     private void TransformModelPoints(Matrix4x4 transform, Vector4[] pointList)
@@ -256,13 +240,6 @@ internal class ShipBase : IShip
 
     private void DrawModelFaces(Vector4[] pointList)
     {
-        if (_faceRoot == null)
-        {
-            (_faceRoot, _faceNormal) = FindFaceRoots();
-            CornerNormals = BuildCornerNormals();
-            _fullyLit = LambertShading.FullyLit(Model.Faces.Select(f => f.Color));
-        }
-
         int maxPoints = 0;
         for (int i = 0; i < Model.Faces.Count; i++)
         {
@@ -302,7 +279,7 @@ internal class ShipBase : IShip
         in Span<Vector3> cameraPoints,
         in Span<Vector3> clipped)
     {
-        float bias = _faceRoot![faceIndex] == faceIndex ? 1f : DecalDepthBias;
+        float bias = _geometry.FaceRoots[faceIndex] == faceIndex ? 1f : DecalDepthBias;
         Vector2[]? poly_list = BuildFacePolygon(
             Model.Faces[faceIndex],
             pointList,
@@ -313,8 +290,8 @@ internal class ShipBase : IShip
 
         if (poly_list != null)
         {
-            FastColor color = _draw.ShadeFace(Model.Faces[faceIndex].Color, cameraNormal, _fullyLit);
-            _draw.DrawPolygonFilled(poly_list, depths, color, FaceMeanZ(_faceRoot[faceIndex], pointList));
+            FastColor color = _draw.ShadeFace(Model.Faces[faceIndex].Color, cameraNormal, _geometry.FullyLit);
+            _draw.DrawPolygonFilled(poly_list, depths, color, FaceMeanZ(_geometry.FaceRoots[faceIndex], pointList));
         }
     }
 
@@ -349,7 +326,7 @@ internal class ShipBase : IShip
     // and what the depth bias in the flat path below assumes.
     private bool ShadesCorners(int faceIndex)
         => _draw.ShadesPerVertex
-            && CornerNormals[faceIndex].Length >= 3
+            && CornerNormals[faceIndex].Count >= 3
             && CornerNormals[faceIndex][0] != Vector3.Zero;
 
     // Backface cull in camera space, against the face's own model-space
@@ -366,7 +343,7 @@ internal class ShipBase : IShip
     {
         Face face = Model.Faces[faceIndex];
         Vector3 surfacePoint = _cameraList[face.PointIndices[0]];
-        Vector3 normal = _faceNormal![faceIndex];
+        Vector3 normal = _geometry.FaceNormals[faceIndex];
 
         if (normal == Vector3.Zero)
         {
@@ -533,13 +510,13 @@ internal class ShipBase : IShip
         out FastColor[] colours)
     {
         Face face = Model.Faces[faceIndex];
-        Vector3[] cornerNormals = CornerNormals[faceIndex];
+        IReadOnlyList<Vector3> cornerNormals = CornerNormals[faceIndex];
         int numPoints = face.Points.Count;
 
         for (int j = 0; j < numPoints; j++)
         {
             cameraPoints[j] = _cameraList[face.PointIndices[j]];
-            cornerColours[j] = _draw.ShadeVertex(face.Color, RotateToCamera(cornerNormals[j]), _fullyLit);
+            cornerColours[j] = _draw.ShadeVertex(face.Color, RotateToCamera(cornerNormals[j]), _geometry.FullyLit);
         }
 
         int count = NearPlaneClip.Clip(
@@ -582,85 +559,6 @@ internal class ShipBase : IShip
         }
 
         return z / face.Points.Count;
-    }
-
-    // For each face, the face it sits on: decal faces (cockpit windows,
-    // engine plates) and 2-point detail lines lie exactly in the plane of
-    // an earlier, larger face. They must render over that base face, so
-    // they share its depth key. Faces on no earlier plane root to
-    // themselves. Computed once per instance from the model geometry.
-    //
-    // Also returns each face's model-space normal, for the backface cull. A
-    // detail line has no normal of its own, so it takes its root face's -
-    // which is what makes far-side detail cull with the hull it sits on.
-    private (int[] Roots, Vector3[] Normals) FindFaceRoots()
-    {
-        int[] roots = new int[Model.Faces.Count];
-        Vector3[] normals = new Vector3[Model.Faces.Count];
-        List<(Vector4 Normal, float Offset, int Index)> planes = [];
-
-        for (int i = 0; i < Model.Faces.Count; i++)
-        {
-            roots[i] = i;
-
-            Face face = Model.Faces[i];
-            foreach ((Vector4 normal, float offset, int index) in planes)
-            {
-                bool onPlane = true;
-                for (int j = 0; j < face.Points.Count && onPlane; j++)
-                {
-                    onPlane = MathF.Abs(VectorMaths.VectorDotProduct(normal, face.Points[j].Coords) - offset) < 0.1f;
-                }
-
-                if (onPlane)
-                {
-                    roots[i] = roots[index];
-                    break;
-                }
-            }
-
-            if (face.Points.Count >= 3)
-            {
-                Vector4 edge1 = face.Points[1].Coords - face.Points[0].Coords;
-                Vector4 edge2 = face.Points[2].Coords - face.Points[0].Coords;
-                Vector3 cross = Vector3.Cross(new(edge1.X, edge1.Y, edge1.Z), new(edge2.X, edge2.Y, edge2.Z));
-                if (cross.LengthSquared() > 0)
-                {
-                    cross = Vector3.Normalize(cross);
-                    normals[i] = cross;
-                    Vector4 normal = new(cross, 0);
-                    planes.Add((normal, VectorMaths.VectorDotProduct(normal, face.Points[0].Coords), i));
-                }
-            }
-            else if (roots[i] != i)
-            {
-                normals[i] = normals[roots[i]];
-            }
-        }
-
-        return (roots, normals);
-    }
-
-    // The model's per-corner normals, from the face normals and roots found
-    // above. Only a face that roots to itself takes part in the averaging: a
-    // decal or detail line lies in the plane of the hull face beneath it, so
-    // counting its normal too would weight that one plane twice at every
-    // corner it touches and flatten the corner back towards the hull face's
-    // own direction - which is the opposite of what smoothing is for. Such a
-    // face is still given corners; they just come out zero, the same "no
-    // direction here" the flat path already uses.
-    private Vector3[][] BuildCornerNormals()
-    {
-        IList<int>[] faces = new IList<int>[Model.Faces.Count];
-        Vector3[] smoothing = new Vector3[Model.Faces.Count];
-
-        for (int i = 0; i < faces.Length; i++)
-        {
-            faces[i] = Model.Faces[i].PointIndices;
-            smoothing[i] = _faceRoot![i] == i ? _faceNormal![i] : Vector3.Zero;
-        }
-
-        return VertexNormals.Build(faces, smoothing);
     }
 
     private void DrawLasers(Vector4[] pointList)
