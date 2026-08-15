@@ -38,7 +38,8 @@ public class ShipBaseTests
             0,
             0);
 
-        Vector4 location = new(100, 200, 5000, 0);
+        // Near enough that the model still draws its detail lines.
+        Vector4 location = new(100, 200, 500, 0);
         Vector4 pointA = new(10, 20, 30, 0);
         Vector4 pointB = new(5, -15, 25, 0);
 
@@ -347,7 +348,9 @@ public class ShipBaseTests
         FakeShip ship = new(draw, new(new Random(0)))
         {
             Rotmat = Matrix4x4.Identity,
-            Location = new(0, 0, 1000, 0),
+
+            // Near enough that the line counts as visible detail.
+            Location = new(0, 0, 300, 0),
             Model = new()
             {
                 FaceNormals = [shared],
@@ -549,6 +552,46 @@ public class ShipBaseTests
         Assert.Single(draw.DrawnShadedPolygons);
         (Vector2[] _, float[] decalDepths, FastColor _, float _) = Assert.Single(draw.DrawnPolygons);
         Assert.All(decalDepths, d => Assert.InRange(d, 990f, 999.9f));
+    }
+
+    // A hull with a decal on it and a detail line across it. Close up the
+    // ship shows all three; far enough away that the whole hull is only a
+    // few pixels across, the decal and the line have no room to read as
+    // shapes, so only the hull is drawn.
+    [Theory]
+    [InlineData(1000, 3)]
+    [InlineData(10000, 1)]
+    public void DrawDropsHullDetailAtDistance(float depth, int expectedPolygons)
+    {
+        // Arrange
+        Vector4[] points =
+        [
+            new(-100, -100, 0, 0),
+            new(100, -100, 0, 0),
+            new(0, 100, 0, 0),
+            new(-10, -10, 0, 0),
+            new(10, -10, 0, 0),
+            new(0, 10, 0, 0),
+            new(-50, -50, 0, 0),
+            new(50, -50, 0, 0),
+        ];
+
+        FakeEliteDraw draw = new();
+        FakeShip ship = new(draw, new(new Random(0)))
+        {
+            Rotmat = Matrix4x4.Identity,
+            Location = new(0, 0, depth, 0),
+
+            // Wound so the hull and its decal survive the backface cull; the
+            // line takes the plane it lies in from them.
+            Model = BuildModel(points, [[0, 2, 1], [3, 5, 4], [6, 7]]),
+        };
+
+        // Act
+        ship.Draw();
+
+        // Assert
+        Assert.Equal(expectedPolygons, draw.DrawnPolygons.Count);
     }
 
     private static ThreeDModel BuildModel(Vector4[] coords, int[][] faceIndices)

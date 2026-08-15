@@ -101,12 +101,6 @@ per item whether authenticity or modernity wins.
       deliberate non-fix under Won't in
       [backlog-issues.md](backlog-issues.md), since the Amiga had neither).
       Elite is untextured entirely and gains nothing here.
-- [ ] [SharpKind.Graphics] Level of detail: the `ShipBase.Draw` docstring has
-      flagged "not showing detail at distance" as unimplemented since the
-      port began. The New Kind's models carry the data to do it. Cheap
-      version: skip 2-point detail lines and decal faces past a distance
-      threshold, which also relieves the polygon-cap pressure recorded in
-      the issues file.
 - [ ] [SharpKind.Graphics] Alpha blending: no transparency of any kind — the
       `DrawImage` path still carries a TODO admitting "should mix the
       transparent colors correctly here but the only transparency being

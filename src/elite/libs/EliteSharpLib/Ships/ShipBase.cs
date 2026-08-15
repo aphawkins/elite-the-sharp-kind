@@ -49,6 +49,15 @@ internal class ShipBase : IShip
     // can't punch through a face genuinely in front of it.
     private const float DecalDepthBias = 0.99f;
 
+    // The screen radius, in pixels, below which a ship stops showing the
+    // panels and lines painted on its hull. A decal spans roughly a fifth of
+    // the hull, so at this radius it covers about six pixels - the point
+    // where it stops reading as a shape and starts speckling the face it
+    // sits on. Derived from the projected size rather than a fixed range,
+    // so a large ship keeps its detail further out than a small one, and a
+    // wider rendition keeps it as long as the player can still see it.
+    private const float DetailScreenRadius = 16f;
+
     private readonly IEliteDraw _draw;
     private readonly RNG _rng;
 
@@ -151,7 +160,6 @@ internal class ShipBase : IShip
     /// Hacked version of the draw ship routine to display ships...
     /// This needs a lot of tidying...
     /// caveat: it is a work in progress.
-    /// A number of features(such as not showing detail at distance) have not yet been implemented.
     /// Check for hidden surface supplied by T.Harte.
     /// </summary>
     public virtual void Draw()
@@ -257,8 +265,15 @@ internal class ShipBase : IShip
             ? stackalloc FastColor[StackFacePoints + 1]
             : new FastColor[maxPoints + 1];
 
+        bool showsDetail = ShowsDetail();
+
         for (int i = 0; i < Model.Faces.Count; i++)
         {
+            if (!showsDetail && IsDetail(i))
+            {
+                continue;
+            }
+
             if (!IsFacingCamera(i, out Vector3 cameraNormal))
             {
                 continue;
@@ -273,6 +288,22 @@ internal class ShipBase : IShip
             DrawFlatFace(i, cameraNormal, pointList, face, clipped);
         }
     }
+
+    // How large the whole ship draws, against the size below which its
+    // detail is no longer worth drawing. The bounding sphere is the same
+    // radius the view cull uses, projected at the ship's own depth; a ship
+    // around or behind the camera plane fills the view, so it keeps its
+    // detail.
+    private bool ShowsDetail()
+        => _draw.Projector.Focus * _geometry.BoundingRadius / MathF.Max(Location.Z, NearPlane)
+            >= DetailScreenRadius;
+
+    // Detail is what the hull carries rather than what makes it: a 2-point
+    // line, and a decal face lying in an earlier face's plane. Both root to
+    // a face other than themselves, except an unrooted line, which lies on
+    // no plane at all but is still a line.
+    private bool IsDetail(int faceIndex)
+        => Model.Faces[faceIndex].Points.Count < 3 || _geometry.FaceRoots[faceIndex] != faceIndex;
 
     // One face as a single colour: the model's own, as this rendition's
     // lighting leaves it.

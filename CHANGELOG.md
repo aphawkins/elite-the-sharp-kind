@@ -7,6 +7,26 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Level of detail on distant ships, 2026-08-15)
+
+- **A ship too small on screen to show its hull detail no longer draws it.**
+  `ShipBase.Draw`'s docstring has flagged "not showing detail at distance"
+  as unimplemented since the port began. `DrawModelFaces` now skips a
+  model's decal faces and its 2-point detail lines once the whole ship
+  projects to less than 16 pixels of radius; the hull itself always draws.
+- **The threshold is a screen size, not a range.** A decal spans roughly a
+  fifth of the hull, so at 16 pixels of radius it covers about six pixels -
+  the point where it stops reading as a shape and starts speckling the face
+  it sits on. Because the test is on the projected size, a large ship keeps
+  its detail further out than a small one, and a wider rendition keeps it as
+  long as the commander can still see it.
+- **Detail is what the model already says it is.** A decal is a face rooted
+  to an earlier face's plane and a detail line is a face of fewer than three
+  points - both facts `ModelGeometry` derives, so nothing new is stored and
+  no model data changes. It also relieves the polygon-cap pressure noted in
+  the issues backlog, since the faces dropped are the ones a crowded frame
+  has most of.
+
 ### Added (Frustum culling for whole ships, 2026-08-15)
 
 - **A ship the viewport cannot show is no longer transformed.** Every object
