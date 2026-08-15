@@ -32,6 +32,12 @@ internal class ShipBase : IShip
     // Ship faces are small polygons; anything larger falls back to the heap.
     private const int StackFacePoints = 16;
 
+    // The frustum's far plane. Space removes a ship once it is further out
+    // than this (Space.cs), so the plane records the range the game already
+    // has rather than imposing a new one - a frustum has six planes and this
+    // is the sixth, not a new decision about what the player can see.
+    private const float FarPlane = 57344f;
+
     // Decal faces (cockpit windows, engine plates) lie exactly in the plane
     // of the hull face they sit on, so per-vertex depth makes them tie with
     // it pixel for pixel - and the rasteriser interpolates inverse depth
@@ -48,6 +54,7 @@ internal class ShipBase : IShip
     private readonly RNG _rng;
     private int[]? _faceRoot;
     private Vector3[]? _faceNormal;
+    private float? _boundingRadius;
 
     // The brightness a fully-lit face of this model takes. Found with the face
     // roots, on the same first draw, and constant thereafter - the model's
@@ -147,6 +154,13 @@ internal class ShipBase : IShip
     /// </summary>
     public virtual void Draw()
     {
+        // Nothing of this ship can be on screen, so none of it is worth
+        // transforming: the whole model, its faces and its laser go together.
+        if (!IsWithinView())
+        {
+            return;
+        }
+
         if (_pointList.Length < Model.Points.Count)
         {
             _pointList = new Vector4[Model.Points.Count];
@@ -163,6 +177,46 @@ internal class ShipBase : IShip
 
         // Draw firing lasers if needed
         DrawLasers(pointList);
+    }
+
+    // The ship as a bounding sphere at its own origin, against the frustum the
+    // viewport sees. The radius comes from the model rather than the
+    // hand-authored Size - Size is the collision radius squared (see Combat)
+    // and need not agree with the geometry, and a cull that rejects a ship the
+    // model would have drawn is a hole in the hull. Rotating a model about its
+    // origin cannot move it outside the sphere, so the one test covers every
+    // orientation. Conservative, so a ship with any part on screen always
+    // draws.
+    private bool IsWithinView()
+    {
+        ViewFrustum frustum = ViewFrustum.FromViewport(
+            _draw.Projector,
+            _draw.Layout.ViewportLeft,
+            _draw.Layout.ViewportTop,
+            _draw.Layout.ViewportWidth,
+            _draw.Layout.ViewportHeight,
+            NearPlane,
+            FarPlane);
+
+        return frustum.Intersects(new(Location.X, Location.Y, Location.Z), BoundingRadius());
+    }
+
+    // The furthest any of the model's points sits from its origin. Found once
+    // per instance, like the face roots - the geometry does not change.
+    private float BoundingRadius()
+    {
+        if (_boundingRadius == null)
+        {
+            float furthest = 0;
+            for (int i = 0; i < Model.Points.Count; i++)
+            {
+                furthest = MathF.Max(furthest, Model.Points[i].Coords.Length());
+            }
+
+            _boundingRadius = furthest;
+        }
+
+        return _boundingRadius.Value;
     }
 
     private void TransformModelPoints(Matrix4x4 transform, Vector4[] pointList)

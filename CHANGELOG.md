@@ -7,6 +7,30 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Frustum culling for whole ships, 2026-08-15)
+
+- **A ship the viewport cannot show is no longer transformed.** Every object
+  in the universe list used to be transformed and walked face by face every
+  frame whether or not any part of it could be on screen. `ShipBase.Draw`
+  now rejects the whole ship first, as a bounding sphere against the view
+  frustum, and returns before touching a single point.
+- **`SharpKind.Graphics.ViewFrustum` is the six planes a
+  `PerspectiveProjector` fills a viewport with.** The four side planes are
+  the projection read backwards - inside the left edge is
+  `Centre.X + (Focus * x / z) >= left`, and multiplying through by z turns
+  that into a plane through the camera origin - plus the near and far
+  depths. The sphere test is conservative, so a ship with any part on screen
+  always draws.
+- **The far plane exists as a stage.** Elite passes the range `Space`
+  already removes a ship at (57344), so the frustum has its sixth plane
+  without imposing a new rule about what the commander can see.
+- **The bounding radius comes from the model, not from `Size`.** `Size` is
+  the collision radius squared and need not agree with the geometry, and a
+  cull that rejects a ship the model would have drawn is a hole in the hull.
+  It is found once per instance alongside the face roots, and rotating a
+  model about its origin cannot move it outside that sphere, so one test
+  covers every orientation.
+
 ### Added (Credits screen, a way out of the options, and Window Scale, 2026-08-10)
 
 - **The credits are a screen of their own.** The version and the three

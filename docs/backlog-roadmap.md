@@ -95,13 +95,6 @@ per item whether authenticity or modernity wins.
       below — sequence after that, and build on
       `SharpKind.Graphics.PerspectiveProjector`, the small first slice of the
       same idea that landed 2026-08-09 (see [CHANGELOG.md](../CHANGELOG.md)).
-- [ ] [SharpKind.Graphics] Far-plane and bounding-volume culling: no far plane
-      exists (distance handling is `Universe`'s object removal and Elite's
-      `VanishPoint`), and there is no per-object bounding-sphere-versus-
-      frustum test — every object in the universe list is transformed face
-      by face every frame whether or not any part of it can be on screen. A
-      sphere test using the existing `IShip.Size` in front of the per-face
-      loop is the cheap version.
 - [ ] [SharpKind.Graphics] Texture filtering and mipmaps: `SampleTexture` is
       nearest-neighbour with edge clamping. Bilinear filtering plus a mip
       chain would stop SCR's distant road aliasing (recorded as a

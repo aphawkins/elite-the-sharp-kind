@@ -206,6 +206,62 @@ public class ShipBaseTests
         Assert.Equal(draw.DrawnPolygons[0].Z, draw.DrawnPolygons[1].Z);
     }
 
+    [Theory]
+
+    // Far off each side, far above and below, and beyond the far plane. At
+    // depth 1000 the viewport's half-width is 500 camera units and its
+    // half-height is a little under 375, so a 100-unit ship at 2000 out is
+    // nowhere near it.
+    [InlineData(2000, 0, 1000)]
+    [InlineData(-2000, 0, 1000)]
+    [InlineData(0, 2000, 1000)]
+    [InlineData(0, -2000, 1000)]
+    [InlineData(0, 0, 100000)]
+    [InlineData(0, 0, -1000)]
+    public void DrawSkipsAShipTheViewportCannotShow(float x, float y, float z)
+    {
+        // Arrange
+        FakeEliteDraw draw = new();
+        FakeShip ship = new(draw, new(new Random(0)))
+        {
+            Rotmat = Matrix4x4.Identity,
+            Location = new(x, y, z, 0),
+            Model = BuildModel(
+                [new(-100, -100, 0, 0), new(100, -100, 0, 0), new(0, 100, 0, 0)],
+                [[0, 2, 1]]),
+        };
+
+        // Act
+        ship.Draw();
+
+        // Assert
+        Assert.Empty(draw.DrawnPolygons);
+    }
+
+    [Fact]
+    public void DrawKeepsAShipOnlyPartlyOnScreen()
+    {
+        // Arrange: the ship's origin sits just outside the right edge - 500
+        // camera units at depth 1000 - so only its bounding sphere reaches
+        // back into view. A cull on the origin alone would clip the hull off
+        // the edge of the screen.
+        FakeEliteDraw draw = new();
+        FakeShip ship = new(draw, new(new Random(0)))
+        {
+            Rotmat = Matrix4x4.Identity,
+            Location = new(540, 0, 1000, 0),
+            Model = BuildModel(
+                [new(-100, -100, 0, 0), new(100, -100, 0, 0), new(0, 100, 0, 0)],
+                [[0, 2, 1]]),
+        };
+
+        // Act
+        ship.Draw();
+
+        // Assert
+        Assert.NotEmpty(draw.DrawnPolygons);
+    }
+
     [Fact]
     public void DrawKeepsAFrontFacingFaceThatStraddlesTheCameraPlane()
     {
