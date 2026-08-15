@@ -90,6 +90,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - When explaining code changes, keep it brief and to the point.
 - Never apologise, use pleasantries, or write introductory/concluding text.
 - If a question is conceptual, answer in concise bullet points.
+- Write all responses in ASD-STE100 (Simplified Technical English): one topic per sentence, active voice, present tense, approved words in their approved meaning only, and no more than 20 words per sentence.
 
 ---
 
