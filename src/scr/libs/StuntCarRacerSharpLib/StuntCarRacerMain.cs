@@ -155,6 +155,25 @@ public sealed class StuntCarRacerMain : IGame, IGameApp
             _sceneryKeyDown = false;
         }
 
+        // F5/F6/F7 are the remake's dev aids (`StuntCarRacer.cpp:1706-1716`):
+        // F5 toggles the stats overlay, F6 and F7 freeze the player's and the
+        // opponent's physics independently. Toggles rather than the race
+        // pause's two keys, as the reference has them.
+        if (Keyboard.IsPressed(ConsoleKey.F5))
+        {
+            Race.ShowStats = !Race.ShowStats;
+        }
+
+        if (Keyboard.IsPressed(ConsoleKey.F6))
+        {
+            Race.PlayerPaused = !Race.PlayerPaused;
+        }
+
+        if (Keyboard.IsPressed(ConsoleKey.F7))
+        {
+            Race.OpponentPaused = !Race.OpponentPaused;
+        }
+
         // F9/F10 tune the physics frame gap live, as the original did:
         // F9 steps the physics more often (never below every tick), F10
         // less often. Unbounded upwards, as the reference is.
@@ -174,6 +193,12 @@ public sealed class StuntCarRacerMain : IGame, IGameApp
     public void Draw()
     {
         Screens.Current.Draw();
+
+        if (Race.ShowStats)
+        {
+            Race.DrawStats();
+        }
+
         Graphics.ScreenUpdate();
     }
 }

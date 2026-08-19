@@ -196,6 +196,116 @@ public class StuntCarRacerMainTests
         Assert.Equal(1, game.Race.FrameGap);
     }
 
+    [Fact]
+    public void StatsKeyTogglesTheOverlay()
+    {
+        // Arrange
+        FakeAbstraction abstraction = new();
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
+        FakeKeyboard keyboard = (FakeKeyboard)abstraction.Keyboard;
+
+        // Act & Assert: F5 is a toggle, not a two-key pair like the pause
+        Assert.False(game.Race.ShowStats);
+
+        PressKey(game, keyboard, ConsoleKey.F5);
+        Assert.True(game.Race.ShowStats);
+
+        PressKey(game, keyboard, ConsoleKey.F5);
+        Assert.False(game.Race.ShowStats);
+    }
+
+    [Fact]
+    public void PlayerFreezeStopsTheCarButNotTheRace()
+    {
+        // Arrange: the car starts in the air above the start piece and falls
+        FakeAbstraction abstraction = new();
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
+        FakeKeyboard keyboard = (FakeKeyboard)abstraction.Keyboard;
+        StartRace(game, abstraction);
+        int playerY = game.Race.Car.PlayerY;
+        int raceTick = game.Race.RaceTick;
+
+        // Act: F6 freezes the player, then a dozen ticks pass
+        PressKey(game, keyboard, ConsoleKey.F6);
+        RunTicks(game, 12);
+
+        // Assert: the drop stopped mid-air, but the race clock ran on
+        Assert.Equal(playerY, game.Race.Car.PlayerY);
+        Assert.True(game.Race.RaceTick > raceTick);
+    }
+
+    [Fact]
+    public void PlayerKeepsMovingWithoutTheFreeze()
+    {
+        // Arrange: the control run for the freeze above
+        FakeAbstraction abstraction = new();
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
+        StartRace(game, abstraction);
+        int playerY = game.Race.Car.PlayerY;
+
+        // Act
+        RunTicks(game, 12);
+
+        // Assert
+        Assert.NotEqual(playerY, game.Race.Car.PlayerY);
+    }
+
+    [Fact]
+    public void OpponentFreezeStopsTheOpponentOnly()
+    {
+        // Arrange: the opponent only starts moving once the player has landed
+        FakeAbstraction abstraction = new();
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
+        FakeKeyboard keyboard = (FakeKeyboard)abstraction.Keyboard;
+        StartRace(game, abstraction);
+        RunTicks(game, 200);
+        int opponentPiece = game.Race.Opponent.CurrentPiece;
+        int raceTick = game.Race.RaceTick;
+
+        // Act: F7 freezes the opponent, then a hundred ticks pass
+        PressKey(game, keyboard, ConsoleKey.F7);
+        RunTicks(game, 100);
+
+        // Assert: the opponent stopped where it was; the race clock did not
+        Assert.Equal(opponentPiece, game.Race.Opponent.CurrentPiece);
+        Assert.True(game.Race.RaceTick > raceTick);
+    }
+
+    [Fact]
+    public void OpponentKeepsMovingWithoutTheFreeze()
+    {
+        // Arrange: the control run for the freeze above
+        FakeAbstraction abstraction = new();
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
+        StartRace(game, abstraction);
+        RunTicks(game, 200);
+        int opponentPiece = game.Race.Opponent.CurrentPiece;
+
+        // Act
+        RunTicks(game, 100);
+
+        // Assert
+        Assert.NotEqual(opponentPiece, game.Race.Opponent.CurrentPiece);
+    }
+
+    [Fact]
+    public void FreezesClearWhenARaceStarts()
+    {
+        // Arrange
+        FakeAbstraction abstraction = new();
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
+        FakeKeyboard keyboard = (FakeKeyboard)abstraction.Keyboard;
+        PressKey(game, keyboard, ConsoleKey.F6);
+        PressKey(game, keyboard, ConsoleKey.F7);
+
+        // Act
+        StartRace(game, abstraction);
+
+        // Assert
+        Assert.False(game.Race.PlayerPaused);
+        Assert.False(game.Race.OpponentPaused);
+    }
+
     // Drives the game from the track menu into the race: S selects the
     // track, then S again (read on a preview physics tick) starts the race.
     private static void StartRace(StuntCarRacerMain game, FakeAbstraction abstraction)
@@ -213,6 +323,14 @@ public class StuntCarRacerMainTests
         }
 
         keyboard.KeyUp(ConsoleKey.S, ConsoleModifiers.None);
+    }
+
+    private static void RunTicks(StuntCarRacerMain game, int ticks)
+    {
+        for (int tick = 0; tick < ticks; tick++)
+        {
+            game.Update();
+        }
     }
 
     private static void PressKey(StuntCarRacerMain game, FakeKeyboard keyboard, ConsoleKey key)

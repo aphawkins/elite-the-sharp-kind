@@ -1,4 +1,4 @@
-# Backlog and Roadmap — The Sharp Kind
+﻿# Backlog and Roadmap — The Sharp Kind
 
 Features, refactors, cleanups and spikes — work that **adds or reshapes**,
 not work that fixes. Prioritised with MoSCoW (per
@@ -141,7 +141,6 @@ face clipping followed, see CHANGELOG):
 
 ### Stunt Car Racer conversion — features (from the retired conversion plan)
 
-- [ ] [StuntCarRacerSharpLib] The remake's debug freezes — F5 stats overlay, F6 player-only pause, F7 opponent-only pause — as dev aids. Split from the race-pause item when that landed (2026-08-19, see [CHANGELOG.md](../CHANGELOG.md)); they were listed as optional ride-alongs on it and are dev aids rather than game behaviour, so they did not ride along. `RaceScreen._paused` is the shape a per-car freeze would follow.
 - [ ] [StuntCarRacerSharpLib] 'R' turn-around key: the remake adds 180 degrees to the player's y angle and re-initialises (`INITIALISE_PLAYER`, ptitSeb `StuntCarRacer.cpp` ~1039) so a car facing the wrong way can recover; not ported.
 - [ ] [StuntCarRacerSharpLib] Mid-race 'M' to track menu: the remake returns to the track menu from any mode on 'M' (`StuntCarRacer.cpp:1731-1741`: it also clears the opponent — `opponentsID = NO_OPPONENT` — and resets the drawbridge via `ResetDrawBridge`, and the menu mode stops the engine sound); the port only handles 'M' on the game-over and track-preview screens — `RaceScreen` has no way back to the menu short of Escape-quitting. (The drawbridge half of the reference's behaviour is already covered: `RaceScreen` calls `Bridge.Reset` on entry and `Race.LoadTrack` constructs a fresh `DrawBridge` per track, verified 2026-07-31 — so only the opponent clear and the engine-sound stop need porting alongside the new key.)
 - [ ] [StuntCarRacerSharpLib] Player outside/chase view: needs a chase camera plus drawing the player's own car mesh (`Rendering/CarMesh` is currently only used for the opponent).
@@ -472,4 +471,4 @@ widescreen half of these items applies to the modern tier alone. See
       only if SCR grows real panel chrome — the race-pause and
       race-result screens below are the plausible source.
 - [ ] [StuntCarRacerSharpLib] The original remake's Windows-only infrastructure (DXUT registry prefs, clipboard, DirectSound path, `MessageBox` dialogs) is deliberately not ported — see the porting notes in [scr-readme.md](scr-readme.md).
-- [ ] [StuntCarRacerSharpLib] ptitSeb's remaining debug/infrastructure toggles are deliberately not ported (2026-07-19 parity audit): F1 test key, F2 triangle-list/strip vertex-buffer toggle (meaningless in the software rasterizer), the 'Z' reposition test key, the disabled action-replay / Amiga-recording harness (`#ifdef NOT_USED` / `USE_AMIGA_RECORDING` even upstream), the French-keyboard digit remaps, and the SDL command-line video flags (superseded by the resizable-window/config-resolution items under Could). The F5 stats overlay and F6/F7 per-car freezes stay listed as optional ride-alongs on the race-pause item. `Chime.wav` is unused by both code bases (kept as an asset only).
+- [ ] [StuntCarRacerSharpLib] ptitSeb's remaining debug/infrastructure toggles are deliberately not ported (2026-07-19 parity audit): F1 test key, F2 triangle-list/strip vertex-buffer toggle (meaningless in the software rasterizer), the 'Z' reposition test key, the disabled action-replay / Amiga-recording harness (`#ifdef NOT_USED` / `USE_AMIGA_RECORDING` even upstream), the French-keyboard digit remaps, and the SDL command-line video flags (superseded by the resizable-window/config-resolution items under Could). (The F5 stats overlay and F6/F7 per-car freezes were the exception and are now ported, 2026-08-19, see [CHANGELOG.md](../CHANGELOG.md).) `Chime.wav` is unused by both code bases (kept as an asset only).

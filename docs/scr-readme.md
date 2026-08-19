@@ -1,4 +1,4 @@
-# Stunt Car Racer - The Sharp Kind
+﻿# Stunt Car Racer - The Sharp Kind
 
 ![Stunt Car Racer - The Sharp Kind - Screenshot](images/scr-screenshot.png)
 
@@ -56,6 +56,9 @@ During the race:
 | N | Change the scenery type |
 | P | Pause |
 | O | Resume |
+| F5 | Show/hide the stats overlay |
+| F6 | Freeze/unfreeze your car |
+| F7 | Freeze/unfreeze the opponent's car |
 | F9 | Step the physics more often |
 | F10 | Step the physics less often |
 | M | Back to the track menu (after GAME OVER) |
@@ -64,8 +67,9 @@ During the race:
 Notes:
 - Boost (Space) only does anything while accelerating or braking, and only while the reserve shown on the dashboard isn't empty; accelerate and brake work on their own without it.
 - Steering only works while the wheels are touching the road.
-- P pauses and O resumes, as the remake does. Pausing stops the engine sound and freezes everything the race advances - the car, the opponent, the drawbridge, and the lap and race timers - so a pause cannot inflate a lap time. Unlike N, F9 and F10, the pause keys only work during the race.
-- F9 and F10 tune the physics frame gap, as the remake's do: the physics steps every fourth 50Hz tick by default, F9 shortens that gap (down to every tick) and F10 lengthens it. N, F9 and F10 work on every screen, not only during the race.
+- P pauses and O resumes, as the remake does. Pausing stops the engine sound and freezes everything the race advances - the car, the opponent, the drawbridge, and the lap and race timers - so a pause cannot inflate a lap time. Unlike N and the F-keys, the pause keys only work during the race.
+- F9 and F10 tune the physics frame gap, as the remake's do: the physics steps every fourth 50Hz tick by default, F9 shortens that gap (down to every tick) and F10 lengthens it. N, F5, F6, F7, F9 and F10 work on every screen, not only during the race.
+- F5, F6 and F7 are the remake's development aids rather than game controls. F5 shows an overlay of the frame gap and the two freeze states; F6 and F7 freeze the cars independently, so one can be studied while the other drives. Unlike the P/O pause, a freeze leaves the race clock and the lap timers running, and both freezes clear when a race starts.
 
 ## Dashboard
 

@@ -73,6 +73,15 @@ internal sealed class Race
     // the frame gap can be tuned as the original's -/+ keys did.
     internal int FrameGap { get; set; } = DefaultFrameGap;
 
+    // The remake's per-car debug freezes (bPlayerPaused / bOpponentPaused,
+    // `StuntCarRacer.cpp:1710-1716`) and its stats overlay (bShowStats):
+    // dev aids, toggled by F6/F7/F5, and reset when a race starts.
+    internal bool PlayerPaused { get; set; }
+
+    internal bool OpponentPaused { get; set; }
+
+    internal bool ShowStats { get; set; }
+
     // Whether the last tick stepped the physics (the original bFrameMoved).
     internal bool FrameMoved { get; set; }
 
@@ -138,6 +147,28 @@ internal sealed class Race
         }
 
         _renderer.Draw(Camera, _worldPolygons, Car.CurrentPiece, Car.CurrentSegment);
+    }
+
+    // The F5 stats overlay (the remake's bShowStats block,
+    // `StuntCarRacer.cpp:1343-1361`). The reference printed DXUT's frame and
+    // device stats, which mean nothing here; what is worth seeing instead is
+    // the state the other debug keys change - the frame gap F9/F10 tune and
+    // the per-car freezes F6/F7 toggle.
+    internal void DrawStats()
+    {
+        FastColor white = _palette.Colour(Track.ScrBaseColour + 15);
+
+        _graphics.DrawTextLeft(
+            new(4f, 4f),
+            $"Frame gap: {FrameGap} ({(float)StuntCarRacerMain.TickRate / FrameGap:0.#}Hz)",
+            StuntCarRacerMain.SmallFont,
+            white);
+
+        _graphics.DrawTextLeft(
+            new(4f, 24f),
+            $"Player: {(PlayerPaused ? "frozen" : "running")}   Opponent: {(OpponentPaused ? "frozen" : "running")}",
+            StuntCarRacerMain.SmallFont,
+            white);
     }
 
     // Play the effect triggers from the physics, throttled by the shared

@@ -1,4 +1,4 @@
-# Changelog
+﻿# Changelog
 
 All notable changes to this project are documented in this file. The format
 is based on [Keep a Changelog](https://keepachangelog.com/); the project does
@@ -6,6 +6,26 @@ not yet cut versioned releases, so everything sits under Unreleased.
 Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
+
+### Added (Debug freezes and stats overlay in Stunt Car Racer, 2026-08-19)
+
+- **F5 toggles a stats overlay, F6 freezes the player's car and F7 the
+  opponent's** - the remake's dev aids (`bShowStats`, `bPlayerPaused`,
+  `bOpponentPaused`, `StuntCarRacer.cpp:1706-1716`), split from the race
+  pause item when that landed. Toggles rather than the pause's two-key
+  pair, as the reference has them.
+- **The freezes match where the reference applies them.** F6 skips the
+  player's physics outright (`CarBehaviour`,
+  `StuntCarRacer.cpp:1056-1063`), leaving the race clock, lap data and
+  damage running; F7 freezes the opponent inside its own update, which
+  still tracks the distance between the cars
+  (`Opponent_Behaviour.cpp:376-383`) - `OpponentPhysics.Update(bool)`
+  already carried that overload and is now wired to it. Both clear when a
+  race starts (`StuntCarRacer.cpp:1254`, `:1312`).
+- **The overlay shows what the other debug keys change**: the frame gap
+  F9/F10 tune, with its resulting physics rate, and the state of the two
+  freezes. The reference printed DXUT's frame and device stats, which
+  have no meaning in this port.
 
 ### Added (Race pause in Stunt Car Racer, 2026-08-19)
 

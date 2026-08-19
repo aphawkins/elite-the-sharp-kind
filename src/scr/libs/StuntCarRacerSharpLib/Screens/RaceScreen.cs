@@ -1,4 +1,4 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
+﻿// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
@@ -40,6 +40,11 @@ internal sealed class RaceScreen : IGameScreen
         _race.RaceWon = false;
         _race.RaceFinishedTick = 0;
         _paused = false;
+
+        // the reference clears the per-car freezes when a race starts
+        // (`StuntCarRacer.cpp:1254`, `:1312`)
+        _race.PlayerPaused = false;
+        _race.OpponentPaused = false;
     }
 
     public void Update()
@@ -89,9 +94,17 @@ internal sealed class RaceScreen : IGameScreen
         }
 
         // One physics frame of the race (every FrameGap ticks).
+        // F6 freezes the player by skipping CarBehaviour outright; F7 freezes
+        // the opponent inside its own update, which still tracks the distance
+        // between the cars (`StuntCarRacer.cpp:1056-1071`,
+        // `Opponent_Behaviour.cpp:376-383`).
         _race.FrameMoved = true;
-        _race.Car.Update(ReadInput());
-        _race.Opponent.Update();
+        if (!_race.PlayerPaused)
+        {
+            _race.Car.Update(ReadInput());
+        }
+
+        _race.Opponent.Update(_race.OpponentPaused);
         _race.Bridge.Move(_race.Car.CurrentPiece, _race.Opponent.CurrentPiece, _race.Opponent);
         _race.Car.UpdateLapData();
         _race.Opponent.UpdateLapData();
