@@ -63,6 +63,15 @@ internal sealed class RaceScreen : IGameScreen
             _paused = false;
         }
 
+        // 'R' points the car the opposite way, so a car facing backwards can
+        // recover (`StuntCarRacer.cpp:1039-1045`). The reference accepts it
+        // whenever a race is in progress, pause included, so it sits ahead of
+        // the paused return here and takes effect on the next physics frame.
+        if (_keyboard.IsPressed(ConsoleKey.R))
+        {
+            _race.Car.TurnAround();
+        }
+
         if (_paused)
         {
             // Silences the engine and freezes everything the race advances:

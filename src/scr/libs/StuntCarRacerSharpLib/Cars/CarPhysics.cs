@@ -545,6 +545,14 @@ public sealed partial class CarPhysics
         ResetLapData();
     }
 
+    // Point the car in the opposite direction (original 'R' key, which
+    // added 180 degrees to the player y angle and raised INITIALISE_PLAYER
+    // to push the new angle into the physics, `StuntCarRacer.cpp:1039-1045`).
+    // The port keeps no copy of the angle outside the physics, so the flip
+    // is the whole of the behaviour.
+    public void TurnAround()
+        => PlayerYAngle = (PlayerYAngle + AmigaTrig.Degrees180) & (Track.MaxAngle - 1);
+
     public void ResetLapData()
     {
         RaceFinished = false;

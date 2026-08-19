@@ -6,7 +6,9 @@ using SharpKind.Assets;
 using SharpKind.Audio;
 using SharpKind.Fakes.Audio;
 using SharpKind.Fakes.Input;
+using StuntCarRacerSharpLib.Cars;
 using StuntCarRacerSharpLib.Fakes;
+using StuntCarRacerSharpLib.Tracks;
 using Xunit;
 
 namespace StuntCarRacerSharpLib.Tests;
@@ -308,6 +310,25 @@ public class StuntCarRacerMainTests
 
     // Drives the game from the track menu into the race: S selects the
     // track, then S again (read on a preview physics tick) starts the race.
+    [Fact]
+    public void TurnAroundKeyPointsTheCarTheOppositeWay()
+    {
+        // Arrange
+        FakeAbstraction abstraction = new();
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
+        FakeKeyboard keyboard = (FakeKeyboard)abstraction.Keyboard;
+        StartRace(game, abstraction);
+        int before = game.Race.Car.YAngle;
+
+        // Act
+        PressKey(game, keyboard, ConsoleKey.R);
+
+        // Assert: the car dropping onto the track can steer a little in the
+        // same tick, so allow a small drift either side of the half turn.
+        int turned = (game.Race.Car.YAngle - before) & (Track.MaxAngle - 1);
+        Assert.InRange(turned, AmigaTrig.Degrees180 - 64, AmigaTrig.Degrees180 + 64);
+    }
+
     private static void StartRace(StuntCarRacerMain game, FakeAbstraction abstraction)
     {
         FakeKeyboard keyboard = (FakeKeyboard)abstraction.Keyboard;

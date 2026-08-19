@@ -7,6 +7,20 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added ('R' turn-around key in Stunt Car Racer, 2026-08-19)
+
+- **'R' points the car the opposite way during a race** - the remake adds
+  half a turn to the player y angle and raises `INITIALISE_PLAYER` to push
+  the new angle into the physics (`StuntCarRacer.cpp:1039-1045`). It is the
+  way back for a car that ends up facing backwards.
+- **The port needs only the angle flip.** The reference kept a copy of the
+  player position and angles outside `CarBehaviour` and used
+  `INITIALISE_PLAYER` to copy them in; `CarPhysics` holds the angle itself,
+  so `CarPhysics.TurnAround` is the whole of the behaviour.
+- **The key is race-only and works while paused**, as the reference has it:
+  it sits ahead of the paused return in `RaceScreen`, so a turn taken while
+  paused applies on the next physics frame.
+
 ### Added (Debug freezes and stats overlay in Stunt Car Racer, 2026-08-19)
 
 - **F5 toggles a stats overlay, F6 freezes the player's car and F7 the

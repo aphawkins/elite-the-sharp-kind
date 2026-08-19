@@ -56,6 +56,26 @@ public class CarPhysicsTests
     }
 
     [Fact]
+    public void TurnAroundAddsHalfATurnToTheYAngle()
+    {
+        // Arrange
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track, new FakeRandomSource());
+        car.StartRace();
+        int before = car.YAngle;
+
+        // Act: two turns come back to where the car started, and the second
+        // one proves the angle wraps rather than running past a full turn.
+        car.TurnAround();
+        int afterOne = car.YAngle;
+        car.TurnAround();
+
+        // Assert
+        Assert.Equal((before + AmigaTrig.Degrees180) & (Track.MaxAngle - 1), afterOne);
+        Assert.Equal(before, car.YAngle);
+    }
+
+    [Fact]
     public void StartRacePositionsCarAboveStartPiece()
     {
         Track track = Track.Load(TrackId.LittleRamp);
