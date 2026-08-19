@@ -7,6 +7,20 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (F9/F10 frame-gap tuning keys in Stunt Car Racer, 2026-08-19)
+
+- **The physics frame gap can now be tuned while the game runs.** Both C++
+  versions adjust it live, and `Race.FrameGap` has been settable for exactly
+  this, but no key touched it. `StuntCarRacerMain.Update` now reads F9 and
+  F10 alongside the other global keys: F9 steps the physics more often, F10
+  less often.
+- **F9 stops at a gap of one, F10 has no upper stop**, matching ptitSeb's
+  `StuntCarRacer.cpp:1719-1723`. A gap of one is the physics running on
+  every 50Hz tick; the default stays 4 (12.5Hz), as the remake's
+  `DEFAULT_FRAME_GAP` does.
+- **The keys are global, not race-only**, again as the reference is - the
+  gap applies wherever the physics steps.
+
 ### Added (Level of detail on distant ships, 2026-08-15)
 
 - **A ship too small on screen to show its hull detail no longer draws it.**

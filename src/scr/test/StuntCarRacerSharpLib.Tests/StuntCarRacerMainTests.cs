@@ -1,4 +1,4 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
+﻿// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
@@ -112,6 +112,41 @@ public class StuntCarRacerMainTests
 
         // Assert
         Assert.Equal(0, sound.PlayLoopCount);
+    }
+
+    [Fact]
+    public void FrameGapKeysTuneThePhysicsRate()
+    {
+        // Arrange
+        FakeAbstraction abstraction = new();
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
+        FakeKeyboard keyboard = (FakeKeyboard)abstraction.Keyboard;
+        int frameGap = game.Race.FrameGap;
+
+        // Act & Assert: F10 steps the physics less often, F9 more often
+        PressKey(game, keyboard, ConsoleKey.F10);
+        Assert.Equal(frameGap + 1, game.Race.FrameGap);
+
+        PressKey(game, keyboard, ConsoleKey.F9);
+        Assert.Equal(frameGap, game.Race.FrameGap);
+    }
+
+    [Fact]
+    public void FrameGapDoesNotDropBelowOne()
+    {
+        // Arrange
+        FakeAbstraction abstraction = new();
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
+        FakeKeyboard keyboard = (FakeKeyboard)abstraction.Keyboard;
+
+        // Act: press F9 more times than the default gap allows
+        for (int press = 0; press < game.Race.FrameGap + 3; press++)
+        {
+            PressKey(game, keyboard, ConsoleKey.F9);
+        }
+
+        // Assert
+        Assert.Equal(1, game.Race.FrameGap);
     }
 
     // Drives the game from the track menu into the race: S selects the

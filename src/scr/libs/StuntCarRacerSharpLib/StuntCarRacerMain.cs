@@ -155,6 +155,19 @@ public sealed class StuntCarRacerMain : IGame, IGameApp
             _sceneryKeyDown = false;
         }
 
+        // F9/F10 tune the physics frame gap live, as the original did:
+        // F9 steps the physics more often (never below every tick), F10
+        // less often. Unbounded upwards, as the reference is.
+        if (Keyboard.IsPressed(ConsoleKey.F9) && Race.FrameGap > 1)
+        {
+            Race.FrameGap--;
+        }
+
+        if (Keyboard.IsPressed(ConsoleKey.F10))
+        {
+            Race.FrameGap++;
+        }
+
         Screens.Current.Update();
     }
 

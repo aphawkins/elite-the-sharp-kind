@@ -145,7 +145,6 @@ face clipping followed, see CHANGELOG):
 
 ### Stunt Car Racer conversion — features (from the retired conversion plan)
 
-- [ ] [StuntCarRacerSharpLib] F9/F10 frame-gap tuning keys: both C++ versions adjust the physics frame gap live; `StuntCarRacerMain.FrameGap` exists for exactly this but isn't wired to any key.
 - [ ] [StuntCarRacerSharpLib] Race pause: the remake pauses on 'P' and resumes on 'O' (`bPaused`, engine sound stopped while paused); not ported — no pause exists. The remake's debug freezes (F5 stats overlay, F6 player-only pause, F7 opponent-only pause) could ride along as dev aids.
 - [ ] [StuntCarRacerSharpLib] 'R' turn-around key: the remake adds 180 degrees to the player's y angle and re-initialises (`INITIALISE_PLAYER`, ptitSeb `StuntCarRacer.cpp` ~1039) so a car facing the wrong way can recover; not ported.
 - [ ] [StuntCarRacerSharpLib] Mid-race 'M' to track menu: the remake returns to the track menu from any mode on 'M' (`StuntCarRacer.cpp:1731-1741`: it also clears the opponent — `opponentsID = NO_OPPONENT` — and resets the drawbridge via `ResetDrawBridge`, and the menu mode stops the engine sound); the port only handles 'M' on the game-over and track-preview screens — `RaceScreen` has no way back to the menu short of Escape-quitting. (The drawbridge half of the reference's behaviour is already covered: `RaceScreen` calls `Bridge.Reset` on entry and `Race.LoadTrack` constructs a fresh `DrawBridge` per track, verified 2026-07-31 — so only the opponent clear and the engine-sound stop need porting alongside the new key.)

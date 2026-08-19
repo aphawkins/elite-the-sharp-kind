@@ -54,12 +54,15 @@ During the race:
 | Down arrow | Brake / reverse |
 | Space | Boost |
 | N | Change the scenery type |
+| F9 | Step the physics more often |
+| F10 | Step the physics less often |
 | M | Back to the track menu (after GAME OVER) |
 | Esc | Quit |
 
 Notes:
 - Boost (Space) only does anything while accelerating or braking, and only while the reserve shown on the dashboard isn't empty; accelerate and brake work on their own without it.
 - Steering only works while the wheels are touching the road.
+- F9 and F10 tune the physics frame gap, as the remake's do: the physics steps every fourth 50Hz tick by default, F9 shortens that gap (down to every tick) and F10 lengthens it. N, F9 and F10 work on every screen, not only during the race.
 
 ## Dashboard
 
