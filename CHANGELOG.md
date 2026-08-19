@@ -7,6 +7,28 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Race pause in Stunt Car Racer, 2026-08-19)
+
+- **The race pauses on 'P' and resumes on 'O',** as the remake does
+  (`bPaused`, `StuntCarRacer.cpp:1743-1749`). No pause existed before.
+  Two keys rather than one toggle, matching the reference, so a repeated
+  press is harmless and no key-down latch is needed alongside
+  `IsPressed`'s one-shot read.
+- **Pausing silences the engine and freezes everything the race
+  advances**: the physics step, the drawbridge, and `RaceTick` - which
+  the lap and result timers count, so a pause cannot inflate a lap time.
+  The reference drove its race timing from the wall clock and so kept
+  counting while paused; this port replaced that with the tick, and
+  freezing it is the behaviour the wall clock was standing in for.
+- **The keys are race-only.** The reference's `bPaused` is global and
+  also freezes the track menu's orbiting camera; that one line is
+  deliberately not ported, since pause is a race concern and the
+  reference already exempts GAME_OVER from it.
+- **`RaceScreen` now takes `ISound`,** as `GameOverScreen` already did,
+  to stop the engine loop. `StopLoop` is idempotent in both backends, so
+  it is called every paused tick exactly as the reference calls
+  `StopEngineSound`.
+
 ### Changed (HUD-helper survey closed as nothing to share, 2026-08-19)
 
 - **The backlog's shared text/HUD-panel helper is closed without code.**

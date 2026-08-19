@@ -115,6 +115,53 @@ public class StuntCarRacerMainTests
     }
 
     [Fact]
+    public void PauseFreezesTheRaceAndSilencesTheEngine()
+    {
+        // Arrange
+        FakeAbstraction abstraction = new();
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
+        FakeKeyboard keyboard = (FakeKeyboard)abstraction.Keyboard;
+        FakeSound sound = (FakeSound)abstraction.Sound;
+        StartRace(game, abstraction);
+        int raceTick = game.Race.RaceTick;
+        int playsAtPause = sound.PlayLoopCount;
+
+        // Act: 'P' pauses, then a dozen ticks pass
+        PressKey(game, keyboard, ConsoleKey.P);
+        for (int tick = 0; tick < 12; tick++)
+        {
+            game.Update();
+        }
+
+        // Assert: nothing the race advances moved, and the engine stayed quiet
+        Assert.Equal(raceTick, game.Race.RaceTick);
+        Assert.False(game.Race.FrameMoved);
+        Assert.Equal(playsAtPause, sound.PlayLoopCount);
+    }
+
+    [Fact]
+    public void ResumeRestartsTheRaceAfterAPause()
+    {
+        // Arrange
+        FakeAbstraction abstraction = new();
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
+        FakeKeyboard keyboard = (FakeKeyboard)abstraction.Keyboard;
+        StartRace(game, abstraction);
+        PressKey(game, keyboard, ConsoleKey.P);
+        int raceTick = game.Race.RaceTick;
+
+        // Act: 'O' resumes
+        PressKey(game, keyboard, ConsoleKey.O);
+        for (int tick = 0; tick < 12; tick++)
+        {
+            game.Update();
+        }
+
+        // Assert: the race clock is running again
+        Assert.True(game.Race.RaceTick > raceTick);
+    }
+
+    [Fact]
     public void FrameGapKeysTuneThePhysicsRate()
     {
         // Arrange

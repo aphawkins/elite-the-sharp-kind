@@ -3,6 +3,7 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using SharpKind.Abstraction;
+using SharpKind.Audio;
 using SharpKind.Input;
 using StuntCarRacerSharpLib.Cars;
 
@@ -14,12 +15,16 @@ internal sealed class RaceScreen : IGameScreen
 {
     private readonly Race _race;
     private readonly IKeyboard _keyboard;
+    private readonly ISound _sound;
     private readonly ScreenManager<GameMode, IGameScreen> _screens;
 
-    internal RaceScreen(Race race, IKeyboard keyboard, ScreenManager<GameMode, IGameScreen> screens)
+    private bool _paused;
+
+    internal RaceScreen(Race race, IKeyboard keyboard, ISound sound, ScreenManager<GameMode, IGameScreen> screens)
     {
         _race = race;
         _keyboard = keyboard;
+        _sound = sound;
         _screens = screens;
     }
 
@@ -34,10 +39,36 @@ internal sealed class RaceScreen : IGameScreen
         _race.RaceFinished = false;
         _race.RaceWon = false;
         _race.RaceFinishedTick = 0;
+        _paused = false;
     }
 
     public void Update()
     {
+        // 'P' pauses and 'O' resumes, as the remake does
+        // (`StuntCarRacer.cpp:1743-1749`). They are two keys rather than one
+        // toggle, so a repeated press is harmless and no key-down latch is
+        // needed alongside IsPressed's one-shot read.
+        if (_keyboard.IsPressed(ConsoleKey.P))
+        {
+            _paused = true;
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.O))
+        {
+            _paused = false;
+        }
+
+        if (_paused)
+        {
+            // Silences the engine and freezes everything the race advances:
+            // the physics, the drawbridge, and the tick the lap and result
+            // timers count. StopLoop is idempotent, so calling it every
+            // paused tick costs nothing - the reference calls
+            // StopEngineSound the same way (`StuntCarRacer.cpp:1001-1004`).
+            _sound.StopLoop();
+            return;
+        }
+
         // The full-rate part of the race (the original FramesWheelsEngine
         // call plus the race-finished timing, which the original drove from
         // the wall clock).
