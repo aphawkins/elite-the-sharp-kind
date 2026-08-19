@@ -137,11 +137,7 @@ independently. Both games now clip against a shared near plane
 Elite's filled ships off the painter's chain landed 2026-07-14, and real
 face clipping followed, see CHANGELOG):
 
-- [ ] [SharpKind.Graphics] Shared text/HUD-panel helper for the two games'
-      ad-hoc HUD code (Elite's `EliteDraw` header/border/text helpers,
-      SCR's `HudRenderer`) — the smaller sibling of the original item;
-      survey both HUDs first and only lift what both actually use (e.g.
-      centred/left/right text layout in a panel rect).
+(none open — see the Won't section for the HUD-helper survey's outcome.)
 
 ### Stunt Car Racer conversion — features (from the retired conversion plan)
 
@@ -454,5 +450,26 @@ widescreen half of these items applies to the modern tier alone. See
       picked up. Note two items elsewhere are bounded by this one: the
       side-plane clipping entry in [backlog-issues.md](backlog-issues.md) and
       the per-frame-allocation entry above.
+- [ ] [SharpKind.Graphics] Shared text/HUD-panel helper for the two games'
+      HUD code — **surveyed 2026-08-19, nothing to lift.** The item asked
+      for a survey first and to lift only what both games actually use;
+      the survey says that set is empty. Left/centre/right text layout is
+      already shared: `DrawTextLeft`/`DrawTextCentre`/`DrawTextRight` sit
+      on `IGraphics`, and both games call them directly. Above that there
+      is no common ground. Elite's chrome (`DrawBorder`,
+      `DrawViewHeader`, `DrawInfoMessage`, `DrawTextPretty` in
+      `BaseView8Bit`/`BaseView16Bit`) is viewport-relative and per tier —
+      an 8x8 character grid on one, a proportional font on the other —
+      and the `IBaseView` interface already shares everything the two
+      tiers have in common. SCR has no chrome at all: no border, no
+      header rule, no panel rect. Its text is left-aligned at hand-placed
+      offsets, against three different conventions
+      (`HudRenderer` scales x and y from a 640x480 canvas,
+      `TrackMenuScreen` scales uniformly from a 320-wide one,
+      `TrackPreviewScreen` measures raw pixels up from the bottom). A
+      helper covering both would have one caller per shape, which is the
+      abstraction-for-single-use the repo's principles reject. Revisit
+      only if SCR grows real panel chrome — the race-pause and
+      race-result screens below are the plausible source.
 - [ ] [StuntCarRacerSharpLib] The original remake's Windows-only infrastructure (DXUT registry prefs, clipboard, DirectSound path, `MessageBox` dialogs) is deliberately not ported — see the porting notes in [scr-readme.md](scr-readme.md).
 - [ ] [StuntCarRacerSharpLib] ptitSeb's remaining debug/infrastructure toggles are deliberately not ported (2026-07-19 parity audit): F1 test key, F2 triangle-list/strip vertex-buffer toggle (meaningless in the software rasterizer), the 'Z' reposition test key, the disabled action-replay / Amiga-recording harness (`#ifdef NOT_USED` / `USE_AMIGA_RECORDING` even upstream), the French-keyboard digit remaps, and the SDL command-line video flags (superseded by the resizable-window/config-resolution items under Could). The F5 stats overlay and F6/F7 per-car freezes stay listed as optional ride-alongs on the race-pause item. `Chime.wav` is unused by both code bases (kept as an asset only).

@@ -7,6 +7,23 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (HUD-helper survey closed as nothing to share, 2026-08-19)
+
+- **The backlog's shared text/HUD-panel helper is closed without code.**
+  The item asked for a survey of both games' HUDs first, and to lift only
+  what both actually use. The survey found that set is empty, so the item
+  moved to the roadmap's Won't section with its findings rather than
+  producing an abstraction with one caller per shape.
+- **Text layout is already shared.** `DrawTextLeft`, `DrawTextCentre` and
+  `DrawTextRight` sit on `IGraphics`, and both games call them directly;
+  the item was written before they got there.
+- **Above that the two games have no common ground.** Elite's chrome is
+  viewport-relative and per tier — `BaseView8Bit` places everything on an
+  8x8 character grid, `BaseView16Bit` against a proportional font — and
+  `IBaseView` already shares what the tiers have in common. SCR draws no
+  border, no header rule and no panel rect at all, and its three text
+  sites each measure from a different origin.
+
 ### Added (F9/F10 frame-gap tuning keys in Stunt Car Racer, 2026-08-19)
 
 - **The physics frame gap can now be tuned while the game runs.** Both C++
