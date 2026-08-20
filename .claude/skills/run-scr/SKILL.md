@@ -1,4 +1,4 @@
----
+﻿---
 description: Launch and visually smoke-test StuntCarRacerSharp (the SDL desktop app under src/scr/apps/StuntCarRacerSharp) by driving its real OS window - inject key presses, capture screenshots. Use when asked to run, screenshot, or visually verify SCR/Stunt Car Racer, or to confirm a change to it works in the real app.
 ---
 
@@ -77,8 +77,8 @@ Useful for building new `-Steps` sequences. Four modes
 - **GameInProgress / race** ([RaceScreen.cs](../../../src/scr/libs/StuntCarRacerSharpLib/Screens/RaceScreen.cs)):
   driving keys are read with `IsHeld`, not `IsPressed` — `Left`/`Right`
   = steer, `Up` = accelerate, `Down` = brake, `Space` = boost. `N`
-  changes scenery. There's no key back to the menu mid-race (a known
-  backlog gap) — use `Escape` to quit instead.
+  changes scenery. `M` abandons the race for **TrackMenu** (works while
+  paused too); `P` pauses and `O` resumes; `Escape` quits.
 - **GameOver** ([GameOverScreen.cs](../../../src/scr/libs/StuntCarRacerSharpLib/Screens/GameOverScreen.cs)):
   `M` back to **TrackMenu**.
 - `Escape` quits from anywhere ([StuntCarRacerMain.cs](../../../src/scr/libs/StuntCarRacerSharpLib/StuntCarRacerMain.cs)).
@@ -119,4 +119,12 @@ These apply to `sdl-drive/drive.ps1` itself, so they're the same for
   read correctly for as long as you hold the key via `key:<Name>:<ms>`.
 - **The window must actually be on-screen and unobstructed** —
   capture is a real `CopyFromScreen`, not an off-screen render. Don't
-  minimize or cover the window between `launch` and `quit`.
+  minimize or cover the window between `launch` and `quit`. The driver
+  re-foregrounds the window before every `screenshot` step and waits for
+  `GetForegroundWindow` to agree (`SetForegroundWindow` often fails on
+  the first call — Windows' foreground lock refuses a process that
+  doesn't already own the foreground — and a window merely *behind*
+  another one silently captures that other window's pixels, which reads
+  as "the app ignored my keys"). If it can't get there within two
+  seconds it warns; treat that warning as "these screenshots are not the
+  app".

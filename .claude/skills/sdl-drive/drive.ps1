@@ -1,4 +1,4 @@
-# Generic driver for launching and visually smoke-testing a native
+﻿# Generic driver for launching and visually smoke-testing a native
 # Win32/SDL desktop app by driving its real OS window: launch the exe,
 # inject key presses, capture screenshots, then tear down. Shared by
 # this repo's per-game skills (run-elite, run-scr) - see their
@@ -50,6 +50,7 @@ public static class SdlDriveWin32 {
 
     [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr hWnd, out RECT rect);
     [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr hWnd);
+    [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
     [DllImport("user32.dll")] public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
     [DllImport("user32.dll")] public static extern uint MapVirtualKey(uint uCode, uint uMapType);
     [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
@@ -105,6 +106,35 @@ function ConvertTo-VirtualKeyCode([string]$KeyName) {
     }
 }
 
+# Bring the app's window to the front and confirm it got there.
+# SetForegroundWindow routinely fails on the first call: Windows' foreground
+# lock refuses a process that doesn't own the current foreground window, so
+# the call returns and the window stays behind whatever was already on top.
+# Screenshots are a real CopyFromScreen of the window rect, so a window that
+# is merely *behind* another one captures the other one's pixels - which
+# looks like the app never responded to a key. Retry until
+# GetForegroundWindow agrees, then warn rather than silently capturing
+# somebody else's window.
+function Set-AppForeground([int]$TimeoutMs = 2000) {
+    if ($script:hwnd -eq [IntPtr]::Zero) { return $false }
+
+    if ([SdlDriveWin32]::IsIconic($script:hwnd)) {
+        [SdlDriveWin32]::ShowWindow($script:hwnd, [SdlDriveWin32]::SW_RESTORE) | Out-Null
+    }
+
+    $deadline = (Get-Date).AddMilliseconds($TimeoutMs)
+    while ((Get-Date) -lt $deadline) {
+        if ([SdlDriveWin32]::GetForegroundWindow() -eq $script:hwnd) { return $true }
+        [SdlDriveWin32]::SetForegroundWindow($script:hwnd) | Out-Null
+        Start-Sleep -Milliseconds 100
+    }
+
+    if ([SdlDriveWin32]::GetForegroundWindow() -eq $script:hwnd) { return $true }
+
+    Write-Warning "could not bring the app window to the foreground - screenshots may capture whatever is covering it"
+    return $false
+}
+
 function Invoke-Launch {
     if ($script:proc -and -not $script:proc.HasExited) {
         Write-Output "already launched (PID $($script:proc.Id))"
@@ -125,17 +155,17 @@ function Invoke-Launch {
     }
 
     $script:hwnd = $hwnd
-    if ([SdlDriveWin32]::IsIconic($script:hwnd)) {
-        [SdlDriveWin32]::ShowWindow($script:hwnd, [SdlDriveWin32]::SW_RESTORE) | Out-Null
-    }
-
-    [SdlDriveWin32]::SetForegroundWindow($script:hwnd) | Out-Null
+    Set-AppForeground | Out-Null
     Start-Sleep -Milliseconds 500  # let the first frame render
     Write-Output "launched: PID $($script:proc.Id), hwnd $($script:hwnd)"
 }
 
 function Invoke-Screenshot([string]$Name) {
     if ($script:hwnd -eq [IntPtr]::Zero) { throw "not launched - add a 'launch' step first" }
+
+    # capture is CopyFromScreen, so the window has to be on top right now -
+    # anything that stole focus since launch would be captured instead
+    Set-AppForeground | Out-Null
 
     $rect = New-Object SdlDriveWin32+RECT
     [SdlDriveWin32]::GetWindowRect($script:hwnd, [ref]$rect) | Out-Null
