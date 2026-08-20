@@ -131,6 +131,7 @@ public class GridBitmapFontTests
 
         Dictionary<string, BitmapFontAsset> fonts = new() { { "TestFont", new(sheetPath, entry) } };
         locator.SetupGet(x => x.FontBitmaps).Returns(fonts);
+        locator.SetupGet(x => x.FontFons).Returns(new Dictionary<string, FonFontAsset>());
 
         return locator.Object;
     }

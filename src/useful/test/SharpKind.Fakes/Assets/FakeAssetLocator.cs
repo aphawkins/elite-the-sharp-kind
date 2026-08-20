@@ -1,4 +1,4 @@
-// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
+﻿// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
 
 using SharpKind.Assets;
 
@@ -19,6 +19,8 @@ public sealed class FakeAssetLocator : IAssetLocator
         Path.Combine(AppContext.BaseDirectory, "Assets", "Palette", "palette.json");
 
     public IDictionary<string, BitmapFontAsset> FontBitmaps { get; } = new Dictionary<string, BitmapFontAsset>();
+
+    public IDictionary<string, FonFontAsset> FontFons { get; } = new Dictionary<string, FonFontAsset>();
 
     public IDictionary<string, TrueTypeFontAsset> FontTrueTypes { get; } = new Dictionary<string, TrueTypeFontAsset>();
 

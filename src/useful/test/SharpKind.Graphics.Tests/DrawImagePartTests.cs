@@ -94,6 +94,7 @@ public class DrawImagePartTests
         assets.SetupGet(a => a.Colours).Returns(new AssetColourLimits());
         assets.Setup(a => a.ImagePaths).Returns(images);
         assets.Setup(a => a.FontBitmaps).Returns(new Dictionary<string, BitmapFontAsset>());
+        assets.Setup(a => a.FontFons).Returns(new Dictionary<string, FonFontAsset>());
 
         return SoftwareGraphics.Create(100, 100, screenUpdate, assets.Object);
     }

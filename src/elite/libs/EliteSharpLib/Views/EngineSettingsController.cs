@@ -9,6 +9,7 @@ using EliteSharpLib.Renditions;
 using SharpKind.Abstraction;
 using SharpKind.Audio;
 using SharpKind.Config;
+using SharpKind.Graphics;
 using SharpKind.Graphics.Rendering;
 using SharpKind.Input;
 using SharpKind.UI;
@@ -37,7 +38,7 @@ internal sealed class EngineSettingsController : SettingsListController
             surface,
             style,
             "ENGINE SETTINGS",
-            BuildSettings(gameState, space, audio, configWriter, renditions),
+            BuildSettings(gameState, space, audio, configWriter, renditions, surface),
             "* Applies when the game is restarted")
     {
     }
@@ -47,13 +48,15 @@ internal sealed class EngineSettingsController : SettingsListController
         Space space,
         AudioController audio,
         IConfigWriter<EliteConfig> configWriter,
-        InstalledRenditions renditions)
+        InstalledRenditions renditions,
+        IViewSurface surface)
     {
         ArgumentNullException.ThrowIfNull(gameState);
         ArgumentNullException.ThrowIfNull(space);
         ArgumentNullException.ThrowIfNull(audio);
         ArgumentNullException.ThrowIfNull(configWriter);
         ArgumentNullException.ThrowIfNull(renditions);
+        ArgumentNullException.ThrowIfNull(surface);
 
         EliteConfig config = gameState.Config;
         void Save() => configWriter.WriteConfig(config);
@@ -105,6 +108,27 @@ internal sealed class EngineSettingsController : SettingsListController
                     [(Quantisation.Nearest, "Nearest"), (Quantisation.Ordered, "Ordered")],
                     () => config.Engine.Graphics.Quantisation,
                     value => config.Engine.Graphics.Quantisation = value),
+                Save),
+
+            // No asterisk: every kind the rendition declares was loaded at
+            // launch, so the switch shows on the next frame drawn. A kind
+            // this rendition has no font for leaves its own sheets in use -
+            // the row still reads back what was chosen, the same way Shading
+            // does in a rendition that does not shade.
+            new SavedSetting(
+                new EnumSetting<FontKind>(
+                    "Font:",
+                    [
+                        (FontKind.Bitmap, "Bitmap"),
+                        (FontKind.Fon, "FON"),
+                        (FontKind.TrueType, "TrueType"),
+                    ],
+                    () => config.Engine.Graphics.FontKind,
+                    value =>
+                    {
+                        config.Engine.Graphics.FontKind = value;
+                        surface.Graphics.FontKind = value;
+                    }),
                 Save),
             new SavedSetting(
                 new ToggleSetting(

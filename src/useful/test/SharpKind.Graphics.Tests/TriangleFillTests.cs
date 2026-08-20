@@ -110,5 +110,6 @@ public class TriangleFillTests
         assets.SetupGet(x => x.Colours).Returns(new AssetColourLimits());
         assets.Setup(a => a.ImagePaths).Returns(new Dictionary<string, string>());
         assets.Setup(a => a.FontBitmaps).Returns(new Dictionary<string, BitmapFontAsset>());
+        assets.Setup(a => a.FontFons).Returns(new Dictionary<string, FonFontAsset>());
     }
 }

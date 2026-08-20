@@ -10,21 +10,32 @@ namespace SharpKind.Graphics;
 // Every image and bitmap font for the active tier, decoded once up front -
 // assets are never loaded on demand. Both graphics backends take their
 // bitmaps from here rather than decoding their own, so the tier's colour
-// budget is checked in one place whichever backend is running. The bitmap
-// fonts are decoded even for backends that draw text with TrueType fonts
-// instead: they are part of the tier's set, so they count against its budget.
+// budget is checked in one place whichever backend is running. The sheets are
+// decoded whatever font kind is selected: they are part of the tier's set, so
+// they count against its budget, and every other kind falls back to them.
 public sealed class AssetSet
 {
-    private AssetSet(Dictionary<string, FastBitmap> images, Dictionary<string, BitmapFont> bitmapFonts, AssetColourBudget budget)
+    private AssetSet(
+        Dictionary<string, FastBitmap> images,
+        Dictionary<string, BitmapFont> bitmapFonts,
+        Dictionary<string, FonFont> fonFonts,
+        AssetColourBudget budget)
     {
         Images = images;
         BitmapFonts = bitmapFonts;
+        FonFonts = fonFonts;
         Budget = budget;
     }
 
     public Dictionary<string, FastBitmap> Images { get; }
 
     public Dictionary<string, BitmapFont> BitmapFonts { get; }
+
+    // The .fon strikes the rendition declares, if any. Unlike the sheets,
+    // these carry no colours of their own - a strike is one bit per pixel and
+    // takes the colour it is drawn in - so they are loaded here but have
+    // nothing to contribute to the budget below.
+    public Dictionary<string, FonFont> FonFonts { get; }
 
     public AssetColourBudget Budget { get; }
 
@@ -44,12 +55,17 @@ public sealed class AssetSet
             x => x.Key,
             x => ImageReader.Read(x.Value.Path));
 
+        Dictionary<string, FonFont> fonFonts = assetLocator.FontFons.ToDictionary(
+            x => x.Key,
+            x => FonFontReader.Read(x.Value.Path, x.Value.PixelHeight));
+
         AssetColourBudget budget = Measure(assetLocator, images, fontBitmaps, PaletteColours(assetLocator));
         Validate(budget, logger);
 
         return new(
             images,
             fontBitmaps.ToDictionary(x => x.Key, x => new BitmapFont(x.Value, assetLocator.FontBitmaps[x.Key])),
+            fonFonts,
             budget);
     }
 
@@ -62,6 +78,7 @@ public sealed class AssetSet
         [
             .. assetLocator.ImagePaths
                 .Concat(assetLocator.FontBitmaps.ToDictionary(x => x.Key, x => x.Value.Path))
+                .Concat(assetLocator.FontFons.ToDictionary(x => x.Key, x => x.Value.Path))
                 .Where(x => !File.Exists(x.Value))
                 .Select(x => $"{x.Key} ({Path.GetFileName(x.Value)})")
                 .Order(),

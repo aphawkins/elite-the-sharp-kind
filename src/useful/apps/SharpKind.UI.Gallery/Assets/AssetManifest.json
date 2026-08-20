@@ -1,12 +1,34 @@
 {
-  "Colours": { "MaxColours": 16, "PaletteNamesEveryColour": true, "ChannelBits": 8 },
-  "Palette": "palette.json",
-  "FontsBitmap": {
-    "Small": { "File": "bbc-micro.bmp", "CellWidth": 8, "CellHeight": 8, "Columns": 12 },
-    "Large": { "File": "bbc-micro.bmp", "CellWidth": 8, "CellHeight": 8, "Columns": 12 }
+  "Colours": {
+    "MaxColours": 16,
+    "PaletteNamesEveryColour": true,
+    "ChannelBits": 8
   },
-  "FontsTrueType": {
-    "Small": { "File": "OpenSans-Regular.ttf", "PointSize": 12 },
-    "Large": { "File": "OpenSans-Regular.ttf", "PointSize": 18 }
+  "Palette": "palette.json",
+  "Fonts": {
+    "Bitmap": {
+      "Small": {
+        "File": "bbc-micro.bmp",
+        "CellWidth": 8,
+        "CellHeight": 8,
+        "Columns": 12
+      },
+      "Large": {
+        "File": "bbc-micro.bmp",
+        "CellWidth": 8,
+        "CellHeight": 8,
+        "Columns": 12
+      }
+    },
+    "TrueType": {
+      "Small": {
+        "File": "OpenSans-Regular.ttf",
+        "PointSize": 12
+      },
+      "Large": {
+        "File": "OpenSans-Regular.ttf",
+        "PointSize": 18
+      }
+    }
   }
 }

@@ -10,6 +10,21 @@ namespace SharpKind.Graphics.Tests;
 
 public class SoftwareGraphicsTests
 {
+    // Without the guard a null set is taken, every non-text draw works, and
+    // the first line of text throws where the renderer is rather than where
+    // the set should have come from.
+    [Fact]
+    public void RefusesToBeBuiltWithoutAnyWayToRasteriseText()
+    {
+        // Arrange
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        AssetSet assets = AssetSet.Load(moqAssetLocator.Object);
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(
+            () => SoftwareGraphics.Create(5, 5, _ => { }, assets, null!));
+    }
+
     [Fact]
     public void Clear()
     {
@@ -774,6 +789,9 @@ public class SoftwareGraphicsTests
 
         moqAssetLocator.Setup(x => x.FontBitmaps)
             .Returns(new Dictionary<string, BitmapFontAsset>());
+
+        moqAssetLocator.Setup(x => x.FontFons)
+            .Returns(new Dictionary<string, FonFontAsset>());
 
         return moqAssetLocator;
     }

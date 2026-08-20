@@ -1,6 +1,7 @@
-// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
+﻿// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
 
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SharpKind.Assets;
 
@@ -14,9 +15,25 @@ public sealed class AssetLocator : IAssetLocator
     private const string AssetManifestFilename = "AssetManifest.json";
     private const string DefaultRendition = "16-bit";
     private const string ImagesCategory = "Images";
-    private const string FontsBitmapCategory = "FontsBitmap";
+
+    // Every kind of font shares one folder: what differs between a sheet, a
+    // .fon and a TrueType face is how the manifest declares it, not where the
+    // file lives, and three folders holding one font each was three places to
+    // look for the same thing.
+    private const string FontsCategory = "Fonts";
     private const string ModelsCategory = "Models";
     private const string PaletteCategory = "Palette";
+
+    // A section this build does not know is a mistake rather than something
+    // to skip: a misspelled one would otherwise read as declaring nothing,
+    // and the set would fail much later with an asset it could not find -
+    // a missing font type surfacing as a crash on the first screen that
+    // draws text, rather than as the typo it is.
+    private static readonly JsonSerializerOptions s_manifestOptions = new()
+    {
+        UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
+    };
+
     private readonly AssetManifest _assetManifest = new();
     private readonly string _baseDirectory;
 
@@ -44,14 +61,19 @@ public sealed class AssetLocator : IAssetLocator
     public string PalettePath => CategoryPath(PaletteCategory, _assetManifest.Palette);
 
     public IDictionary<string, BitmapFontAsset> FontBitmaps
-        => _assetManifest.FontsBitmap.ToDictionary(
+        => _assetManifest.Fonts.Bitmap.ToDictionary(
             x => x.Key,
-            x => new BitmapFontAsset(CategoryPath(FontsBitmapCategory, x.Value.File), x.Value));
+            x => new BitmapFontAsset(CategoryPath(FontsCategory, x.Value.File), x.Value));
+
+    public IDictionary<string, FonFontAsset> FontFons
+        => _assetManifest.Fonts.Fon.ToDictionary(
+            x => x.Key,
+            x => new FonFontAsset(CategoryPath(FontsCategory, x.Value.File), x.Value.PixelHeight));
 
     public IDictionary<string, TrueTypeFontAsset> FontTrueTypes
-        => _assetManifest.FontsTrueType.ToDictionary(
+        => _assetManifest.Fonts.TrueType.ToDictionary(
             x => x.Key,
-            x => new TrueTypeFontAsset(Path.Combine(_baseDirectory, "FontsTrueType", x.Value.File), x.Value.PointSize));
+            x => new TrueTypeFontAsset(CategoryPath(FontsCategory, x.Value.File), x.Value.PointSize));
 
     public IDictionary<string, string> ImagePaths
         => _assetManifest.Images.ToDictionary(x => x.Key, x => CategoryPath(ImagesCategory, x.Value));
@@ -99,7 +121,7 @@ public sealed class AssetLocator : IAssetLocator
     {
         try
         {
-            return JsonSerializer.Deserialize<AssetManifest>(manifestStream)
+            return JsonSerializer.Deserialize<AssetManifest>(manifestStream, s_manifestOptions)
                 ?? throw new SharpKindException("Failed to read asset manifest from provided stream.");
         }
         catch (JsonException ex)
@@ -113,7 +135,7 @@ public sealed class AssetLocator : IAssetLocator
         try
         {
             using FileStream stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            return JsonSerializer.Deserialize<AssetManifest>(stream)
+            return JsonSerializer.Deserialize<AssetManifest>(stream, s_manifestOptions)
                 ?? throw new SharpKindException($"Asset manifest file is empty: {path}");
         }
         catch (Exception ex) when (ex is not SharpKindException)

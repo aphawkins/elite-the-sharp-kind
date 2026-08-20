@@ -43,6 +43,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\libs\SharpKind.Assets\SharpKind.Assets.csproj" />
+    <ProjectReference Include="..\SharpKind.Fakes\SharpKind.Fakes.csproj" />
   </ItemGroup>
 
 </Project>

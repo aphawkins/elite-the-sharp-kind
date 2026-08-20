@@ -21,9 +21,5 @@
   },
   "SoundFonts": {
     "Default": "TimGM6mb.sf2"
-  },
-  "FontsTrueType": {
-    "Small": { "File": "OpenSans-Regular.ttf", "PointSize": 12 },
-    "Large": { "File": "OpenSans-Regular.ttf", "PointSize": 18 }
   }
 }

@@ -6,6 +6,7 @@ using EliteSharpLib.Config;
 using EliteSharpLib.Suns;
 using SharpKind.Abstraction.Config;
 using SharpKind.Config;
+using SharpKind.Graphics;
 
 namespace EliteSharpLib.Tests.Config;
 
@@ -25,9 +26,63 @@ public class ConfigFileTests
         // Assert
         Assert.Equal(60f, config.Engine.Graphics.Fps);
         Assert.False(config.Engine.Graphics.ShowFps);
+
+        // The renditions' own sheets, so a commander who has chosen nothing
+        // gets the text each rendition was drawn for.
+        Assert.Equal(FontKind.Bitmap, config.Engine.Graphics.FontKind);
         Assert.Null(config.Engine.WindowScale);
         Assert.True(config.Engine.Sound.Music);
         Assert.True(config.Engine.Sound.Effects);
+    }
+
+    // A font kind the build does not know - a hand-edit, or a file from a
+    // later build - goes back to the sheets rather than leaving the game
+    // drawing with nothing.
+    [Fact]
+    public void RepairReplacesAnUnknownFontKind()
+    {
+        // Arrange
+        GraphicsConfigSettings graphics = new() { FontKind = (FontKind)42 };
+
+        // Act
+        bool repaired = graphics.Repair();
+
+        // Assert
+        Assert.True(repaired);
+        Assert.Equal(FontKind.Bitmap, graphics.FontKind);
+    }
+
+    // A kind the build does know is left alone, whether or not the rendition
+    // in use has such a font - what a rendition offers is settled when its
+    // assets are loaded, not here.
+    [Fact]
+    public void RepairKeepsAKnownFontKind()
+    {
+        // Arrange
+        GraphicsConfigSettings graphics = new() { FontKind = FontKind.Fon };
+
+        // Act
+        graphics.Repair();
+
+        // Assert
+        Assert.Equal(FontKind.Fon, graphics.FontKind);
+    }
+
+    // The setting has to survive the file, not just the object: it is written
+    // by the settings screen and read back at the next launch.
+    [Fact]
+    public void WriteConfigThenReadConfigKeepsTheFontKind()
+    {
+        // Arrange
+        ConfigFile<EliteConfig> configFile = new(CreateTempDirectory(), ConfigFileName);
+        EliteConfig written = new() { Engine = new() { Graphics = new() { FontKind = FontKind.Fon } } };
+
+        // Act
+        configFile.WriteConfig(written);
+        EliteConfig read = configFile.ReadConfig();
+
+        // Assert
+        Assert.Equal(FontKind.Fon, read.Engine.Graphics.FontKind);
     }
 
     [Fact]

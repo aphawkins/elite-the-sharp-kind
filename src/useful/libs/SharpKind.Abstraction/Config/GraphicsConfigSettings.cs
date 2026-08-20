@@ -1,5 +1,6 @@
 // 'SharpKind Libraries' - Andy Hawkins 2023-2026.
 
+using SharpKind.Graphics;
 using SharpKind.Graphics.Rendering;
 
 namespace SharpKind.Abstraction.Config;
@@ -37,6 +38,13 @@ public sealed class GraphicsConfigSettings
     // How a shaded colour is reduced to one the rendition can display. Only
     // the method is set here; what the rendition can show is its own.
     public Quantisation Quantisation { get; set; } = Quantisation.Nearest;
+
+    // Which kind of font text is drawn with. Both backends honour it, so it
+    // decides how the text looks rather than which machine is drawing it - the
+    // two used to disagree, sheets in software against TrueType in hardware.
+    // A rendition that declares no font of the chosen kind draws with its own
+    // sheets instead.
+    public FontKind FontKind { get; set; } = FontKind.Bitmap;
 
     // Whether to overlay the measured frame rate. Off by default: it is a
     // diagnostic, not part of the game's display. Nothing to repair - a bool
@@ -79,6 +87,12 @@ public sealed class GraphicsConfigSettings
         if (!Enum.IsDefined(Quantisation))
         {
             Quantisation = Quantisation.Nearest;
+            repaired = true;
+        }
+
+        if (!Enum.IsDefined(FontKind))
+        {
+            FontKind = FontKind.Bitmap;
             repaired = true;
         }
 

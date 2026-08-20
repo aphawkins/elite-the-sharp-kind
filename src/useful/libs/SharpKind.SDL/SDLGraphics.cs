@@ -8,7 +8,6 @@ using SharpKind.Assets;
 using SharpKind.Graphics;
 using SharpKind.Graphics.Rendering;
 using static SDL.SDL3;
-using static SDL.SDL3_ttf;
 
 namespace SharpKind.SDL;
 
@@ -18,7 +17,13 @@ public sealed unsafe partial class SDLGraphics : IGraphics, IDisposable
 
     private readonly SDLRenderer _renderer;
     private readonly Dictionary<(string FontType, string Text, uint Color), TextTextureEntry> _textTextures = [];
-    private Dictionary<string, nint> _fonts = [];
+
+    // How text becomes pixels, in each kind the rendition offers. Shared with
+    // the software backend rather than rasterised here: text drawn through
+    // SDL_ttf while the software renderer drew the renditions' own sheets is
+    // what made the same game read differently depending on which backend was
+    // running.
+    private FontRasteriserSet _fontRasterisers = FontRasteriserSet.Only(new BitmapFontRasteriser([]));
     private Dictionary<string, FastBitmap> _images = [];
     private Dictionary<string, nint> _imageTextures = [];
     private bool _isDisposed;
@@ -104,16 +109,40 @@ public sealed unsafe partial class SDLGraphics : IGraphics, IDisposable
 
     public float ScreenWidth { get; }
 
+    public FontKind FontKind
+    {
+        get => _fontRasterisers.Kind;
+
+        set
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            FontKind previous = _fontRasterisers.Kind;
+
+            // Every cached texture holds text drawn in the kind that was in
+            // use when it was uploaded, so a change makes the lot of them
+            // stale.
+            if (_fontRasterisers.Select(value) != previous)
+            {
+                ClearTextTextures();
+            }
+        }
+    }
+
     private SDL_Renderer* NativeRenderer => (SDL_Renderer*)(nint)_renderer;
 
     public static SDLGraphics Create(SDLRenderer renderer, float screenWidth, float screenHeight, IAssetLocator assetLocator)
-        => Create(renderer, screenWidth, screenHeight, assetLocator, null);
+        => Create(renderer, screenWidth, screenHeight, assetLocator, FontKind.Bitmap, null);
 
     public static SDLGraphics Create(
         SDLRenderer renderer,
         float screenWidth,
         float screenHeight,
         IAssetLocator assetLocator,
+        FontKind fontKind,
         ILogger? logger)
     {
         ArgumentNullException.ThrowIfNull(assetLocator);
@@ -127,9 +156,7 @@ public sealed unsafe partial class SDLGraphics : IGraphics, IDisposable
         {
             _images = assets.Images,
 
-            _fonts = assetLocator.FontTrueTypes.ToDictionary(
-                x => x.Key,
-                x => LoadFont(x.Value)),
+            _fontRasterisers = FontRasterisers.Load(assets, assetLocator, fontKind),
         };
 
         // Textures are created once here rather than per-draw: creating one
@@ -532,27 +559,10 @@ public sealed unsafe partial class SDLGraphics : IGraphics, IDisposable
         });
     }
 
-    // TTF measures the string itself, so this asks the font rather than
-    // rendering: no texture is created for text that is only being measured.
+    // No texture is created for text that is only being measured - the
+    // rasteriser sizes it without drawing it.
     public Vector2 MeasureText(string text, string fontType)
-    {
-        if (_isDisposed || string.IsNullOrWhiteSpace(text))
-        {
-            return new(0, _isDisposed ? 0 : TTF_GetFontHeight((TTF_Font*)_fonts[fontType]));
-        }
-
-        // Called directly rather than through SDLGuard: the out parameters are
-        // pointers, which a lambda cannot capture, so the failure check is
-        // spelled out here instead.
-        int width;
-        int height;
-        if (!TTF_GetStringSize((TTF_Font*)_fonts[fontType], text, 0, &width, &height))
-        {
-            SDLHelper.Throw(nameof(TTF_GetStringSize));
-        }
-
-        return new(width, height);
-    }
+        => _isDisposed ? new(0, 0) : _fontRasterisers.Measure(text, fontType);
 
     public void DrawTextCentre(float y, string text, string fontType, FastColor color)
     {
@@ -735,31 +745,11 @@ public sealed unsafe partial class SDLGraphics : IGraphics, IDisposable
         return texture;
     }
 
-    private static nint LoadFont(TrueTypeFontAsset font)
-    {
-        Debug.Assert(File.Exists(font.Path), $"Font file '{font.Path}' does not exist.");
-        Debug.Assert(
-            string.Equals(Path.GetExtension(font.Path), ".ttf", StringComparison.OrdinalIgnoreCase),
-            $"Font file '{font.Path}' must be a TTF file.");
-        Debug.Assert(font.PointSize > 0, $"Font '{font.Path}' must have a positive point size.");
-
-        return SDLGuard.Execute(() => (nint)TTF_OpenFont(font.Path, font.PointSize));
-    }
-
     private static SDL_Vertex ConvertVertex(Vector2 point, in FastColor color) => new()
     {
         position = new() { x = point.X, y = point.Y },
         tex_coord = new() { x = 0.0f, y = 0.0f },
         color = ToSDLFColor(color),
-    };
-
-    // ARGB, matching FastColor's decoding - not RGBA.
-    private static SDL_Color ToSDLColor(in FastColor color) => new()
-    {
-        r = color.R,
-        g = color.G,
-        b = color.B,
-        a = color.A,
     };
 
     // SDL_Vertex colours are normalised floats (0..1), not bytes.
@@ -805,22 +795,30 @@ public sealed unsafe partial class SDLGraphics : IGraphics, IDisposable
             return cached;
         }
 
-        SDL_Color colour = ToSDLColor(color);
-        nint surfacePtr = SDLGuard.Execute(() => (nint)TTF_RenderText_Solid((TTF_Font*)_fonts[fontType], text, 0, colour));
-        SDL_Surface* surface = (SDL_Surface*)surfacePtr;
+        // The same pixels the software backend would blit, uploaded as a
+        // texture instead - which is what makes the two backends agree.
+        using FastBitmap bitmap = _fontRasterisers.Rasterise(text, fontType, color);
 
         TextTextureEntry entry = new()
         {
-            Texture = SDLGuard.Execute(() => (nint)SDL_CreateTextureFromSurface(NativeRenderer, surface)),
-            Width = surface->w,
-            Height = surface->h,
+            Texture = CreateImageTexture(NativeRenderer, bitmap),
+            Width = bitmap.Width,
+            Height = bitmap.Height,
             UsedThisFrame = true,
         };
 
-        SDL_DestroySurface(surface);
-
         _textTextures[key] = entry;
         return entry;
+    }
+
+    private void ClearTextTextures()
+    {
+        foreach (KeyValuePair<(string, string, uint), TextTextureEntry> entry in _textTextures)
+        {
+            SDL_DestroyTexture((SDL_Texture*)entry.Value.Texture);
+        }
+
+        _textTextures.Clear();
     }
 
     private void EvictStaleTextTextures()
@@ -1260,10 +1258,7 @@ public sealed unsafe partial class SDLGraphics : IGraphics, IDisposable
             // set large fields to null
 
             // Fonts
-            foreach (KeyValuePair<string, nint> font in _fonts)
-            {
-                TTF_CloseFont((TTF_Font*)font.Value);
-            }
+            _fontRasterisers.Dispose();
 
             // Images
             foreach (KeyValuePair<string, FastBitmap> image in _images)
@@ -1276,10 +1271,9 @@ public sealed unsafe partial class SDLGraphics : IGraphics, IDisposable
                 SDL_DestroyTexture((SDL_Texture*)texture.Value);
             }
 
-            foreach (KeyValuePair<(string, string, uint), TextTextureEntry> entry in _textTextures)
-            {
-                SDL_DestroyTexture((SDL_Texture*)entry.Value.Texture);
-            }
+            // Cleared as well as destroyed: a handle left in the dictionary is
+            // one a later pass over it would free a second time.
+            ClearTextTextures();
 
             if (_depthTexture != nint.Zero)
             {

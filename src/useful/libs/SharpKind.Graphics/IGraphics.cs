@@ -7,6 +7,15 @@ namespace SharpKind.Graphics;
 
 public interface IGraphics
 {
+    /// <summary>
+    /// Gets or sets which kind of font text is drawn with. Setting it takes effect on the
+    /// next thing drawn, so the commander sees the choice they just made
+    /// rather than the one the game launched with. A kind the rendition does
+    /// not have leaves its own sheets in use - reading the property back says
+    /// which is actually being drawn with.
+    /// </summary>
+    public FontKind FontKind { get; set; }
+
     public void Clear();
 
     /// <summary>

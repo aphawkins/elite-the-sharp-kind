@@ -19,10 +19,12 @@ rejected is worth having when it turns out to be the answer.
 > gets right is marked as it comes. Stunt Car Racer, which has one rendition
 > and no plugin model yet, keeps a single flat `Assets/` tree.
 
-An asset belongs either to a rendition or to the game. The artwork, bitmap
-fonts, palette and models are what a rendition looks like, so they travel with
-its assembly; the audio is not a rendition concern and stays with the
-executable:
+An asset belongs either to a rendition or to the game. The artwork, fonts,
+palette and models are what a rendition looks like, so they travel with its
+assembly; the audio is not a rendition concern and stays with the executable.
+Every kind of font - the rendition's own sheets, a Windows `.fon` and a
+TrueType face - shares one `Fonts/` folder, since what differs between them is
+how the manifest declares them rather than where the file sits:
 
 ```
 Renditions/
@@ -31,15 +33,33 @@ Renditions/
     Assets/
       AssetManifest.json
       Images/       scanner.bmp, ...
-      FontsBitmap/  bbc-micro.bmp
+      Fonts/        bbc-micro.bmp, Bm437_Master_512.FON, Mx437_Master_512.ttf
       Palette/      palette.json
       Models/       adder.obj, ..., palette.mtl
   EliteSharp.Renditions.SixteenBit/
     ... the same, its own
 Assets/
   AssetManifest.json
-  SFX/  Music/  SoundFonts/  FontsTrueType/   <- the game's own
+  SFX/  Music/  SoundFonts/               <- the game's own
 ```
+
+The manifest groups them the same way the folder does - one `Fonts` section
+holding a subsection per kind, named as the `FontKind` setting names them, so
+a manifest section and a setting value read the same:
+
+```json
+"Fonts": {
+  "Bitmap":   { "Small": { "File": "bbc-micro.bmp", "CellWidth": 8, ... } },
+  "Fon":      { "Small": { "File": "Bm437_Master_512.FON", "PixelHeight": 8 } },
+  "TrueType": { "Small": { "File": "Mx437_Master_512.ttf", "PointSize": 8 } }
+}
+```
+
+A kind a set declares nothing for is simply absent, and the engine draws with
+that set's own sheets instead. A section the build does not recognise is
+refused outright rather than read as declaring nothing, so a misspelling says
+so when the manifest is read rather than as a crash on the first screen that
+draws text.
 
 `RenditionAssets` composes the two into one `IAssetLocator`, so nothing that
 consumes an asset knows there are two places to look.

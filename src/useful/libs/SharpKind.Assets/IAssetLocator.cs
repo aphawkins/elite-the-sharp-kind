@@ -1,4 +1,4 @@
-// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
+﻿// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
 
 namespace SharpKind.Assets;
 
@@ -15,6 +15,8 @@ public interface IAssetLocator
     public string PalettePath { get; }
 
     public IDictionary<string, BitmapFontAsset> FontBitmaps { get; }
+
+    public IDictionary<string, FonFontAsset> FontFons { get; }
 
     public IDictionary<string, TrueTypeFontAsset> FontTrueTypes { get; }
 

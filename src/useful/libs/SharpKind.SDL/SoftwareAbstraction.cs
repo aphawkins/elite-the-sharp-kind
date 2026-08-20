@@ -24,6 +24,11 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
     // this one instead.
     private readonly nint _frameTexture;
 
+    // Held only so it is let go of with everything else. The renderer owns it
+    // too and disposes it as well, which is harmless - disposing a set twice
+    // does nothing the second time.
+    private readonly FontRasteriserSet _fontRasterisers;
+
     private bool _isDisposed;
 
     public SoftwareAbstraction(int screenWidth, int screenHeight, string title)
@@ -53,6 +58,18 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
         string title,
         IAssetLocator assetLocator,
         ILogger? logger)
+        : this(screenWidth, screenHeight, windowScale, title, assetLocator, FontKind.Bitmap, logger)
+    {
+    }
+
+    public SoftwareAbstraction(
+        int screenWidth,
+        int screenHeight,
+        int windowScale,
+        string title,
+        IAssetLocator assetLocator,
+        FontKind fontKind,
+        ILogger? logger)
     {
         // The framebuffer stays at the native resolution whatever the scale
         // is; only the window and the blit that presents it grow.
@@ -74,12 +91,15 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
             (SDL_Texture*)_frameTexture,
             SDL_ScaleMode.SDL_SCALEMODE_NEAREST));
 
+        AssetSet assets = AssetSet.Load(assetLocator, logger);
+        _fontRasterisers = FontRasterisers.Load(assets, assetLocator, fontKind);
+
         Graphics = SoftwareGraphics.Create(
             screenWidth,
             screenHeight,
             SoftwareScreenUpdate,
-            assetLocator,
-            logger);
+            assets,
+            _fontRasterisers);
 
         Layout = new(screenWidth, screenHeight);
 
@@ -115,6 +135,7 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
             {
                 // dispose managed state (managed objects)
                 (Graphics as IDisposable)?.Dispose();
+                _fontRasterisers?.Dispose();
                 _soundOutput?.Dispose();
                 (Sound as IDisposable)?.Dispose();
 

@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using Moq;
 using SharpKind.Assets;
+using SharpKind.Fakes.Assets;
 
 namespace SharpKind.Graphics.Tests;
 
@@ -60,8 +61,8 @@ public class AssetSetTests
     [Fact]
     public void CountsBitmapFontsAgainstTheBudgetToo()
     {
-        // Arrange: the font is part of the tier's set even for backends that
-        // draw text with TrueType fonts instead.
+        // Arrange: the sheet is part of the tier's set whatever font kind is
+        // selected to draw with.
         using TempImageFile image = TempImageFile.From(Bmp(0xFFFF0000, 0xFFFF0000));
         using TempImageFile font = TempImageFile.From(FontBmp(0xFF00FF00, 0xFF0000FF));
 
@@ -306,6 +307,70 @@ public class AssetSetTests
 
     // Distinct colours that all sit on the 12-bit grid. One channel only
     // carries 16 of them, so the count spills into the next.
+    [Fact]
+    public void LoadsTheStrikesADeclaredFonHolds()
+    {
+        // Arrange
+        string path = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.fon");
+        File.WriteAllBytes(path, FonFileBuilder.Build(new FontSpec(0x0200, 8, false, 'A', 'A', [Block(4, 8)])));
+
+        try
+        {
+            // Act
+            AssetSet assets = AssetSet.Load(LocatorWithFon(path, 8));
+
+            // Assert
+            Assert.Equal(8, assets.FonFonts["Small"].PixelHeight);
+            Assert.Equal(4, assets.FonFonts["Small"].Glyph('A')!.Width);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    // A .fon carries no colours of its own - a strike is one bit per pixel,
+    // coloured when it is drawn - so it has nothing to spend from the budget
+    // however tight the rendition's is.
+    [Fact]
+    public void CountsNoColoursForAFon()
+    {
+        // Arrange
+        string path = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.fon");
+        File.WriteAllBytes(path, FonFileBuilder.Build(new FontSpec(0x0200, 8, false, 'A', 'A', [Block(4, 8)])));
+
+        try
+        {
+            // Act
+            AssetSet assets = AssetSet.Load(LocatorWithFon(path, 8));
+
+            // Assert
+            Assert.Equal(0, assets.Budget.ColourCount);
+            Assert.DoesNotContain("Small", assets.Budget.PerAsset.Keys);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    // Missing files are reported together, and a .fon has to be among them -
+    // otherwise filling in a rendition's set means finding out about its font
+    // only once everything else is in place.
+    [Fact]
+    public void ReportsAMissingFonWithTheRest()
+    {
+        // Arrange
+        string missing = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.fon");
+
+        // Act
+        SharpKindException exception =
+            Assert.Throws<SharpKindException>(() => AssetSet.Load(LocatorWithFon(missing, 8)));
+
+        // Assert
+        Assert.Contains(Path.GetFileName(missing), exception.Message, StringComparison.Ordinal);
+    }
+
     private static uint[] OnGrid(int count)
         => [.. Enumerable.Range(0, count).Select(i => 0xFF000000u | ((uint)(i % 16) * 0x11u) | ((uint)(i / 16) * 0x1100u))];
 
@@ -326,6 +391,25 @@ public class AssetSetTests
         }
 
         return BmpBuilder.Build(colours.Length, 1, 32, pixels);
+    }
+
+    // A .fon is loaded alongside the sheets, so a rendition that declares one
+    // has its strikes ready before anything asks to draw with them.
+    private static string[] Block(int width, int height)
+        => [.. Enumerable.Repeat(new string('#', width), height)];
+
+    private static IAssetLocator LocatorWithFon(string path, int pixelHeight)
+    {
+        Mock<IAssetLocator> locator = new();
+        locator.SetupGet(x => x.Rendition).Returns("Test");
+        locator.SetupGet(x => x.Colours).Returns(SixteenBit);
+        locator.SetupGet(x => x.PalettePath).Returns(string.Empty);
+        locator.SetupGet(x => x.ImagePaths).Returns(new Dictionary<string, string>());
+        locator.SetupGet(x => x.FontBitmaps).Returns(new Dictionary<string, BitmapFontAsset>());
+        Dictionary<string, FonFontAsset> fons = new() { { "Small", new(path, pixelHeight) } };
+        locator.SetupGet(x => x.FontFons).Returns(fons);
+
+        return locator.Object;
     }
 
     // BitmapFont only accepts the 513x193 sheet the real fonts use, so a
@@ -379,6 +463,7 @@ public class AssetSetTests
             x => new BitmapFontAsset(
                 x.File.Path,
                 new BitmapFontEntry { File = x.File.Path, CellWidth = 32, CellHeight = 32, Columns = 16 })));
+        locator.SetupGet(x => x.FontFons).Returns(new Dictionary<string, FonFontAsset>());
         return locator.Object;
     }
 }

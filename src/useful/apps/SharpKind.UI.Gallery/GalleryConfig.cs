@@ -10,10 +10,9 @@ namespace SharpKind.UI.Gallery;
 /// keep. Deriving from the non-generic <see cref="ConfigSettings"/> rather
 /// than the generic one is how a game says it has no game section.
 /// <para>
-/// It exists so the gallery can be pointed at the Hardware backend, which is
-/// the one thing about a control that the software renderer cannot show: text
-/// there is measured and drawn by TTF rather than from a bitmap sheet, and
-/// alignment is exactly what that changes.
+/// It exists so the gallery can be pointed at either backend and at any of
+/// the font kinds: alignment is what a change of font moves, and a control
+/// laid out against one kind's metrics has to be checked against the others.
 /// </para>
 /// </summary>
 internal sealed class GalleryConfig : ConfigSettings

@@ -142,6 +142,7 @@ public static class GameApp
             fps = engine.Graphics.Fps,
             graphicStyle = engine.Graphics.FillMode.ToString(),
             depthSort = engine.Graphics.DepthSort.ToString(),
+            fontKind = engine.Graphics.FontKind.ToString(),
             soundEffects = engine.Sound.Effects,
             soundMusic = engine.Sound.Music,
         };

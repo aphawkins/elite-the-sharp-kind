@@ -7,6 +7,55 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (One text rasteriser for both backends, and .fon/TrueType font kinds, 2026-08-20)
+
+- **The two backends drew text by different means and so drew it
+  differently.** `SoftwareGraphics` rasterised each rendition's own font
+  sheets while `SDLGraphics` ignored them and rendered OpenSans through
+  SDL_ttf, so the same game on the same rendition had different glyphs,
+  metrics and layout depending on the `Backend` setting. Every kind now
+  rasterises to a `FastBitmap` through one `IFontRasteriser`, and each
+  backend only presents the result - software blits it, hardware uploads
+  it into the `(font, text, colour)` texture cache it already kept.
+  Matching output is structural rather than two paths kept in step.
+- **Three kinds, chosen by `engine.graphics.fontKind`**: `Bitmap` (the
+  default - the rendition's own sheets), `Fon` (a Windows `.fon`) and
+  `TrueType`. Both games read it; the choice applies immediately, since
+  every kind a rendition declares is loaded at startup and
+  `IGraphics.FontKind` swaps between them and clears the stale text
+  caches. A rendition that declares no font of the chosen kind draws with
+  its own sheets rather than failing.
+- **`FonFontReader` reads Windows `.fon` files** - the MZ/NE container,
+  every `0x8008` FNT resource with the nearest strike to the height
+  wanted, FNT 2.0 and 3.0, fixed and proportional pitch, and the
+  column-major glyph packing. Every field is bounds-checked, so a
+  truncated file fails naming itself.
+- **The manifest groups fonts the way the folder does**: one `Fonts`
+  section with a `Bitmap`, `Fon` and `TrueType` subsection, named as the
+  `FontKind` setting names them, in place of three flat `FontsBitmap`,
+  `FontsFON` and `FontsTrueType` sections. Manifests ship with the
+  renditions, so the old shape is not read - a section the build does not
+  recognise is refused when the manifest is read, rather than read as
+  declaring nothing and failing later with an asset it cannot find.
+- **Fonts belong to renditions, and all kinds share one `Fonts/`
+  folder.** `FontsBitmap/`, `FontsFON/` and `FontsTrueType/` collapsed
+  into `Fonts/`: what differs between a sheet, a `.fon` and a face is how
+  the manifest declares it, not where the file sits. The 8-bit rendition
+  declares all three, the 16-bit one its sheets and OpenSans, and the
+  game's own `Assets/` keeps only audio.
+- **Elite's Engine Settings screen carries a `Font:` row**, beside the
+  other choices about how the world is drawn, offering Bitmap, FON and
+  TrueType. It has no restart marker: the row writes the config and the
+  running renderer together, the way the Music row does with the audio
+  controller.
+- **The 8-bit rendition's `.fon` and TrueType fonts come from VileR's
+  Oldschool PC Font Resource** (https://int10h.org/oldschool-pc-fonts/) -
+  `Bm437_Master_512.FON` and `Mx437_Master_512.ttf`. They are the same
+  character ROM as the rendition's own `bbc-micro.bmp` sheet, which is
+  how the three kinds were checked against each other: all three draw the
+  commander-status screen to identical pixels, from three independent
+  code paths.
+
 ### Added ('R' turn-around key in Stunt Car Racer, 2026-08-19)
 
 - **'R' points the car the opposite way during a race** - the remake adds

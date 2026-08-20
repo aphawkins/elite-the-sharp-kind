@@ -1,4 +1,4 @@
-// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
+﻿// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
 
 using System.Text;
 using System.Text.Json;
@@ -17,8 +17,7 @@ public class AssetLocatorTests
         string assetsRoot = Path.Combine(tempRoot, "Assets");
         Directory.CreateDirectory(assetsRoot);
         Directory.CreateDirectory(Path.Combine(assetsRoot, "Palette"));
-        Directory.CreateDirectory(Path.Combine(assetsRoot, "FontsBitmap"));
-        Directory.CreateDirectory(Path.Combine(assetsRoot, "FontsTrueType"));
+        Directory.CreateDirectory(Path.Combine(assetsRoot, "Fonts"));
         Directory.CreateDirectory(Path.Combine(assetsRoot, "Images"));
         Directory.CreateDirectory(Path.Combine(assetsRoot, "Music"));
         Directory.CreateDirectory(Path.Combine(assetsRoot, "SFX"));
@@ -30,14 +29,21 @@ public class AssetLocatorTests
         object manifestObject = new
         {
             Palette = "palette.png",
-            FontsBitmap = new Dictionary<string, object>
+            Fonts = new
             {
-                { "Arial", new { File = "arial.png", CellWidth = 8, CellHeight = 8, Columns = 16 } },
-                { "Vera", new { File = "vera.png", CellWidth = 8, CellHeight = 8, Columns = 16 } },
-            },
-            FontsTrueType = new Dictionary<string, object>
-            {
-                { "Roboto", new { File = "roboto.ttf", PointSize = 14 } },
+                Bitmap = new Dictionary<string, object>
+                {
+                    { "Arial", new { File = "arial.png", CellWidth = 8, CellHeight = 8, Columns = 16 } },
+                    { "Vera", new { File = "vera.png", CellWidth = 8, CellHeight = 8, Columns = 16 } },
+                },
+                Fon = new Dictionary<string, object>
+                {
+                    { "Terminal", new { File = "terminal.fon", PixelHeight = 10 } },
+                },
+                TrueType = new Dictionary<string, object>
+                {
+                    { "Roboto", new { File = "roboto.ttf", PointSize = 14 } },
+                },
             },
             Images = new Dictionary<string, string>
             {
@@ -75,16 +81,22 @@ public class AssetLocatorTests
             string expectedPalette = Path.Combine(assetsRoot, "Palette", "palette.png");
             Assert.Equal(expectedPalette, locator.PalettePath);
 
-            // Assert - FontsBitmap
+            // Assert - the sheets
             IDictionary<string, BitmapFontAsset> fontBitmaps = locator.FontBitmaps;
             Assert.Equal(2, fontBitmaps.Count);
-            Assert.Equal(Path.Combine(assetsRoot, "FontsBitmap", "arial.png"), fontBitmaps["Arial"].Path);
-            Assert.Equal(Path.Combine(assetsRoot, "FontsBitmap", "vera.png"), fontBitmaps["Vera"].Path);
+            Assert.Equal(Path.Combine(assetsRoot, "Fonts", "arial.png"), fontBitmaps["Arial"].Path);
+            Assert.Equal(Path.Combine(assetsRoot, "Fonts", "vera.png"), fontBitmaps["Vera"].Path);
 
-            // Assert - FontsTrueType
+            // Assert - the .fon strikes
+            IDictionary<string, FonFontAsset> fontFons = locator.FontFons;
+            Assert.Single(fontFons);
+            Assert.Equal(Path.Combine(assetsRoot, "Fonts", "terminal.fon"), fontFons["Terminal"].Path);
+            Assert.Equal(10, fontFons["Terminal"].PixelHeight);
+
+            // Assert - the TrueType faces
             IDictionary<string, TrueTypeFontAsset> fontTrueTypes = locator.FontTrueTypes;
             Assert.Single(fontTrueTypes);
-            Assert.Equal(Path.Combine(assetsRoot, "FontsTrueType", "roboto.ttf"), fontTrueTypes["Roboto"].Path);
+            Assert.Equal(Path.Combine(assetsRoot, "Fonts", "roboto.ttf"), fontTrueTypes["Roboto"].Path);
             Assert.Equal(14, fontTrueTypes["Roboto"].PointSize);
 
             // Assert - Images
@@ -263,6 +275,34 @@ public class AssetLocatorTests
         }
     }
 
+    // A misspelled section would otherwise read as declaring nothing, and the
+    // set would fail much later with an asset it could not find. It says so
+    // when the manifest is read instead.
+    [Fact]
+    public void RefusesAManifestSectionItDoesNotKnow()
+    {
+        // Arrange - Font, where the section is called Fonts.
+        object manifestObject = new
+        {
+            Font = new
+            {
+                Bitmap = new Dictionary<string, object>
+                {
+                    { "Small", new { File = "font1.bmp", CellWidth = 8, CellHeight = 8, Columns = 16 } },
+                },
+            },
+        };
+
+        using MemoryStream stream = new(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(manifestObject)));
+
+        // Act
+        SharpKindException exception = Assert.Throws<SharpKindException>(
+            () => AssetLocator.Create(stream, Path.GetTempPath()));
+
+        // Assert
+        Assert.Contains("Failed to read asset manifest", exception.Message, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void CreateDefaultReadsManifestFileReturnsLocator()
     {
@@ -271,8 +311,7 @@ public class AssetLocatorTests
         string assetsRoot = Path.Combine(baseDir, "Assets");
         Directory.CreateDirectory(assetsRoot);
         Directory.CreateDirectory(Path.Combine(assetsRoot, "Palette"));
-        Directory.CreateDirectory(Path.Combine(assetsRoot, "FontsBitmap"));
-        Directory.CreateDirectory(Path.Combine(assetsRoot, "FontsTrueType"));
+        Directory.CreateDirectory(Path.Combine(assetsRoot, "Fonts"));
         Directory.CreateDirectory(Path.Combine(assetsRoot, "Images"));
         Directory.CreateDirectory(Path.Combine(assetsRoot, "Music"));
         Directory.CreateDirectory(Path.Combine(assetsRoot, "SFX"));
@@ -284,13 +323,16 @@ public class AssetLocatorTests
         object manifestObject = new
         {
             Palette = "palette.png",
-            FontsBitmap = new Dictionary<string, object>
+            Fonts = new
             {
-                { "Arial", new { File = "arial.png", CellWidth = 8, CellHeight = 8, Columns = 16 } },
-            },
-            FontsTrueType = new Dictionary<string, object>
-            {
-                { "Roboto", new { File = "roboto.ttf", PointSize = 14 } },
+                Bitmap = new Dictionary<string, object>
+                {
+                    { "Arial", new { File = "arial.png", CellWidth = 8, CellHeight = 8, Columns = 16 } },
+                },
+                TrueType = new Dictionary<string, object>
+                {
+                    { "Roboto", new { File = "roboto.ttf", PointSize = 14 } },
+                },
             },
             Images = new Dictionary<string, string>
             {

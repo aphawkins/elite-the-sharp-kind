@@ -19,7 +19,7 @@ public class OffScreenTriangleBenchmarks : IDisposable
     private bool _isDisposed;
 
     public OffScreenTriangleBenchmarks()
-        => _graphics = new(ScreenWidthPixels, ScreenHeightPixels, (_) => { }, [], []);
+        => _graphics = new(ScreenWidthPixels, ScreenHeightPixels, (_) => { }, [], FontRasteriserSet.Only(new BitmapFontRasteriser([])));
 
     // A face covering the whole viewport: the worst legitimate case.
     [Benchmark(Baseline = true)]

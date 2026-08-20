@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using SharpKind.Abstraction;
 using SharpKind.Abstraction.Config;
 using SharpKind.App;
+using SharpKind.Graphics;
 
 [assembly: CLSCompliant(false)]
 
@@ -67,7 +68,11 @@ internal static class Program
         ILoggerFactory loggerFactory,
         EngineConfigSettings engine)
     {
-        int height = Gallery.LayoutRows * (engine.Backend == Backend.Hardware ? TrueTypeRowHeight : BitmapRowHeight);
+        // Row height follows the font, not the backend: both backends draw
+        // text the same way now, and it is the kind of font that decides how
+        // tall a row of it is.
+        int rowHeight = engine.Graphics.FontKind == FontKind.TrueType ? TrueTypeRowHeight : BitmapRowHeight;
+        int height = Gallery.LayoutRows * rowHeight;
 
         // An unchosen scale is the gallery's own default; from there it shrinks
         // to whatever fits.

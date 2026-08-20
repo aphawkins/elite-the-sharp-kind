@@ -15,6 +15,10 @@ namespace SharpKind.Graphics.Fakes;
 /// <param name="screenHeight">The height reported by <see cref="Layout"/>.</param>
 public sealed class RecordingGraphics(float screenWidth = 0, float screenHeight = 0) : IGraphics
 {
+    // Recorded rather than acted on: nothing here rasterises, so which kind
+    // of font would have been used is only worth reading back.
+    public FontKind FontKind { get; set; }
+
     public IList<(Vector2[] Points, FastColor Colour)> FilledPolygons { get; } = [];
 
     public IList<(Vector2[] Points, FastColor[] CornerColours)> ShadedPolygons { get; } = [];

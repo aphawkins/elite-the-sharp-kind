@@ -1,4 +1,4 @@
-# The Sharp Kind
+﻿# The Sharp Kind
 
 ![Line coverage](docs/images/coverage-badge.svg)
 
@@ -68,6 +68,7 @@ Every file has the same three top-level elements: `version`, the schema version;
             "depthSort": "ZBuffer",            // Depth-sort strategy for filled rendering (ignored when fillMode is Wireframe).  Painter or ZBuffer
             "shading": "Unlit",                // What colour a face takes (ignored when fillMode is Wireframe, or in a rendition that does not shade).  Unlit (the model's flat colour), Lambert (one tone per face, from the angle it faces the light) or Gouraud (the tone blended across the face, from its corners)
             "quantisation": "Nearest",         // How a shaded colour is reduced to one the rendition can show.  Nearest, or Ordered to dither between the two either side of it
+            "fontKind": "Bitmap",              // Which kind of font text is drawn with.  Bitmap (the rendition's own sheets), Fon (a Windows .fon) or TrueType.  Both backends honour it, so it decides how text looks rather than which machine is drawing it; a rendition declaring no font of the chosen kind draws with its own sheets.  Which kinds a rendition offers is its own (see below)
             "showFps": false                   // Overlay the measured frame rate.  A diagnostic, so off by default
         },
         "sound": {
@@ -103,7 +104,7 @@ A rendition stands in for a class of machine, so it carries that machine's limit
 | Render resolution (Elite) | 320 x 256 | 640 x 512 |
 | Max colours | 16 | 4096 |
 | Palette is the complete colour set | yes — an asset may only use colours the palette names | no — the palette only names the colours the geometry draws with |
-| Font | 8 x 8 fixed grid | proportional, 32 x 32 cells |
+| Fonts (`fontKind`) | `Bitmap` an 8 x 8 fixed grid sheet, and a `.fon` and TrueType face of the same 8 px character ROM | `Bitmap` a proportional sheet of 32 x 32 cells, and OpenSans as a TrueType face — no `.fon` |
 | Shading | yes, to the nearest colour the palette names | yes, to the nearest level the DAC drives |
 | Window scales (`windowScale`) | 1, 2 or 4 — default 4 | 1 or 2 — default 2 |
 

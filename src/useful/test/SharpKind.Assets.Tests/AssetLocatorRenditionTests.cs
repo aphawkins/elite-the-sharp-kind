@@ -27,12 +27,16 @@ public class AssetLocatorRenditionTests : IDisposable
     [Theory]
     [InlineData("Images", "logo.bmp")]
     [InlineData("Models", "ship.obj")]
-    [InlineData("FontsBitmap", "font1.bmp")]
+    [InlineData("Fonts", "font1.bmp")]
+    [InlineData("Fonts", "terminal.fon")]
+    [InlineData("Fonts", "roboto.ttf")]
     [InlineData("Palette", "palette.json")]
     [InlineData("SFX", "beep.wav")]
     public void ResolvesEveryCategoryUnderTheFolderItWasPointedAt(string category, string file)
     {
         // Arrange
+        ArgumentNullException.ThrowIfNull(file);
+
         AssetLocator locator = Locate("Anything");
 
         // Act
@@ -40,7 +44,9 @@ public class AssetLocatorRenditionTests : IDisposable
         {
             "Images" => locator.ImagePaths["Logo"],
             "Models" => locator.ModelPaths["Ship"],
-            "FontsBitmap" => locator.FontBitmaps["Small"].Path,
+            "Fonts" when file.EndsWith(".fon", StringComparison.Ordinal) => locator.FontFons["Small"].Path,
+            "Fonts" when file.EndsWith(".ttf", StringComparison.Ordinal) => locator.FontTrueTypes["Small"].Path,
+            "Fonts" => locator.FontBitmaps["Small"].Path,
             "Palette" => locator.PalettePath,
             _ => locator.SfxPaths["Beep"],
         };
@@ -120,9 +126,20 @@ public class AssetLocatorRenditionTests : IDisposable
     {
         Colours = new { MaxColours = 16, PaletteNamesEveryColour = true, ChannelBits = 8 },
         Palette = "palette.json",
-        FontsBitmap = new Dictionary<string, object>
+        Fonts = new
         {
-            { "Small", new { File = "font1.bmp", CellWidth = 8, CellHeight = 8, Columns = 16 } },
+            Bitmap = new Dictionary<string, object>
+            {
+                { "Small", new { File = "font1.bmp", CellWidth = 8, CellHeight = 8, Columns = 16 } },
+            },
+            Fon = new Dictionary<string, object>
+            {
+                { "Small", new { File = "terminal.fon", PixelHeight = 8 } },
+            },
+            TrueType = new Dictionary<string, object>
+            {
+                { "Small", new { File = "roboto.ttf", PointSize = 14 } },
+            },
         },
         Images = new Dictionary<string, string> { { "Logo", "logo.bmp" } },
         Models = new Dictionary<string, string> { { "Ship", "ship.obj" } },

@@ -22,6 +22,11 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
     private readonly Dictionary<string, LinkedListNode<(string Key, FastBitmap Bitmap)>> _textCache = [];
     private readonly LinkedList<(string Key, FastBitmap Bitmap)> _textCacheOrder = new();
 
+    // How text becomes pixels, in each kind the rendition offers. This
+    // renderer neither knows nor cares how any of them work - only that the
+    // one in use turns a string into a bitmap it can blit.
+    private readonly FontRasteriserSet _fontRasterisers;
+
     // Inverse depth (1/z) per pixel, 0 = infinitely far; allocated on first
     // use so purely 2D rendering pays nothing.
     private float[]? _depth;
@@ -53,14 +58,14 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
         float screenHeight,
         Action<FastBitmap> screenUpdate,
         Dictionary<string, FastBitmap> images,
-        Dictionary<string, BitmapFont> fonts)
+        FontRasteriserSet fontRasterisers)
     {
         ScreenWidth = screenWidth;
         ScreenHeight = screenHeight;
         _screen = new((int)screenWidth, (int)screenHeight);
         _screenUpdate = screenUpdate;
         Images = images;
-        Fonts = fonts;
+        _fontRasterisers = fontRasterisers;
         _clipRight = screenWidth;
         _clipBottom = screenHeight;
         Clear();
@@ -70,7 +75,22 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
 
     public float ScreenWidth { get; }
 
-    internal Dictionary<string, BitmapFont> Fonts { get; }
+    public FontKind FontKind
+    {
+        get => _fontRasterisers.Kind;
+
+        set
+        {
+            FontKind previous = _fontRasterisers.Kind;
+
+            // Every cached bitmap was drawn in the kind that was in use when
+            // it was cached, so a change makes the lot of them stale.
+            if (_fontRasterisers.Select(value) != previous)
+            {
+                ClearTextCache();
+            }
+        }
+    }
 
     internal Dictionary<string, FastBitmap> Images { get; }
 
@@ -93,7 +113,39 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
 
         AssetSet assets = AssetSet.Load(assetLocator, logger);
 
-        return new(screenWidth, screenHeight, screenUpdate, assets.Images, assets.BitmapFonts);
+        return Create(
+            screenWidth,
+            screenHeight,
+            screenUpdate,
+            assets,
+            FontRasteriserSet.Only(new BitmapFontRasteriser(assets.BitmapFonts)));
+    }
+
+    /// <summary>
+    /// Builds a renderer over an already-loaded asset set and the font kinds
+    /// it is to be drawn with. The overloads above load the assets themselves
+    /// and can only offer the rendition's own sheets, since one of the other
+    /// kinds needs SDL - a caller wanting all three composes the set where SDL
+    /// is available and passes it in here.
+    /// </summary>
+    /// <param name="screenWidth">The framebuffer width.</param>
+    /// <param name="screenHeight">The framebuffer height.</param>
+    /// <param name="screenUpdate">What to do with a composed frame.</param>
+    /// <param name="assets">The rendition's loaded assets.</param>
+    /// <param name="fontRasterisers">The font kinds available, with one selected.</param>
+    /// <returns>A renderer drawing that rendition.</returns>
+    public static SoftwareGraphics Create(
+        float screenWidth,
+        float screenHeight,
+        Action<FastBitmap> screenUpdate,
+        AssetSet assets,
+        FontRasteriserSet fontRasterisers)
+    {
+        ArgumentNullException.ThrowIfNull(screenUpdate);
+        ArgumentNullException.ThrowIfNull(assets);
+        ArgumentNullException.ThrowIfNull(fontRasterisers);
+
+        return new(screenWidth, screenHeight, screenUpdate, assets.Images, fontRasterisers);
     }
 
     public void Clear() => _screen.Clear();
@@ -393,26 +445,7 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
             (int)MathF.Floor(height),
             color);
 
-    // Measured from the font sheet rather than by generating the bitmap: the
-    // text cache is keyed on colour, so measuring through it would fill the
-    // cache with an entry per colour a caller happens to measure in.
-    public Vector2 MeasureText(string text, string fontType)
-    {
-        BitmapFont font = Fonts[fontType];
-
-        if (string.IsNullOrWhiteSpace(text))
-        {
-            return new(0, font.CellHeight);
-        }
-
-        int width = 0;
-        foreach (char letter in text)
-        {
-            width += font.IsProportional ? ProportionalGlyphWidth(font, letter) : font.CellWidth;
-        }
-
-        return new(width, font.CellHeight);
-    }
+    public Vector2 MeasureText(string text, string fontType) => _fontRasterisers.Measure(text, fontType);
 
     public void DrawTextCentre(float y, string text, string fontType, FastColor color)
     {
@@ -756,93 +789,6 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
 
     // The x position of the edge p0-p1 at scanline y, clamped to the
     // edge's endpoints (p0.Y must not be greater than p1.Y).
-    // Ink takes the requested text colour, the sheet's background becomes
-    // transparent, and anything else is copied through - which is what lets a
-    // proportional glyph carry more than one colour.
-    private static FastColor Recolour(BitmapFont font, int x, int y, in FastColor color)
-    {
-        FastColor pixelColor = font.Image.GetPixel(x, y);
-
-        return pixelColor == font.Ink ? color
-            : pixelColor == font.Background ? BaseColors.TransparentBlack
-            : pixelColor;
-    }
-
-    // Monospaced: every glyph fills its cell, so there is nothing to measure
-    // and no marker to look for.
-    private static int AppendGridGlyph(BitmapFont font, FastBitmap temp, int left, char letter, in FastColor color)
-    {
-        (int originX, int originY) = font.CellOrigin(letter);
-
-        for (int y = 0; y < font.CellHeight; y++)
-        {
-            for (int x = 0; x < font.CellWidth; x++)
-            {
-                temp.SetPixel(left + x, y, Recolour(font, originX + x, originY + y, color));
-            }
-        }
-
-        return font.CellWidth;
-    }
-
-    // The width half of AppendProportionalGlyph, reading the sheet directly:
-    // Recolour leaves magenta alone, so the markers are in the same places
-    // whatever colour the text would be drawn in.
-    private static int ProportionalGlyphWidth(BitmapFont font, char letter)
-    {
-        (int originX, int originY) = font.CellOrigin(letter);
-        int charX = 0;
-        int charY = 0;
-        int maxCharWidth = 0;
-
-        do
-        {
-            do
-            {
-                charX++;
-            }
-            while (font.Image.GetPixel(originX + charX, originY + charY) != BaseColors.Magenta);
-
-            maxCharWidth = Math.Max(maxCharWidth, charX);
-            charX = 0;
-            charY++;
-        }
-        while (font.Image.GetPixel(originX, originY + charY) != BaseColors.Magenta);
-
-        return maxCharWidth;
-    }
-
-    // Variable width: a magenta marker ends each row of the glyph, and a
-    // magenta pixel where the next row would start ends the glyph.
-    private static int AppendProportionalGlyph(BitmapFont font, FastBitmap temp, int left, char letter, in FastColor color)
-    {
-        (int originX, int originY) = font.CellOrigin(letter);
-        int charX = 0;
-        int charY = 0;
-        int maxCharWidth = 0;
-        FastColor pixelColor = Recolour(font, originX, originY, color);
-
-        do
-        {
-            do
-            {
-                temp.SetPixel(left + charX, charY, pixelColor);
-                charX++;
-                pixelColor = Recolour(font, originX + charX, originY + charY, color);
-            }
-            while (pixelColor != BaseColors.Magenta);
-
-            maxCharWidth = Math.Max(maxCharWidth, charX);
-            charX = 0;
-            charY++;
-
-            pixelColor = Recolour(font, originX, originY + charY, color);
-        }
-        while (pixelColor != BaseColors.Magenta);
-
-        return maxCharWidth;
-    }
-
     private static float EdgeX(Vector2 p0, Vector2 p1, float y)
         => p0.X + ((p1.X - p0.X) * EdgeT(p0, p1, y));
 
@@ -878,14 +824,8 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
             {
                 // dispose managed state (managed objects)
                 _screen?.Dispose();
-
-                foreach ((string _, FastBitmap bitmap) in _textCacheOrder)
-                {
-                    bitmap.Dispose();
-                }
-
-                _textCache.Clear();
-                _textCacheOrder.Clear();
+                _fontRasterisers?.Dispose();
+                ClearTextCache();
             }
 
             // free unmanaged resources (unmanaged objects) and override finalizer
@@ -1193,6 +1133,17 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
+    private void ClearTextCache()
+    {
+        foreach ((string _, FastBitmap bitmap) in _textCacheOrder)
+        {
+            bitmap.Dispose();
+        }
+
+        _textCacheOrder.Clear();
+        _textCache.Clear();
+    }
+
     private FastBitmap GenerateTextBitmap(string text, string fontType, in FastColor color)
     {
         string key = $"{fontType}_{color}_{text}";
@@ -1204,19 +1155,7 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
             return cacheNode.Value.Bitmap;
         }
 
-        BitmapFont font = Fonts[fontType];
-
-        using FastBitmap temp = new(text.Length * font.CellWidth, font.CellHeight);
-        int totalWidth = 0;
-
-        foreach (char letter in text)
-        {
-            totalWidth += font.IsProportional
-                ? AppendProportionalGlyph(font, temp, totalWidth, letter, color)
-                : AppendGridGlyph(font, temp, totalWidth, letter, color);
-        }
-
-        FastBitmap bitmap = temp.Resize(totalWidth, font.CellHeight);
+        FastBitmap bitmap = _fontRasterisers.Rasterise(text, fontType, color);
 
         if (_textCacheOrder.Count >= TextCacheCapacity)
         {

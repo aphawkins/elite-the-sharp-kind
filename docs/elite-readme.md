@@ -112,7 +112,7 @@ The cursor is a ring: up from the first row lands on Back, which is the last, an
 There are two, matching the two halves of the config file. Both are reached from the Options Screen (F11). Use the cursor keys to select a setting and Enter/Return to change it; every change takes effect immediately and is saved as it is made, so there is no save step. The cursor rings here too, so one press up from the first setting is the way to the Back row at the foot.
 
 - **Game Settings** — how Elite itself looks and plays: planet style, sun style, planet descriptions and instant docking.
-- **Engine Settings** — the settings shared by every game in the collection: graphic style (wireframe or solid), depth sort, shading, quantisation, music, sound effects, backend, window scale and rendition.
+- **Engine Settings** — the settings shared by every game in the collection: graphic style (wireframe or solid), depth sort, shading, quantisation, font, music, sound effects, backend, window scale and rendition. The font row chooses between the rendition's own bitmap sheets, a Windows `.fon` and a TrueType face, and applies as soon as it is changed; a rendition that declares no font of the chosen kind keeps drawing with its own sheets.
 
 The last three are marked `*` on the screen: the backend picks the rendering and audio implementation, the rendition picks everything the game draws with, its resolution included, and the window scale decides how far that is magnified into the window. All three are read before the game is built, so a change to any of them is saved now and picked up the next time the game starts.
 
@@ -227,3 +227,9 @@ against — see [reference-sources.md](reference-sources.md).
 
 Gabriel Gambetta - Computer Graphics from Scratch
 https://gabrielgambetta.com/computer-graphics-from-scratch/
+
+The 8-bit rendition's `.fon` and TrueType fonts (`Bm437_Master_512.FON`,
+`Mx437_Master_512.ttf`) are from VileR's Oldschool PC Font Resource
+https://int10h.org/oldschool-pc-fonts/ - faithful reproductions of the
+character ROMs of the machines of the period, which is why they are what the
+rendition offers beside its own sheet.

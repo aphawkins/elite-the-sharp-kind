@@ -1,4 +1,4 @@
-// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
+﻿// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
 
 namespace SharpKind.Assets;
 
@@ -20,9 +20,9 @@ public class AssetManifest
 
     public Dictionary<string, string> SoundFonts { get; init; } = [];
 
-    public Dictionary<string, BitmapFontEntry> FontsBitmap { get; init; } = [];
-
-    public Dictionary<string, TrueTypeFontEntry> FontsTrueType { get; init; } = [];
+    // Every kind of font, under one section, mirroring the single Fonts
+    // folder the files themselves share.
+    public FontManifest Fonts { get; init; } = new();
 
     public Dictionary<string, string> Models { get; init; } = [];
 }

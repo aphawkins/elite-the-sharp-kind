@@ -32,6 +32,18 @@ public sealed class SDLAbstraction : IAbstraction, IDisposable
         string title,
         IAssetLocator assetLocator,
         ILogger? logger)
+        : this(screenWidth, screenHeight, windowScale, title, assetLocator, FontKind.Bitmap, logger)
+    {
+    }
+
+    public SDLAbstraction(
+        int screenWidth,
+        int screenHeight,
+        int windowScale,
+        string title,
+        IAssetLocator assetLocator,
+        FontKind fontKind,
+        ILogger? logger)
     {
         // The frame is composed at the native resolution whatever the scale
         // is; only the window and the blit that presents it grow.
@@ -39,7 +51,7 @@ public sealed class SDLAbstraction : IAbstraction, IDisposable
         _renderer = new(_window);
         _renderer.SetLogicalSize(screenWidth, screenHeight);
 
-        Graphics = SDLGraphics.Create(_renderer, screenWidth, screenHeight, assetLocator, logger);
+        Graphics = SDLGraphics.Create(_renderer, screenWidth, screenHeight, assetLocator, fontKind, logger);
         Layout = new(screenWidth, screenHeight);
         Sound = new SDLSound(assetLocator);
         SDLInput input = new();

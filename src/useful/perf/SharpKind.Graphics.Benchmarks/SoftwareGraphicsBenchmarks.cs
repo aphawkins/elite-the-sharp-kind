@@ -25,15 +25,16 @@ public class SoftwareGraphicsBenchmarks : IDisposable
             ScreenHeightPixels,
             (_) => { },
             new() { { "TestImage", new FastBitmap(16, 16) } },
-            new()
-            {
+            FontRasteriserSet.Only(new BitmapFontRasteriser(
+                new()
                 {
-                    "TestFont",
-                    new BitmapFont(
-                        _fontBitmap,
-                        new BitmapFontAsset("test", new BitmapFontEntry { CellWidth = 8, CellHeight = 8, Columns = 1 }))
-                },
-            });
+                    {
+                        "TestFont",
+                        new BitmapFont(
+                            _fontBitmap,
+                            new BitmapFontAsset("test", new BitmapFontEntry { CellWidth = 8, CellHeight = 8, Columns = 1 }))
+                    },
+                })));
     }
 
     [Benchmark]

@@ -42,8 +42,9 @@ public static class GameServiceCollectionExtensions
         services.AddSingleton(loggerFactory);
 
         // The two backends differ only in which one is constructed - they take
-        // the same arguments and expose the same abstraction - so the choice is
-        // the only thing the config decides here.
+        // the same arguments, the font kind among them, and expose the same
+        // abstraction - so the choice is the only thing the config decides
+        // here.
         services.AddSingleton<IAbstraction>(sp => engine.Backend == Backend.Hardware
             ? new SDLAbstraction(
                 screenWidth,
@@ -51,6 +52,7 @@ public static class GameServiceCollectionExtensions
                 engine.WindowScale ?? 1,
                 title,
                 sp.GetRequiredService<IAssetLocator>(),
+                engine.Graphics.FontKind,
                 sp.GetRequiredService<ILoggerFactory>().CreateLogger(AssetLogCategory))
             : new SoftwareAbstraction(
                 screenWidth,
@@ -58,6 +60,7 @@ public static class GameServiceCollectionExtensions
                 engine.WindowScale ?? 1,
                 title,
                 sp.GetRequiredService<IAssetLocator>(),
+                engine.Graphics.FontKind,
                 sp.GetRequiredService<ILoggerFactory>().CreateLogger(AssetLogCategory)));
 
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Graphics);

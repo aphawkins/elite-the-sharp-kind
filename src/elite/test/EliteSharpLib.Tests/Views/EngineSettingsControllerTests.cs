@@ -11,6 +11,7 @@ using EliteSharpLib.Views;
 using SharpKind.Audio;
 using SharpKind.Config;
 using SharpKind.Fakes.Input;
+using SharpKind.Graphics;
 using SharpKind.Graphics.Rendering;
 
 namespace EliteSharpLib.Tests.Views;
@@ -81,7 +82,38 @@ public class EngineSettingsControllerTests
         Assert.Equal(Quantisation.Ordered, configFile.ReadConfig().Engine.Graphics.Quantisation);
     }
 
-    // Row 4 is Music: the config and the running AudioController have to move
+    // Row 4 is Font. It has no restart marker, so choosing a kind has to
+    // reach the running renderer as well as the file - the same bargain the
+    // Music row below makes with the audio controller.
+    [Fact]
+    public void SelectingAFontKindAppliesItToTheRunningRenderer()
+    {
+        EngineSettingsController controller = CreateController(
+            out GameState gameState,
+            out FakeKeyboard keyboard,
+            out _,
+            out ConfigFile<EliteConfig> configFile,
+            out FakeEliteDraw draw);
+        controller.Reset();
+
+        for (int i = 0; i < 4; i++)
+        {
+            keyboard.KeyDown(ConsoleKey.DownArrow, default);
+            controller.HandleInput();
+        }
+
+        Assert.Equal(["Bitmap", "FON", "TrueType"], controller.Settings[4].Values);
+
+        keyboard.KeyUp(ConsoleKey.DownArrow, default);
+        keyboard.KeyDown(ConsoleKey.Enter, default);
+        controller.HandleInput();
+
+        Assert.Equal(FontKind.Fon, gameState.Config.Engine.Graphics.FontKind);
+        Assert.Equal(FontKind.Fon, configFile.ReadConfig().Engine.Graphics.FontKind);
+        Assert.Equal(FontKind.Fon, draw.Graphics.FontKind);
+    }
+
+    // Row 5 is Music: the config and the running AudioController have to move
     // together, or the setting only takes effect after a restart.
     [Fact]
     public void TurningMusicOffAppliesToTheRunningAudioController()
@@ -90,8 +122,8 @@ public class EngineSettingsControllerTests
             out GameState gameState, out FakeKeyboard keyboard, out AudioController audio, out _);
         controller.Reset();
 
-        // Down four times to the Music row, then toggle.
-        for (int i = 0; i < 4; i++)
+        // Down five times to the Music row, then toggle.
+        for (int i = 0; i < 5; i++)
         {
             keyboard.KeyDown(ConsoleKey.DownArrow, default);
             controller.HandleInput();
@@ -105,7 +137,7 @@ public class EngineSettingsControllerTests
         Assert.False(audio.MusicOn);
     }
 
-    // Row 7 is Window Scale. The 16-bit tier this fixture builds offers 1 and
+    // Row 8 is Window Scale. The 16-bit tier this fixture builds offers 1 and
     // 2, so stepping off its default of 2 lands on 1 - and the row shows the
     // scales as multipliers rather than bare numbers.
     [Fact]
@@ -115,13 +147,13 @@ public class EngineSettingsControllerTests
             out GameState gameState, out FakeKeyboard keyboard, out _, out ConfigFile<EliteConfig> configFile);
         controller.Reset();
 
-        for (int i = 0; i < 7; i++)
+        for (int i = 0; i < 8; i++)
         {
             keyboard.KeyDown(ConsoleKey.DownArrow, default);
             controller.HandleInput();
         }
 
-        Assert.Equal(["1x", "2x"], controller.Settings[7].Values);
+        Assert.Equal(["1x", "2x"], controller.Settings[8].Values);
 
         keyboard.KeyUp(ConsoleKey.DownArrow, default);
         keyboard.KeyDown(ConsoleKey.Enter, default);
@@ -150,7 +182,7 @@ public class EngineSettingsControllerTests
         controller.Reset();
 
         // Navigate to the last row - the Back row.
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < 10; i++)
         {
             keyboard.KeyDown(ConsoleKey.DownArrow, default);
             controller.HandleInput();
@@ -169,8 +201,16 @@ public class EngineSettingsControllerTests
         out FakeKeyboard keyboard,
         out AudioController audio,
         out ConfigFile<EliteConfig> configFile)
+        => CreateController(out gameState, out keyboard, out audio, out configFile, out _);
+
+    private static EngineSettingsController CreateController(
+        out GameState gameState,
+        out FakeKeyboard keyboard,
+        out AudioController audio,
+        out ConfigFile<EliteConfig> configFile,
+        out FakeEliteDraw draw)
     {
-        Space space = SettingsControllerFixture.CreateSpace(out gameState, out keyboard, out FakeEliteDraw draw, out audio);
+        Space space = SettingsControllerFixture.CreateSpace(out gameState, out keyboard, out draw, out audio);
         configFile = SettingsControllerFixture.CreateConfigFile(ConfigFileName);
 
         return new EngineSettingsController(

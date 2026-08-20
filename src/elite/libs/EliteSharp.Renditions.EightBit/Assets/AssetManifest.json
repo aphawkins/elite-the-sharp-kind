@@ -1,6 +1,46 @@
 {
-  "Colours": { "MaxColours": 16, "PaletteNamesEveryColour": true, "ChannelBits": 8 },
+  "Colours": {
+    "MaxColours": 16,
+    "PaletteNamesEveryColour": true,
+    "ChannelBits": 8
+  },
   "Palette": "palette.json",
+  "Fonts": {
+    "Bitmap": {
+      "Small": {
+        "File": "bbc-micro.bmp",
+        "CellWidth": 8,
+        "CellHeight": 8,
+        "Columns": 12
+      },
+      "Large": {
+        "File": "bbc-micro.bmp",
+        "CellWidth": 8,
+        "CellHeight": 8,
+        "Columns": 12
+      }
+    },
+    "Fon": {
+      "Small": {
+        "File": "Bm437_Master_512.FON",
+        "PixelHeight": 8
+      },
+      "Large": {
+        "File": "Bm437_Master_512.FON",
+        "PixelHeight": 8
+      }
+    },
+    "TrueType": {
+      "Small": {
+        "File": "Mx437_Master_512.ttf",
+        "PointSize": 8
+      },
+      "Large": {
+        "File": "Mx437_Master_512.ttf",
+        "PointSize": 8
+      }
+    }
+  },
   "Images": {
     "Scanner": "scanner.bmp",
     "CompassGreen": "compass-green.bmp",
@@ -15,10 +55,6 @@
     "LaserBeam": "laser-beam.bmp",
     "LaserMilitary": "laser-military.bmp",
     "LaserMining": "laser-mining.bmp"
-  },
-  "FontsBitmap": {
-    "Small": { "File": "bbc-micro.bmp", "CellWidth": 8, "CellHeight": 8, "Columns": 12 },
-    "Large": { "File": "bbc-micro.bmp", "CellWidth": 8, "CellHeight": 8, "Columns": 12 }
   },
   "Models": {
     "Adder": "adder.obj",

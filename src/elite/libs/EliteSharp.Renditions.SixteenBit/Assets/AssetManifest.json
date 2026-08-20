@@ -1,6 +1,40 @@
 {
-  "Colours": { "MaxColours": 4096, "PaletteNamesEveryColour": false, "ChannelBits": 4 },
+  "Colours": {
+    "MaxColours": 4096,
+    "PaletteNamesEveryColour": false,
+    "ChannelBits": 4
+  },
   "Palette": "palette.json",
+  "Fonts": {
+    "Bitmap": {
+      "Small": {
+        "File": "font1.bmp",
+        "CellWidth": 32,
+        "CellHeight": 32,
+        "Columns": 16,
+        "Padding": 1,
+        "IsProportional": true
+      },
+      "Large": {
+        "File": "font2.bmp",
+        "CellWidth": 32,
+        "CellHeight": 32,
+        "Columns": 16,
+        "Padding": 1,
+        "IsProportional": true
+      }
+    },
+    "TrueType": {
+      "Small": {
+        "File": "OpenSans-Regular.ttf",
+        "PointSize": 12
+      },
+      "Large": {
+        "File": "OpenSans-Regular.ttf",
+        "PointSize": 18
+      }
+    }
+  },
   "Images": {
     "Scanner": "scanner.bmp",
     "EliteText": "elitetext.bmp",
@@ -16,10 +50,6 @@
     "LaserBeam": "laser-beam.bmp",
     "LaserMilitary": "laser-military.bmp",
     "LaserMining": "laser-mining.bmp"
-  },
-  "FontsBitmap": {
-    "Small": { "File": "font1.bmp", "CellWidth": 32, "CellHeight": 32, "Columns": 16, "Padding": 1, "IsProportional": true },
-    "Large": { "File": "font2.bmp", "CellWidth": 32, "CellHeight": 32, "Columns": 16, "Padding": 1, "IsProportional": true }
   },
   "Models": {
     "Adder": "adder.obj",
