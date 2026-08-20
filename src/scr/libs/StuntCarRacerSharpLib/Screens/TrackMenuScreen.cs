@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Numerics;
 using SharpKind;
 using SharpKind.Abstraction;
+using SharpKind.Audio;
 using SharpKind.Graphics;
 using SharpKind.Input;
 using StuntCarRacerSharpLib.Cars;
@@ -37,6 +38,7 @@ internal sealed class TrackMenuScreen : IGameScreen
 
     private readonly Race _race;
     private readonly IKeyboard _keyboard;
+    private readonly ISound _sound;
     private readonly ScreenManager<GameMode, IGameScreen> _screens;
     private readonly IGraphics _graphics;
     private readonly ScreenLayout _screen;
@@ -46,6 +48,7 @@ internal sealed class TrackMenuScreen : IGameScreen
     internal TrackMenuScreen(
         Race race,
         IKeyboard keyboard,
+        ISound sound,
         ScreenManager<GameMode, IGameScreen> screens,
         IGraphics graphics,
         ScreenLayout screen,
@@ -53,14 +56,21 @@ internal sealed class TrackMenuScreen : IGameScreen
     {
         _race = race;
         _keyboard = keyboard;
+        _sound = sound;
         _screens = screens;
         _graphics = graphics;
         _screen = screen;
         _palette = palette;
     }
 
+    // The menu has no opponent and no engine: the reference clears the
+    // opponent and stops the engine sound on the way in
+    // (`StuntCarRacer.cpp:1731-1741`). Doing it here covers every route to
+    // the menu, whether from the game-over screen or mid-race on 'M'.
     public void Reset()
     {
+        _sound.StopLoop();
+        _race.Opponent.Clear();
     }
 
     public void Update()

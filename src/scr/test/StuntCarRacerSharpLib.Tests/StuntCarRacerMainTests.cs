@@ -8,6 +8,7 @@ using SharpKind.Fakes.Audio;
 using SharpKind.Fakes.Input;
 using StuntCarRacerSharpLib.Cars;
 using StuntCarRacerSharpLib.Fakes;
+using StuntCarRacerSharpLib.Screens;
 using StuntCarRacerSharpLib.Tracks;
 using Xunit;
 
@@ -327,6 +328,46 @@ public class StuntCarRacerMainTests
         // same tick, so allow a small drift either side of the half turn.
         int turned = (game.Race.Car.YAngle - before) & (Track.MaxAngle - 1);
         Assert.InRange(turned, AmigaTrig.Degrees180 - 64, AmigaTrig.Degrees180 + 64);
+    }
+
+    [Fact]
+    public void MenuKeyAbandonsTheRaceForTheTrackMenu()
+    {
+        // Arrange
+        FakeAbstraction abstraction = new();
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
+        FakeKeyboard keyboard = (FakeKeyboard)abstraction.Keyboard;
+        FakeSound sound = (FakeSound)abstraction.Sound;
+        StartRace(game, abstraction);
+        int playsAtRace = sound.PlayLoopCount;
+        Assert.Equal(GameMode.GameInProgress, game.Screens.CurrentId);
+
+        // Act
+        PressKey(game, keyboard, ConsoleKey.M);
+        RunTicks(game, 12);
+
+        // Assert: the menu is current, the opponent is cleared and the
+        // engine stays silent
+        Assert.Equal(GameMode.TrackMenu, game.Screens.CurrentId);
+        Assert.True(game.Race.Opponent.OpponentId < 0);
+        Assert.Equal(playsAtRace, sound.PlayLoopCount);
+    }
+
+    [Fact]
+    public void MenuKeyWorksWhileTheRaceIsPaused()
+    {
+        // Arrange
+        FakeAbstraction abstraction = new();
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
+        FakeKeyboard keyboard = (FakeKeyboard)abstraction.Keyboard;
+        StartRace(game, abstraction);
+        PressKey(game, keyboard, ConsoleKey.P);
+
+        // Act
+        PressKey(game, keyboard, ConsoleKey.M);
+
+        // Assert
+        Assert.Equal(GameMode.TrackMenu, game.Screens.CurrentId);
     }
 
     private static void StartRace(StuntCarRacerMain game, FakeAbstraction abstraction)

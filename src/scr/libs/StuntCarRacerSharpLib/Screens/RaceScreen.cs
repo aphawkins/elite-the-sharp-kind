@@ -63,6 +63,17 @@ internal sealed class RaceScreen : IGameScreen
             _paused = false;
         }
 
+        // 'M' abandons the race and returns to the track menu, as the remake
+        // does (`StuntCarRacer.cpp:1731-1741`). The menu screen's Reset does
+        // the rest of what the reference does there - clearing the opponent
+        // and stopping the engine sound - and the drawbridge reset already
+        // happens when the next race starts.
+        if (_keyboard.IsPressed(ConsoleKey.M))
+        {
+            _screens.Set(GameMode.TrackMenu);
+            return;
+        }
+
         // 'R' points the car the opposite way, so a car facing backwards can
         // recover (`StuntCarRacer.cpp:1039-1045`). The reference accepts it
         // whenever a race is in progress, pause included, so it sits ahead of

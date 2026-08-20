@@ -1,4 +1,4 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
+﻿// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
@@ -185,6 +185,12 @@ public sealed partial class OpponentPhysics
 
     // Set for one frame when the car-to-car collision sound should play.
     internal bool HitCarSoundTriggered { get; private set; }
+
+    // Leave the race without another one starting: the reference sets
+    // `opponentsID = NO_OPPONENT` when M returns to the track menu
+    // (`StuntCarRacer.cpp:1731-1741`), which is what stops the opponent
+    // being drawn there.
+    public void Clear() => OpponentId = -1;
 
     // Start a new race: reset and place the opponent at the start piece.
     public void StartRace()

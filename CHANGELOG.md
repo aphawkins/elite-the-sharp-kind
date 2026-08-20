@@ -7,6 +7,21 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Mid-race 'M' returns to the track menu, 2026-08-20)
+
+- **A race could only be left by quitting.** The port handled 'M' on the
+  game-over and track-preview screens, but `RaceScreen` had no way back to
+  the track menu short of Escape-quitting the app - the remake returns from
+  any mode on 'M' (`StuntCarRacer.cpp:1731-1741`), which the preview
+  screen's own on-screen controls list already promised. 'M' now leaves the
+  race for the track menu, and works while paused as the reference does.
+- **The rest of what the reference does on that key lives in
+  `TrackMenuScreen.Reset`**: the engine sound stops and the opponent is
+  cleared (`OpponentPhysics.Clear`, the port's `opponentsID =
+  NO_OPPONENT`), so every route into the menu behaves the same rather than
+  each caller repeating it. The drawbridge half was already covered - the
+  next race resets it on entry.
+
 ### Added (One text rasteriser for both backends, and .fon/TrueType font kinds, 2026-08-20)
 
 - **The two backends drew text by different means and so drew it

@@ -103,7 +103,7 @@ public sealed class StuntCarRacerMain : IGame, IGameApp
         Race = new(Graphics, Layout, Palette, Sound, audio, trackId, randomSource);
 
         Screens = new(Keyboard);
-        Screens.Add(GameMode.TrackMenu, new TrackMenuScreen(Race, Keyboard, Screens, Graphics, Layout, Palette));
+        Screens.Add(GameMode.TrackMenu, new TrackMenuScreen(Race, Keyboard, Sound, Screens, Graphics, Layout, Palette));
         Screens.Add(GameMode.TrackPreview, new TrackPreviewScreen(Race, Keyboard, Screens, Graphics, Layout, Palette));
         Screens.Add(GameMode.GameInProgress, new RaceScreen(Race, Keyboard, Sound, Screens));
         Screens.Add(GameMode.GameOver, new GameOverScreen(Race, Keyboard, Sound, Screens));
