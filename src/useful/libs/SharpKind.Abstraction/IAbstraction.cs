@@ -17,4 +17,6 @@ public interface IAbstraction
     public ISound Sound { get; }
 
     public IKeyboard Keyboard { get; }
+
+    public IGamepad Gamepad { get; }
 }

@@ -22,6 +22,7 @@ public class SunBenchmarks : IDisposable
 {
     private const int ScreenWidth = 512;
     private const int ScreenHeight = 512;
+    private readonly SDLInput _input;
     private readonly SoftwareGraphics _graphics;
     private readonly Sun _solidSun;
     private readonly Sun _gradientSun;
@@ -30,7 +31,8 @@ public class SunBenchmarks : IDisposable
     public SunBenchmarks()
     {
         IAssetLocator assetLocator = BenchmarkAssets.Locator();
-        SoftwareKeyboard keyboard = new(new SDLInput());
+        _input = new();
+        SoftwareKeyboard keyboard = new(_input);
         SharpKind.Abstraction.ScreenManager<Views.Screen, Views.IScreenController> views = new(keyboard);
 
         // These benchmarks are about planets and suns, so no missions are needed.
@@ -72,6 +74,7 @@ public class SunBenchmarks : IDisposable
             {
                 // dispose managed state (managed objects)
                 _graphics.Dispose();
+                _input.Dispose();
             }
 
             // free unmanaged resources (unmanaged objects) and override finalizer

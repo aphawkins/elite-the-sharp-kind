@@ -11,6 +11,7 @@ namespace SharpKind.SDL;
 
 public sealed class SDLAbstraction : IAbstraction, IDisposable
 {
+    private readonly SDLInput _input;
     private readonly SDLRenderer _renderer;
     private readonly SDLWindow _window;
     private bool _isDisposed;
@@ -54,8 +55,9 @@ public sealed class SDLAbstraction : IAbstraction, IDisposable
         Graphics = SDLGraphics.Create(_renderer, screenWidth, screenHeight, assetLocator, fontKind, logger);
         Layout = new(screenWidth, screenHeight);
         Sound = new SDLSound(assetLocator);
-        SDLInput input = new();
-        Keyboard = new SoftwareKeyboard(input);
+        _input = new();
+        Keyboard = new SoftwareKeyboard(_input);
+        Gamepad = new SoftwareGamepad(_input);
     }
 
     public IGraphics Graphics { get; }
@@ -65,6 +67,8 @@ public sealed class SDLAbstraction : IAbstraction, IDisposable
     public ISound Sound { get; }
 
     public IKeyboard Keyboard { get; }
+
+    public IGamepad Gamepad { get; }
 
     public void Dispose()
     {
@@ -82,6 +86,7 @@ public sealed class SDLAbstraction : IAbstraction, IDisposable
                 // dispose managed state (managed objects)
                 (Graphics as IDisposable)?.Dispose();
                 (Sound as IDisposable)?.Dispose();
+                _input?.Dispose();
                 _renderer?.Dispose();
                 _window?.Dispose();
             }

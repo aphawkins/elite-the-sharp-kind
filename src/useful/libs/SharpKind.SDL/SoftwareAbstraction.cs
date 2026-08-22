@@ -13,6 +13,7 @@ namespace SharpKind.SDL;
 
 public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
 {
+    private readonly SDLInput _input;
     private readonly SDLRenderer _renderer;
     private readonly SDLWindow _window;
     private readonly SoftwareSoundOutput _soundOutput;
@@ -107,7 +108,9 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
         _soundOutput = new SoftwareSoundOutput(sound);
         Sound = sound;
 
-        Keyboard = new SoftwareKeyboard(new SDLInput());
+        _input = new();
+        Keyboard = new SoftwareKeyboard(_input);
+        Gamepad = new SoftwareGamepad(_input);
     }
 
     public IGraphics Graphics { get; }
@@ -117,6 +120,8 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
     public ISound Sound { get; }
 
     public IKeyboard Keyboard { get; }
+
+    public IGamepad Gamepad { get; }
 
     private SDL_Renderer* NativeRenderer => (SDL_Renderer*)(nint)_renderer;
 
@@ -136,6 +141,7 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
                 // dispose managed state (managed objects)
                 (Graphics as IDisposable)?.Dispose();
                 _fontRasterisers?.Dispose();
+                _input?.Dispose();
                 _soundOutput?.Dispose();
                 (Sound as IDisposable)?.Dispose();
 

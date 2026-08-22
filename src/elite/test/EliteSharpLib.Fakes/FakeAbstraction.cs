@@ -29,4 +29,6 @@ internal sealed class FakeAbstraction(IGraphics graphics, ScreenLayout layout) :
     public ISound Sound { get; } = new FakeSound();
 
     public IKeyboard Keyboard { get; } = new FakeKeyboard();
+
+    public IGamepad Gamepad { get; } = new FakeGamepad();
 }
