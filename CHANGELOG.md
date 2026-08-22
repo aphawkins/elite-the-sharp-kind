@@ -7,6 +7,34 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Gamepad and joystick support, 2026-08-22)
+
+- **Neither game could be played with anything but a keyboard.** A new
+  `IGamepad`/`IGamepadSink` pair in `SharpKind.Input` mirrors the
+  `IKeyboard`/`IKeyboardSink` split, keeping the same pressed-vs-held
+  semantics: one-shot reads for menu actions, non-consuming reads for
+  controls polled every physics tick. Axes are floats, so an XInput-style
+  pad keeps its travel and a generic HID stick reports -1/0/+1 through the
+  same interface. Unplugging the last device clears held state, so a
+  button held as the cable comes out cannot stay held forever.
+- `SDLInput` initialises the SDL3 gamepad and joystick subsystems and
+  handles hotplug for both. A device with a gamepad mapping is opened as a
+  gamepad and its buttons arrive named; one without a mapping is opened as
+  a raw joystick, where index order is the only mapping there is. A hat
+  feeds the left stick axes, so an 8-way stick reads the same either way.
+  A device that appears in both event streams is only opened once.
+- **Stunt Car Racer drives from a pad**, mapped as ptitSeb's remake maps
+  it (`Car_Behaviour.cpp:793-817`): right trigger accelerates, (A) boosts,
+  (B) or the left trigger brakes and wins over accelerate, the left stick
+  steers. The stick is thresholded to the digital left/right the physics
+  expects. The pad is only read when the keyboard is idle, as the remake
+  does, so keyboard driving is untouched. (A) and (B) navigate the menu,
+  preview and game-over screens, the stick steps through the track list,
+  Start toggles the race pause and Back abandons the race. The preview
+  screen lists the pad controls when a device is attached.
+- Not yet confirmed against real hardware - see the remaining backlog
+  item.
+
 ### Added (Alpha blending, 2026-08-22)
 
 - **Neither backend had transparency of any kind.** A colour's alpha was

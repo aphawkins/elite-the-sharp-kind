@@ -161,37 +161,23 @@ while staying inside its assets and the Amiga's behaviour:
       sheet first (no atlas table exists upstream); assume the sheet
       order matches `opponentNames` (`Opponent_Behaviour.cpp:138-151`)
       and verify against the Amiga before committing.
-Gamepad/joystick support (split 2026-07-14 from the [LARGE] item; do in
-order — each layer builds on the previous; reference implementation is
-`XBOXController.cpp/h` in the local ptitSeb checkout,
-`C:\code\github\ptitSeb\stuntcarremake`):
+Gamepad/joystick support (split 2026-07-14 from the [LARGE] item; the
+three layers are built and unit-tested, so only the hardware check is
+left):
 
-- [ ] [SharpKind.Input] Define the controller abstraction: an `IGamepad`
-      covering both target device classes — XInput-style pads (analog
-      axes + buttons) and generic-HID digital joysticks (USB Competition
-      Pro Extra: 8-way stick + fire buttons, no analog axes; digital
-      devices report axes as -1/0/+1) — with the same
-      pressed-vs-held semantics `IKeyboard` documents, a software
-      implementation mirroring `SoftwareKeyboard`, and a fake in
-      `SharpKind.Fakes`. Design the producer(sink)/consumer split up front —
-      the `IKeyboard` interface-segregation item above is the same
-      shape, so align (or do that item first).
-- [ ] [SharpKind.SDL] SDL plumbing: initialise the joystick +
-      game-controller subsystems, handle
-      `SDL_JOYDEVICEADDED`/`REMOVED` hotplug, and translate both
-      `SDL_CONTROLLER*` events (XInput-class devices) and raw
-      `SDL_JOY*` events (generic HID sticks that have no controller
-      mapping) in [SDLInput.cs](../src/useful/libs/SharpKind.SDL/SDLInput.cs)
-      into the `IGamepad` sink. `ppy.SDL2-CS` exposes the full SDL2 API
-      including `SDL_GameController`/`SDL_Joystick`, so no binding work
-      is expected — verify first.
-- [ ] [StuntCarRacerSharpLib] Wire the gamepad into SCR: map controls per
-      ptitSeb's `XBOXController.cpp` (steer/accelerate/brake/boost in
-      `RaceScreen`, navigation on the menu/preview/game-over screens),
-      thresholding analog steer to the digital left/right the physics
-      expects (check how the remake did it), keyboard remaining fully
-      functional alongside. Smoke-test with real hardware (XInput pad
-      and the Competition Pro) as part of definition of done.
+- [ ] [StuntCarRacerSharpLib] Smoke-test the gamepad with real hardware -
+      an XInput pad and the USB Competition Pro Extra - as the definition
+      of done for the feature requires. Everything else is in place: the
+      `IGamepad`/`IGamepadSink` abstraction, the SDL3 gamepad and joystick
+      plumbing with hotplug in
+      [SDLInput.cs](../src/useful/libs/SharpKind.SDL/SDLInput.cs), and the
+      SCR control and menu mappings. What only hardware can confirm: that
+      an unmapped HID stick's buttons land in the order
+      `SDLInput.ConvertJoystickButton` assumes, that the Competition Pro
+      reports its 8-way stick on axes 0/1 rather than a hat (both are
+      handled, but only one is right for that device), and that the 0.5
+      steer threshold feels right on an analog stick.
+
 Super League (split 2026-07-14 from the [LARGE] item; reference is
 ptitSeb's `bSuperLeague` — toggled at `StuntCarRacer.cpp:1222`, applied
 at `:1298-1308`; do the first item first, the two visual items then in
