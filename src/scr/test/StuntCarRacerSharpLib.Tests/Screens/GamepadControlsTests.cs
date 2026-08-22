@@ -52,10 +52,10 @@ public class GamepadControlsTests
         Assert.Equal(expected, GamepadControls.ReadCarInput(pad));
     }
 
-    // Buttons 1 and 4 as the device numbers them.
+    // Buttons 1 and 3 as the device numbers them.
     [Theory]
     [InlineData(GamepadButton.A)]
-    [InlineData(GamepadButton.Y)]
+    [InlineData(GamepadButton.X)]
     public void EitherFireButtonBoosts(GamepadButton button)
     {
         FakeGamepad pad = new();

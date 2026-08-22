@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -26,11 +26,11 @@ internal static class GamepadControls
     // sense Elite's own "up" control has.
     internal static int Pitch(IGamepad gamepad) => Direction(gamepad.Axis(GamepadAxis.LeftY));
 
-    // Buttons 1 and 4 as a joystick numbers them, or (A)/(Y) on a pad - the
+    // Buttons 1 and 3 as a joystick numbers them, or (A)/(X) on a pad - the
     // same pair Stunt Car Racer fires on, so one stick behaves the same way
     // in both games.
     internal static bool IsFiring(IGamepad gamepad)
-        => gamepad.IsHeld(GamepadButton.A) || gamepad.IsHeld(GamepadButton.Y);
+        => gamepad.IsHeld(GamepadButton.A) || gamepad.IsHeld(GamepadButton.X);
 
     // Speed has no axis left on a one-stick joystick, so it needs the two
     // remaining buttons; a pad reaches it on the triggers as well.
@@ -38,7 +38,7 @@ internal static class GamepadControls
         => gamepad.IsHeld(GamepadButton.B) || gamepad.Axis(GamepadAxis.RightTrigger) >= Threshold;
 
     internal static bool IsDecelerating(IGamepad gamepad)
-        => gamepad.IsHeld(GamepadButton.X) || gamepad.Axis(GamepadAxis.LeftTrigger) >= Threshold;
+        => gamepad.IsHeld(GamepadButton.Y) || gamepad.Axis(GamepadAxis.LeftTrigger) >= Threshold;
 
     private static int Direction(float value) => value <= -Threshold ? -1 : value >= Threshold ? 1 : 0;
 }

@@ -57,7 +57,7 @@ public class GamepadControlsTests
 
     [Theory]
     [InlineData(GamepadButton.A)]
-    [InlineData(GamepadButton.Y)]
+    [InlineData(GamepadButton.X)]
     public void EitherFireButtonFires(GamepadButton button)
     {
         FakeGamepad pad = new();
@@ -87,7 +87,7 @@ public class GamepadControlsTests
         Assert.True(GamepadControls.IsAccelerating(buttons));
 
         buttons.ButtonUp(GamepadButton.B);
-        buttons.ButtonDown(GamepadButton.X);
+        buttons.ButtonDown(GamepadButton.Y);
         Assert.True(GamepadControls.IsDecelerating(buttons));
 
         FakeGamepad triggers = new();
@@ -98,7 +98,7 @@ public class GamepadControlsTests
         Assert.True(GamepadControls.IsDecelerating(triggers));
     }
 
-    // Fire is on buttons 1 and 4, speed on 2 and 3, so pressing one never
+    // Fire is on buttons 1 and 3, speed on 2 and 4, so pressing one never
     // triggers another.
     [Fact]
     public void TheFireAndSpeedButtonsDoNotOverlap()

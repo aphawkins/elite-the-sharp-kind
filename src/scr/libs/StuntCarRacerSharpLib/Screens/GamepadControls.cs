@@ -55,9 +55,9 @@ internal static class GamepadControls
             input |= CarInput.Accelerate;
         }
 
-        // Buttons 1 and 4 as the device numbers them, which is what falls
+        // Buttons 1 and 3 as the device numbers them, which is what falls
         // under the thumb and the trigger finger on a Competition Pro.
-        if (gamepad.IsHeld(GamepadButton.A) || gamepad.IsHeld(GamepadButton.Y))
+        if (gamepad.IsHeld(GamepadButton.A) || gamepad.IsHeld(GamepadButton.X))
         {
             input |= CarInput.Boost;
         }
