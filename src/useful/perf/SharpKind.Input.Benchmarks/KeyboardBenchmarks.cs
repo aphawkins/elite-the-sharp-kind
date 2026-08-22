@@ -1,4 +1,4 @@
-// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
+﻿// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
 
 using BenchmarkDotNet.Attributes;
 
@@ -82,6 +82,11 @@ public class KeyboardBenchmarks
         private IKeyboardSink? _registered;
 
         public void Register(IKeyboardSink keyboard) => _registered = keyboard;
+
+        // The keyboard benchmarks drive no gamepad.
+        public void Register(IGamepadSink gamepad)
+        {
+        }
 
         // Enqueue a deterministic batch of key down/up actions.
         public void EnqueueBatch(int count)

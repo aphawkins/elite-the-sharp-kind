@@ -7,4 +7,6 @@ public interface IInput
     public void Poll();
 
     public void Register(IKeyboardSink keyboard);
+
+    public void Register(IGamepadSink gamepad);
 }

@@ -13,4 +13,8 @@ public sealed class FakeInput : IInput
     public void Register(IKeyboardSink keyboard)
     {
     }
+
+    public void Register(IGamepadSink gamepad)
+    {
+    }
 }
