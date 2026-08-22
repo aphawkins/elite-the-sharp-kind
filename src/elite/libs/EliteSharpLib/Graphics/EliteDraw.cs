@@ -299,8 +299,19 @@ internal sealed class EliteDraw : IEliteDraw
         ////  else
         q = pr / 32;
 
-        DrawExplosionParticles(np, q);
+        DrawExplosionParticles(np, q, ParticleColour(ship.ExpDelta));
     }
+
+    // The original cloud was solid white for its whole life, because the BBC
+    // had no way to draw anything else. Fading the particles out as the cloud
+    // spreads makes it read as debris thinning into space rather than a block
+    // of white that vanishes. Gated the same way shading is: an indexed
+    // rendition can show no colour its palette does not name, so a blend
+    // there quantises straight back to white and buys nothing.
+    private FastColor ParticleColour(int expDelta)
+        => BlendsShades
+            ? new((byte)(255 - (expDelta * 200 / 256)), _colorWhite.R, _colorWhite.G, _colorWhite.B)
+            : _colorWhite;
 
     // Project the ship's visible points into _pointList, returning how many
     // of them were written.
@@ -330,7 +341,7 @@ internal sealed class EliteDraw : IEliteDraw
 
     // Scatter a cloud of debris blocks around each of the np projected points,
     // spread wider as the explosion grows (q).
-    private void DrawExplosionParticles(int np, float q)
+    private void DrawExplosionParticles(int np, float q, in FastColor color)
     {
         for (int cnt = 0; cnt < np; cnt++)
         {
@@ -350,18 +361,18 @@ internal sealed class EliteDraw : IEliteDraw
                 int sizex = _rng.Random(1, 3);
                 int sizey = _rng.Random(1, 3);
 
-                DrawExplosionBlock(position, sizex, sizey);
+                DrawExplosionBlock(position, sizex, sizey, color);
             }
         }
     }
 
-    private void DrawExplosionBlock(Vector2 position, int sizex, int sizey)
+    private void DrawExplosionBlock(Vector2 position, int sizex, int sizey, in FastColor color)
     {
         for (int psy = 0; psy < sizey; psy++)
         {
             for (int psx = 0; psx < sizex; psx++)
             {
-                Graphics.DrawPixel(new(position.X + psx, position.Y + psy), _colorWhite);
+                Graphics.DrawPixel(new(position.X + psx, position.Y + psy), color);
             }
         }
     }

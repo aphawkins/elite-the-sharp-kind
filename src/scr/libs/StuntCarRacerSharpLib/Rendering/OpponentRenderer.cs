@@ -2,6 +2,7 @@
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
+using SharpKind;
 using StuntCarRacerSharpLib.Cars;
 using StuntCarRacerSharpLib.Tracks;
 
@@ -12,6 +13,11 @@ namespace StuntCarRacerSharpLib.Rendering;
 public sealed class OpponentRenderer
 {
     private const int ShadowColour = Track.ScrBaseColour + 5;
+
+    // The Amiga had no transparency, so its shadow was a solid fill of the
+    // colour above. Drawn translucent instead, the road's own markings stay
+    // visible through it and the quad reads as a shadow rather than a hole.
+    private const byte ShadowAlpha = 160;
 
     private readonly OpponentPhysics _opponent;
     private readonly CarMesh _carMesh;
@@ -41,9 +47,10 @@ public sealed class OpponentRenderer
         // shadow quad, slightly above the road
         if (_opponent.ShadowVisible)
         {
+            FastColor shadow = _palette.Colour(ShadowColour);
             polygons.Add(new(
                 [_opponent.ShadowRearLeft, _opponent.ShadowRearRight, _opponent.ShadowFrontRight, _opponent.ShadowFrontLeft],
-                _palette.Colour(ShadowColour)));
+                new FastColor(ShadowAlpha, shadow.R, shadow.G, shadow.B)));
         }
 
         _carMesh.Append(

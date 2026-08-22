@@ -180,6 +180,13 @@ public sealed unsafe partial class SDLGraphics : IGraphics, IDisposable
             (SDL_Texture*)graphics._frameTarget,
             SDL_ScaleMode.SDL_SCALEMODE_NEAREST));
 
+        // A draw colour's alpha only means anything with a blend mode set:
+        // SDL's default is NONE, which writes the source through and ignores
+        // it. The software backend blends in DrawPixel for the same reason.
+        SDLGuard.Execute(() => SDL_SetRenderDrawBlendMode(
+            graphics.NativeRenderer,
+            SDL_BlendMode.SDL_BLENDMODE_BLEND));
+
         // All drawing targets _frameTarget from here on (see its field
         // comment); ScreenUpdate() briefly switches back to the window to
         // blit it, then restores this.

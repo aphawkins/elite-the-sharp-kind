@@ -7,6 +7,34 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Alpha blending, 2026-08-22)
+
+- **Neither backend had transparency of any kind.** A colour's alpha was
+  carried around and then thrown away at the point it reached the screen,
+  and `SoftwareGraphics.DrawImage` carried a TODO admitting it. Alpha now
+  means what it says: `FastColor.Blend` does the source-over composite,
+  `SoftwareGraphics` applies it in the one place a colour reaches the
+  framebuffer (a new `StorePixel`, which the public and private
+  `DrawPixel` both go through), and `SDLGraphics` sets the renderer's
+  draw blend mode to `SDL_BLENDMODE_BLEND` at creation - SDL's default is
+  `NONE`, which ignores the alpha it is handed. Every existing draw is
+  opaque, so nothing else changes; the opaque case skips the framebuffer
+  read.
+- The blend takes an opaque destination and returns an opaque result:
+  every caller composites into a framebuffer, which is opaque by
+  construction. SDL's depth layer needs no change - it is cleared
+  transparent and composited with `BLEND`, so a translucent colour
+  written straight into it lands with the alpha it should.
+- **Elite's explosion cloud fades as it spreads** rather than staying
+  solid white for its whole life, which is all the BBC could do. Gated on
+  the same rendition test that gates shading: an indexed rendition can
+  show no colour its palette does not name, so it keeps the flat white.
+- **SCR's opponent shadow is translucent**, so the road's own markings
+  show through it and the quad reads as a shadow rather than a hole. The
+  Amiga had no transparency and filled it solid.
+- Both are deliberate departures from the 1984/1989 originals, taken on
+  the maintainer's call.
+
 ### Added (Bilinear filtering and mipmaps for textured triangles, 2026-08-22)
 
 - **`SampleTexture` was nearest-neighbour**, so distant/foreshortened

@@ -358,6 +358,50 @@ public class SoftwareGraphicsTests
         void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.White, bmp.GetPixel((int)x, (int)y));
     }
 
+    // A translucent draw mixes with what is already on the screen rather
+    // than replacing it, so a half-alpha white over black lands grey and a
+    // fully transparent draw leaves the screen alone.
+    [Fact]
+    public void DrawPixelBlendsATranslucentColourWithTheScreen()
+    {
+        // Arrange
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
+
+        // Act
+        graphics.DrawPixel(new(1, 1), new FastColor(0x80FFFFFF));
+        graphics.DrawPixel(new(2, 2), BaseColors.White);
+        graphics.DrawPixel(new(2, 2), new FastColor(0x00FF0000));
+        graphics.ScreenUpdate();
+
+        // Assert
+        static void DoAssert(FastBitmap bmp)
+        {
+            Assert.Equal(new FastColor(0xFF808080), bmp.GetPixel(1, 1));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(2, 2));
+        }
+    }
+
+    // Filled polygons go through the same pixel store, so a translucent face
+    // shows what it covers.
+    [Fact]
+    public void DrawPolygonFilledBlendsATranslucentFace()
+    {
+        // Arrange
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
+
+        Vector2[] tri = [new(1, 1), new(3, 1), new(2, 3)];
+
+        // Act
+        graphics.DrawPolygonFilled(tri, BaseColors.White);
+        graphics.DrawPolygonFilled(tri, new FastColor(0x80000000));
+        graphics.ScreenUpdate();
+
+        // Assert
+        static void DoAssert(FastBitmap bmp) => Assert.Equal(new FastColor(0xFF7F7F7F), bmp.GetPixel(2, 2));
+    }
+
     [Theory]
     [InlineData(-9, -9)]
     [InlineData(9, 9)]

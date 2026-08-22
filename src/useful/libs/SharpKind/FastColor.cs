@@ -40,6 +40,23 @@ public readonly struct FastColor : IEquatable<FastColor>
 
     public static FastColor FromUInt32(uint argbColor) => new(argbColor);
 
+    // Source-over composite of a translucent source onto an opaque
+    // destination. The destination's own alpha is not carried: every caller
+    // blends into a framebuffer, which is opaque by construction, so the
+    // result is opaque too. The +128 and >> 8 pair rounds the divide by 255
+    // to nearest without a division.
+    public static FastColor Blend(in FastColor source, in FastColor destination)
+        => source.A switch
+        {
+            0 => destination,
+            255 => source,
+            _ => new(
+                255,
+                BlendChannel(source.R, destination.R, source.A),
+                BlendChannel(source.G, destination.G, source.A),
+                BlendChannel(source.B, destination.B, source.A)),
+        };
+
     public static uint ToUInt32(in FastColor color) => color.Argb;
 
     public override bool Equals(object? obj) => obj is FastColor other && Equals(other);
@@ -49,4 +66,10 @@ public readonly struct FastColor : IEquatable<FastColor>
     public override int GetHashCode() => Argb.GetHashCode();
 
     public override string ToString() => $"0x{Argb:X}";
+
+    private static byte BlendChannel(byte source, byte destination, byte alpha)
+    {
+        int scaled = (source * alpha) + (destination * (255 - alpha));
+        return (byte)((scaled + 128 + ((scaled + 128) >> 8)) >> 8);
+    }
 }

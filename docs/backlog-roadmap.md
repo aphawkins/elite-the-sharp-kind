@@ -95,11 +95,6 @@ per item whether authenticity or modernity wins.
       below — sequence after that, and build on
       `SharpKind.Graphics.PerspectiveProjector`, the small first slice of the
       same idea that landed 2026-08-09 (see [CHANGELOG.md](../CHANGELOG.md)).
-- [ ] [SharpKind.Graphics] Alpha blending: no transparency of any kind — the
-      `DrawImage` path still carries a TODO admitting "should mix the
-      transparent colors correctly here but the only transparency being
-      used is transparent or opaque". A real alpha path would let the
-      Elite explosion cloud and SCR's shadow quad stop being solid fills.
 - [ ] [SharpKind.Graphics] Sub-pixel rasterisation precision: triangle edges
       snap to integer scanlines (`MathF.Ceiling`/`Floor` in
       `DrawTriangleFilled` and its variants), so geometry jitters as it

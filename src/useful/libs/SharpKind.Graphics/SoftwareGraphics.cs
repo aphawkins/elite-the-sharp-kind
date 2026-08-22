@@ -332,7 +332,7 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
             return;
         }
 
-        _screen.SetPixel((int)position.X, (int)position.Y, color);
+        StorePixel((int)position.X, (int)position.Y, color);
     }
 
     public void DrawPolygon(Vector2[] points, FastColor lineColor)
@@ -850,8 +850,6 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
                 FastColor color = bitmap.GetPixel(x, y);
                 if (color.A != 0)
                 {
-                    // TODO: should mix the transparent colors correctly here
-                    // but the only transparency being used is transparent or opaque
                     DrawPixel((int)(position.X + x), (int)(position.Y + y), color);
                 }
             }
@@ -1079,8 +1077,14 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
             return;
         }
 
-        _screen.SetPixel(x, y, color);
+        StorePixel(x, y, color);
     }
+
+    // The one place a colour reaches the framebuffer. A translucent one is
+    // composited with what is already there; the opaque case, which is nearly
+    // every draw, skips the read.
+    private void StorePixel(int x, int y, in FastColor color)
+        => _screen.SetPixel(x, y, color.A == 255 ? color : FastColor.Blend(color, _screen.GetPixel(x, y)));
 
     // Test-and-set a pixel's inverse depth: the draw passes when at least
     // as near as what is already there, so later draws win ties (as the
