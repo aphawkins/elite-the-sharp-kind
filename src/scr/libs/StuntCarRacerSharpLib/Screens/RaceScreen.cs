@@ -74,6 +74,17 @@ internal sealed class RaceScreen : IGameScreen
             return;
         }
 
+        // Backspace swaps the cockpit for a chase camera behind the car
+        // (`StuntCarRacer.cpp:1727-1729`). The reference builds that key
+        // into debug builds only; this port ships its debug keys (F5-F10)
+        // unconditionally, so this one is no different. Like 'R' it sits
+        // ahead of the paused return, so the view can be changed while the
+        // race is frozen.
+        if (_keyboard.IsPressed(ConsoleKey.Backspace))
+        {
+            _race.OutsideView = !_race.OutsideView;
+        }
+
         // 'R' points the car the opposite way, so a car facing backwards can
         // recover (`StuntCarRacer.cpp:1039-1045`). The reference accepts it
         // whenever a race is in progress, pause included, so it sits ahead of
@@ -129,7 +140,7 @@ internal sealed class RaceScreen : IGameScreen
         _race.Car.UpdateLapData();
         _race.Opponent.UpdateLapData();
         _race.Car.UpdateDamage();
-        _race.Camera.FollowCar(_race.Car);
+        _race.UpdateCamera();
 
         // the race finishes when either car completes the final lap
         if (!_race.RaceFinished && (_race.Car.RaceFinished || _race.Opponent.LapNumber >= 4))
@@ -144,7 +155,7 @@ internal sealed class RaceScreen : IGameScreen
 
     public void Draw()
     {
-        _race.DrawWorld(showOpponent: true);
+        _race.DrawWorld(showOpponent: true, showPlayer: true);
         _race.DrawHud(gameOver: false);
     }
 

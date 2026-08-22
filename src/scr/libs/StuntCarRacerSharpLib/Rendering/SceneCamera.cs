@@ -1,4 +1,4 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
+﻿// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
@@ -15,6 +15,12 @@ public sealed class SceneCamera
 {
     // Cockpit viewpoint height above the car position (original HEIGHT_ABOVE_ROAD).
     private const int HeightAboveRoad = 100;
+
+    // Outside-view offset from the car centre (original CalcGameViewpoint:
+    // y_offset 0xc0, z_offset 0x300).
+    private const int ChaseHeight = 0xc0;
+
+    private const int ChaseDistance = 0x300;
 
     public int X { get; private set; }
 
@@ -40,6 +46,28 @@ public sealed class SceneCamera
         X = car.PlayerX >> Track.LogPrecision;
         Y = (car.LimitViewpointY() >> (Track.LogPrecision - 2)) + HeightAboveRoad;
         Z = car.PlayerZ >> Track.LogPrecision;
+
+        XAngle = car.PlayerXAngle;
+        YAngle = car.PlayerYAngle;
+        ZAngle = car.PlayerZAngle;
+    }
+
+    // Position the camera behind and above the car, looking the way it
+    // points (the original CalcGameViewpoint's bOutsideView branch). The
+    // offset is the reference's - 0xc0 up, 0x300 back, rotated by the car's
+    // own orientation - so the camera rolls and pitches with the car rather
+    // than hanging level behind it. Unlike the cockpit view there is no
+    // LimitViewpointY here: the reference does not limit the outside
+    // viewpoint either, and from behind the car the road cannot tear.
+    public void ChaseCar(CarPhysics car)
+    {
+        ArgumentNullException.ThrowIfNull(car);
+
+        Coord3D offset = car.RotateToWorld(0, ChaseHeight, -ChaseDistance);
+
+        X = (car.PlayerX >> Track.LogPrecision) + offset.X;
+        Y = (car.PlayerY >> (Track.LogPrecision - 2)) + offset.Y;
+        Z = (car.PlayerZ >> Track.LogPrecision) + offset.Z;
 
         XAngle = car.PlayerXAngle;
         YAngle = car.PlayerYAngle;

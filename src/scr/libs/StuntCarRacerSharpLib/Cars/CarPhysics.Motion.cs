@@ -1,4 +1,4 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
+﻿// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
@@ -10,6 +10,20 @@ namespace StuntCarRacerSharpLib.Cars;
 // (from Car Behaviour.cpp).
 public sealed partial class CarPhysics
 {
+    // Rotate a car-local offset into world space, in track units (the
+    // original WorldOffset run against the player's own YXZ coefficients,
+    // as CalcGameViewpoint does for the outside view). Local axes are the
+    // physics ones: x right, y up, z forward.
+    public Coord3D RotateToWorld(int x, int y, int z)
+    {
+        _trig.CalculateYXZ(PlayerXAngle, PlayerYAngle, PlayerZAngle);
+
+        return new(
+            ((x * _trig.XX) + (y * _trig.YX) + (z * _trig.ZX)) / AmigaTrig.Precision,
+            ((x * _trig.XY) + (y * _trig.YY) + (z * _trig.ZY)) / AmigaTrig.Precision,
+            ((x * _trig.XZ) + (y * _trig.YZ) + (z * _trig.ZZ)) / AmigaTrig.Precision);
+    }
+
     // The y value for positioning the game viewpoint (the original
     // LimitViewpointY): PlayerY, limited so the viewpoint cannot go below
     // or too close to the road - i.e. prevents seeing under the track when

@@ -6,6 +6,7 @@ using SharpKind.Assets;
 using SharpKind.Audio;
 using SharpKind.Fakes.Audio;
 using SharpKind.Fakes.Input;
+using SharpKind.Graphics.Fakes;
 using StuntCarRacerSharpLib.Cars;
 using StuntCarRacerSharpLib.Fakes;
 using StuntCarRacerSharpLib.Screens;
@@ -368,6 +369,58 @@ public class StuntCarRacerMainTests
 
         // Assert
         Assert.Equal(GameMode.TrackMenu, game.Screens.CurrentId);
+    }
+
+    [Fact]
+    public void BackspaceTogglesTheOutsideView()
+    {
+        // Arrange
+        FakeAbstraction abstraction = new();
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
+        FakeKeyboard keyboard = (FakeKeyboard)abstraction.Keyboard;
+        StartRace(game, abstraction);
+        Assert.False(game.Race.OutsideView);
+
+        // Act
+        PressKey(game, keyboard, ConsoleKey.Backspace);
+
+        // Assert
+        Assert.True(game.Race.OutsideView);
+
+        // Act: and back again
+        PressKey(game, keyboard, ConsoleKey.Backspace);
+
+        // Assert
+        Assert.False(game.Race.OutsideView);
+    }
+
+    // The cockpit is the inside view's; from outside, the car itself is
+    // drawn and only the text overlays remain.
+    [Fact]
+    public void OutsideViewDrawsTheCarInsteadOfTheCockpit()
+    {
+        // Arrange
+        RecordingGraphics graphics = new(640, 400);
+        FakeAbstraction abstraction = new(graphics, graphics.Layout);
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
+        FakeKeyboard keyboard = (FakeKeyboard)abstraction.Keyboard;
+        StartRace(game, abstraction);
+
+        game.Draw();
+        int insidePolygons = graphics.FilledPolygons.Count;
+        Assert.NotEmpty(graphics.ImageParts);
+
+        // Act
+        PressKey(game, keyboard, ConsoleKey.Backspace);
+        graphics.Clear();
+        graphics.ImageParts.Clear();
+        graphics.FilledPolygons.Clear();
+        game.Draw();
+
+        // Assert: no cockpit art, and more world polygons than before - the
+        // player's own car is in the scene now
+        Assert.Empty(graphics.ImageParts);
+        Assert.True(graphics.FilledPolygons.Count > insidePolygons);
     }
 
     private static void StartRace(StuntCarRacerMain game, FakeAbstraction abstraction)

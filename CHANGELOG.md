@@ -7,6 +7,33 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Outside/chase view on Backspace, 2026-08-20)
+
+- **The player's car existed only as a cockpit.** Backspace now swaps the
+  driver's seat for a chase camera behind and above the car, drawing the
+  car itself - the remake's `bOutsideView`
+  (`StuntCarRacer.cpp:1727-1729`). The viewpoint offset is the reference's
+  (0xc0 up, 0x300 back) rotated by the car's own orientation, so the
+  camera rolls and pitches with the car rather than hanging level behind
+  it. Like the other race keys it works while paused.
+- **`PlayerRenderer` orients the shared `CarMesh` on the player's own
+  frame**, from four corners rotated out of the car's angles by the new
+  `CarPhysics.RotateToWorld` (the original `WorldOffset`) - the reference
+  builds the same thing as a world matrix in `SetCarWorldTransform`. The
+  opponent keeps orienting on measured wheel positions, which it has and
+  the player does not.
+- The cockpit overlay is skipped in the outside view, as the reference
+  skips `DrawCockpit`; the text overlays stay.
+- **The car is drawn on the road, not through it.** Its centre is not its
+  wheel line: whenever the suspension bottoms out the body drops below the
+  road surface, and a mesh hung off the raw centre drew half-buried in the
+  track (measured at up to 157 track units under, against a car 40 units
+  from centre to wheel). The mesh now carries the remake's VCAR_HEIGHT/3
+  ride height and is lifted clear of the road heights under its wheels -
+  rigidly, so it keeps the roll and pitch the angles give it. That is the
+  player's version of the max(road, actual) heights the opponent already
+  draws itself on.
+
 ### Added (Mid-race 'M' returns to the track menu, 2026-08-20)
 
 - **A race could only be left by quitting.** The port handled 'M' on the

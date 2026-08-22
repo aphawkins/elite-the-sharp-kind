@@ -141,7 +141,6 @@ face clipping followed, see CHANGELOG):
 
 ### Stunt Car Racer conversion — features (from the retired conversion plan)
 
-- [ ] [StuntCarRacerSharpLib] Player outside/chase view: needs a chase camera plus drawing the player's own car mesh (`Rendering/CarMesh` is currently only used for the opponent).
 - [ ] [StuntCarRacerSharpLib] Road-line textures could sample the shared `atlas.bmp` (ptitSeb's `eRoadYellowDark` etc.) instead of the procedural strips in `Rendering/RoadTextures` — closer visual match, but the current strips already look correct; cosmetic.
 Unplugged remake art screens (added 2026-07-19 after the ptitSeb parity
 audit): ptitSeb ships `Bitmap/menu.png`, `racewin.png`, `racelost.png`,

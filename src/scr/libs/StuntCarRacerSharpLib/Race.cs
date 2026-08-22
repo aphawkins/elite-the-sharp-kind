@@ -34,6 +34,7 @@ internal sealed class Race
 
     private TrackRenderer _renderer;
     private OpponentRenderer _opponentRenderer;
+    private PlayerRenderer _playerRenderer;
     private int _frameCount;
 
     internal Race(
@@ -60,6 +61,10 @@ internal sealed class Race
     }
 
     internal SceneCamera Camera { get; } = new();
+
+    // The remake's bOutsideView: a chase camera behind the car instead of
+    // the cockpit, toggled with Backspace (`StuntCarRacer.cpp:1727-1729`).
+    internal bool OutsideView { get; set; }
 
     internal Track Track { get; private set; }
 
@@ -121,7 +126,8 @@ internal sealed class Race
         nameof(Opponent),
         nameof(Bridge),
         nameof(_renderer),
-        nameof(_opponentRenderer))]
+        nameof(_opponentRenderer),
+        nameof(_playerRenderer))]
     internal void LoadTrack(TrackId trackId)
     {
         Track = Track.Load(trackId);
@@ -130,12 +136,27 @@ internal sealed class Race
         Bridge = new(Track);
         _renderer = new(Track, _graphics, _screen, _palette, _roadTextures);
         _opponentRenderer = new(Opponent, _carMesh, _palette);
+        _playerRenderer = new(Car, _carMesh);
+    }
+
+    // Place the camera for the race: in the driver's seat, or behind the
+    // car when the outside view is on.
+    internal void UpdateCamera()
+    {
+        if (OutsideView)
+        {
+            Camera.ChaseCar(Car);
+        }
+        else
+        {
+            Camera.FollowCar(Car);
+        }
     }
 
     // The world common to every screen: backdrop, track and (outside the
     // track menu) the opponent car. Road lines draw around the player's
     // position, as the original did in every mode.
-    internal void DrawWorld(bool showOpponent)
+    internal void DrawWorld(bool showOpponent, bool showPlayer = false)
     {
         _graphics.Clear();
         _backdrop.Draw(Camera);
@@ -144,6 +165,13 @@ internal sealed class Race
         if (showOpponent)
         {
             _opponentRenderer.AppendWorldPolygons(_worldPolygons);
+        }
+
+        // the player's car is only ever visible from the outside view - the
+        // cockpit view sits inside it (`StuntCarRacer.cpp:1600-1605`)
+        if (showPlayer && OutsideView)
+        {
+            _playerRenderer.AppendWorldPolygons(_worldPolygons);
         }
 
         _renderer.Draw(Camera, _worldPolygons, Car.CurrentPiece, Car.CurrentSegment);
@@ -255,23 +283,12 @@ internal sealed class Race
         FastColor white = _palette.Colour(Track.ScrBaseColour + 15);
         float height = _screen.ScreenHeight;
 
-        _hud.Draw(new(
-            Car.LeftWheelFrame,
-            Car.RightWheelFrame,
-            Car.LeftWheelBounce,
-            Car.RightWheelBounce,
-            Car.BoostActivated != 0,
-            Car.NewDamage,
-            Car.SmashHoles,
-            Car.DisplaySpeed,
-            Car.LapNumber,
-            Car.BoostReserve,
-            Opponent.DistanceToPlayer(),
-            Car.OnChains,
-            Car.WaitingToReleaseChains,
-            Car.ZAngle,
-            Car.CurrentLapTicks,
-            Car.BestLapTicks));
+        // the cockpit belongs to the inside view; the outside view shows the
+        // car itself and keeps only the text overlays
+        if (!OutsideView)
+        {
+            DrawCockpit();
+        }
 
         // output the opponent's name for four seconds at race start
         if (RaceTick < 4 * StuntCarRacerMain.TickRate)
@@ -296,4 +313,25 @@ internal sealed class Race
             _graphics.DrawTextCentre(height - 300, RaceWon ? "RACE WON" : "RACE LOST", StuntCarRacerMain.LargeFont, colour);
         }
     }
+
+    // The cockpit overlay: wheels, engine, damage crack/holes, speed bar and
+    // the lap/boost/distance read-outs.
+    private void DrawCockpit()
+        => _hud.Draw(new(
+            Car.LeftWheelFrame,
+            Car.RightWheelFrame,
+            Car.LeftWheelBounce,
+            Car.RightWheelBounce,
+            Car.BoostActivated != 0,
+            Car.NewDamage,
+            Car.SmashHoles,
+            Car.DisplaySpeed,
+            Car.LapNumber,
+            Car.BoostReserve,
+            Opponent.DistanceToPlayer(),
+            Car.OnChains,
+            Car.WaitingToReleaseChains,
+            Car.ZAngle,
+            Car.CurrentLapTicks,
+            Car.BestLapTicks));
 }

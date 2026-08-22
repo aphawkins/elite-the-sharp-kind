@@ -15,6 +15,16 @@ namespace StuntCarRacerSharpLib.Rendering;
 // positions.
 public sealed class CarMesh
 {
+    // The original VISIBLE_CAR dimensions (Car.h:12-15). car.obj carries
+    // them as +/- half the width and length, and +/- a quarter of the
+    // height, around its origin - so these are also the footprint anything
+    // positioning the mesh has to reckon with.
+    internal const int CarWidth = 162;
+
+    internal const int CarLength = 256;
+
+    internal const int CarHeight = 162;
+
     private readonly ThreeDModel _model;
 
     // How far the mesh's lowest point sits below its own origin, so Append

@@ -1,4 +1,4 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
+﻿// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
@@ -27,6 +27,10 @@ public sealed partial class CarPhysics
     private const int LogSurfaceSize = 10;
 
     private const int OffRoadHeight = 0x1000;
+
+    // Road heights scale to PlayerY by << 8, and PlayerY to track units by
+    // >> 12 (see LimitViewpointY), so road height to track units is >> 4.
+    private const int RoadHeightToTrackY = 4;
 
     // Count after which player is put back on track.
     private const int OffTrackLimit = 64;
@@ -381,6 +385,17 @@ public sealed partial class CarPhysics
 
     // 0x80 when falling off the left road edge, 0x40 for the right (sparks side).
     internal int WhichSideByte { get; private set; }
+
+    // Road surface height under each wheel, in track units (the renderer
+    // uses these to keep the drawn car from sinking through the road when
+    // the suspension bottoms out). A wheel that is off the road reports
+    // OffRoadHeight, which converts to a height far below the car and so
+    // never lifts it.
+    internal int FrontLeftRoadY => _frontLeftRoadHeight >> RoadHeightToTrackY;
+
+    internal int FrontRightRoadY => _frontRightRoadHeight >> RoadHeightToTrackY;
+
+    internal int RearRoadY => _rearRoadHeight >> RoadHeightToTrackY;
 
     // Rear wheel x position across the road surface, reduced to 0-255.
     internal int RearWheelSurfaceX { get; private set; }
