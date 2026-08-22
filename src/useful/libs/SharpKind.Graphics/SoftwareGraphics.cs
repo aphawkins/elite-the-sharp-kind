@@ -546,7 +546,8 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
     // Textured variant of DrawTriangleFilled: texture coordinates are
     // interpolated affinely in screen space (no perspective correction,
     // which is fine for the small triangles a scene decomposes into) and
-    // sampled with edge clamping.
+    // sampled bilinearly, from whichever mip level best matches this
+    // triangle's texel-to-pixel ratio, with edge clamping.
     internal void DrawTriangleTextured(
         Vector2 a,
         Vector2 b,
@@ -556,6 +557,9 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
         Vector2 tc,
         FastBitmap texture)
     {
+        FastBitmap[] mipChain = GetMipChain(texture);
+        FastBitmap mip = SelectMip(mipChain, a, b, c, ta, tb, tc);
+
         // Sort the points so that a.Y <= b.Y <= c.Y, keeping each texture
         // coordinate paired with its point
         if (b.Y < a.Y)
@@ -615,7 +619,7 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
             for (int x = start; x <= end; x++)
             {
                 float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
-                DrawPixel(x, y, SampleTexture(texture, Vector2.Lerp(uv0, uv1, t)));
+                DrawPixel(x, y, SampleTexture(mip, Vector2.Lerp(uv0, uv1, t)));
             }
         }
     }
@@ -722,6 +726,8 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
             return;
         }
 
+        FastBitmap[] mipChain = GetMipChain(texture);
+
         // Sort the points so that a.Y <= b.Y <= c.Y, keeping each depth and
         // texture coordinate paired with its point
         if (b.Y < a.Y)
@@ -783,7 +789,7 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
                 (uv0, uv1) = (uv1, uv0);
             }
 
-            DrawSpanTexturedDepth(y, x0, x1, i0, i1, uv0, uv1, texture);
+            DrawSpanTexturedDepth(y, x0, x1, i0, i1, uv0, uv1, mipChain);
         }
     }
 
@@ -799,14 +805,6 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
     {
         float dy = p1.Y - p0.Y;
         return dy <= 0 ? 0f : Math.Clamp((y - p0.Y) / dy, 0f, 1f);
-    }
-
-    // Sample the texture at a [0,1] coordinate, clamping at the edges.
-    private static FastColor SampleTexture(FastBitmap texture, Vector2 uv)
-    {
-        int x = Math.Clamp((int)(uv.X * texture.Width), 0, texture.Width - 1);
-        int y = Math.Clamp((int)(uv.Y * texture.Height), 0, texture.Height - 1);
-        return texture.GetPixel(x, y);
     }
 
     private static (Vector2 A, Vector2 B, Vector2 C) SortPointsByY(Vector2 a, Vector2 b, Vector2 c)
@@ -953,7 +951,12 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
     }
 
     // Draw one depth-tested scanline of a textured triangle. The texture
-    // coordinates arrive already divided by depth and are recovered per pixel.
+    // coordinates arrive already divided by depth and are recovered per
+    // pixel. The mip level is chosen once for the whole span, from how many
+    // texels the recovered UV covers at each end versus how many pixels the
+    // span covers - this is what keeps distant, receding faces (SCR's road,
+    // seen nearly edge-on) sampling a pre-averaged level instead of aliasing
+    // against the full-resolution texture.
     private void DrawSpanTexturedDepth(
         int y,
         float x0,
@@ -962,11 +965,17 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
         float i1,
         Vector2 uv0,
         Vector2 uv1,
-        FastBitmap texture)
+        FastBitmap[] mipChain)
     {
         int start = Math.Max((int)MathF.Floor(x0), 0);
         int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
+        if (start > end)
+        {
+            return;
+        }
+
         float span = x1 - x0;
+        FastBitmap mip = SelectMip(mipChain, x0, x1, start, end, i0, i1, uv0, uv1);
 
         for (int x = start; x <= end; x++)
         {
@@ -975,7 +984,7 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
             if (DepthTest(x, y, inverseDepth, surfaceId: 0))
             {
                 Vector2 uv = Vector2.Lerp(uv0, uv1, t) / inverseDepth;
-                DrawPixel(x, y, SampleTexture(texture, uv));
+                DrawPixel(x, y, SampleTexture(mip, uv));
             }
         }
     }

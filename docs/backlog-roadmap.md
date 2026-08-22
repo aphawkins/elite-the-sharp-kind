@@ -95,12 +95,6 @@ per item whether authenticity or modernity wins.
       below — sequence after that, and build on
       `SharpKind.Graphics.PerspectiveProjector`, the small first slice of the
       same idea that landed 2026-08-09 (see [CHANGELOG.md](../CHANGELOG.md)).
-- [ ] [SharpKind.Graphics] Texture filtering and mipmaps: `SampleTexture` is
-      nearest-neighbour with edge clamping. Bilinear filtering plus a mip
-      chain would stop SCR's distant road aliasing (recorded as a
-      deliberate non-fix under Won't in
-      [backlog-issues.md](backlog-issues.md), since the Amiga had neither).
-      Elite is untextured entirely and gains nothing here.
 - [ ] [SharpKind.Graphics] Alpha blending: no transparency of any kind — the
       `DrawImage` path still carries a TODO admitting "should mix the
       transparent colors correctly here but the only transparency being

@@ -27,15 +27,17 @@ public class TexturedFillTests
 
         static void DoAssert(FastBitmap bmp)
         {
-            // left half samples the texture's left texel, right half the right
+            // Bilinear filtering blends near the u = 0.5 texel boundary (screen
+            // x = 50), so only assert the quarter-texel bands nearest each edge
+            // (x <= 35 and x >= 65), which stay pure under the bilinear kernel.
             for (int y = 25; y <= 75; y += 10)
             {
-                for (int x = 25; x <= 45; x += 5)
+                for (int x = 25; x <= 35; x += 5)
                 {
                     Assert.Equal(BaseColors.Red, bmp.GetPixel(x, y));
                 }
 
-                for (int x = 55; x <= 75; x += 5)
+                for (int x = 65; x <= 75; x += 5)
                 {
                     Assert.Equal(BaseColors.Green, bmp.GetPixel(x, y));
                 }

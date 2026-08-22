@@ -7,6 +7,23 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Bilinear filtering and mipmaps for textured triangles, 2026-08-22)
+
+- **`SampleTexture` was nearest-neighbour**, so distant/foreshortened
+  textured faces - SCR's road-line strips, seen nearly edge-on - aliased.
+  It now samples bilinearly, and both textured-triangle rasterisers
+  (`DrawTriangleTextured`, affine; `DrawTriangleTexturedDepth`,
+  perspective-correct) draw from a box-filtered mip chain built once per
+  source texture and cached in `SoftwareGraphics.Texturing.cs`. The affine
+  path picks one mip level per triangle from its texel-to-screen area
+  ratio; the perspective-correct path (used by SCR's road) picks one per
+  scanline from the recovered UV span at each end, since a single
+  receding quad's texel density varies too much for one triangle-wide
+  level. Elite draws no textures, so it is unaffected.
+- `TexturedFillTests.TextureMapsAcrossPolygon` narrowed its pure-colour
+  assertions to the quarter-texel band nearest each edge, since bilinear
+  filtering now blends across the texel boundary in the middle.
+
 ### Added (Outside/chase view on Backspace, 2026-08-20)
 
 - **The player's car existed only as a cockpit.** Backspace now swaps the

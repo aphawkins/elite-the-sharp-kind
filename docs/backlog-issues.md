@@ -64,11 +64,6 @@ re-covered.
       found zero concave faces, and `NearPlaneClip`'s Sutherland-Hodgman
       output of a convex input is convex, so the clipped polygons are convex
       too. Revisit only if hand-authored models are added.
-- [ ] [StuntCarRacerSharpLib] Road texture shimmer: `SampleTexture` is
-      nearest-neighbour with edge clamping — no bilinear filtering, no
-      mipmaps — so distant road aliases. Authentic to the Amiga original,
-      which had neither. Any change here belongs with the texture-filtering
-      roadmap item, not as a fix.
 - [ ] [EliteSharpLib] Buying more than 255g of Gold/Platinum doesn't work —
       authentic to the original ("broken as designed"); documented, not fixed.
 - [ ] [EliteSharpLib] Elite Intro2 parade shows 29 of ~33 ship models
