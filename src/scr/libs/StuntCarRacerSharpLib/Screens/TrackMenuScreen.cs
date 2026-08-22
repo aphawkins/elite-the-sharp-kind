@@ -38,6 +38,7 @@ internal sealed class TrackMenuScreen : IGameScreen
 
     private readonly Race _race;
     private readonly IKeyboard _keyboard;
+    private readonly IGamepad _gamepad;
     private readonly ISound _sound;
     private readonly ScreenManager<GameMode, IGameScreen> _screens;
     private readonly IGraphics _graphics;
@@ -45,9 +46,15 @@ internal sealed class TrackMenuScreen : IGameScreen
     private readonly ScrPalette _palette;
     private int _orbitAngle;
 
+    // The stick is a continuous reading, so one flick would otherwise step
+    // through every track it is held past. Only a change of direction moves
+    // the selection.
+    private int _lastSteer;
+
     internal TrackMenuScreen(
         Race race,
         IKeyboard keyboard,
+        IGamepad gamepad,
         ISound sound,
         ScreenManager<GameMode, IGameScreen> screens,
         IGraphics graphics,
@@ -56,6 +63,7 @@ internal sealed class TrackMenuScreen : IGameScreen
     {
         _race = race;
         _keyboard = keyboard;
+        _gamepad = gamepad;
         _sound = sound;
         _screens = screens;
         _graphics = graphics;
@@ -95,7 +103,9 @@ internal sealed class TrackMenuScreen : IGameScreen
             }
         }
 
-        if (_keyboard.IsPressed(ConsoleKey.S))
+        SelectTrackWithGamepad();
+
+        if (_keyboard.IsPressed(ConsoleKey.S) || _gamepad.IsPressed(GamepadButton.A))
         {
             _screens.Set(GameMode.TrackPreview);
         }
@@ -154,5 +164,25 @@ internal sealed class TrackMenuScreen : IGameScreen
             "Press 'S' to select, Escape to quit",
             StuntCarRacerMain.SmallFont,
             yellow);
+    }
+
+    // Left/right steps through the track list, the pad equivalent of the
+    // number keys. The list does not wrap, so the ends are the ends.
+    private void SelectTrackWithGamepad()
+    {
+        int steer = GamepadControls.Steer(_gamepad);
+        int previous = _lastSteer;
+        _lastSteer = steer;
+
+        if (steer is 0 || steer == previous)
+        {
+            return;
+        }
+
+        TrackId selected = (TrackId)Math.Clamp((int)_race.Track.Id + steer, (int)TrackId.LittleRamp, (int)TrackId.RollerCoaster);
+        if (selected != _race.Track.Id)
+        {
+            _race.LoadTrack(selected);
+        }
     }
 }

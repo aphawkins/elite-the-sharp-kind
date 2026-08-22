@@ -17,6 +17,7 @@ internal sealed class TrackPreviewScreen : IGameScreen
 {
     private readonly Race _race;
     private readonly IKeyboard _keyboard;
+    private readonly IGamepad _gamepad;
     private readonly ScreenManager<GameMode, IGameScreen> _screens;
     private readonly IGraphics _graphics;
     private readonly ScreenLayout _screen;
@@ -25,6 +26,7 @@ internal sealed class TrackPreviewScreen : IGameScreen
     internal TrackPreviewScreen(
         Race race,
         IKeyboard keyboard,
+        IGamepad gamepad,
         ScreenManager<GameMode, IGameScreen> screens,
         IGraphics graphics,
         ScreenLayout screen,
@@ -32,6 +34,7 @@ internal sealed class TrackPreviewScreen : IGameScreen
     {
         _race = race;
         _keyboard = keyboard;
+        _gamepad = gamepad;
         _screens = screens;
         _graphics = graphics;
         _screen = screen;
@@ -68,11 +71,11 @@ internal sealed class TrackPreviewScreen : IGameScreen
 
         _race.Camera.LookAt(viewX, viewY, viewZ, _race.Opponent.X, _race.Opponent.Y, _race.Opponent.Z);
 
-        if (_keyboard.IsPressed(ConsoleKey.S))
+        if (_keyboard.IsPressed(ConsoleKey.S) || _gamepad.IsPressed(GamepadButton.A))
         {
             _screens.Set(GameMode.GameInProgress);
         }
-        else if (_keyboard.IsPressed(ConsoleKey.M))
+        else if (_keyboard.IsPressed(ConsoleKey.M) || _gamepad.IsPressed(GamepadButton.B))
         {
             _screens.Set(GameMode.TrackMenu);
         }
@@ -116,5 +119,15 @@ internal sealed class TrackPreviewScreen : IGameScreen
             "  M = Back to track menu, Escape = Quit",
             StuntCarRacerMain.SmallFont,
             yellow);
+
+        // Only worth the line when there is something to press it on.
+        if (_gamepad.IsConnected)
+        {
+            _graphics.DrawTextLeft(
+                new(2, height - 18),
+                "  Pad: Stick = Steer, RT = Accelerate, LT/(B) = Brake, (A) = Boost",
+                StuntCarRacerMain.SmallFont,
+                yellow);
+        }
     }
 }

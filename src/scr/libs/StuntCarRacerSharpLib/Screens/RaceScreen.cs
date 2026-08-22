@@ -15,15 +15,22 @@ internal sealed class RaceScreen : IGameScreen
 {
     private readonly Race _race;
     private readonly IKeyboard _keyboard;
+    private readonly IGamepad _gamepad;
     private readonly ISound _sound;
     private readonly ScreenManager<GameMode, IGameScreen> _screens;
 
     private bool _paused;
 
-    internal RaceScreen(Race race, IKeyboard keyboard, ISound sound, ScreenManager<GameMode, IGameScreen> screens)
+    internal RaceScreen(
+        Race race,
+        IKeyboard keyboard,
+        IGamepad gamepad,
+        ISound sound,
+        ScreenManager<GameMode, IGameScreen> screens)
     {
         _race = race;
         _keyboard = keyboard;
+        _gamepad = gamepad;
         _sound = sound;
         _screens = screens;
     }
@@ -63,12 +70,20 @@ internal sealed class RaceScreen : IGameScreen
             _paused = false;
         }
 
+        // The pad has no second button to spare for resuming, so Start is the
+        // toggle the two keys deliberately are not. IsPressed is one-shot, so
+        // a held Start cannot flip the pause every tick.
+        if (_gamepad.IsPressed(GamepadButton.Start))
+        {
+            _paused = !_paused;
+        }
+
         // 'M' abandons the race and returns to the track menu, as the remake
         // does (`StuntCarRacer.cpp:1731-1741`). The menu screen's Reset does
         // the rest of what the reference does there - clearing the opponent
         // and stopping the engine sound - and the drawbridge reset already
         // happens when the next race starts.
-        if (_keyboard.IsPressed(ConsoleKey.M))
+        if (_keyboard.IsPressed(ConsoleKey.M) || _gamepad.IsPressed(GamepadButton.Back))
         {
             _screens.Set(GameMode.TrackMenu);
             return;
@@ -199,6 +214,8 @@ internal sealed class RaceScreen : IGameScreen
             input |= CarInput.Boost;
         }
 
-        return input;
+        // The pad is only read when the keyboard is idle, as the remake does
+        // (Car_Behaviour.cpp:791), so keyboard driving is unaffected.
+        return input == CarInput.None ? GamepadControls.ReadCarInput(_gamepad) : input;
     }
 }

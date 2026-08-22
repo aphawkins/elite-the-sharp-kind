@@ -14,13 +14,20 @@ internal sealed class GameOverScreen : IGameScreen
 {
     private readonly Race _race;
     private readonly IKeyboard _keyboard;
+    private readonly IGamepad _gamepad;
     private readonly ISound _sound;
     private readonly ScreenManager<GameMode, IGameScreen> _screens;
 
-    internal GameOverScreen(Race race, IKeyboard keyboard, ISound sound, ScreenManager<GameMode, IGameScreen> screens)
+    internal GameOverScreen(
+        Race race,
+        IKeyboard keyboard,
+        IGamepad gamepad,
+        ISound sound,
+        ScreenManager<GameMode, IGameScreen> screens)
     {
         _race = race;
         _keyboard = keyboard;
+        _gamepad = gamepad;
         _sound = sound;
         _screens = screens;
     }
@@ -29,7 +36,7 @@ internal sealed class GameOverScreen : IGameScreen
 
     public void Update()
     {
-        if (_keyboard.IsPressed(ConsoleKey.M))
+        if (_keyboard.IsPressed(ConsoleKey.M) || _gamepad.IsPressed(GamepadButton.A))
         {
             _screens.Set(GameMode.TrackMenu);
         }

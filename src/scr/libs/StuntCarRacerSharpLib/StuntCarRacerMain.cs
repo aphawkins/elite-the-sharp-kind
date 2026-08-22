@@ -76,6 +76,7 @@ public sealed class StuntCarRacerMain : IGame, IGameApp
         Graphics = abstraction.Graphics;
         Layout = abstraction.Layout;
         Keyboard = abstraction.Keyboard;
+        Gamepad = abstraction.Gamepad;
         Sound = abstraction.Sound;
         Palette = new(assetLocator);
 
@@ -103,10 +104,10 @@ public sealed class StuntCarRacerMain : IGame, IGameApp
         Race = new(Graphics, Layout, Palette, Sound, audio, trackId, randomSource);
 
         Screens = new(Keyboard);
-        Screens.Add(GameMode.TrackMenu, new TrackMenuScreen(Race, Keyboard, Sound, Screens, Graphics, Layout, Palette));
-        Screens.Add(GameMode.TrackPreview, new TrackPreviewScreen(Race, Keyboard, Screens, Graphics, Layout, Palette));
-        Screens.Add(GameMode.GameInProgress, new RaceScreen(Race, Keyboard, Sound, Screens));
-        Screens.Add(GameMode.GameOver, new GameOverScreen(Race, Keyboard, Sound, Screens));
+        Screens.Add(GameMode.TrackMenu, new TrackMenuScreen(Race, Keyboard, Gamepad, Sound, Screens, Graphics, Layout, Palette));
+        Screens.Add(GameMode.TrackPreview, new TrackPreviewScreen(Race, Keyboard, Gamepad, Screens, Graphics, Layout, Palette));
+        Screens.Add(GameMode.GameInProgress, new RaceScreen(Race, Keyboard, Gamepad, Sound, Screens));
+        Screens.Add(GameMode.GameOver, new GameOverScreen(Race, Keyboard, Gamepad, Sound, Screens));
         Screens.Set(GameMode.TrackMenu);
     }
 
@@ -117,6 +118,8 @@ public sealed class StuntCarRacerMain : IGame, IGameApp
     internal ScreenManager<GameMode, IGameScreen> Screens { get; }
 
     internal IKeyboard Keyboard { get; }
+
+    internal IGamepad Gamepad { get; }
 
     internal ISound Sound { get; }
 
