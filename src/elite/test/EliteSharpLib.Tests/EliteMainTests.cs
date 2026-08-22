@@ -30,6 +30,7 @@ public class EliteMainTests
             services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Layout);
             services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Sound);
             services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);
+            services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Gamepad);
             services.AddSingleton(_ => TestAssets.Locator());
             services.AddEliteConfig(configDirectory);
             services.AddEliteMain(EliteServiceCollectionExtensions.LoadRendition("16-bit", NullLoggerFactory.Instance));

@@ -55,7 +55,7 @@ public sealed class SDLAbstraction : IAbstraction, IDisposable
         Graphics = SDLGraphics.Create(_renderer, screenWidth, screenHeight, assetLocator, fontKind, logger);
         Layout = new(screenWidth, screenHeight);
         Sound = new SDLSound(assetLocator);
-        _input = new();
+        _input = new(logger);
         Keyboard = new SoftwareKeyboard(_input);
         Gamepad = new SoftwareGamepad(_input);
     }

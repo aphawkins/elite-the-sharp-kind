@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -23,6 +23,7 @@ internal sealed class PilotController : IScreenController
 {
     private readonly GameState _gameState;
     private readonly IKeyboard _keyboard;
+    private readonly IGamepad _gamepad;
     private readonly Pilot _pilot;
     private readonly PlayerShip _ship;
     private readonly Stars _stars;
@@ -37,6 +38,7 @@ internal sealed class PilotController : IScreenController
     internal PilotController(
         GameState gameState,
         IKeyboard keyboard,
+        IGamepad gamepad,
         Pilot pilot,
         PlayerShip ship,
         Stars stars,
@@ -48,6 +50,7 @@ internal sealed class PilotController : IScreenController
     {
         _gameState = gameState;
         _keyboard = keyboard;
+        _gamepad = gamepad;
         _pilot = pilot;
         _ship = ship;
         _stars = stars;
@@ -132,14 +135,48 @@ internal sealed class PilotController : IScreenController
             _gameState.Config.Engine.Graphics.FillMode == FillMode.Wireframe);
     }
 
+    // Each flight control answers to a key or the pad, so the handlers below
+    // stay one branch per control rather than one branch per input device.
+    private bool WantsFire()
+        => _keyboard.IsHeld(ConsoleKey.A)
+            || GamepadControls.IsFiring(_gamepad);
+
+    private bool WantsClimb()
+        => _keyboard.IsHeld(ConsoleKey.S)
+            || _keyboard.IsHeld(ConsoleKey.UpArrow)
+            || GamepadControls.Pitch(_gamepad) < 0;
+
+    private bool WantsDive()
+        => _keyboard.IsHeld(ConsoleKey.X)
+            || _keyboard.IsHeld(ConsoleKey.DownArrow)
+            || GamepadControls.Pitch(_gamepad) > 0;
+
+    private bool WantsRollLeft()
+        => _keyboard.IsHeld(ConsoleKey.OemComma)
+            || _keyboard.IsHeld(ConsoleKey.LeftArrow)
+            || GamepadControls.Roll(_gamepad) < 0;
+
+    private bool WantsRollRight()
+        => _keyboard.IsHeld(ConsoleKey.OemPeriod)
+            || _keyboard.IsHeld(ConsoleKey.RightArrow)
+            || GamepadControls.Roll(_gamepad) > 0;
+
+    private bool WantsAccelerate()
+        => _keyboard.IsHeld(ConsoleKey.Spacebar)
+            || GamepadControls.IsAccelerating(_gamepad);
+
+    private bool WantsDecelerate()
+        => _keyboard.IsHeld(ConsoleKey.Oem2)
+            || GamepadControls.IsDecelerating(_gamepad);
+
     private void HandleFlightControls()
     {
-        if (_keyboard.IsHeld(ConsoleKey.A))
+        if (WantsFire())
         {
             _gameState.DrawLasers = _combat.FireLaser();
         }
 
-        if (_keyboard.IsHeld(ConsoleKey.S) || _keyboard.IsHeld(ConsoleKey.UpArrow))
+        if (WantsClimb())
         {
             if (_ship.Climb > 0)
             {
@@ -154,7 +191,7 @@ internal sealed class PilotController : IScreenController
             _ship.IsClimbing = true;
         }
 
-        if (_keyboard.IsHeld(ConsoleKey.X) || _keyboard.IsHeld(ConsoleKey.DownArrow))
+        if (WantsDive())
         {
             if (_ship.Climb < 0)
             {
@@ -171,14 +208,12 @@ internal sealed class PilotController : IScreenController
 
         HandleRollControls();
 
-        if (_keyboard.IsHeld(ConsoleKey.Spacebar) &&
-            !_gameState.IsDocked)
+        if (WantsAccelerate() && !_gameState.IsDocked)
         {
             _ship.IncreaseSpeed();
         }
 
-        if (_keyboard.IsHeld(ConsoleKey.Oem2) &&
-            !_gameState.IsDocked)
+        if (WantsDecelerate() && !_gameState.IsDocked)
         {
             _ship.DecreaseSpeed();
         }
@@ -188,7 +223,7 @@ internal sealed class PilotController : IScreenController
     // levels the ship out instead.
     private void HandleRollControls()
     {
-        if (_keyboard.IsHeld(ConsoleKey.OemComma) || _keyboard.IsHeld(ConsoleKey.LeftArrow))
+        if (WantsRollLeft())
         {
             if (_ship.Roll < 0)
             {
@@ -202,7 +237,7 @@ internal sealed class PilotController : IScreenController
             }
         }
 
-        if (_keyboard.IsHeld(ConsoleKey.OemPeriod) || _keyboard.IsHeld(ConsoleKey.RightArrow))
+        if (WantsRollRight())
         {
             if (_ship.Roll > 0)
             {

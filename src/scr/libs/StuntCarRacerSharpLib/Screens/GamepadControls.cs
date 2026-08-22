@@ -24,9 +24,13 @@ internal static class GamepadControls
         return x <= -Threshold ? -1 : x >= Threshold ? 1 : 0;
     }
 
-    // ptitSeb's pad mapping (Car_Behaviour.cpp:793-817): right trigger =
-    // accelerate, (A) = boost, (B) or left trigger = brake, left stick =
-    // steer. Brake wins over accelerate, as it does there.
+    // Two layouts at once, because the two target devices have nothing in
+    // common but the stick. An XInput pad drives as ptitSeb's remake maps it
+    // (Car_Behaviour.cpp:793-817): right trigger = accelerate, (B) or left
+    // trigger = brake, (A) = boost. A one-stick joystick has no triggers, so
+    // it drives the arcade way instead: stick forward = accelerate, back =
+    // brake, fire = boost. Neither layout can reach the other's controls, so
+    // both are read unconditionally rather than guessing at the device.
     internal static CarInput ReadCarInput(IGamepad gamepad)
     {
         CarInput input = CarInput.None;
@@ -42,17 +46,23 @@ internal static class GamepadControls
                 break;
         }
 
-        if (IsPulled(gamepad, GamepadAxis.RightTrigger))
+        // SDL's Y axis is positive downwards, so forward on the stick is
+        // negative - the same convention the screen has.
+        float y = gamepad.Axis(GamepadAxis.LeftY);
+
+        if (IsPulled(gamepad, GamepadAxis.RightTrigger) || y <= -Threshold)
         {
             input |= CarInput.Accelerate;
         }
 
-        if (gamepad.IsHeld(GamepadButton.A))
+        // Buttons 1 and 4 as the device numbers them, which is what falls
+        // under the thumb and the trigger finger on a Competition Pro.
+        if (gamepad.IsHeld(GamepadButton.A) || gamepad.IsHeld(GamepadButton.Y))
         {
             input |= CarInput.Boost;
         }
 
-        if (gamepad.IsHeld(GamepadButton.B) || IsPulled(gamepad, GamepadAxis.LeftTrigger))
+        if (gamepad.IsHeld(GamepadButton.B) || IsPulled(gamepad, GamepadAxis.LeftTrigger) || y >= Threshold)
         {
             input &= ~CarInput.Accelerate;
             input |= CarInput.Brake;

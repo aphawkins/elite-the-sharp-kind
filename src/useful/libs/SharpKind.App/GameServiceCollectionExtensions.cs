@@ -1,4 +1,4 @@
-// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
+﻿// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -67,6 +67,7 @@ public static class GameServiceCollectionExtensions
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Layout);
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Sound);
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);
+        services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Gamepad);
         services.AddSingleton<IAssetLocator>(_ => AssetLocator.Create(engine.Rendition));
 
         return services;

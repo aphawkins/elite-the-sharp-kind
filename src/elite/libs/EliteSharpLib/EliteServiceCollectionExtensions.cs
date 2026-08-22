@@ -279,6 +279,7 @@ public static class EliteServiceCollectionExtensions
     private static PilotController CreatePilotController(IServiceProvider sp, PilotDirection direction) => new(
         sp.GetRequiredService<GameState>(),
         sp.GetRequiredService<IKeyboard>(),
+        sp.GetRequiredService<IGamepad>(),
         sp.GetRequiredService<Pilot>(),
         sp.GetRequiredService<PlayerShip>(),
         sp.GetRequiredService<Stars>(),

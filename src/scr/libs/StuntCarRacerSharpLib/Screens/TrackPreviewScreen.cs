@@ -125,7 +125,7 @@ internal sealed class TrackPreviewScreen : IGameScreen
         {
             _graphics.DrawTextLeft(
                 new(2, height - 18),
-                "  Pad: Stick = Steer, RT = Accelerate, LT/(B) = Brake, (A) = Boost",
+                "  Stick = Steer/Accelerate/Brake, Buttons 1 or 4 = Boost",
                 StuntCarRacerMain.SmallFont,
                 yellow);
         }

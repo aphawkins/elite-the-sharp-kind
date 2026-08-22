@@ -31,7 +31,7 @@ public class SunBenchmarks : IDisposable
     public SunBenchmarks()
     {
         IAssetLocator assetLocator = BenchmarkAssets.Locator();
-        _input = new();
+        _input = new(null);
         SoftwareKeyboard keyboard = new(_input);
         SharpKind.Abstraction.ScreenManager<Views.Screen, Views.IScreenController> views = new(keyboard);
 

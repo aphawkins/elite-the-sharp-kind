@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -133,9 +133,33 @@ public class PilotControllerTests
             s_rendition,
             rng);
 
-        return new PilotController(
-            gameState, new FakeKeyboard(), pilot, ship, stars, space, combat, direction, rng, new FakePilotView());
+        return NewController(gameState, pilot, ship, stars, space, combat, direction, rng);
     }
+
+    // Kept out of CreateController for the same reason CreateStars is: the
+    // controller and its fakes are several more types than that method's
+    // coupling budget has room for.
+    private static PilotController NewController(
+        GameState gameState,
+        Pilot pilot,
+        PlayerShip ship,
+        Stars stars,
+        Space space,
+        Combat combat,
+        PilotDirection direction,
+        RNG rng)
+        => new(
+            gameState,
+            new FakeKeyboard(),
+            new FakeGamepad(),
+            pilot,
+            ship,
+            stars,
+            space,
+            combat,
+            direction,
+            rng,
+            new FakePilotView());
 
     // Kept out of CreateController, which is already at CA1506's coupling
     // limit: the starfield renderer adds two more types to whichever method

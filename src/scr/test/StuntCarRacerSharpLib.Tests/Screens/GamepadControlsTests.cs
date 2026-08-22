@@ -35,6 +35,57 @@ public class GamepadControlsTests
         Assert.Equal(expected, GamepadControls.ReadCarInput(pad));
     }
 
+    // A one-stick joystick has no triggers, so forward and back on the stick
+    // are accelerate and brake instead.
+    [Theory]
+    [InlineData(-1f, CarInput.Accelerate)]
+    [InlineData(-0.6f, CarInput.Accelerate)]
+    [InlineData(-0.4f, CarInput.None)]
+    [InlineData(0.4f, CarInput.None)]
+    [InlineData(0.6f, CarInput.Brake)]
+    [InlineData(1f, CarInput.Brake)]
+    public void StickForwardAcceleratesAndBackBrakes(float y, CarInput expected)
+    {
+        FakeGamepad pad = new();
+        pad.AxisMoved(GamepadAxis.LeftY, y);
+
+        Assert.Equal(expected, GamepadControls.ReadCarInput(pad));
+    }
+
+    // Buttons 1 and 4 as the device numbers them.
+    [Theory]
+    [InlineData(GamepadButton.A)]
+    [InlineData(GamepadButton.Y)]
+    public void EitherFireButtonBoosts(GamepadButton button)
+    {
+        FakeGamepad pad = new();
+        pad.ButtonDown(button);
+
+        Assert.Equal(CarInput.Boost, GamepadControls.ReadCarInput(pad));
+    }
+
+    // The stick does both jobs at once on a joystick: forward and left is
+    // accelerating into a left-hander, not one or the other.
+    [Fact]
+    public void TheStickSteersAndAcceleratesTogether()
+    {
+        FakeGamepad pad = new();
+        pad.AxisMoved(GamepadAxis.LeftX, -1f);
+        pad.AxisMoved(GamepadAxis.LeftY, -1f);
+
+        Assert.Equal(CarInput.Left | CarInput.Accelerate, GamepadControls.ReadCarInput(pad));
+    }
+
+    [Fact]
+    public void StickBackBeatsTheTriggerJustAsBrakeBeatsAccelerate()
+    {
+        FakeGamepad pad = new();
+        pad.AxisMoved(GamepadAxis.RightTrigger, 1f);
+        pad.AxisMoved(GamepadAxis.LeftY, 1f);
+
+        Assert.Equal(CarInput.Brake, GamepadControls.ReadCarInput(pad));
+    }
+
     [Fact]
     public void TheRightTriggerAccelerates()
     {
@@ -42,15 +93,6 @@ public class GamepadControlsTests
         pad.AxisMoved(GamepadAxis.RightTrigger, 1f);
 
         Assert.Equal(CarInput.Accelerate, GamepadControls.ReadCarInput(pad));
-    }
-
-    [Fact]
-    public void ABoosts()
-    {
-        FakeGamepad pad = new();
-        pad.ButtonDown(GamepadButton.A);
-
-        Assert.Equal(CarInput.Boost, GamepadControls.ReadCarInput(pad));
     }
 
     [Theory]

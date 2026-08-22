@@ -108,7 +108,7 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
         _soundOutput = new SoftwareSoundOutput(sound);
         Sound = sound;
 
-        _input = new();
+        _input = new(logger);
         Keyboard = new SoftwareKeyboard(_input);
         Gamepad = new SoftwareGamepad(_input);
     }
