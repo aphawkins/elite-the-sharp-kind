@@ -51,6 +51,7 @@ public static class SdlDriveWin32 {
     [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr hWnd, out RECT rect);
     [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr hWnd);
     [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
+    [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
     [DllImport("user32.dll")] public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
     [DllImport("user32.dll")] public static extern uint MapVirtualKey(uint uCode, uint uMapType);
     [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
@@ -106,6 +107,21 @@ function ConvertTo-VirtualKeyCode([string]$KeyName) {
     }
 }
 
+# Is the app on top? Compare the foreground window by *process*, not by
+# handle: SDL's foregrounded window is not always the handle .NET reports
+# as MainWindowHandle, so an hwnd comparison alone reports failure while
+# the app is plainly in front and the screenshots are fine.
+function Test-AppForeground {
+    $foreground = [SdlDriveWin32]::GetForegroundWindow()
+    if ($foreground -eq $script:hwnd) { return $true }
+    if ($foreground -eq [IntPtr]::Zero) { return $false }
+    if (-not $script:proc -or $script:proc.HasExited) { return $false }
+
+    $foregroundPid = 0
+    [SdlDriveWin32]::GetWindowThreadProcessId($foreground, [ref]$foregroundPid) | Out-Null
+    return $foregroundPid -eq $script:proc.Id
+}
+
 # Bring the app's window to the front and confirm it got there.
 # SetForegroundWindow routinely fails on the first call: Windows' foreground
 # lock refuses a process that doesn't own the current foreground window, so
@@ -115,7 +131,7 @@ function ConvertTo-VirtualKeyCode([string]$KeyName) {
 # looks like the app never responded to a key. Retry until
 # GetForegroundWindow agrees, then warn rather than silently capturing
 # somebody else's window.
-function Set-AppForeground([int]$TimeoutMs = 2000) {
+function Set-AppForeground([int]$TimeoutMs = 2000, [switch]$Quiet) {
     if ($script:hwnd -eq [IntPtr]::Zero) { return $false }
 
     if ([SdlDriveWin32]::IsIconic($script:hwnd)) {
@@ -124,14 +140,17 @@ function Set-AppForeground([int]$TimeoutMs = 2000) {
 
     $deadline = (Get-Date).AddMilliseconds($TimeoutMs)
     while ((Get-Date) -lt $deadline) {
-        if ([SdlDriveWin32]::GetForegroundWindow() -eq $script:hwnd) { return $true }
+        if (Test-AppForeground) { return $true }
         [SdlDriveWin32]::SetForegroundWindow($script:hwnd) | Out-Null
         Start-Sleep -Milliseconds 100
     }
 
-    if ([SdlDriveWin32]::GetForegroundWindow() -eq $script:hwnd) { return $true }
+    if (Test-AppForeground) { return $true }
 
-    Write-Warning "could not bring the app window to the foreground - screenshots may capture whatever is covering it"
+    if (-not $Quiet) {
+        Write-Warning "could not bring the app window to the foreground - screenshots may capture whatever is covering it"
+    }
+
     return $false
 }
 
@@ -155,7 +174,10 @@ function Invoke-Launch {
     }
 
     $script:hwnd = $hwnd
-    Set-AppForeground | Out-Null
+
+    # quiet here: SDL's window often is not ready to take focus this early,
+    # and every screenshot foregrounds again (and warns) in any case
+    Set-AppForeground -Quiet | Out-Null
     Start-Sleep -Milliseconds 500  # let the first frame render
     Write-Output "launched: PID $($script:proc.Id), hwnd $($script:hwnd)"
 }

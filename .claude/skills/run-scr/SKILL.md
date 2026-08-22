@@ -78,7 +78,8 @@ Useful for building new `-Steps` sequences. Four modes
   driving keys are read with `IsHeld`, not `IsPressed` — `Left`/`Right`
   = steer, `Up` = accelerate, `Down` = brake, `Space` = boost. `N`
   changes scenery. `M` abandons the race for **TrackMenu** (works while
-  paused too); `P` pauses and `O` resumes; `Escape` quits.
+  paused too); `P` pauses and `O` resumes; `Backspace` toggles the
+  outside/chase view; `Escape` quits.
 - **GameOver** ([GameOverScreen.cs](../../../src/scr/libs/StuntCarRacerSharpLib/Screens/GameOverScreen.cs)):
   `M` back to **TrackMenu**.
 - `Escape` quits from anywhere ([StuntCarRacerMain.cs](../../../src/scr/libs/StuntCarRacerSharpLib/StuntCarRacerMain.cs)).
