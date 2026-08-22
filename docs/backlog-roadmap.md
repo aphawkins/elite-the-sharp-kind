@@ -161,22 +161,23 @@ while staying inside its assets and the Amiga's behaviour:
       sheet first (no atlas table exists upstream); assume the sheet
       order matches `opponentNames` (`Opponent_Behaviour.cpp:138-151`)
       and verify against the Amiga before committing.
-Gamepad/joystick support (split 2026-07-14 from the [LARGE] item; the
-three layers are built and unit-tested, so only the hardware check is
+Gamepad/joystick support (split 2026-07-14 from the [LARGE] item; built,
+unit-tested and confirmed on the Competition Pro, so only the pad check is
 left):
 
-- [ ] [StuntCarRacerSharpLib] Smoke-test the gamepad with real hardware -
-      an XInput pad and the USB Competition Pro Extra - as the definition
-      of done for the feature requires. Everything else is in place: the
-      `IGamepad`/`IGamepadSink` abstraction, the SDL3 gamepad and joystick
-      plumbing with hotplug in
-      [SDLInput.cs](../src/useful/libs/SharpKind.SDL/SDLInput.cs), and the
-      SCR control and menu mappings. What only hardware can confirm: that
-      an unmapped HID stick's buttons land in the order
-      `SDLInput.ConvertJoystickButton` assumes, that the Competition Pro
-      reports its 8-way stick on axes 0/1 rather than a hat (both are
-      handled, but only one is right for that device), and that the 0.5
-      steer threshold feels right on an analog stick.
+- [ ] [SharpKind.SDL] Smoke-test the gamepad path with a real XInput pad.
+      The joystick path is confirmed: a Competition Pro Extra steers,
+      accelerates and brakes on the stick, and boosts/fires on buttons 1
+      and 3 in both games. What the pad would settle: that
+      `SDLInput.ConvertGamepadButton`/`ConvertGamepadAxis` name the
+      controls the player expects, that the 0.5 threshold in each game's
+      `GamepadControls` feels right on an analog stick rather than a
+      digital one, and whether sharing the left stick between steering and
+      throttle in Stunt Car Racer is acceptable on a pad (it is what lets
+      one mapping serve both devices - see
+      [GamepadControls.cs](../src/scr/libs/StuntCarRacerSharpLib/Screens/GamepadControls.cs)).
+      The per-device logging added with the feature is the tool for this:
+      run with `SCR_LOG_LEVEL=Debug`.
 
 Super League (split 2026-07-14 from the [LARGE] item; reference is
 ptitSeb's `bSuperLeague` — toggled at `StuntCarRacer.cpp:1222`, applied

@@ -73,6 +73,42 @@ Notes:
 - F9 and F10 tune the physics frame gap, as the remake's do: the physics steps every fourth 50Hz tick by default, F9 shortens that gap (down to every tick) and F10 lengthens it. N, F5, F6, F7, F9 and F10 work on every screen, not only during the race.
 - F5, F6 and F7 are the remake's development aids rather than game controls. F5 shows an overlay of the frame gap and the two freeze states; F6 and F7 freeze the cars independently, so one can be studied while the other drives. Unlike the P/O pause, a freeze leaves the race clock and the lap timers running, and both freezes clear when a race starts.
 
+### Gamepad and joystick
+
+Optional, and entirely alongside the keyboard: every key above keeps
+working, and the pad is only read on a tick where no key is held - the same
+rule ptitSeb's remake uses (`Car_Behaviour.cpp:791`). A device is picked up
+whenever it is plugged in, so it need not be attached before the game
+starts.
+
+Two layouts are live at once, because the two kinds of device have nothing
+in common but the stick. Buttons are numbered as the device numbers them,
+which for a device SDL has no mapping for is simply the order its buttons
+are wired in.
+
+| Control | Joystick | Gamepad |
+| ------- | -------- | ------- |
+| Steer left / right | Stick left / right | Left stick |
+| Accelerate | Stick forward | Right trigger |
+| Brake / reverse | Stick back | (B) or left trigger |
+| Boost | Button 1 or 3 | (A) or (X) |
+| Select a track (track menu) | Stick left / right | Left stick |
+| Start the race (menu, preview) | Button 1 | (A) |
+| Back to the track menu (preview) | Button 2 | (B) |
+| Back to the track menu (after GAME OVER) | Button 1 | (A) |
+| Pause / resume (during the race) | Button 8 | Start |
+| Abandon the race | Button 7 | Back |
+
+Notes:
+- Brake wins over accelerate when both are asked for, as it does in the
+  remake.
+- Steering is digital, so an analog stick has to travel past halfway before
+  it counts. A joystick sits at the ends of its range, so it always does.
+- On the track menu the stick steps one track per push: it has to return to
+  centre before it moves again, or one flick would run through the list.
+- The track preview lists the pad controls on screen while a device is
+  attached.
+
 ## Dashboard
 
 The cockpit is drawn as a set of sprites over the track view: front wheels that bounce with the suspension and spin with road speed, an engine that flares when boosting, a damage crack across the top beam that grows with accumulated damage (and leaves a hole once it fully cracks), a speed gauge, and the lap number, boost reserve and opponent distance shown in the dashboard's read-out panels.

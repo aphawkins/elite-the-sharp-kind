@@ -1,4 +1,4 @@
-# Elite - The Sharp Kind
+﻿# Elite - The Sharp Kind
 
 ![Elite - The Sharp Kind - Screenshot](images/elite-screenshot.png)
 
@@ -71,6 +71,32 @@ Use Left/Right cursor keys to scroll through ships on the ship parade screen
 | TAB | Detonate energy bomb, if fitted |
 | CTRL+H | Galactic Hyperspace, if fitted |
 | ESC | Launch escape capsule, if fitted |
+
+### Gamepad and joystick
+
+Optional, and entirely alongside the keyboard. Only flight and fire are
+mapped: everything else Elite can do - docking, hyperspace, missiles, ECM,
+the charts and the trading screens - has no room on a one-stick joystick
+and stays on the keys. A device is picked up whenever it is plugged in.
+
+Buttons are numbered as the device numbers them, which for a device SDL has
+no mapping for is simply the order its buttons are wired in. Fire sits on
+the same pair as Stunt Car Racer's boost, so one stick behaves the same way
+in both games.
+
+| Control | Joystick | Gamepad |
+| ------- | -------- | ------- |
+| Fire lasers | Button 1 or 3 | (A) or (X) |
+| Dive | Stick forward | Left stick forward |
+| Climb | Stick back | Left stick back |
+| Roll left / right | Stick left / right | Left stick |
+| Speed up | Button 2 | (B) or right trigger |
+| Slow down | Button 4 | (Y) or left trigger |
+
+Pitch and roll are digital, as the keys are: each held direction steps the
+ship by a fixed amount, so an analog stick has to travel past halfway
+before it counts, and a joystick - which sits at the ends of its range -
+always does.
 
 ### Chart Screens
 | Key | Function |

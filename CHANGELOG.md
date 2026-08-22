@@ -13,27 +13,44 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   `IGamepad`/`IGamepadSink` pair in `SharpKind.Input` mirrors the
   `IKeyboard`/`IKeyboardSink` split, keeping the same pressed-vs-held
   semantics: one-shot reads for menu actions, non-consuming reads for
-  controls polled every physics tick. Axes are floats, so an XInput-style
-  pad keeps its travel and a generic HID stick reports -1/0/+1 through the
-  same interface. Unplugging the last device clears held state, so a
-  button held as the cable comes out cannot stay held forever.
+  controls polled every tick. Axes are floats, so an XInput-style pad keeps
+  its travel and a generic HID stick reports -1/0/+1 through the same
+  interface. Unplugging the last device clears held state, so a button held
+  as the cable comes out cannot stay held forever.
 - `SDLInput` initialises the SDL3 gamepad and joystick subsystems and
   handles hotplug for both. A device with a gamepad mapping is opened as a
   gamepad and its buttons arrive named; one without a mapping is opened as
   a raw joystick, where index order is the only mapping there is. A hat
   feeds the left stick axes, so an 8-way stick reads the same either way.
   A device that appears in both event streams is only opened once.
-- **Stunt Car Racer drives from a pad**, mapped as ptitSeb's remake maps
-  it (`Car_Behaviour.cpp:793-817`): right trigger accelerates, (A) boosts,
-  (B) or the left trigger brakes and wins over accelerate, the left stick
-  steers. The stick is thresholded to the digital left/right the physics
-  expects. The pad is only read when the keyboard is idle, as the remake
-  does, so keyboard driving is untouched. (A) and (B) navigate the menu,
-  preview and game-over screens, the stick steps through the track list,
-  Start toggles the race pause and Back abandons the race. The preview
-  screen lists the pad controls when a device is attached.
-- Not yet confirmed against real hardware - see the remaining backlog
-  item.
+- **A pad that "does nothing" is a mapping question the game cannot answer
+  from its own side**, so each device's name and its axis, button and hat
+  counts are logged when it connects, and every button, axis and hat event
+  is logged at `Debug`. Turn it on with `SCR_LOG_LEVEL=Debug` or
+  `ELITE_LOG_LEVEL=Debug` and the log says which physical control is which
+  index.
+- **Stunt Car Racer drives from a pad or a joystick.** A pad follows
+  ptitSeb's remake (`Car_Behaviour.cpp:793-817`): right trigger
+  accelerates, (B) or left trigger brakes and wins over accelerate, the
+  left stick steers. A one-stick joystick has no triggers, so it drives the
+  arcade way instead - forward accelerates, back brakes - and boosts on
+  buttons 1 or 3. Both layouts are read at once, since neither device can
+  reach the other's controls. Steering is thresholded to the digital
+  left/right the physics expects, and the pad is only read when the
+  keyboard is idle, as the remake does, so keyboard driving is untouched.
+  Buttons 1 and 2 navigate the menu, preview and game-over screens, the
+  stick steps through the track list, Start toggles the race pause and Back
+  abandons the race. The preview screen lists the controls while a device
+  is attached.
+- **Elite flies from the same stick:** roll and pitch on the axes, fire on
+  buttons 1 or 3, speed up and down on 2 and 4 (or the triggers). Fire sits
+  on the same pair as Stunt Car Racer's boost, so one stick behaves the
+  same way in both games. Docking, hyperspace, missiles, ECM, the charts
+  and the trading screens have no room on one stick and stay on the
+  keyboard.
+- Smoke-tested with a USB Competition Pro Extra, which is what moved fire
+  and boost onto buttons 1 and 3. An XInput pad is still unconfirmed - see
+  the remaining backlog item.
 
 ### Added (Alpha blending, 2026-08-22)
 

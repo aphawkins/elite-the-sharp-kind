@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -21,9 +21,9 @@ internal static class GamepadControls
     // Negative rolls left, positive right, 0 is centred.
     internal static int Roll(IGamepad gamepad) => Direction(gamepad.Axis(GamepadAxis.LeftX));
 
-    // Negative climbs, positive dives: SDL's Y axis is positive downwards,
-    // and pulling the stick back to climb reads as negative, which is the
-    // sense Elite's own "up" control has.
+    // Negative is the stick pushed forward, which does what S/Up does on the
+    // keyboard; positive is pulled back, which does what X/Down does. SDL's Y
+    // axis is positive downwards, the same sense the screen has.
     internal static int Pitch(IGamepad gamepad) => Direction(gamepad.Axis(GamepadAxis.LeftY));
 
     // Buttons 1 and 3 as a joystick numbers them, or (A)/(X) on a pad - the
