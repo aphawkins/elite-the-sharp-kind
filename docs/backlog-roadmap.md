@@ -74,10 +74,34 @@ the explosion moved out of the renderer and the drawing given its own random
 stream. So the items below have a simulate half to change and a compose half
 that will not fight them.
 
-Two things that split left behind, which the next items inherit:
+**The clock and the motion landed 2026-08-26 too.** `GameState.Clock` is a
+`GameClock`: it paces the `MCount` housekeeping at 13.5 steps a second
+whatever the update rate, and its `Ticks` - how much of one of the game's own
+ticks an update is worth - scales every rate that used to be "per tick".
+Both stayed bit-identical on the traces *and* the frames, because `Ticks` is
+exactly 1 at 13.5Hz; the behaviour that only appears at another rate is
+covered by `GameClockTests` and `RateIndependentMotionTests` instead.
+
+Two corrections to what this list used to say:
+
+- **`RotateByteLeft` is not in the motion path** and must not be converted.
+  It is the galactic hyperdrive's seed shuffle (`Cmdr.Galaxy.A`..`F`), a byte
+  rotation of the RNG seed, not a rate. The `±127` spin clamps beside it in
+  the old wording were real, and are done.
+- **The traces have not needed tolerances so far.** Items 3 and 4 were
+  arranged to be no-ops at the game's own rate rather than approximations of
+  it, so zero tolerance still holds. Do not raise it pre-emptively; raise it
+  when an item genuinely cannot avoid it, and say why in that commit.
+
+Two things the simulate/compose split left behind, which the next items
+inherit:
 
 - **Input is a third phase**, run after `Compose` because that is where this
   port has always read it. Where it belongs is the last item's question.
+- **Watch the float ordering.** Scaling a rate by `Ticks` is only a no-op
+  at 13.5Hz if the scaling is applied *after* an inexact divide, not folded
+  into it. `RotateXFirst` divides first and scales second for exactly this
+  reason, and got caught by the frame check when it did not.
 - **`EliteMain` holds two frame fields** (`_pendingMessage`,
   `_pendingCountdown`) because the hyperspace countdown is drawn before it
   is decremented and the info message is the one already on screen, not the
@@ -94,31 +118,6 @@ survive a rate change cleanly. Elite's feel and difficulty change at 60Hz.
 That is the accepted price of the decision, not a defect to tune away
 afterwards.
 
-- [ ] [EliteSharpLib] Make the game clock explicit and convert the `MCount`
-      housekeeping. Thread an elapsed-seconds value into the simulate half,
-      and replace the 0..255 down-counter's bit tests with scheduled
-      intervals: hyperspace countdown (`& 3`), shield regen (`& 7`),
-      energy-low + altitude (`& 31 == 10`), cabin temp (`& 31 == 20`),
-      random encounter (`== 0`) and the docking-computer message
-      (`& 127`), all in
-      [EliteMain.cs:227-261](../src/elite/libs/EliteSharpLib/EliteMain.cs),
-      plus `MCount &= 63` at
-      [Space.cs:155](../src/elite/libs/EliteSharpLib/Space.cs). `MCount`
-      itself is also read by the AI item below, so leave it in place until
-      that lands.
-- [ ] [EliteSharpLib] Rate-independent motion. Convert the per-tick step
-      sizes: `ApplyShipVelocity`'s `Velocity * 1.5f`
-      ([Space.cs:435](../src/elite/libs/EliteSharpLib/Space.cs)),
-      `SpinUniverseObject`/`RotateXFirst`'s fixed 1/512 and 1/19 rotation
-      steps with `RotX`/`RotZ` decaying by 1 a tick
-      ([Space.cs:409-488](../src/elite/libs/EliteSharpLib/Space.cs)), the
-      player's `IncreaseRoll`/`DecreaseClimb` ±1 — which `PilotController`
-      calls *twice* per tick
-      ([PilotController.cs:179-249](../src/elite/libs/EliteSharpLib/Views/PilotController.cs))
-      — and the starfield's `delta = _ship.Speed`
-      ([Stars.cs](../src/elite/libs/EliteSharpLib/Stars.cs)). The `±127`
-      rotation clamps and `RotateByteLeft` are byte-domain and need an
-      explicit float equivalent, not a cast.
 - [ ] [EliteSharpLib] Rate-independent AI pacing. `Combat.Tactics` runs a
       ship's tactics one tick in eight, phase-spread across the universe
       slots by `((un ^ _gameState.MCount) & 7) != 0`

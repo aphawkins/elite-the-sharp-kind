@@ -7,6 +7,47 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Elite runs on a clock, 2026-08-26)
+
+- **The housekeeping is paced in seconds.** Elite hung six jobs off its
+  `MCount` counter - the hyperspace countdown, shield regeneration, altitude,
+  cabin temperature, the encounter roll and the docking-computer reminder.
+  The counter is a clock rather than a tally: its jobs are spread across it
+  by residue, and `Space.JumpWarp` re-phases the whole set at once by masking
+  the count to six bits. Give each job a timer of its own and that is gone,
+  so the count survives and `GameClock` decides how often it moves - one step
+  per update at 13.5Hz, and still 13.5 steps a second at any other rate.
+- The reminder moved onto the clock from beside the autopilot, which still
+  steers every update. Where it was, it would have fired on every frame the
+  count happened to sit on a multiple of 128 - once at 13.5Hz, four or five
+  times at sixty.
+- **Motion is a speed rather than a step.** Ship velocity, the small-angle
+  rotation, the spin winding down, the player's roll and pitch, and the
+  starfield delta all scale by `GameClock.Ticks`.
+- **Two byte-domain edges needed real float equivalents.** A spin pegged at
+  the limit does not wind down, and that test was an exact match against 127,
+  which only holds while the rate arrives in whole units; it is against the
+  magnitude now. And the spin decay and `LevelOut` clamp at zero rather than
+  stepping past it - a whole tick could never overshoot, a fraction of one
+  can, and a ship levelling out by jittering either side of centre would be
+  the frame rate showing through.
+- **Float ordering turned out to matter.** `RotateXFirst` divides first and
+  scales second, because a nineteenth is not exactly representable and
+  folding `ticks` into the divisor moves the result even at one tick. The
+  frame check caught that on the intro parade before it could be committed.
+- **The clock hangs off `GameState`**, beside the `MCount` it drives: the
+  count's unspent time and how much of a tick an update is worth are state of
+  the running game like everything else there, and everything needing the
+  clock already had the state.
+- **All five traces and all five frame checks stayed bit-identical.** These
+  were arranged to be no-ops at the game's own rate rather than
+  approximations of it, so the tolerance is still zero. What only shows at
+  another rate is covered directly instead: `GameClockTests` (600 updates at
+  60Hz and 300 at 30Hz each buy exactly 135 steps) and
+  `RateIndependentMotionTests` (two half-ticks roll as far as one whole
+  tick). The reminder has its own test because no trace flies with the
+  autopilot - Commander Jameson has no docking computer to engage.
+
 ### Changed (Elite simulates and composes separately, 2026-08-26)
 
 - **`EliteMain.Update` is now `Simulate` then `Compose`** - everything the
