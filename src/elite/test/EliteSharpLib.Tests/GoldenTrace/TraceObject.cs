@@ -22,4 +22,4 @@ internal readonly record struct TraceObject(
     float RotX,
     float RotZ,
     string Flags,
-    int ExpDelta);
+    float ExpDelta);

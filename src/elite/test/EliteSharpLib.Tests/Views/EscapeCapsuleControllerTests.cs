@@ -55,6 +55,40 @@ public class EscapeCapsuleControllerTests
         Assert.False(controller.BuildModel().IsAlertVisible);
     }
 
+    [Fact]
+    public void TheAbandonedShipStillBlowsUpWhenTheRateIsNotAWholeTick()
+    {
+        // The reason the explosion is a crossing rather than an equality. At
+        // a third of a tick the count steps from just under forty to just
+        // over, never landing on it, and a test for equality would leave the
+        // ship the capsule was launched from to fly on intact.
+        EscapeCapsuleController controller = CreateController(out GameState state, out Universe universe);
+        controller.Reset();
+
+        state.Clock.BeginUpdate(1f / GameClock.StepsPerSecond / 3f);
+        Tick(controller, 3 * 45);
+
+        Assert.Contains(
+            universe.GetAllObjects(),
+            obj => obj.Type == ShipType.CobraMk3 && obj.Flags.HasFlag(ShipProperties.Dead));
+    }
+
+    [Fact]
+    public void TheAlertLapsesAfterTheSameTimeWhateverTheRate()
+    {
+        EscapeCapsuleController controller = CreateController(out GameState state, out _);
+        controller.Reset();
+
+        // Half a tick at a time, so ninety ticks take a hundred and eighty
+        // updates - the same stretch of game time either way.
+        state.Clock.BeginUpdate(1f / GameClock.StepsPerSecond / 2f);
+        Tick(controller, 2 * 89);
+        Assert.True(controller.BuildModel().IsAlertVisible);
+
+        Tick(controller, 2);
+        Assert.False(controller.BuildModel().IsAlertVisible);
+    }
+
     private static void Tick(EscapeCapsuleController controller, int ticks)
     {
         for (int i = 0; i < ticks; i++)
@@ -63,16 +97,24 @@ public class EscapeCapsuleControllerTests
         }
     }
 
-    private static EscapeCapsuleController CreateController()
+    // The sequence times itself in ticks, so a test that wants to run it at
+    // some other rate needs the clock those ticks come from.
+    private static EscapeCapsuleController CreateController(out GameState gameState, out Universe universe)
+        => Build(out gameState, out universe);
+
+    private static EscapeCapsuleController CreateController() => Build(out _, out _);
+
+    private static EscapeCapsuleController Build(out GameState gameState, out Universe outUniverse)
     {
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
-        GameState gameState = new(views, TestMissions.Registry());
+        gameState = new(views, TestMissions.Registry());
         PlayerShip ship = new(gameState);
         Trade trade = new(gameState, ship);
         FakeEliteDraw draw = new();
         RNG rng = new(new FakeRandomSource());
         FakeShipFactory shipFactory = new(draw);
         Universe universe = new(shipFactory, rng);
+        outUniverse = universe;
 
         // The two effects the sequence plays; AudioController looks a sample up
         // whether or not effects are switched on.

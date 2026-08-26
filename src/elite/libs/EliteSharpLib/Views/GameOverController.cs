@@ -20,7 +20,7 @@ namespace EliteSharpLib.Views;
 internal sealed class GameOverController : IScreenController
 {
     // How many ticks the wreckage tumbles before the game restarts.
-    private const int TicksBeforeRestart = 100;
+    private const float TicksBeforeRestart = 100;
 
     private readonly AudioController _audio;
     private readonly Combat _combat;
@@ -33,7 +33,7 @@ internal sealed class GameOverController : IScreenController
     private readonly RNG _rng;
     private readonly IView<GameOverModel> _view;
 
-    private int _tick;
+    private float _tick;
 
     internal GameOverController(
         GameState gameState,
@@ -114,6 +114,6 @@ internal sealed class GameOverController : IScreenController
         }
 
         _stars.RearStarfield();
-        _tick++;
+        _tick += _gameState.Clock.Ticks;
     }
 }

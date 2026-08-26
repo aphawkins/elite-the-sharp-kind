@@ -21,7 +21,7 @@ internal interface IShip : IObject
 
     public int EnergyMax { get; set; }
 
-    public int ExpDelta { get; set; }
+    public float ExpDelta { get; set; }
 
     public int LaserFront { get; set; }
 

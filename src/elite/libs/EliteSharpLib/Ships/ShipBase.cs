@@ -94,7 +94,7 @@ internal class ShipBase : IShip
 
     public int EnergyMax { get; set; }
 
-    public int ExpDelta { get; set; }
+    public float ExpDelta { get; set; }
 
     public ShipProperties Flags { get; set; } = ShipProperties.None;
 

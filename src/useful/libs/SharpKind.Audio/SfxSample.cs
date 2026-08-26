@@ -5,7 +5,7 @@ namespace SharpKind.Audio;
 public sealed class SfxSample(int runtime, float volume = 1f, float pan = 0f)
 {
     private readonly int _runtime = runtime;
-    private int _timeleft;
+    private float _timeleft;
 
     /// <summary>
     /// Gets the sample's static playback volume (0 silent - 1 full), used
@@ -21,11 +21,20 @@ public sealed class SfxSample(int runtime, float volume = 1f, float pan = 0f)
 
     internal bool HasTimeRemaining => _timeleft > 0;
 
-    internal void ReduceTimeRemaining()
+    /// <summary>
+    /// Ages the sample by <paramref name="ticks"/> of its caller's clock.
+    /// </summary>
+    /// <remarks>
+    /// A runtime is a whole number of the caller's ticks, and a caller that
+    /// updates once per tick passes 1 and gets exactly what it always got.
+    /// One updating faster passes a fraction, so the sample lasts the same
+    /// length of time rather than the same number of updates.
+    /// </remarks>
+    internal void ReduceTimeRemaining(float ticks)
     {
         if (_timeleft > 0)
         {
-            _timeleft--;
+            _timeleft = MathF.Max(_timeleft - ticks, 0);
         }
     }
 

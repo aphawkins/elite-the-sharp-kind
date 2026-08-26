@@ -42,7 +42,7 @@ internal sealed class HyperspaceView : IScreenController
 
     public void Update()
     {
-        _breakPattern.Update();
+        _breakPattern.Update(_gameState.Clock.Ticks);
 
         if (_breakPattern.IsComplete)
         {

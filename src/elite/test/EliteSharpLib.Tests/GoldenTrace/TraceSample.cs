@@ -20,7 +20,7 @@ internal sealed record TraceSample(
     bool IsDocked,
     bool IsGameOver,
     int MCount,
-    int MessageCount,
+    float MessageCount,
     float LaserTemp,
     float Roll,
     float Climb,

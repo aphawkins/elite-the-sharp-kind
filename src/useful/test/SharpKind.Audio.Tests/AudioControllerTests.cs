@@ -190,4 +190,32 @@ public class AudioControllerTests
         // Assert
         Assert.Equal(1, sound.PlayMusicCount);
     }
+
+    [Fact]
+    public void AFractionOfATickAgesASampleByThatFraction()
+    {
+        // Four quarter-ticks make a tick, so a two-tick sample is still
+        // running after seven of them and lapses on the eighth.
+        //
+        // The no-argument overload - the one Stunt Car Racer calls, which
+        // must keep counting lifetimes in whole updates - is covered by
+        // PlayEffectReplaysOnceTheCooldownHasElapsed above; that it still
+        // passes unchanged is what says SCR's pacing was left alone.
+        FakeSound sound = new();
+        AudioController audio = new(sound, new Dictionary<string, SfxSample> { { "Smash", new(2) } }, new());
+
+        audio.PlayEffect("Smash");
+        for (int update = 0; update < 7; update++)
+        {
+            audio.UpdateSound(0.25f);
+        }
+
+        audio.PlayEffect("Smash");
+        Assert.Equal(1, sound.PlayCount("Smash"));
+
+        audio.UpdateSound(0.25f);
+        audio.PlayEffect("Smash");
+
+        Assert.Equal(2, sound.PlayCount("Smash"));
+    }
 }

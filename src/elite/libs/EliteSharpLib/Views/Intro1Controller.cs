@@ -99,8 +99,12 @@ internal sealed class Intro1Controller : IScreenController
     public void Update()
     {
         _ship.Roll = 1;
-        _universe.FirstShip!.Location =
-            new(_universe.FirstShip.Location.X, _universe.FirstShip.Location.Y, _universe.FirstShip.Location.Z - 100, 0);
+        float approach = 100 * _gameState.Clock.Ticks;
+        _universe.FirstShip!.Location = new(
+            _universe.FirstShip.Location.X,
+            _universe.FirstShip.Location.Y,
+            _universe.FirstShip.Location.Z - approach,
+            0);
 
         if (_universe.FirstShip.Location.Z < 384)
         {

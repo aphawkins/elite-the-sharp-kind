@@ -12,7 +12,7 @@ internal sealed class BreakPattern
     private const int MaxRings = 20;
     private readonly IEliteDraw _draw;
     private readonly FastColor _color;
-    private int _breakPatternCount;
+    private float _breakPatternCount;
 
     internal BreakPattern(IEliteDraw draw)
     {
@@ -26,7 +26,7 @@ internal sealed class BreakPattern
     {
         // Draw a break pattern (for launching, docking and hyperspacing).
         // Just draw a very simple one for the moment.
-        for (int i = 0; i < _breakPatternCount; i++)
+        for (int i = 0; i < (int)_breakPatternCount; i++)
         {
             _draw.Graphics.DrawCircle(_draw.Layout.ViewportCentre, 30 + (i * _draw.Layout.ViewportCentre.X / MaxRings), _color);
         }
@@ -39,9 +39,9 @@ internal sealed class BreakPattern
         IsComplete = false;
     }
 
-    internal void Update()
+    internal void Update(float ticks)
     {
-        _breakPatternCount++;
+        _breakPatternCount += ticks;
 
         if (_breakPatternCount >= MaxRings)
         {

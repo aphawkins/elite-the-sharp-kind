@@ -22,7 +22,7 @@ internal static class TraceFile
 
     // Bumped whenever the record shape changes, so a stale baseline fails
     // with a clear message instead of a confusing field mismatch.
-    private const int SchemaVersion = 2;
+    private const int SchemaVersion = 3;
 
     private const string NumberFormat = "0.0000";
 
@@ -52,7 +52,7 @@ internal static class TraceFile
                     Bit(sample.IsDocked),
                     Bit(sample.IsGameOver),
                     Int(sample.MCount),
-                    Int(sample.MessageCount),
+                    Num(sample.MessageCount),
                     Num(sample.LaserTemp),
                     Num(sample.Roll),
                     Num(sample.Climb),
@@ -80,7 +80,7 @@ internal static class TraceFile
                         Num(obj.RotX),
                         Num(obj.RotZ),
                         Flags(obj.Flags),
-                        Int(obj.ExpDelta),
+                        Num(obj.ExpDelta),
                     ]);
             }
         }
@@ -136,7 +136,7 @@ internal static class TraceFile
         ReadNum(f[7]),
         ReadNum(f[8]),
         f[9],
-        ReadInt(f[10]));
+        ReadNum(f[10]));
 
     private static TraceSample ReadSample(string[] f, IReadOnlyList<TraceObject> objects) => new(
         ReadInt(f[1]),
@@ -144,7 +144,7 @@ internal static class TraceFile
         f[3] == "1",
         f[4] == "1",
         ReadInt(f[5]),
-        ReadInt(f[6]),
+        ReadNum(f[6]),
         ReadNum(f[7]),
         ReadNum(f[8]),
         ReadNum(f[9]),

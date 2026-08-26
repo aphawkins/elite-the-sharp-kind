@@ -130,7 +130,7 @@ internal sealed class GameState
 
     internal int MCount { get; set; }
 
-    internal int MessageCount { get; set; }
+    internal float MessageCount { get; set; }
 
     internal string MessageString { get; set; } = string.Empty;
 

@@ -36,7 +36,7 @@ internal sealed partial class Combat
     private readonly TacticsSchedule _tactics = new();
     private readonly ILogger<Combat> _logger;
     private bool _isEcmOurs;
-    private int _laserCounter;
+    private float _laserCounter;
     private int _laserStrength;
     private LaserType _laserType;
 
@@ -117,20 +117,6 @@ internal sealed partial class Combat
         MakeAngry(obj);
     }
 
-    internal void CoolLaser()
-    {
-        _laserStrength = 0;
-        _laserType = LaserType.None;
-        _gameState.DrawLasers = false;
-
-        if (_gameState.LaserTemp > GameState.LaserTempMin)
-        {
-            _gameState.LaserTemp = Math.Max(_gameState.LaserTemp - GameState.LaserTempStep, GameState.LaserTempMin);
-        }
-
-        _laserCounter = Math.Clamp(_laserCounter - 2, 0, _laserCounter);
-    }
-
     internal void CreateThargoid()
     {
         IShip thargoid = _shipFactory.CreateShip("Thargoid");
@@ -170,7 +156,7 @@ internal sealed partial class Combat
     {
         if (_gameState.IsDocked ||
             _gameState.DrawLasers ||
-            _laserCounter != 0 ||
+            _laserCounter > 0 ||
             _gameState.LaserTemp >= GameState.LaserTempOverheated)
         {
             return false;

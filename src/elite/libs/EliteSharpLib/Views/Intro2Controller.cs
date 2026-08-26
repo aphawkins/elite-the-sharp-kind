@@ -37,7 +37,7 @@ internal sealed class Intro2Controller : IScreenController
     private int _direction;
     private Matrix4x4 _rotmat;
     private int _shipNo;
-    private int _showTime;
+    private float _showTime;
 
     internal Intro2Controller(
         GameState gameState,
@@ -114,7 +114,7 @@ internal sealed class Intro2Controller : IScreenController
 
     public void Update()
     {
-        _showTime++;
+        _showTime += _gameState.Clock.Ticks;
 
         if (_showTime >= 140 && _direction < 0)
         {
@@ -123,8 +123,11 @@ internal sealed class Intro2Controller : IScreenController
 
         if (_universe.FirstShip != null)
         {
-            _universe.FirstShip.Location =
-                new(_universe.FirstShip.Location.X, _universe.FirstShip.Location.Y, _universe.FirstShip.Location.Z + _direction, 0);
+            _universe.FirstShip.Location = new(
+                _universe.FirstShip.Location.X,
+                _universe.FirstShip.Location.Y,
+                _universe.FirstShip.Location.Z + (_direction * _gameState.Clock.Ticks),
+                0);
 
             if (_universe.FirstShip.Location.Z < _parade[_shipNo].MinDistance)
             {

@@ -189,7 +189,7 @@ public sealed class EliteMain : IGame, IGameApp
     {
         InitialiseGame();
         State.Clock.BeginUpdate(SecondsPerUpdate);
-        _audio.UpdateSound();
+        _audio.UpdateSound(State.Clock.Ticks);
         _ship.IsRolling = false;
         _ship.IsClimbing = false;
         HandleViewKeys();
@@ -211,7 +211,7 @@ public sealed class EliteMain : IGame, IGameApp
 
         if (State.MessageCount > 0)
         {
-            State.MessageCount--;
+            State.MessageCount = MathF.Max(State.MessageCount - State.Clock.Ticks, 0);
         }
 
         _ship.LevelOut();

@@ -52,13 +52,13 @@ public class DockingComputerReminderTests
         const string Reminder = "Docking Computers On";
 
         int count = 0;
-        int previousDwell = harness.Game.State.MessageCount;
+        float previousDwell = harness.Game.State.MessageCount;
 
         for (int tick = 0; tick < ticks; tick++)
         {
             harness.Run(1, []);
 
-            int dwell = harness.Game.State.MessageCount;
+            float dwell = harness.Game.State.MessageCount;
             if (harness.Game.State.MessageString == Reminder && dwell > previousDwell)
             {
                 count++;

@@ -90,11 +90,25 @@ public sealed class AudioController
     // is already playing at the moment music is switched off.
     public void StopMusic() => _sound.StopMusic();
 
-    public void UpdateSound()
+    /// <summary>
+    /// Ages every playing sample by one whole tick of the caller's clock.
+    /// </summary>
+    /// <remarks>
+    /// This overload is what keeps Stunt Car Racer's pacing exactly as it
+    /// was: it counts sample lifetimes in its own updates and says nothing
+    /// about time, so it calls this one and nothing changes.
+    /// </remarks>
+    public void UpdateSound() => UpdateSound(1f);
+
+    /// <summary>
+    /// Ages every playing sample by a fraction of a tick, for a caller that
+    /// updates faster than the rate its runtimes were written against.
+    /// </summary>
+    public void UpdateSound(float ticks)
     {
         foreach (SfxSample sample in _samples)
         {
-            sample.ReduceTimeRemaining();
+            sample.ReduceTimeRemaining(ticks);
         }
     }
 }

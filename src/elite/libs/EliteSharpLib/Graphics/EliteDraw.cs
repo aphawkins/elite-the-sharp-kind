@@ -302,7 +302,7 @@ internal sealed class EliteDraw : IEliteDraw
     // of white that vanishes. Gated the same way shading is: an indexed
     // rendition can show no colour its palette does not name, so a blend
     // there quantises straight back to white and buys nothing.
-    private FastColor ParticleColour(int expDelta)
+    private FastColor ParticleColour(float expDelta)
         => BlendsShades
             ? new((byte)(255 - (expDelta * 200 / 256)), _colorWhite.R, _colorWhite.G, _colorWhite.B)
             : _colorWhite;

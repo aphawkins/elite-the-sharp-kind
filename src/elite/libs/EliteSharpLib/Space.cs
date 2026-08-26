@@ -658,7 +658,7 @@ internal sealed class Space
             return;
         }
 
-        ship.ExpDelta += ExplosionStep;
+        ship.ExpDelta += ExplosionStep * _gameState.Clock.Ticks;
     }
 
     /// <summary>

@@ -25,8 +25,8 @@ internal sealed class EscapeCapsuleController : IScreenController
 
     // Ticks the capsule spends watching the ship go, of which the explosion
     // is at tick 40; after that the autopilot takes over.
-    private const int LaunchTicks = 90;
-    private const int ExplosionTick = 40;
+    private const float LaunchTicks = 90;
+    private const float ExplosionTick = 40;
 
     private readonly AudioController _audio;
     private readonly GameState _gameState;
@@ -38,7 +38,7 @@ internal sealed class EscapeCapsuleController : IScreenController
     private readonly Universe _universe;
     private readonly ILogger<EscapeCapsuleController> _logger;
     private readonly IView<EscapeCapsuleModel> _view;
-    private int _tick;
+    private float _tick;
     private IShip _newShip;
 
     internal EscapeCapsuleController(
@@ -94,15 +94,12 @@ internal sealed class EscapeCapsuleController : IScreenController
     {
         if (_tick < LaunchTicks)
         {
-            if (_tick == ExplosionTick)
-            {
-                _newShip.Flags |= ShipProperties.Dead;
-                _audio.PlayEffect(nameof(SoundEffect.Explode));
-            }
+            float ticks = _gameState.Clock.Ticks;
 
+            BlowUpTheAbandonedShip(ticks);
             _stars.FrontStarfield();
-            _newShip.Location = new(0, 0, _newShip.Location.Z + 2, 0);
-            _tick++;
+            _newShip.Location = new(0, 0, _newShip.Location.Z + (2 * ticks), 0);
+            _tick += ticks;
         }
         else if (!_universe.IsStationPresent)
         {
@@ -134,4 +131,17 @@ internal sealed class EscapeCapsuleController : IScreenController
 
     // Exposed for tests: the alert is only up while the ship is still going.
     internal EscapeCapsuleModel BuildModel() => new(Alert, _tick < LaunchTicks);
+
+    // Crossed, not equalled. A whole tick lands on the explosion moment
+    // exactly; a fraction of one steps from just under it to just over and
+    // would sail past a test for equality, leaving the ship the capsule was
+    // launched from to fly on intact.
+    private void BlowUpTheAbandonedShip(float ticks)
+    {
+        if (_tick < ExplosionTick && _tick + ticks >= ExplosionTick)
+        {
+            _newShip.Flags |= ShipProperties.Dead;
+            _audio.PlayEffect(nameof(SoundEffect.Explode));
+        }
+    }
 }

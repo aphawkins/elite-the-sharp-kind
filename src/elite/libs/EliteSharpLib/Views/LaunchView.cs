@@ -58,7 +58,7 @@ internal sealed class LaunchView : IScreenController
 
     public void Update()
     {
-        _breakPattern.Update();
+        _breakPattern.Update(_gameState.Clock.Ticks);
 
         if (_breakPattern.IsComplete)
         {
