@@ -204,11 +204,6 @@ internal sealed class EliteDraw : IEliteDraw
     /// </summary>
     public void DrawObject(IObject obj)
     {
-        if (!_gameState.ShowsUniverse)
-        {
-            return;
-        }
-
         if (obj.Flags.HasFlag(ShipProperties.Explosion))
         {
             DrawExplosion((IShip)obj);

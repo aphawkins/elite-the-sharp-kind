@@ -26,6 +26,9 @@ public class FrameRateIndependenceTests
     // Long enough to launch, fly, and take a few hundred housekeeping steps.
     private const int SlowUpdates = 300;
 
+    // The update the accelerate key goes down on, at the game's own rate.
+    private const int LaunchUpdates = 40;
+
     [Fact]
     public void TheHousekeepingTakesTheSameStepsInTheSameTime()
     {
@@ -83,6 +86,22 @@ public class FrameRateIndependenceTests
         using HeadlessGameHarness fast = Launch(FastRate, (int)(SlowUpdates * Ratio));
 
         Assert.Equal(ShipTypes(slow), ShipTypes(fast));
+    }
+
+    [Fact]
+    public void TheThrottleRampsAtTheSameSpeed()
+    {
+        // Sampled part way up the ramp, on purpose. The tests above compare
+        // the end of a long flight, where both runs have been at maximum
+        // speed for most of it and a throttle that winds up four times too
+        // fast is invisible. This one stops while the throttle is still
+        // moving, which is where that bug lived.
+        using HeadlessGameHarness slow = Launch(GameClock.StepsPerSecond, LaunchUpdates + 13);
+        using HeadlessGameHarness fast = Launch(FastRate, (int)((LaunchUpdates + 13) * Ratio));
+
+        float slowSpeed = slow.Resolve<PlayerShip>().Speed;
+        Assert.InRange(slowSpeed, 13f, slow.Resolve<PlayerShip>().MaxSpeed - 1);
+        Assert.Equal(slowSpeed, fast.Resolve<PlayerShip>().Speed, 1.5f);
     }
 
     private static string ShipTypes(HeadlessGameHarness harness)

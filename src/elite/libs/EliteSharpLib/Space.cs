@@ -63,6 +63,10 @@ internal sealed class Space
     private readonly Trade _trade;
     private readonly Universe _universe;
     private readonly RNG _rng;
+
+    /// <inheritdoc cref="MoveUniverse"/>
+    private bool _universeVisible;
+
     private GalaxySeed _destinationPlanet = new();
     private float _hyperDistance;
 
@@ -425,6 +429,15 @@ internal sealed class Space
     internal void MoveUniverse(float ticks)
     {
         _toDraw.Clear();
+
+        // Asked once, at the top, and remembered for the compose pass. The
+        // screen can change part way through a tick - docking and hyperspace
+        // both do it - and the frame being built belongs to the screen the
+        // tick started on. Asked again at compose time it would answer for
+        // the new screen and blank the whole view for a frame; asked per
+        // object mid-loop, as it used to be, it drew the ones before the
+        // change and dropped the ones after.
+        _universeVisible = _gameState.ShowsUniverse;
         int i = -1;
 
         foreach (IObject obj in _universe.GetAllObjects())
@@ -441,6 +454,11 @@ internal sealed class Space
     /// </summary>
     internal void DrawUniverse()
     {
+        if (!_universeVisible)
+        {
+            return;
+        }
+
         _draw.RenderStart();
 
         foreach (IObject obj in _toDraw)
@@ -636,7 +654,7 @@ internal sealed class Space
     /// </remarks>
     private void AgeExplosion(IShip ship)
     {
-        if (!_gameState.ShowsUniverse)
+        if (!_universeVisible)
         {
             return;
         }

@@ -236,7 +236,8 @@ internal sealed class PlayerShip
     /// <inheritdoc cref="DecreaseClimb"/>
     internal void DecreaseRoll() => Roll = Math.Clamp(Roll - _clock.Ticks, -MaxRoll, MaxRoll);
 
-    internal void DecreaseSpeed() => Speed = Math.Clamp(Speed - 1, 0, MaxSpeed);
+    /// <inheritdoc cref="DecreaseClimb"/>
+    internal void DecreaseSpeed() => Speed = Math.Clamp(Speed - _clock.Ticks, 0, MaxSpeed);
 
     /// <inheritdoc cref="DecreaseClimb"/>
     internal void IncreaseClimb() => Climb = Math.Clamp(Climb + _clock.Ticks, -MaxClimb, MaxClimb);
@@ -244,7 +245,8 @@ internal sealed class PlayerShip
     /// <inheritdoc cref="DecreaseClimb"/>
     internal void IncreaseRoll() => Roll = Math.Clamp(Roll + _clock.Ticks, -MaxRoll, MaxRoll);
 
-    internal void IncreaseSpeed() => Speed = Math.Clamp(Speed + 1, 0, MaxSpeed);
+    /// <inheritdoc cref="DecreaseClimb"/>
+    internal void IncreaseSpeed() => Speed = Math.Clamp(Speed + _clock.Ticks, 0, MaxSpeed);
 
     internal bool IsEnergyLow() => Energy < LowEnergy;
 

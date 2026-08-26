@@ -22,6 +22,11 @@ namespace EliteSharpLib.Views;
 /// </summary>
 internal sealed class PilotController : IScreenController
 {
+    /// <summary>
+    /// How long a laser bolt stays on screen once fired, in the game's ticks.
+    /// </summary>
+    private const float LaserVisibleTicks = 2;
+
     private readonly GameState _gameState;
     private readonly IKeyboard _keyboard;
     private readonly IGamepad _gamepad;
@@ -34,7 +39,10 @@ internal sealed class PilotController : IScreenController
     private readonly IEliteDraw _draw;
     private readonly IView<PilotModel> _view;
 
-    private int _drawLaserFrames;
+    // How much longer the laser bolt is drawn for, in the game's own ticks
+    // rather than in updates - or the beam would be a flicker a third as
+    // long at sixty frames a second as at thirteen and a half.
+    private float _drawLaserTicks;
 
     internal PilotController(
         GameState gameState,
@@ -82,7 +90,9 @@ internal sealed class PilotController : IScreenController
 
     public void Update()
     {
-        _drawLaserFrames = _gameState.DrawLasers ? 2 : Math.Clamp(_drawLaserFrames - 1, 0, _drawLaserFrames);
+        _drawLaserTicks = _gameState.DrawLasers
+            ? LaserVisibleTicks
+            : MathF.Max(_drawLaserTicks - _gameState.Clock.Ticks, 0);
 
         switch (_direction)
         {
@@ -131,7 +141,7 @@ internal sealed class PilotController : IScreenController
             viewName,
             hyperspaceStatus,
             laserType,
-            _drawLaserFrames > 0,
+            _drawLaserTicks > 0,
             laserAim,
             _gameState.Config.Engine.Graphics.FillMode == FillMode.Wireframe);
     }

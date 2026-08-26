@@ -1190,29 +1190,36 @@ internal sealed partial class Combat
         return true;
     }
 
+    // A missile is the one thing that thinks on every update rather than one
+    // count in eight - the original steers them continuously - so what it
+    // asks for has to be scaled. Left as a whole step it would gain speed at
+    // the update rate: four and a half times too fast at sixty frames a
+    // second, and far harder to outrun than the game was tuned for.
     private void SetMissileAcceleration(IShip missile, float direction)
     {
         const float cnt2 = 0.223f;
 
+        float ticks = _gameState.Clock.Ticks;
+
         if (direction <= -0.167)
         {
-            missile.Acceleration = -2;
+            missile.Acceleration = -2 * ticks;
             return;
         }
 
         if (direction >= cnt2)
         {
-            missile.Acceleration = 3;
+            missile.Acceleration = 3 * ticks;
             return;
         }
 
         if (missile.Velocity < 6)
         {
-            missile.Acceleration = 3;
+            missile.Acceleration = 3 * ticks;
         }
         else if (_rng.Random(256) >= 200)
         {
-            missile.Acceleration = -2;
+            missile.Acceleration = -2 * ticks;
         }
     }
 }

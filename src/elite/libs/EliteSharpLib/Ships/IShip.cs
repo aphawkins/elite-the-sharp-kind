@@ -11,7 +11,7 @@ internal interface IShip : IObject
 {
     public ThreeDModel Model { get; set; }
 
-    public int Acceleration { get; set; }
+    public float Acceleration { get; set; }
 
     public float Bounty { get; set; }
 

@@ -86,6 +86,33 @@ public class PilotControllerTests
         Assert.False(controller.BuildModel().IsFiring);
     }
 
+    [Fact]
+    public void TheLaserBoltStaysVisibleForTheSameLengthOfTime()
+    {
+        // The bolt is drawn for two of the game's ticks. Counted in updates
+        // instead it was two updates, which at sixty frames a second is a
+        // 33ms flicker where it should be about 150ms.
+        PilotController controller = CreateController(
+            PilotDirection.Front, out _, out _, out GameState state);
+
+        state.Clock.BeginUpdate(1f / GameClock.StepsPerSecond / 4f);
+        state.DrawLasers = true;
+        controller.Update();
+        state.DrawLasers = false;
+
+        // Two ticks is eight quarter-tick updates; the first of them was the
+        // one that lit it, so seven more keep it lit and the eighth does not.
+        for (int update = 0; update < 7; update++)
+        {
+            controller.Update();
+            Assert.True(controller.BuildModel().IsFiring, $"the bolt went out after {update + 1} updates");
+        }
+
+        controller.Update();
+
+        Assert.False(controller.BuildModel().IsFiring);
+    }
+
     private static PilotController CreateController(PilotDirection direction, out PlayerShip ship)
         => CreateController(direction, out ship, out _);
 
@@ -105,7 +132,7 @@ public class PilotControllerTests
         Universe universe = new(shipFactory, rng);
         AudioController audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());
         Stars stars = CreateStars(gameState, draw, ship);
-        Pilot pilot = new(draw, audio, universe, ship);
+        Pilot pilot = new(draw, audio, universe, ship, gameState);
         MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
 
         Combat combat = new(

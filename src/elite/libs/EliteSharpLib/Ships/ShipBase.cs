@@ -84,7 +84,7 @@ internal class ShipBase : IShip
         Model = other.Model;
     }
 
-    public int Acceleration { get; set; }
+    public float Acceleration { get; set; }
 
     public float Bounty { get; set; }
 

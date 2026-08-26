@@ -20,10 +20,12 @@ internal sealed class Pilot
     private readonly IEliteDraw _draw;
     private readonly AudioController _audio;
     private readonly PlayerShip _ship;
+    private readonly GameState _gameState;
     private readonly Universe _universe;
 
-    internal Pilot(IEliteDraw draw, AudioController audio, Universe universe, PlayerShip ship)
+    internal Pilot(IEliteDraw draw, AudioController audio, Universe universe, PlayerShip ship, GameState gameState)
     {
+        _gameState = gameState;
         _draw = draw;
         _audio = audio;
         _universe = universe;
@@ -241,7 +243,7 @@ internal sealed class Pilot
 
         if (ship.Acceleration > 0)
         {
-            _ship.Speed++;
+            _ship.Speed += _gameState.Clock.Ticks;
             if (_ship.Speed > 22)
             {
                 _ship.Speed = 22;
@@ -250,7 +252,7 @@ internal sealed class Pilot
 
         if (ship.Acceleration < 0)
         {
-            _ship.Speed--;
+            _ship.Speed -= _gameState.Clock.Ticks;
             if (_ship.Speed < 1)
             {
                 _ship.Speed = 1;

@@ -622,7 +622,7 @@ public class SpaceTests
         FakeShipFactory shipFactory = new(draw);
         universe = new(shipFactory, rng);
         AudioController audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());
-        Pilot pilot = new(draw, audio, universe, ship);
+        Pilot pilot = new(draw, audio, universe, ship, gameState);
         MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
 
         combat = new Combat(

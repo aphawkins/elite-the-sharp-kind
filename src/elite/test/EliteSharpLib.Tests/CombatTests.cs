@@ -275,6 +275,35 @@ public class CombatTests
         Assert.Equal(wholeDrain, startingEnergy - fast.Energy, wholeDrain * 0.001f);
     }
 
+    [Fact]
+    public void AMissileAsksForAccelerationInProportionToTheTick()
+    {
+        // A missile is the one thing that steers on every update rather than
+        // one count in eight, so what it asks for has to be a rate. Left as a
+        // whole step it gained speed at the update rate and became four and a
+        // half times harder to outrun at sixty frames a second.
+        Combat combat = CreateCombat(out Universe universe, out _, out _, out GameState state, randomValue: 0);
+        FakeShip whole = LaunchedMissile(universe);
+        FakeShip quarter = LaunchedMissile(universe);
+
+        state.Clock.BeginUpdate(1f / GameClock.StepsPerSecond);
+        combat.Tactics(whole, 0);
+
+        state.Clock.BeginUpdate(1f / GameClock.StepsPerSecond / 4f);
+        combat.Tactics(quarter, 1);
+
+        Assert.NotEqual(0f, whole.Acceleration);
+        Assert.Equal(whole.Acceleration / 4f, quarter.Acceleration, 0.001f);
+    }
+
+    private static FakeShip LaunchedMissile(Universe universe)
+    {
+        FakeShip missile = new(new FakeEliteDraw()) { Type = ShipType.Missile };
+        missile.Flags |= ShipProperties.Angry;
+        universe.AddNewShip(missile, new(0, 0, 500, 0), Matrix4x4.Identity, 0, 0);
+        return missile;
+    }
+
     private static void InvokeCreateLoneWolf(Combat combat)
     {
         MethodInfo method = typeof(Combat).GetMethod("CreateLoneWolf", BindingFlags.Instance | BindingFlags.NonPublic)
@@ -322,7 +351,7 @@ public class CombatTests
         FakeShipFactory shipFactory = new(draw);
         universe = new(shipFactory, rng);
         AudioController audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());
-        Pilot pilot = new(draw, audio, universe, ship);
+        Pilot pilot = new(draw, audio, universe, ship, gameState);
 
         MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
 

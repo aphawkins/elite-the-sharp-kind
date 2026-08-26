@@ -196,7 +196,8 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<AudioController>(),
             sp.GetRequiredService<Universe>(),
-            sp.GetRequiredService<PlayerShip>()));
+            sp.GetRequiredService<PlayerShip>(),
+            sp.GetRequiredService<GameState>()));
         services.AddSingleton(sp => new Combat(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<AudioController>(),
