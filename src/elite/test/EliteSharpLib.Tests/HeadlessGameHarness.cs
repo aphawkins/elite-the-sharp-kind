@@ -35,7 +35,8 @@ internal sealed class HeadlessGameHarness : HeadlessGameHarnessBase<GameStateSum
         int width = 512,
         int height = 512,
         int? randomSeed = null,
-        float updatesPerSecond = GameClock.StepsPerSecond)
+        float updatesPerSecond = GameClock.StepsPerSecond,
+        int? renderSeed = null)
         : base(width, height, TestAssets.Locator())
     {
         FakeAbstraction abstraction = new(Graphics, new(width, height));
@@ -61,6 +62,17 @@ internal sealed class HeadlessGameHarness : HeadlessGameHarnessBase<GameStateSum
         if (randomSeed is int seed)
         {
             services.AddSingleton(new Random(seed));
+        }
+
+        // The drawing's stream is left alone by default, which is what makes
+        // the trace reproducibility test mean something: if drawing could
+        // ever reach the simulation again, an unseeded render stream would
+        // make the traces differ run to run rather than let the coupling
+        // pass unnoticed. A caller that compares *pixels* needs it fixed,
+        // because the starfield is scattered from it.
+        if (renderSeed is int render)
+        {
+            services.AddSingleton(new RenderRandom(new Random(render)));
         }
 
         _provider = services.BuildServiceProvider();

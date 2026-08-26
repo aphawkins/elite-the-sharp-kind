@@ -70,6 +70,26 @@ public class FrameRateIndependenceTests
         Assert.Equal(slowDistance, fastDistance, slowDistance * 0.02f);
     }
 
+    [Fact]
+    public void BothRatesMeetTheSameShips()
+    {
+        // The strongest claim of the lot, and only true since the starfield
+        // stopped drawing from the game's random stream. Encounters are
+        // rolled on the housekeeping clock, so the same seconds roll the same
+        // dice - but only if nothing else has been drawing from the stream
+        // once per update in between. The starfield was, and this is what
+        // says it no longer is.
+        using HeadlessGameHarness slow = Launch(GameClock.StepsPerSecond, SlowUpdates);
+        using HeadlessGameHarness fast = Launch(FastRate, (int)(SlowUpdates * Ratio));
+
+        Assert.Equal(ShipTypes(slow), ShipTypes(fast));
+    }
+
+    private static string ShipTypes(HeadlessGameHarness harness)
+        => string.Join(
+            ", ",
+            harness.Resolve<Universe>().GetAllObjects().Select(o => o.Type.ToString()).Order());
+
     // Runs the game to <paramref name="updates"/> at the given rate, with the
     // key script stretched so each press lands at the same moment in time
     // rather than on the same update number.

@@ -70,7 +70,7 @@ internal static class SettingsControllerFixture
             trade,
             ship,
             new PlanetController(gameState),
-            new Stars(gameState, draw, ship, new SixteenBitRendition().CreateStarfieldRenderer(draw), rng),
+            new Stars(gameState, draw, ship, new SixteenBitRendition().CreateStarfieldRenderer(draw)),
             universe,
             draw,
             new SixteenBitRendition(),

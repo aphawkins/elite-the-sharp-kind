@@ -7,6 +7,7 @@ using EliteSharp.Abstractions.Views.Stars;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Views;
+using SharpKind;
 
 namespace EliteSharpLib;
 
@@ -16,7 +17,18 @@ internal sealed class Stars
     private readonly GameState _gameState;
     private readonly PlayerShip _ship;
     private readonly IStarfieldRenderer _renderer;
-    private readonly RNG _rng;
+
+    // The starfield's own entropy, off the draw surface rather than the
+    // game's stream.
+    //
+    // Where a recycled star reappears decides nothing: the stars are
+    // scenery, and no part of the game asks where they are. But taking those
+    // numbers from the game's stream meant the game's *other* rolls depended
+    // on how many updates had gone by, because a star is recycled when it
+    // leaves the view and that is counted per update. The same twenty
+    // seconds at two rates could then meet different ships. This is the
+    // coupling RenderRandom removed from the drawing, one layer in.
+    private readonly IRandomSource _rng;
 
     // What this frame is showing, refilled by each starfield pass and handed
     // to the rendition to draw. Which stars go in is the game's decision; how
@@ -25,13 +37,13 @@ internal sealed class Stars
 
     private Vector4[] _stars = [];
 
-    internal Stars(GameState gameState, IEliteDraw draw, PlayerShip ship, IStarfieldRenderer renderer, RNG rng)
+    internal Stars(GameState gameState, IEliteDraw draw, PlayerShip ship, IStarfieldRenderer renderer)
     {
+        _rng = draw.Jitter;
         _gameState = gameState;
         _ship = ship;
         _draw = draw;
         _renderer = renderer;
-        _rng = rng;
     }
 
     internal bool WarpStars { get; set; }

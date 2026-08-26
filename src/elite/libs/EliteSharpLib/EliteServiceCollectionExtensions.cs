@@ -182,8 +182,7 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<PlayerShip>(),
-            sp.GetRequiredService<RenditionRegistry>().Starfield,
-            sp.GetRequiredService<RNG>()));
+            sp.GetRequiredService<RenditionRegistry>().Starfield));
         services.AddSingleton(sp =>
         {
             SoundConfigSettings config = sp.GetRequiredService<GameState>().Config.Engine.Sound;

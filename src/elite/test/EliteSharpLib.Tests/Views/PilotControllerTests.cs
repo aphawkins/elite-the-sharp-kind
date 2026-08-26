@@ -104,7 +104,7 @@ public class PilotControllerTests
         FakeShipFactory shipFactory = new(draw);
         Universe universe = new(shipFactory, rng);
         AudioController audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());
-        Stars stars = CreateStars(gameState, draw, ship, rng);
+        Stars stars = CreateStars(gameState, draw, ship);
         Pilot pilot = new(draw, audio, universe, ship);
         MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
 
@@ -165,8 +165,8 @@ public class PilotControllerTests
     // Kept out of CreateController, which is already at CA1506's coupling
     // limit: the starfield renderer adds two more types to whichever method
     // names it.
-    private static Stars CreateStars(GameState gameState, FakeEliteDraw draw, PlayerShip ship, RNG rng)
-        => new(gameState, draw, ship, s_rendition.CreateStarfieldRenderer(draw), rng);
+    private static Stars CreateStars(GameState gameState, FakeEliteDraw draw, PlayerShip ship)
+        => new(gameState, draw, ship, s_rendition.CreateStarfieldRenderer(draw));
 
     private sealed class FakePilotView : IView<PilotModel>
     {

@@ -8,7 +8,6 @@ using EliteSharpLib.Ships;
 using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Views;
 using SharpKind.Abstraction;
-using SharpKind.Fakes;
 using SharpKind.Fakes.Input;
 
 namespace EliteSharpLib.Tests;
@@ -56,12 +55,11 @@ public class StarsTests
     {
         FakeEliteDraw draw = new();
         renderer = new(normalSpaceStarCount, witchspaceStarCount);
-        RNG rng = new(new FakeRandomSource());
 
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
         GameState gameState = new(views, TestMissions.Registry());
         PlayerShip ship = new(gameState);
-        return new(gameState, draw, ship, renderer, rng);
+        return new(gameState, draw, ship, renderer);
     }
 
     private sealed class FakeStarfieldRenderer(int normalSpaceStarCount, int witchspaceStarCount) : IStarfieldRenderer

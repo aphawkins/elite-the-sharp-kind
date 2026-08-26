@@ -124,7 +124,7 @@ public class EscapeCapsuleControllerTests
             { nameof(SoundEffect.Explode), new(23) },
         };
         AudioController audio = new(new FakeSound(), sfx, new());
-        Stars stars = new(gameState, draw, ship, new SixteenBitRendition().CreateStarfieldRenderer(draw), rng);
+        Stars stars = new(gameState, draw, ship, new SixteenBitRendition().CreateStarfieldRenderer(draw));
         Pilot pilot = new(draw, audio, universe, ship);
 
         return new EscapeCapsuleController(

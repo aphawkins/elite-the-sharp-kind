@@ -22,7 +22,12 @@ internal static class FrameRecorder
         // carries different equipment, and the HUD draws it.
         Environment.SetEnvironmentVariable(SaveFile.DebugCommanderEnvVar, null);
 
-        using HeadlessGameHarness harness = new(randomSeed: scenario.RandomSeed);
+        // Unlike the traces, this one pins the drawing's stream too: the
+        // starfield is scattered from it, and a frame hash cannot be
+        // compared against a committed one if the stars move each run.
+        using HeadlessGameHarness harness = new(
+            randomSeed: scenario.RandomSeed,
+            renderSeed: scenario.RandomSeed);
 
         List<FrameSignature> frames = [];
         int last = scenario.FrameTicks.Count == 0 ? -1 : scenario.FrameTicks.Max();

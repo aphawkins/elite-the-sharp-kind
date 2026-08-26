@@ -638,7 +638,7 @@ public class SpaceTests
             rng,
             missions);
         PlanetController planet = new(gameState);
-        Stars stars = new(gameState, draw, ship, new SixteenBitRendition().CreateStarfieldRenderer(draw), rng);
+        Stars stars = new(gameState, draw, ship, new SixteenBitRendition().CreateStarfieldRenderer(draw));
 
         return new Space(
             gameState,
