@@ -33,20 +33,6 @@ namespace EliteSharpLib;
 
 public sealed class EliteMain : IGame, IGameApp
 {
-    // The rate the game logic ticks at, approximately the speed of Elite
-    // The New Kind. Render runs at the same rate (see Run()): decoupling it
-    // from the tick rate meant most presents just redisplayed an unchanged
-    // frame, and since 60/13.5 isn't a whole number the repeat count varied
-    // frame to frame, producing judder.
-    private const float GameTickRate = 13.5f;
-
-    // What one call to Update is worth in game time. Derived from the rate
-    // the loop is driven at rather than measured: GameLoop is a fixed
-    // timestep, so a tick is worth the same however long it took to compute.
-    // When the game eventually updates at the configured Fps, this is where
-    // that shows up.
-    private const float SecondsPerUpdate = 1f / GameTickRate;
-
     private readonly IAbstraction _abstraction;
     private readonly IGraphics _graphics;
     private readonly IKeyboard _keyboard;
@@ -132,14 +118,23 @@ public sealed class EliteMain : IGame, IGameApp
     // frame.
     internal GameState State { get; }
 
-    // The game composes a new frame only once per tick but presents at
-    // Config.Fps, which is usually higher and rarely a whole multiple of
-    // GameTickRate. That used to mean judder (an uneven number of presents
-    // per tick) and, on Hardware/SDL, flicker (a multi-buffered swap chain
-    // going stale between redraws) - both fixed at the rendering layer
-    // (SDLGraphics now redraws its persistent frame texture on every
-    // present), so this can render at the configured rate directly.
-    public void Run() => GameHost.Run(_abstraction, this, GameTickRate, State.Config.Engine.Graphics.Fps);
+    // What one call to Update is worth in game time. Read rather than fixed:
+    // GameLoop is a fixed timestep, so an update is always worth the same
+    // amount of time, but which amount is now the commander's setting.
+    private float SecondsPerUpdate => 1f / State.Config.Engine.Graphics.Fps;
+
+    // One rate for both halves. The game used to simulate at a fixed 13.5Hz
+    // and present at the configured rate, which meant most presents
+    // redisplayed a frame nothing had changed. It now simulates and composes
+    // at that one rate, because every rate it was written with - the
+    // housekeeping, the motion, the animations - is expressed per second
+    // rather than per update, so the game plays the same however often it is
+    // asked to.
+    public void Run()
+    {
+        float fps = State.Config.Engine.Graphics.Fps;
+        GameHost.Run(_abstraction, this, fps, fps);
+    }
 
     // One fixed-rate game tick: move the game on, paint what it now looks
     // like, then read the controls.

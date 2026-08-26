@@ -31,7 +31,11 @@ internal sealed class HeadlessGameHarness : HeadlessGameHarnessBase<GameStateSum
     // reproduced exactly. Null keeps the shipped behaviour. Golden traces
     // need it: without a fixed seed the laser aim jitter, the encounter
     // rolls and the ship spins all differ run to run.
-    public HeadlessGameHarness(int width = 512, int height = 512, int? randomSeed = null)
+    public HeadlessGameHarness(
+        int width = 512,
+        int height = 512,
+        int? randomSeed = null,
+        float updatesPerSecond = GameClock.StepsPerSecond)
         : base(width, height, TestAssets.Locator())
     {
         FakeAbstraction abstraction = new(Graphics, new(width, height));
@@ -61,6 +65,13 @@ internal sealed class HeadlessGameHarness : HeadlessGameHarnessBase<GameStateSum
 
         _provider = services.BuildServiceProvider();
         Game = _provider.GetRequiredService<EliteMain>();
+
+        // Every Step is one update, and how much game time an update is
+        // worth is now the Fps setting. Pinned to the game's own rate by
+        // default so a step is a tick and the golden baselines keep meaning
+        // what they meant; a test that wants to prove the game plays the
+        // same at some other rate says so.
+        Game.State.Config.Engine.Graphics.Fps = updatesPerSecond;
     }
 
     public EliteMain Game { get; }

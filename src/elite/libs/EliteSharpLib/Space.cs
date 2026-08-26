@@ -1012,8 +1012,12 @@ internal sealed class Space
     /// </summary>
     private void MoveUniverseObject(IObject obj, float ticks)
     {
-        float alpha = _ship.Roll / 256;
-        float beta = _ship.Climb / 256;
+        // The player does not move; the universe moves past. So the roll and
+        // the pitch shear every object's position and orientation, and the
+        // speed slides the whole lot towards the camera - three more rates
+        // that were once per tick and are now per second.
+        float alpha = _ship.Roll / 256 * ticks;
+        float beta = _ship.Climb / 256 * ticks;
 
         Vector4 position = obj.Location;
         if (obj is IShip shipEx &&
@@ -1029,7 +1033,7 @@ internal sealed class Space
         position.Y = k2 - (position.Z * beta);
         position.X += alpha * position.Y;
 
-        position.Z -= _ship.Speed;
+        position.Z -= _ship.Speed * ticks;
 
         obj.Location = position;
 
