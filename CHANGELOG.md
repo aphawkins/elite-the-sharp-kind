@@ -7,6 +7,37 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Elite runs at the configured frame rate, 2026-08-26)
+
+- **One rate for both halves.** `GameTickRate` is gone: `Update` and `Draw`
+  both run at `Config.Fps`, and how much game time an update is worth is read
+  from that rather than fixed at 13.5Hz. The five conversions before this are
+  what make it safe.
+- **The cross-rate test found a real gap in the motion item**, and nothing
+  else could have. The player does not move in Elite; the universe moves
+  past. Besides each ship's own velocity, three more terms carry the player -
+  the speed sliding everything towards the camera, and the roll and pitch
+  shearing every object's position and orientation - and all three were still
+  per update, in `Space` and again in the starfield. At 60Hz the player flew
+  four and a half times too fast and was dead inside twenty seconds. Scaled,
+  the same twenty-two seconds at either rate end on the same screen, within
+  one housekeeping step, with the planet half a percent apart.
+- **The input cadence the backlog worried about does not arise.**
+  `IsPressed` consumes on read, so it returns true once per `KeyDown` the OS
+  sends rather than once per poll; polling faster cannot manufacture presses.
+  If anything the faster poll loses fewer OS repeats, because `SDLInput`
+  drains the whole queue per update and a slower one can coalesce two
+  presses into one.
+- The traces and frames still run at the game's own rate and are still
+  bit-identical - the harness pins `Fps` to 13.5, so a step is a tick and the
+  baselines keep meaning what they meant. Whether the game plays the same at
+  another rate is a different question, and `FrameRateIndependenceTests` is
+  now a real answer to it.
+- **Two known gaps recorded rather than quietly left**: the starfield
+  recycles stars out of the game's random stream, so encounters can differ
+  between rates; and `Combat.TimeECM` still counts down per update. Both are
+  in [backlog-roadmap.md](docs/backlog-roadmap.md).
+
 ### Changed (Elite's animations run on time, 2026-08-26)
 
 - **Everything that counted updates now counts time**: the laser's

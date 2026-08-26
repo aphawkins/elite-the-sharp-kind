@@ -52,94 +52,29 @@ Committed by the maintainer decisions in [decisions.md](decisions.md). The
 frame-rate item was audited and scoped on 2026-08-26 and is now the ordered
 list below; the data-driven content item is still a placeholder.
 
-Elite's frame rate vs the 13.5Hz tick (split 2026-08-26 from the [LARGE]
-placeholder the 2026-07-27 decision left; the audit it asked for is done and
-its findings are folded into the items below). The tick is not one thing to
-unpick but two: composition is *fused* with simulation in four places, and
-roughly two dozen rates and counters are expressed per tick rather than per
-second. Nothing here works until the fusion is undone, so do the items
-strictly in order — each one leaves the game playable and the traces green.
+Elite's frame rate vs the 13.5Hz tick — **done 2026-08-26** (see
+[CHANGELOG.md](../CHANGELOG.md) and the two 2026-08-26 entries in
+[decisions.md](decisions.md)). All seven items landed: the golden-trace and
+frame-check harness, the simulate/compose split, the housekeeping clock, the
+motion, the AI pacing, the animations, and running at the configured `Fps`.
 
-**The first two items on this list landed 2026-08-26** (see
-[CHANGELOG.md](../CHANGELOG.md)). The harness is five scripted scenarios
-recorded per tick against committed baselines, plus twelve composed frames
-signed by pixel hash and a brightness grid, under
-`src/elite/test/EliteSharpLib.Tests/GoldenTrace`; the traces catch a change
-in what the game does, the frames a change in what it draws or the order it
-draws in. Every item below is validated against both.
+Two things it left behind, worth their own entries rather than being lost:
 
-Simulate and compose are now separate: `EliteMain.Simulate`/`Compose`,
-`Space.MoveUniverse`/`DrawUniverse`, `Stars`' passes and `Stars.Draw`, with
-the explosion moved out of the renderer and the drawing given its own random
-stream. So the items below have a simulate half to change and a compose half
-that will not fight them.
+- [ ] [EliteSharpLib] The starfield recycles its stars out of the **game's**
+      random stream (`Stars.CreateNewStar`, `RecycleStarAtEdge`), so how many
+      draws the game has taken depends on how many updates went by. The
+      encounter rolls therefore differ between update rates: the same twenty
+      seconds at 13.5Hz and at 60Hz end in the same place but need not meet
+      the same ship. This is the same coupling the drawing had before
+      `RenderRandom` (see [decisions.md](decisions.md), 2026-08-26), one
+      layer in: the starfield is decoration, and its entropy has no business
+      being the game's. Moving it costs one baseline regeneration.
+- [ ] [EliteSharpLib] `Combat.TimeECM` still counts down once per update
+      rather than per second, so an E.C.M. burst lasts a quarter as long at
+      60Hz and drains a quarter of the energy. Missed because no golden
+      scenario fires an E.C.M. — the fix is the same shape as everything in
+      the animations item, and it wants a scenario that arms a missile first.
 
-**The clock and the motion landed 2026-08-26 too.** `GameState.Clock` is a
-`GameClock`: it paces the `MCount` housekeeping at 13.5 steps a second
-whatever the update rate, and its `Ticks` - how much of one of the game's own
-ticks an update is worth - scales every rate that used to be "per tick".
-Both stayed bit-identical on the traces *and* the frames, because `Ticks` is
-exactly 1 at 13.5Hz; the behaviour that only appears at another rate is
-covered by `GameClockTests` and `RateIndependentMotionTests` instead.
-
-Two corrections to what this list used to say:
-
-- **`MCount` is not freed for deletion, and should not be.** This list
-  expected the AI item to be the one that removed it. It is not: the count is
-  the shared phase every housekeeping job hangs off, and the one
-  `Space.JumpWarp` re-phases by masking to six bits. Items 3, 4 and 5 all
-  keep it and pace *it* instead. `Combat` now asks `TacticsSchedule` rather
-  than testing the bits itself, but it still asks about the count.
-- **`RotateByteLeft` is not in the motion path** and must not be converted.
-  It is the galactic hyperdrive's seed shuffle (`Cmdr.Galaxy.A`..`F`), a byte
-  rotation of the RNG seed, not a rate. The `±127` spin clamps beside it in
-  the old wording were real, and are done.
-- **The traces have not needed tolerances so far.** Items 3 and 4 were
-  arranged to be no-ops at the game's own rate rather than approximations of
-  it, so zero tolerance still holds. Do not raise it pre-emptively; raise it
-  when an item genuinely cannot avoid it, and say why in that commit.
-
-Two things the simulate/compose split left behind, which the next items
-inherit:
-
-- **Input is a third phase**, run after `Compose` because that is where this
-  port has always read it. Where it belongs is the last item's question.
-- **Watch for equality tests against a count.** Anything of the shape
-  `tick == N` is stepped straight over by a fractional tick and must become a
-  crossing (`was < N && now >= N`). The escape capsule's explosion was one;
-  the spin peg's `== 127` was the same shape. Assume there are more.
-- **Watch the float ordering.** Scaling a rate by `Ticks` is only a no-op
-  at 13.5Hz if the scaling is applied *after* an inexact divide, not folded
-  into it. `RotateXFirst` divides first and scales second for exactly this
-  reason, and got caught by the frame check when it did not.
-- **`EliteMain` holds two frame fields** (`_pendingMessage`,
-  `_pendingCountdown`) because the hyperspace countdown is drawn before it
-  is decremented and the info message is the one already on screen, not the
-  "ENERGY LOW" the same tick may raise afterwards. Anything else that turns
-  out to be true only in the middle of a tick needs the same treatment.
-
-The maintainer chose (2026-08-26) **true per-second rates at any `Fps`**,
-over snapping `Fps` to a whole multiple of 13.5. So the ported constants
-below convert to rates rather than divide into sub-ticks, and the golden
-traces compare with tolerances rather than exactly. Note what that costs:
-these constants are faithful ports of 6502/TNK integer logic, and its
-semantics (`& 7`, `& 31`, the `±127` clamps, `RotateByteLeft`) do not
-survive a rate change cleanly. Elite's feel and difficulty change at 60Hz.
-That is the accepted price of the decision, not a defect to tune away
-afterwards.
-
-- [ ] [EliteSharpLib + SharpKind.Abstraction] Run at `Fps`. Collapse
-      `GameHost.Run(_abstraction, this, GameTickRate, Fps)` to one rate and
-      delete `EliteMain.GameTickRate` and the two comment blocks that
-      explain the split
-      ([EliteMain.cs:36-41 and :117-125](../src/elite/libs/EliteSharpLib/EliteMain.cs)).
-      Decide the input cadence with it: `Keyboard.Poll()` and the one-shot
-      `IsPressed` run once per update in
-      [GameHost.Run](../src/useful/libs/SharpKind.Abstraction/GameHost.cs),
-      so menu navigation currently steps one row per tick and would step
-      one row per frame. Then fix the fallout — `EliteMain._framesDrawn`
-      and `DrawFps` start counting genuinely composed frames, and every
-      headless test's "N ticks" becomes rate-dependent.
 - [ ] **[LARGE]** [EliteSharpLib] Data-driven game content model: replace
       hardcoded/reflection-based game data — `EquipmentType`, `StockType`,
       ship definitions, and `ShipFactory.CreateShipFromName`'s
