@@ -9,6 +9,47 @@ decision may reshape items in either. Newest first. When a decision
 reshapes or unblocks backlog items, those items are updated in the backlog
 to reference the decision here rather than restating it.
 
+## Resolved (2026-08-26) — the drawing gets its own dice
+
+Separating simulate from compose (item 2 of the frame-rate list) ran into
+something the audit had not found: **composition drew from the simulation's
+random stream, and view-dependently.** `ShipBase.DrawLasers` returns before
+its two draws when the laser mount faces away; `DrawExplosionParticles`
+scatters sixteen blocks around each *visible* projected point;
+`DrawObject` returns early off-screen, outside the field of view, or on a
+screen showing no universe. All of it came out of the one `RNG` that also
+rolls encounters, bounties and tactics.
+
+So what was on screen decided what happened next. Turning the camera away
+from an explosion changed how many numbers were drawn and therefore which
+ships arrived later. That is a defect on its own, and it blocks the
+frame-rate goal outright rather than merely inconveniencing the refactor:
+once Elite composes at a rate of its own, drawing more often would draw
+more numbers and move the simulation.
+
+**Decided: the drawing gets its own stream.** `RenderRandom` is a distinct
+type, not a second `RNG` registration, so the two cannot be swapped at a
+constructor. It rides on `IEliteDraw.Jitter` — the entropy belongs to the
+surface being drawn on — which let every ship constructor drop its `rng`
+parameter, thirty-seven files simpler. `ShipFactory` keeps the game's `RNG`
+for its own rolls and hands ships nothing.
+
+**Pre-rolling was considered and does not work.** Having the simulate pass
+roll the cosmetic values and the compose pass consume them would have kept
+the baselines byte-identical. But *how many* rolls happen depends on
+visibility, which is decided during projection — the very work being
+separated. The idea is self-defeating; it is recorded so it is not tried
+again.
+
+**This cost one baseline regeneration.** Encounters now arrive on different
+ticks. That diff is the coupling being removed, and it is the one time the
+frame-rate work changes behaviour for a reason other than the rate.
+
+**One consequence worth keeping.** The golden-trace harness seeds the game's
+RNG and deliberately leaves `RenderRandom` unseeded. If drawing ever
+influences the simulation again, the reproducibility test starts failing at
+random instead of the coupling going unnoticed.
+
 ## Resolved (2026-08-26) — a rate is per second, whatever it costs
 
 The 2026-07-27 decision below left Elite's frame rate item as a [LARGE]

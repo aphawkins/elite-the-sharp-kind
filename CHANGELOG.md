@@ -7,6 +7,47 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Elite: the drawing stops touching the game, 2026-08-26)
+
+- **The explosion left the renderer.** `EliteDraw.DrawObject` seeded
+  `ExpDelta` at 18 and `DrawExplosion` advanced it by four and flagged the
+  wreck for removal - game state changed from inside the draw path, so a
+  cloud aged once per drawn frame rather than once per tick.
+  `Space.AgeExplosion` owns the lifecycle now and runs where the draw call
+  used to, so the sequence is unchanged: lit at 18, immediately aged to 22 -
+  the first size ever drawn - then four a tick until past 251. The screen
+  test the renderer applied is now `GameState.ShowsUniverse`, derived and
+  shared, because a wreck must not burn down behind a chart screen. All five
+  golden traces stayed identical at zero tolerance.
+- **The drawing has its own random stream, and this one changes
+  behaviour.** Composition drew from the simulation's `RNG`, and
+  view-dependently: `ShipBase.DrawLasers` returns before its two draws when
+  the laser mount faces away, `DrawExplosionParticles` scatters sixteen
+  blocks around each *visible* projected point, and `DrawObject` returns
+  early off-screen. So what was on screen decided what happened next -
+  turning the camera away from an explosion changed which ships arrived
+  later. Beyond being wrong on its own, it blocks the frame-rate goal: once
+  Elite composes at a rate of its own, drawing more often would move the
+  simulation.
+- `RenderRandom` is that stream - a distinct type rather than a second `RNG`
+  registration, so the two cannot be swapped at a constructor. It rides on
+  `IEliteDraw.Jitter`, which is where the entropy belongs and which let
+  **every ship constructor drop its `rng` parameter**, thirty-seven files
+  simpler. `ShipFactory` keeps the game's `RNG` for its own rolls - whether
+  an asteroid is really a Rock Hermit - and hands ships nothing.
+- **The baselines were regenerated for this**: encounters now arrive on
+  different ticks, and that diff is the coupling being removed. It is the
+  one time the frame-rate work changes behaviour for a reason other than the
+  rate. Pre-rolling the cosmetic values in the simulate pass would have kept
+  them byte-identical and was rejected as self-defeating - how many rolls
+  happen depends on visibility, decided during projection, which is the work
+  being separated.
+- The harness now seeds the game's RNG and deliberately leaves
+  `RenderRandom` unseeded, so if drawing ever influences the simulation
+  again the reproducibility test starts failing at random rather than the
+  coupling going unnoticed. `FakeEliteDraw` supplies no jitter at all, so a
+  test asserting where a laser bolt lands gets the geometry.
+
 ### Added (Elite golden-trace harness, 2026-08-26)
 
 - **The frame-rate rework needed a regression net before it could start.**

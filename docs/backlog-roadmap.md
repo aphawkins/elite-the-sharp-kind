@@ -76,20 +76,34 @@ survive a rate change cleanly. Elite's feel and difficulty change at 60Hz.
 That is the accepted price of the decision, not a defect to tune away
 afterwards.
 
-- [ ] [EliteSharpLib] Separate simulate from compose. This is the structural
-      blocker: today `EliteMain.Update` composes the whole frame and `Draw`
-      only presents it, and three places move state and draw it in one pass —
-      `Space.UpdateUniverseObject`
-      ([Space.cs:493](../src/elite/libs/EliteSharpLib/Space.cs)) moves each
-      object then draws it; `EliteDraw.DrawObject`
-      ([EliteDraw.cs:214-267](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs))
-      *mutates game state while drawing* (sets `ShipProperties.Explosion`,
-      `ExpDelta = 18`, `ExpDelta += 4`, `ShipProperties.Remove`); and
-      `Stars.FrontStarfield`/`RearStarfield`/`SideStarfield` advance the
-      stars and emit their marks together. Split each into a move pass and a
-      draw pass, and move `ExpDelta`'s advance out of the renderer. Both
-      halves still run once per tick — zero behaviour change, traces
-      identical, no tolerances needed yet.
+- [ ] [EliteSharpLib] Separate simulate from compose. **Two of the four
+      fusion sites are done (2026-08-26, see [CHANGELOG.md](../CHANGELOG.md));
+      what is left is the top-level split.** Done: the explosion no longer
+      lives in the renderer — `Space.AgeExplosion` owns it and
+      `EliteDraw.DrawExplosion` only draws; and the drawing has its own
+      random stream, which the audit had missed and which blocked everything
+      else (see the 2026-08-26 entry in [decisions.md](decisions.md)).
+      Still to do:
+      - `EliteMain.Update` composes the whole frame and `Draw` only presents
+        it. Split into a simulate half and a compose half. Note the frame's
+        order is load-bearing: clear, then the starfield (drawn inside
+        `CurrentView.Update`), then the universe, then the view's chrome,
+        then messages, then the scanner — and `CurrentView.HandleInput()`
+        runs at the *end* of the same method.
+      - `Space.UpdateUniverseObject`
+        ([Space.cs](../src/elite/libs/EliteSharpLib/Space.cs)) moves each
+        object and then draws it in one pass, and the view-space clone it
+        draws (`flip`) is also what `Combat.CheckTarget` needs, so the two
+        halves share more than a loop.
+      - `Stars.FrontStarfield`/`RearStarfield`/`SideStarfield` advance the
+        stars and emit their marks together.
+
+      **The traces will not catch a drawing-order mistake.** They compare
+      state, not pixels, and nothing else does either — `VisualDumpTests`
+      writes BMPs for a human to look at and asserts nothing. Stars are
+      drawn *before* the universe today; move them naively into a compose
+      pass and they paint over the ships with every test still green. Either
+      keep the compose order exactly, or add a frame check first.
 - [ ] [EliteSharpLib] Make the game clock explicit and convert the `MCount`
       housekeeping. Thread an elapsed-seconds value into the simulate half,
       and replace the 0..255 down-counter's bit tests with scheduled
