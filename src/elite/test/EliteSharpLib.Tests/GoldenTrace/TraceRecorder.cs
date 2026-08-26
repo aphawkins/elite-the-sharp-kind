@@ -69,7 +69,11 @@ internal static class TraceRecorder
                 obj.Location.Z,
                 obj.RotX,
                 obj.RotZ,
-                obj.Flags.ToString()));
+                obj.Flags.ToString(),
+
+                // Planets and suns are IObject but not IShip, and only a ship
+                // ever carries an explosion.
+                obj is IShip wreck ? wreck.ExpDelta : 0));
         }
 
         return new(

@@ -13,9 +13,10 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   Elite's simulation is about to have roughly two dozen per-tick rates and
   counters converted to per-second ones (see
   [backlog-roadmap.md](docs/backlog-roadmap.md)), and nothing existed that
-  could say whether a conversion had changed the game. Four scripted
-  scenarios - the title parade, a launch and flight, a long flight, and
-  holding the trigger down - now run against the real `EliteMain` through
+  could say whether a conversion had changed the game. Five scripted
+  scenarios - the title parade, a launch and flight, a long flight, holding
+  the trigger down, and a kill - now run against the real `EliteMain`
+  through
   `HeadlessGameHarness` and record the game state after every tick to
   committed baselines under
   `src/elite/test/EliteSharpLib.Tests/GoldenTrace`.
@@ -27,11 +28,23 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 - **Not a rendered frame.** The comparison is state - screen, docked and
   game-over flags, `MCount`, message count, laser temperature, roll, climb,
   speed, energy, shields, fuel, cabin temperature, altitude, and every
-  universe slot's type, position, spin and flags. The rate items change
+  universe slot's type, position, spin, flags and explosion age. The rate
+  items change
   *when* things happen, not what they look like, so a pixel comparison
   would fail for reasons that have nothing to do with them. There is no
   player position because Elite has none: the ship sits at the origin and
   the universe moves past it.
+- **The explosion cloud is traced because the renderer owns it.**
+  `EliteDraw.DrawObject` seeds `ExpDelta` at 18 and `DrawExplosion` advances
+  it by four every drawn frame, setting `Remove` past 251 - game state
+  changed from inside the draw path, and the clearest thing separating
+  simulate from compose has to move. The `explosion` scenario holds the
+  trigger down until an encounter flies into the beam: at the committed seed
+  a Transporter dies around tick 270, the cloud ramps 22 to 254 over sixty
+  ticks, and the slot empties at 330. The kill is not aimed, because it
+  cannot be - the escape capsule and the energy bomb are the game's two
+  deterministic explosions and both belong to Commander Max, who is
+  deliberately turned off here.
 - **Numbers compare with a tolerance, discrete fields never do.** The
   tolerance is zero today and rises when the rate conversion makes exact
   arithmetic impossible; a screen, a ship type or a flag set that differs

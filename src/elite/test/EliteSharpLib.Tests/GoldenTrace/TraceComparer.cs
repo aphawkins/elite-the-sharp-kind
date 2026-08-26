@@ -83,6 +83,7 @@ internal static class TraceComparer
             string? difference = Exact($"{at} slot", e.Slot, a.Slot)
                 ?? Exact($"{at} type", e.Type, a.Type)
                 ?? Exact($"{at} flags", e.Flags, a.Flags)
+                ?? Exact($"{at} expDelta", e.ExpDelta, a.ExpDelta)
                 ?? Near($"{at} x", e.X, a.X, tolerance)
                 ?? Near($"{at} y", e.Y, a.Y, tolerance)
                 ?? Near($"{at} z", e.Z, a.Z, tolerance)

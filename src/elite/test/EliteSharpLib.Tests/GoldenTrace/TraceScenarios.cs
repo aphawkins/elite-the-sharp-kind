@@ -93,6 +93,39 @@ internal static class TraceScenarios
             new(110, ConsoleKey.A, KeyScriptAction.Release),
         ]);
 
+    // Launched, then the trigger held down until something wanders into it
+    // and dies. This is the one scenario that reaches the explosion cloud,
+    // and the cloud matters more than its share of the game because
+    // EliteDraw owns it: DrawObject seeds ExpDelta at 18 and DrawExplosion
+    // advances it by four every drawn frame, until past 251 it sets Remove.
+    // Separating simulate from compose moves all of that, so this trace is
+    // what says the move was faithful.
+    //
+    // At this seed a Transporter is shot down around tick 270; the cloud
+    // then ramps 22 -> 254 over sixty ticks and the slot empties at 330. The
+    // kill is not aimed - it is the encounter flying into a held beam - so
+    // the tick it happens on is a property of the seed, and a change to how
+    // much RNG the game draws will move it. That is a real divergence worth
+    // seeing, not a flaw in the scenario.
+    //
+    // Nothing scripts a kill more directly because nothing can: the escape
+    // capsule and the energy bomb are the two deterministic explosions in
+    // the game and both belong to Commander Max, whom TraceRecorder
+    // deliberately turns off.
+    internal static TraceScenario Explosion { get; } = new(
+        "explosion",
+        Seed,
+        400,
+        [
+            new(1, ConsoleKey.N, KeyScriptAction.Tap),
+            new(2, ConsoleKey.Spacebar, KeyScriptAction.Tap),
+            new(4, ConsoleKey.F1, KeyScriptAction.Tap),
+
+            // Never released: the beam has to still be firing whenever the
+            // encounter arrives.
+            new(30, ConsoleKey.A, KeyScriptAction.Hold),
+        ]);
+
     internal static IReadOnlyList<TraceScenario> All { get; } =
-        [IntroParade, LaunchAndFly, LongFlight, LaserFire];
+        [IntroParade, LaunchAndFly, LongFlight, LaserFire, Explosion];
 }
