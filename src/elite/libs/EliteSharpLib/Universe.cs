@@ -10,7 +10,11 @@ namespace EliteSharpLib;
 
 internal sealed class Universe
 {
-    private const int MaxUniverseObjects = 20;
+    /// <summary>
+    /// The most ships space holds at once, not counting the planet and the
+    /// station or sun, which have slots of their own.
+    /// </summary>
+    internal const int MaxUniverseObjects = 20;
     private readonly IShipFactory _shipFactory;
     private readonly List<IObject> _objects = [];
     private readonly Dictionary<ShipType, int> _shipCount = [];

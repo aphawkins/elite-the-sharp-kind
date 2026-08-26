@@ -33,6 +33,7 @@ internal sealed partial class Combat
     private readonly IShipFactory _shipFactory;
     private readonly MissionRunner _missions;
     private readonly RNG _rng;
+    private readonly TacticsSchedule _tactics = new();
     private readonly ILogger<Combat> _logger;
     private bool _isEcmOurs;
     private int _laserCounter;
@@ -317,7 +318,11 @@ internal sealed partial class Combat
         _universe.RemoveShip(obj);
     }
 
-    internal void Reset() => InBattle = false;
+    internal void Reset()
+    {
+        InBattle = false;
+        _tactics.Reset();
+    }
 
     internal void ResetWeapons()
     {
@@ -388,7 +393,7 @@ internal sealed partial class Combat
             return;
         }
 
-        if (((un ^ _gameState.MCount) & 7) != 0)
+        if (!_tactics.ShouldThink(un, _gameState.MCount))
         {
             return;
         }
