@@ -26,8 +26,8 @@ public class ShipFactoryTests
 
         Dictionary<string, IShip> dict = new()
         {
-            { "RockHermit", new FakeShip(draw, rng) { Name = "RockHermit" } },
-            { "Asteroid", new FakeShip(draw, rng) { Name = "Asteroid" } },
+            { "RockHermit", new FakeShip(draw) { Name = "RockHermit" } },
+            { "Asteroid", new FakeShip(draw) { Name = "Asteroid" } },
         };
         SetShipsField(factory, dict);
 
@@ -46,7 +46,7 @@ public class ShipFactoryTests
         FakeEliteDraw draw = new();
         ShipFactory factory = ShipFactory.Create(locator, draw, new(new Random(0)));
 
-        FakeShip prototype = new(draw, new(new Random(0)))
+        FakeShip prototype = new(draw)
         {
             Name = "Prototype",
             Energy = 42,
@@ -200,7 +200,7 @@ public class ShipFactoryTests
         Dictionary<string, IShip> dict = [];
         foreach (string name in names)
         {
-            dict[name] = new FakeShip(draw, new(new Random(0)))
+            dict[name] = new FakeShip(draw)
             {
                 Name = name,
                 Energy = 100,

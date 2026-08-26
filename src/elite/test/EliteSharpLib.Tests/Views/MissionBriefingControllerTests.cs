@@ -254,10 +254,10 @@ public class MissionBriefingControllerTests
         trade = new(gameState, ship);
         FakeEliteDraw draw = new();
         RNG rng = new(new FakeRandomSource());
-        FakeShipFactory shipFactory = new(draw, rng);
+        FakeShipFactory shipFactory = new(draw);
         Universe universe = new(shipFactory, rng);
         AudioController audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());
-        Pilot pilot = new(draw, audio, universe, ship, rng);
+        Pilot pilot = new(draw, audio, universe, ship);
         MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
         Combat combat = new(
             gameState,

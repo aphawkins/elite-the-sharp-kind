@@ -75,7 +75,7 @@ public class WireframeSunTests
         FastBitmap? lastFrame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(ScreenSize, ScreenSize, b => lastFrame = b, TestAssets.Locator());
         GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
-        RNG rng = new(new Random(0));
+        RenderRandom rng = new(new Random(0));
         EliteDraw draw = new(
             gameState,
             graphics,

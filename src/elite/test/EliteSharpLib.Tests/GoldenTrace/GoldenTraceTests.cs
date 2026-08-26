@@ -86,6 +86,13 @@ public class GoldenTraceTests
     // The recording has to be reproducible before it is worth committing:
     // a trace that differs run to run would fail for the wrong reason and
     // get regenerated until it happened to pass.
+    //
+    // It now proves something stronger than that. Only the game's RNG is
+    // seeded; RenderRandom - the laser shimmer and the explosion scatter -
+    // is left unseeded on purpose. So if drawing could ever influence the
+    // simulation again, as it did before the two streams were separated,
+    // this test would start failing at random rather than the coupling
+    // going unnoticed.
     [Fact]
     public void RecordingTheSameScenarioTwiceGivesTheSameTrace()
     {

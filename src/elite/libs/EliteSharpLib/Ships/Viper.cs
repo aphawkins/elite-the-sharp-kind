@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Viper : ShipBase
 {
-    internal Viper(IEliteDraw draw, RNG rng)
-        : base(draw, rng)
+    internal Viper(IEliteDraw draw)
+        : base(draw)
     {
         Type = ShipType.Viper;
         Flags = ShipProperties.Police | ShipProperties.Bold;

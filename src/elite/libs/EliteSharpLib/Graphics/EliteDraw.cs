@@ -33,7 +33,7 @@ internal sealed class EliteDraw : IEliteDraw
     private readonly GameState _gameState;
     private readonly Vector4[] _pointList = new Vector4[MaxModelPoints];
     private readonly IPolygonRenderer _shipRenderer;
-    private readonly RNG _rng;
+    private readonly RenderRandom _rng;
     private readonly bool _shadesShips;
 
     // The pipeline's shading and output stages. Which of each is in use comes
@@ -51,7 +51,7 @@ internal sealed class EliteDraw : IEliteDraw
         IAssetLocator assetLocator,
         IRendition rendition,
         IPolygonRenderer shipRenderer,
-        RNG rng)
+        RenderRandom rng)
     {
         ArgumentNullException.ThrowIfNull(rendition);
         ArgumentNullException.ThrowIfNull(screen);
@@ -99,6 +99,8 @@ internal sealed class EliteDraw : IEliteDraw
     // as the screen widens). It is deliberately not tied to Scale, which is
     // window/coordinate magnification, not zoom.
     public float Focus => Layout.ScreenHeight * FocusFactor;
+
+    public IRandomSource Jitter => _rng;
 
     public IGraphics Graphics { get; }
 

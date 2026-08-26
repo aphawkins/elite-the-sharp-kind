@@ -43,10 +43,10 @@ internal static class SettingsControllerFixture
         RNG rng = new(new FakeRandomSource());
         PlayerShip ship = new();
         Trade trade = new(gameState, ship);
-        FakeShipFactory shipFactory = new(draw, rng);
+        FakeShipFactory shipFactory = new(draw);
         Universe universe = new(shipFactory, rng);
         audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());
-        Pilot pilot = new(draw, audio, universe, ship, rng);
+        Pilot pilot = new(draw, audio, universe, ship);
         MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
 
         Combat combat = new(

@@ -74,10 +74,10 @@ public class Intro2ControllerTests
         PlayerShip ship = new();
         FakeEliteDraw draw = new();
         RNG rng = new(new FakeRandomSource());
-        FakeShipFactory shipFactory = new(draw, rng);
+        FakeShipFactory shipFactory = new(draw);
         Universe universe = new(shipFactory, rng);
         AudioController audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());
-        Pilot pilot = new(draw, audio, universe, ship, rng);
+        Pilot pilot = new(draw, audio, universe, ship);
         Trade trade = new(gameState, ship);
         MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
 

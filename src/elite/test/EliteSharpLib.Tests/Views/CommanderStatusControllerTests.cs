@@ -116,7 +116,7 @@ public class CommanderStatusControllerTests
             ship,
             trade,
             new PlanetController(gameState),
-            new Universe(new FakeShipFactory(draw, rng), rng),
+            new Universe(new FakeShipFactory(draw), rng),
             new FakeCommanderStatusView());
     }
 

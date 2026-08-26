@@ -60,7 +60,7 @@ public class CombatTests
         ship.CargoCapacity = 0;
         ship.ShieldFront = PlayerShip.ShieldMax;
         ship.ShieldRear = PlayerShip.ShieldMax;
-        FakeShip canister = new(new FakeEliteDraw(), new(new FakeRandomSource()))
+        FakeShip canister = new(new FakeEliteDraw())
         {
             Type = ShipType.Cargo,
             Location = new(0, -100, 500, 0),
@@ -82,7 +82,7 @@ public class CombatTests
         ship.HasFuelScoop = false;
         ship.CargoCapacity = 100;
         ship.ShieldFront = PlayerShip.ShieldMax;
-        FakeShip canister = new(new FakeEliteDraw(), new(new FakeRandomSource()))
+        FakeShip canister = new(new FakeEliteDraw())
         {
             Type = ShipType.Cargo,
             Location = new(0, -100, 500, 0),
@@ -102,7 +102,7 @@ public class CombatTests
         // alloy plates and cargo canisters.
         Combat combat = CreateCombat(out Universe universe, out _, out _, out _, randomValue: 2);
         SetLaserType(combat, LaserType.Pulse);
-        FakeShip asteroid = new(new FakeEliteDraw(), new(new FakeRandomSource())) { Type = ShipType.Asteroid, LootMax = 15 };
+        FakeShip asteroid = new(new FakeEliteDraw()) { Type = ShipType.Asteroid, LootMax = 15 };
 
         InvokeDestroyTarget(combat, asteroid);
 
@@ -117,7 +117,7 @@ public class CombatTests
         // alloy/cargo every kill yields, not instead of it.
         Combat combat = CreateCombat(out Universe universe, out _, out _, out _, randomValue: 2);
         SetLaserType(combat, LaserType.Mining);
-        FakeShip asteroid = new(new FakeEliteDraw(), new(new FakeRandomSource())) { Type = ShipType.Asteroid, LootMax = 15 };
+        FakeShip asteroid = new(new FakeEliteDraw()) { Type = ShipType.Asteroid, LootMax = 15 };
 
         InvokeDestroyTarget(combat, asteroid);
 
@@ -136,7 +136,7 @@ public class CombatTests
         // either flag.
         Combat combat = CreateCombat(out _, out PlayerShip ship, out _, out _, randomValue: 0);
         ship.ShieldFront = PlayerShip.ShieldMax;
-        FakeShip enemy = new(new FakeEliteDraw(), new(new FakeRandomSource())) { LaserStrength = 10 };
+        FakeShip enemy = new(new FakeEliteDraw()) { LaserStrength = 10 };
 
         InvokeFiringTactics(combat, enemy, -0.90f, new(0, 0, 1, 0));
 
@@ -152,7 +152,7 @@ public class CombatTests
         // -0.889 (-32/36) gate, so it used to enter firing tactics and set
         // the Firing flag; it shouldn't any more.
         Combat combat = CreateCombat(out Universe universe, out _, out _, out _, randomValue: 0);
-        FakeShip enemy = new(new FakeEliteDraw(), new(new FakeRandomSource()))
+        FakeShip enemy = new(new FakeEliteDraw())
         {
             Type = ShipType.CobraMk3,
             Flags = ShipProperties.Angry,
@@ -190,7 +190,7 @@ public class CombatTests
         // into the spawn chance - they've almost certainly scanned us.
         Combat combat = CreateCombat(out Universe universe, out _, out _, out GameState gameState, randomValue: 50);
         gameState.Cmdr.LegalStatus = 200;
-        FakeShip existingPolice = new(new FakeEliteDraw(), new(new FakeRandomSource())) { Type = ShipType.Viper };
+        FakeShip existingPolice = new(new FakeEliteDraw()) { Type = ShipType.Viper };
         universe.AddNewShip(existingPolice, default, Matrix4x4.Identity, 0, 0);
 
         InvokeCheckForPolice(combat);
@@ -268,10 +268,10 @@ public class CombatTests
         trade = new Trade(gameState, ship);
         FakeEliteDraw draw = new();
         RNG rng = new(new FakeRandomSource { RandomValue = randomValue });
-        FakeShipFactory shipFactory = new(draw, rng);
+        FakeShipFactory shipFactory = new(draw);
         universe = new(shipFactory, rng);
         AudioController audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());
-        Pilot pilot = new(draw, audio, universe, ship, rng);
+        Pilot pilot = new(draw, audio, universe, ship);
 
         MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
 

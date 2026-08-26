@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Coriolis : ShipBase
 {
-    internal Coriolis(IEliteDraw draw, RNG rng)
-        : base(draw, rng)
+    internal Coriolis(IEliteDraw draw)
+        : base(draw)
     {
         Type = ShipType.Coriolis;
         Flags = ShipProperties.Station;

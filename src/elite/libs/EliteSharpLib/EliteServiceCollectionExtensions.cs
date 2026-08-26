@@ -197,8 +197,7 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<AudioController>(),
             sp.GetRequiredService<Universe>(),
-            sp.GetRequiredService<PlayerShip>(),
-            sp.GetRequiredService<RNG>()));
+            sp.GetRequiredService<PlayerShip>()));
         services.AddSingleton(sp => new Combat(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<AudioController>(),
@@ -286,7 +285,7 @@ public static class EliteServiceCollectionExtensions
         sp.GetRequiredService<Space>(),
         sp.GetRequiredService<Combat>(),
         direction,
-        sp.GetRequiredService<RNG>(),
+        sp.GetRequiredService<IEliteDraw>(),
         sp.GetRequiredService<IView<PilotModel>>());
 
     // The ~25 views EliteMain used to construct itself, now registered so

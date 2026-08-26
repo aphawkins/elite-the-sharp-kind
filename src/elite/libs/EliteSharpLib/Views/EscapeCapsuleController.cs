@@ -51,7 +51,6 @@ internal sealed class EscapeCapsuleController : IScreenController
         Pilot pilot,
         IEliteDraw draw,
         IShipFactory shipFactory,
-        RNG rng,
         IView<EscapeCapsuleModel> view,
         ILogger<EscapeCapsuleController>? logger = null)
     {
@@ -63,7 +62,7 @@ internal sealed class EscapeCapsuleController : IScreenController
         _universe = universe;
         _pilot = pilot;
         _shipFactory = shipFactory;
-        _newShip = new ShipBase(draw, rng);
+        _newShip = new ShipBase(draw);
         _view = view;
         _logger = logger ?? NullLogger<EscapeCapsuleController>.Instance;
     }

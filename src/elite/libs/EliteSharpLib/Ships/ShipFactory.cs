@@ -10,41 +10,41 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class ShipFactory : IShipFactory
 {
-    private static readonly Dictionary<string, Func<IEliteDraw, RNG, IShip>> s_constructors = new()
+    private static readonly Dictionary<string, Func<IEliteDraw, IShip>> s_constructors = new()
     {
-        { "Adder", (draw, rng) => new Adder(draw, rng) },
-        { "Alloy", (draw, rng) => new Alloy(draw, rng) },
-        { "Anaconda", (draw, rng) => new Anaconda(draw, rng) },
-        { "AspMk2", (draw, rng) => new AspMk2(draw, rng) },
-        { "Asteroid", (draw, rng) => new Asteroid(draw, rng) },
-        { "Boa", (draw, rng) => new Boa(draw, rng) },
-        { "Boulder", (draw, rng) => new Boulder(draw, rng) },
-        { "CargoCannister", (draw, rng) => new CargoCannister(draw, rng) },
-        { "CobraMk1", (draw, rng) => new CobraMk1(draw, rng) },
-        { "CobraMk3", (draw, rng) => new CobraMk3(draw, rng) },
-        { "CobraMk3Lone", (draw, rng) => new CobraMk3Lone(draw, rng) },
-        { "Constrictor", (draw, rng) => new Constrictor(draw, rng) },
-        { "Coriolis", (draw, rng) => new Coriolis(draw, rng) },
-        { "Cougar", (draw, rng) => new Cougar(draw, rng) },
-        { "DodecStation", (draw, rng) => new DodecStation(draw, rng) },
-        { "EscapeCapsule", (draw, rng) => new EscapeCapsule(draw, rng) },
-        { "FerDeLance", (draw, rng) => new FerDeLance(draw, rng) },
-        { "Gecko", (draw, rng) => new Gecko(draw, rng) },
-        { "Krait", (draw, rng) => new Krait(draw, rng) },
-        { "Mamba", (draw, rng) => new Mamba(draw, rng) },
-        { "Missile", (draw, rng) => new Missile(draw, rng) },
-        { "Moray", (draw, rng) => new Moray(draw, rng) },
-        { "Python", (draw, rng) => new Python(draw, rng) },
-        { "PythonLone", (draw, rng) => new PythonLone(draw, rng) },
-        { "RockHermit", (draw, rng) => new RockHermit(draw, rng) },
-        { "RockSplinter", (draw, rng) => new RockSplinter(draw, rng) },
-        { "Shuttle", (draw, rng) => new Shuttle(draw, rng) },
-        { "Sidewinder", (draw, rng) => new Sidewinder(draw, rng) },
-        { "Tharglet", (draw, rng) => new Tharglet(draw, rng) },
-        { "Thargoid", (draw, rng) => new Thargoid(draw, rng) },
-        { "Transporter", (draw, rng) => new Transporter(draw, rng) },
-        { "Viper", (draw, rng) => new Viper(draw, rng) },
-        { "Worm", (draw, rng) => new Worm(draw, rng) },
+        { "Adder", draw => new Adder(draw) },
+        { "Alloy", draw => new Alloy(draw) },
+        { "Anaconda", draw => new Anaconda(draw) },
+        { "AspMk2", draw => new AspMk2(draw) },
+        { "Asteroid", draw => new Asteroid(draw) },
+        { "Boa", draw => new Boa(draw) },
+        { "Boulder", draw => new Boulder(draw) },
+        { "CargoCannister", draw => new CargoCannister(draw) },
+        { "CobraMk1", draw => new CobraMk1(draw) },
+        { "CobraMk3", draw => new CobraMk3(draw) },
+        { "CobraMk3Lone", draw => new CobraMk3Lone(draw) },
+        { "Constrictor", draw => new Constrictor(draw) },
+        { "Coriolis", draw => new Coriolis(draw) },
+        { "Cougar", draw => new Cougar(draw) },
+        { "DodecStation", draw => new DodecStation(draw) },
+        { "EscapeCapsule", draw => new EscapeCapsule(draw) },
+        { "FerDeLance", draw => new FerDeLance(draw) },
+        { "Gecko", draw => new Gecko(draw) },
+        { "Krait", draw => new Krait(draw) },
+        { "Mamba", draw => new Mamba(draw) },
+        { "Missile", draw => new Missile(draw) },
+        { "Moray", draw => new Moray(draw) },
+        { "Python", draw => new Python(draw) },
+        { "PythonLone", draw => new PythonLone(draw) },
+        { "RockHermit", draw => new RockHermit(draw) },
+        { "RockSplinter", draw => new RockSplinter(draw) },
+        { "Shuttle", draw => new Shuttle(draw) },
+        { "Sidewinder", draw => new Sidewinder(draw) },
+        { "Tharglet", draw => new Tharglet(draw) },
+        { "Thargoid", draw => new Thargoid(draw) },
+        { "Transporter", draw => new Transporter(draw) },
+        { "Viper", draw => new Viper(draw) },
+        { "Worm", draw => new Worm(draw) },
     };
 
     // Variants that share their parent's mesh, so the manifest lists only real model files.
@@ -63,6 +63,10 @@ internal sealed class ShipFactory : IShipFactory
         _rng = rng;
     }
 
+    // rng is the game's: the factory's own rolls - whether an asteroid is
+    // really a Rock Hermit, which trader shows up - are game decisions. The
+    // entropy a ship draws with rides on the draw surface instead, so it
+    // cannot be confused with this one. See RenderRandom.
     public static ShipFactory Create(IAssetLocator assetLocator, IEliteDraw draw, RNG rng)
     {
         ArgumentNullException.ThrowIfNull(assetLocator);
@@ -76,12 +80,12 @@ internal sealed class ShipFactory : IShipFactory
         // Every ship the manifest supplies a model for, including the variants
         // that borrow their parent's model.
         Dictionary<string, IShip> ships = [];
-        foreach ((string name, Func<IEliteDraw, RNG, IShip> constructor) in s_constructors)
+        foreach ((string name, Func<IEliteDraw, IShip> constructor) in s_constructors)
         {
             string modelName = s_modelNames.GetValueOrDefault(name, name);
             if (assetLocator.ModelPaths.TryGetValue(modelName, out string? modelPath))
             {
-                IShip ship = constructor(draw, rng);
+                IShip ship = constructor(draw);
                 ship.Model = ModelReader.Read(modelPath, draw.Palette);
                 ships[name] = ship;
             }

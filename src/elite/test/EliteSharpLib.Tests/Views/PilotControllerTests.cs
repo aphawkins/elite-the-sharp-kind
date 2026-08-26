@@ -7,6 +7,7 @@ using EliteSharp.Abstractions.Views;
 using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
+using EliteSharpLib.Graphics;
 using EliteSharpLib.Lasers;
 using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
@@ -100,11 +101,11 @@ public class PilotControllerTests
         Trade trade = new(gameState, ship);
         FakeEliteDraw draw = new();
         RNG rng = new(new FakeRandomSource());
-        FakeShipFactory shipFactory = new(draw, rng);
+        FakeShipFactory shipFactory = new(draw);
         Universe universe = new(shipFactory, rng);
         AudioController audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());
         Stars stars = CreateStars(gameState, draw, ship, rng);
-        Pilot pilot = new(draw, audio, universe, ship, rng);
+        Pilot pilot = new(draw, audio, universe, ship);
         MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
 
         Combat combat = new(
@@ -133,7 +134,7 @@ public class PilotControllerTests
             s_rendition,
             rng);
 
-        return NewController(gameState, pilot, ship, stars, space, combat, direction, rng);
+        return NewController(gameState, pilot, ship, stars, space, combat, direction, draw);
     }
 
     // Kept out of CreateController for the same reason CreateStars is: the
@@ -147,7 +148,7 @@ public class PilotControllerTests
         Space space,
         Combat combat,
         PilotDirection direction,
-        RNG rng)
+        IEliteDraw draw)
         => new(
             gameState,
             new FakeKeyboard(),
@@ -158,7 +159,7 @@ public class PilotControllerTests
             space,
             combat,
             direction,
-            rng,
+            draw,
             new FakePilotView());
 
     // Kept out of CreateController, which is already at CA1506's coupling

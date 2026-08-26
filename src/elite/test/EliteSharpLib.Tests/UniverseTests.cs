@@ -15,7 +15,7 @@ public class UniverseTests
     {
         // Arrange
         FakeEliteDraw draw = new();
-        FakeShipFactory fakeShipFactory = new(draw, new(new Random(0)));
+        FakeShipFactory fakeShipFactory = new(draw);
         Universe universe = new(fakeShipFactory, new(new Random(0)));
         IShip ship = fakeShipFactory.CreateShip("CobraMk3");
 
@@ -39,7 +39,7 @@ public class UniverseTests
     {
         // Arrange
         FakeEliteDraw draw = new();
-        FakeShipFactory fakeShipFactory = new(draw, new(new Random(0)));
+        FakeShipFactory fakeShipFactory = new(draw);
         Universe universe = new(fakeShipFactory, new(new Random(0)));
         IShip ship = fakeShipFactory.CreateShip("CobraMk3");
 
@@ -62,9 +62,9 @@ public class UniverseTests
         // Arrange
         FakeEliteDraw draw = new();
         RNG rng = new(new Random(0));
-        FakeShipFactory fakeShipFactory = new(draw, rng);
+        FakeShipFactory fakeShipFactory = new(draw);
         Universe universe = new(fakeShipFactory, rng);
-        IShip planet = new FakeShip(draw, rng) { Type = ShipType.Planet };
+        IShip planet = new FakeShip(draw) { Type = ShipType.Planet };
 
         // Act
         universe.AddNewShip(planet, new(0, 0, 30000, 0), Matrix4x4.Identity, 0, 0);
@@ -81,10 +81,10 @@ public class UniverseTests
         // Arrange
         FakeEliteDraw draw = new();
         RNG rng = new(new Random(0));
-        FakeShipFactory fakeShipFactory = new(draw, rng);
+        FakeShipFactory fakeShipFactory = new(draw);
         Universe universe = new(fakeShipFactory, rng);
 
-        IShip station = new FakeShip(draw, rng)
+        IShip station = new FakeShip(draw)
         {
             Type = ShipType.Coriolis,
             Flags = ShipProperties.Station,

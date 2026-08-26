@@ -91,9 +91,9 @@ public class SpaceTests
     public void JumpWarpReportsMassLockedWhenANonExemptObjectIsPresent()
     {
         Space space = CreateSpace(
-            out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
-        AddFarPlanetAndStation(universe, draw, rng);
-        IShip trader = new FakeShip(draw, rng) { Type = ShipType.CobraMk3 };
+            out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out _, out _);
+        AddFarPlanetAndStation(universe, draw);
+        IShip trader = new FakeShip(draw) { Type = ShipType.CobraMk3 };
         universe.AddNewShip(trader, new(5000, 0, 5000, 0), Matrix4x4.Identity, 0, 0);
 
         space.JumpWarp();
@@ -119,8 +119,8 @@ public class SpaceTests
     public void JumpWarpMovesEverythingByTheClampedJumpDistance()
     {
         Space space = CreateSpace(
-            out _, out Universe universe, out _, out _, out Combat combat, out FakeEliteDraw draw, out RNG rng, out _);
-        AddFarPlanetAndStation(universe, draw, rng);
+            out _, out Universe universe, out _, out _, out Combat combat, out FakeEliteDraw draw, out _, out _);
+        AddFarPlanetAndStation(universe, draw);
         combat.InBattle = true;
 
         space.JumpWarp();
@@ -243,8 +243,8 @@ public class SpaceTests
     public void EngageDockingComputerSetsDockingViewWhenStationPresent()
     {
         Space space = CreateSpace(
-            out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
-        IShip station = new FakeShip(draw, rng) { Type = ShipType.Coriolis };
+            out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out _, out _);
+        IShip station = new FakeShip(draw) { Type = ShipType.Coriolis };
         universe.AddNewShip(station, Vector4.Zero, Matrix4x4.Identity, 0, 0);
 
         space.EngageDockingComputer();
@@ -290,8 +290,8 @@ public class SpaceTests
     public void UpdateAltitudeComputesDistanceNearPlanet()
     {
         Space space = CreateSpace(
-            out _, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
-        IShip planet = new FakeShip(draw, rng) { Type = ShipType.Planet };
+            out _, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out _, out _);
+        IShip planet = new FakeShip(draw) { Type = ShipType.Planet };
         universe.AddNewShip(planet, new(0, 0, 30000, 0), Matrix4x4.Identity, 0, 0);
 
         space.UpdateAltitude();
@@ -308,9 +308,9 @@ public class SpaceTests
         // so the Constrictor's "only military lasers penetrate" gimmick
         // doesn't save it from a bomb.
         Space space = CreateSpace(
-            out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
+            out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out _, out _);
         gameState.DetonateBomb = true;
-        FakeShip constrictor = new(draw, rng) { Type = ShipType.Constrictor };
+        FakeShip constrictor = new(draw) { Type = ShipType.Constrictor };
         universe.AddNewShip(constrictor, new(0, 0, 500, 0), Matrix4x4.Identity, 0, 0);
 
         space.UpdateUniverse();
@@ -325,12 +325,12 @@ public class SpaceTests
         // orientation vectors or spinning, "we don't need to rotate the sun
         // around its origin." A planet, by contrast, still rotates.
         Space space = CreateSpace(
-            out _, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
+            out _, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out _, out _);
         ship.Roll = 30;
         ship.Climb = 20;
-        FakeShip sun = new(draw, rng) { Type = ShipType.Sun, Rotmat = Matrix4x4.Identity };
+        FakeShip sun = new(draw) { Type = ShipType.Sun, Rotmat = Matrix4x4.Identity };
         universe.AddNewShip(sun, new(0, 0, 500, 0), Matrix4x4.Identity, 0, 0);
-        FakeShip planet = new(draw, rng) { Type = ShipType.Planet, Rotmat = Matrix4x4.Identity };
+        FakeShip planet = new(draw) { Type = ShipType.Planet, Rotmat = Matrix4x4.Identity };
         universe.AddNewShip(planet, new(1000, 0, 500, 0), Matrix4x4.Identity, 0, 0);
 
         space.UpdateUniverse();
@@ -343,8 +343,8 @@ public class SpaceTests
     public void UpdateAltitudeTriggersGameOverWhenTooClose()
     {
         Space space = CreateSpace(
-            out GameState gameState, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
-        IShip planet = new FakeShip(draw, rng) { Type = ShipType.Planet };
+            out GameState gameState, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out _, out _);
+        IShip planet = new FakeShip(draw) { Type = ShipType.Planet };
         universe.AddNewShip(planet, new(0, 0, 100, 0), Matrix4x4.Identity, 0, 0);
 
         space.UpdateAltitude();
@@ -368,8 +368,8 @@ public class SpaceTests
     public void UpdateCabinTempStaysDefaultWhenStationPresent()
     {
         Space space = CreateSpace(
-            out _, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
-        IShip station = new FakeShip(draw, rng) { Type = ShipType.Coriolis };
+            out _, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out _, out _);
+        IShip station = new FakeShip(draw) { Type = ShipType.Coriolis };
         universe.AddNewShip(station, Vector4.Zero, Matrix4x4.Identity, 0, 0);
 
         space.UpdateCabinTemp();
@@ -382,8 +382,8 @@ public class SpaceTests
     {
         // Z=64000 -> dist = (64000/256)^2 / 256 = 244.14, inverted to 256-244 = 12.
         Space space = CreateSpace(
-            out _, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
-        IShip sun = new FakeShip(draw, rng) { Type = ShipType.Sun };
+            out _, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out _, out _);
+        IShip sun = new FakeShip(draw) { Type = ShipType.Sun };
         universe.AddNewShip(sun, new(0, 0, 64000, 0), Matrix4x4.Identity, 0, 0);
 
         space.UpdateCabinTemp();
@@ -397,8 +397,8 @@ public class SpaceTests
         // Z=28672 -> dist = (112)^2 / 256 = 49 exactly, inverted to 256-49 = 207,
         // landing the cabin temperature in the fuel-scoop band (>=224, <256).
         Space space = CreateSpace(
-            out GameState gameState, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
-        IShip sun = new FakeShip(draw, rng) { Type = ShipType.Sun };
+            out GameState gameState, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out _, out _);
+        IShip sun = new FakeShip(draw) { Type = ShipType.Sun };
         universe.AddNewShip(sun, new(0, 0, 28672, 0), Matrix4x4.Identity, 0, 0);
         ship.HasFuelScoop = true;
         ship.Speed = 10;
@@ -415,8 +415,8 @@ public class SpaceTests
     public void UpdateCabinTempDoesNotActivateFuelScoopWithoutEquipment()
     {
         Space space = CreateSpace(
-            out _, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
-        IShip sun = new FakeShip(draw, rng) { Type = ShipType.Sun };
+            out _, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out _, out _);
+        IShip sun = new FakeShip(draw) { Type = ShipType.Sun };
         universe.AddNewShip(sun, new(0, 0, 28672, 0), Matrix4x4.Identity, 0, 0);
         ship.HasFuelScoop = false;
         ship.Fuel = 0;
@@ -431,8 +431,8 @@ public class SpaceTests
     public void UpdateCabinTempTriggersGameOverWhenTooHot()
     {
         Space space = CreateSpace(
-            out GameState gameState, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
-        IShip sun = new FakeShip(draw, rng) { Type = ShipType.Sun };
+            out GameState gameState, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out _, out _);
+        IShip sun = new FakeShip(draw) { Type = ShipType.Sun };
         universe.AddNewShip(sun, new(0, 0, 256, 0), Matrix4x4.Identity, 0, 0);
 
         space.UpdateCabinTemp();
@@ -445,8 +445,8 @@ public class SpaceTests
     public void RefreshPlanetStyleRebuildsThePlanetInPlace()
     {
         Space space = CreateSpace(
-            out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
-        FakeShip oldPlanet = new(draw, rng) { Type = ShipType.Planet };
+            out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out _, out _);
+        FakeShip oldPlanet = new(draw) { Type = ShipType.Planet };
         universe.AddNewShip(oldPlanet, new(0, 0, 65536, 0), Matrix4x4.Identity, 0, 0);
         gameState.Config.Engine.Graphics.FillMode = FillMode.Wireframe;
 
@@ -478,8 +478,8 @@ public class SpaceTests
     public void RefreshSunStyleRebuildsTheSunInPlace()
     {
         Space space = CreateSpace(
-            out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
-        FakeShip oldSun = new(draw, rng) { Type = ShipType.Sun };
+            out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out _, out _);
+        FakeShip oldSun = new(draw) { Type = ShipType.Sun };
         universe.AddNewShip(oldSun, new(0, 0, 64000, 0), Matrix4x4.Identity, 0, 0);
         gameState.Config.Game.SunStyle = SunType.Solid;
 
@@ -496,8 +496,8 @@ public class SpaceTests
     public void RefreshSunStyleGivesAWireframeWorldAWireframeSunWhateverTheSunStyle()
     {
         Space space = CreateSpace(
-            out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
-        FakeShip oldSun = new(draw, rng) { Type = ShipType.Sun };
+            out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out _, out _);
+        FakeShip oldSun = new(draw) { Type = ShipType.Sun };
         universe.AddNewShip(oldSun, new(0, 0, 64000, 0), Matrix4x4.Identity, 0, 0);
         gameState.Config.Engine.Graphics.FillMode = FillMode.Wireframe;
         gameState.Config.Game.SunStyle = SunType.Gradient;
@@ -511,8 +511,8 @@ public class SpaceTests
     public void RefreshPlanetStyleGivesAWireframeWorldAWireframePlanetWhateverThePlanetStyle()
     {
         Space space = CreateSpace(
-            out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
-        FakeShip oldPlanet = new(draw, rng) { Type = ShipType.Planet };
+            out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out _, out _);
+        FakeShip oldPlanet = new(draw) { Type = ShipType.Planet };
         universe.AddNewShip(oldPlanet, new(0, 0, 65536, 0), Matrix4x4.Identity, 0, 0);
         gameState.Config.Engine.Graphics.FillMode = FillMode.Wireframe;
         gameState.Config.Game.PlanetStyle = PlanetType.Fractal;
@@ -529,8 +529,8 @@ public class SpaceTests
     public void RefreshSunStyleLeavesAStationAlone()
     {
         Space space = CreateSpace(
-            out _, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
-        IShip station = new FakeShip(draw, rng) { Type = ShipType.Coriolis, Flags = ShipProperties.Station };
+            out _, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out _, out _);
+        IShip station = new FakeShip(draw) { Type = ShipType.Coriolis, Flags = ShipProperties.Station };
         universe.AddNewShip(station, Vector4.Zero, Matrix4x4.Identity, 0, 0);
 
         space.RefreshSunStyle();
@@ -590,12 +590,12 @@ public class SpaceTests
         Assert.Equal(8, universe.GetAllObjects().Count());
     }
 
-    private static void AddFarPlanetAndStation(Universe universe, FakeEliteDraw draw, RNG rng)
+    private static void AddFarPlanetAndStation(Universe universe, FakeEliteDraw draw)
     {
-        IShip planet = new FakeShip(draw, rng) { Type = ShipType.Planet };
+        IShip planet = new FakeShip(draw) { Type = ShipType.Planet };
         universe.AddNewShip(planet, new(100000, 0, 0, 0), Matrix4x4.Identity, 0, 0);
 
-        IShip station = new FakeShip(draw, rng) { Type = ShipType.Sun };
+        IShip station = new FakeShip(draw) { Type = ShipType.Sun };
         universe.AddNewShip(station, new(0, 150000, 0, 0), Matrix4x4.Identity, 0, 0);
     }
 
@@ -619,10 +619,10 @@ public class SpaceTests
         draw = new FakeEliteDraw();
         randomSource = new FakeRandomSource();
         rng = new(randomSource);
-        FakeShipFactory shipFactory = new(draw, rng);
+        FakeShipFactory shipFactory = new(draw);
         universe = new(shipFactory, rng);
         AudioController audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());
-        Pilot pilot = new(draw, audio, universe, ship, rng);
+        Pilot pilot = new(draw, audio, universe, ship);
         MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
 
         combat = new Combat(

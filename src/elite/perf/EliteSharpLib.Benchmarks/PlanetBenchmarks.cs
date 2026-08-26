@@ -41,7 +41,7 @@ public class PlanetBenchmarks : IDisposable
         GameState gameState = new(views, new MissionRegistry([], NullLogger<MissionRegistry>.Instance));
         _graphics = SoftwareGraphics.Create(ScreenWidth, ScreenHeight, (_) => { }, assetLocator);
         ZBufferRenderer shipRenderer = new(_graphics);
-        RNG rng = new(Random.Shared);
+        RenderRandom renderRandom = new(Random.Shared);
         EliteDraw draw = new(
             gameState,
             _graphics,
@@ -49,7 +49,7 @@ public class PlanetBenchmarks : IDisposable
             assetLocator,
             new SixteenBitRendition(),
             shipRenderer,
-            rng);
+            renderRandom);
         SixteenBitRendition rendition = new();
         _wireframePlanet = Planet(draw, rendition, PlanetStyle.Wireframe);
         _solidPlanet = Planet(draw, rendition, PlanetStyle.Solid);

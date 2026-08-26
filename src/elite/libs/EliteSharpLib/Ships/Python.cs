@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal class Python : ShipBase
 {
-    internal Python(IEliteDraw draw, RNG rng)
-        : base(draw, rng)
+    internal Python(IEliteDraw draw)
+        : base(draw)
     {
         Type = ShipType.Python;
         Flags = ShipProperties.Trader;

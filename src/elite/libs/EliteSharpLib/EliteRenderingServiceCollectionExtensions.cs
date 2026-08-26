@@ -26,6 +26,11 @@ internal static class EliteRenderingServiceCollectionExtensions
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IGraphics>(),
             sp.GetRequiredService<IAssetLocator>()));
+
+        // The drawing's own entropy, registered beside the surface that
+        // carries it and deliberately not the game's stream. See
+        // RenderRandom.
+        services.AddSingleton(_ => new RenderRandom(new()));
         services.AddSingleton<IEliteDraw>(sp => new EliteDraw(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IGraphics>(),
@@ -33,7 +38,7 @@ internal static class EliteRenderingServiceCollectionExtensions
             sp.GetRequiredService<IAssetLocator>(),
             sp.GetRequiredService<IRendition>(),
             sp.GetRequiredService<IPolygonRenderer>(),
-            sp.GetRequiredService<RNG>()));
+            sp.GetRequiredService<RenderRandom>()));
         services.AddSingleton<IShipFactory>(sp => ShipFactory.Create(
             sp.GetRequiredService<IAssetLocator>(),
             sp.GetRequiredService<IEliteDraw>(),

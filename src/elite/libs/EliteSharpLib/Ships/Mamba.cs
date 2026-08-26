@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Mamba : ShipBase
 {
-    internal Mamba(IEliteDraw draw, RNG rng)
-        : base(draw, rng)
+    internal Mamba(IEliteDraw draw)
+        : base(draw)
     {
         Type = ShipType.Mamba;
         Flags = ShipProperties.PackHunter | ShipProperties.Bold | ShipProperties.Angry;

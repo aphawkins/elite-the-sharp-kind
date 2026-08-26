@@ -7,6 +7,7 @@ using System.Numerics;
 using EliteSharp.Abstractions.Ships;
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Conflict;
+using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
 using SharpKind.Graphics.Rendering;
 using SharpKind.Input;
@@ -30,7 +31,7 @@ internal sealed class PilotController : IScreenController
     private readonly Space _space;
     private readonly Combat _combat;
     private readonly PilotDirection _direction;
-    private readonly RNG _rng;
+    private readonly IEliteDraw _draw;
     private readonly IView<PilotModel> _view;
 
     private int _drawLaserFrames;
@@ -45,7 +46,7 @@ internal sealed class PilotController : IScreenController
         Space space,
         Combat combat,
         PilotDirection direction,
-        RNG rng,
+        IEliteDraw draw,
         IView<PilotModel> view)
     {
         _gameState = gameState;
@@ -56,7 +57,7 @@ internal sealed class PilotController : IScreenController
         _stars = stars;
         _space = space;
         _combat = combat;
-        _rng = rng;
+        _draw = draw;
         _direction = direction;
         _view = view;
     }
@@ -124,7 +125,7 @@ internal sealed class PilotController : IScreenController
         // that shimmer is the original's. The roll happens here because the
         // game owns the one source of entropy; a view that rolled its own
         // would not be reproducible.
-        Vector2 laserAim = new(_rng.Random(0, 2), _rng.Random(0, 2));
+        Vector2 laserAim = new(_draw.Jitter.Random(0, 2), _draw.Jitter.Random(0, 2));
 
         return new(
             viewName,

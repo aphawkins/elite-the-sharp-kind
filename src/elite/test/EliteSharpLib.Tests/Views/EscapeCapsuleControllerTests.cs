@@ -71,7 +71,7 @@ public class EscapeCapsuleControllerTests
         Trade trade = new(gameState, ship);
         FakeEliteDraw draw = new();
         RNG rng = new(new FakeRandomSource());
-        FakeShipFactory shipFactory = new(draw, rng);
+        FakeShipFactory shipFactory = new(draw);
         Universe universe = new(shipFactory, rng);
 
         // The two effects the sequence plays; AudioController looks a sample up
@@ -83,7 +83,7 @@ public class EscapeCapsuleControllerTests
         };
         AudioController audio = new(new FakeSound(), sfx, new());
         Stars stars = new(gameState, draw, ship, new SixteenBitRendition().CreateStarfieldRenderer(draw), rng);
-        Pilot pilot = new(draw, audio, universe, ship, rng);
+        Pilot pilot = new(draw, audio, universe, ship);
 
         return new EscapeCapsuleController(
             gameState,
@@ -95,7 +95,6 @@ public class EscapeCapsuleControllerTests
             pilot,
             draw,
             shipFactory,
-            rng,
             new FakeEscapeCapsuleView());
     }
 

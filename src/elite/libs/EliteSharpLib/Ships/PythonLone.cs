@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class PythonLone : Python
 {
-    internal PythonLone(IEliteDraw draw, RNG rng)
-        : base(draw, rng)
+    internal PythonLone(IEliteDraw draw)
+        : base(draw)
     {
         Type = ShipType.PythonLone;
         Flags = ShipProperties.LoneWolf | ShipProperties.Bold | ShipProperties.Angry;

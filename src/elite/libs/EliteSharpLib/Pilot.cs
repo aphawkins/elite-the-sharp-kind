@@ -21,22 +21,20 @@ internal sealed class Pilot
     private readonly AudioController _audio;
     private readonly PlayerShip _ship;
     private readonly Universe _universe;
-    private readonly RNG _rng;
 
-    internal Pilot(IEliteDraw draw, AudioController audio, Universe universe, PlayerShip ship, RNG rng)
+    internal Pilot(IEliteDraw draw, AudioController audio, Universe universe, PlayerShip ship)
     {
         _draw = draw;
         _audio = audio;
         _universe = universe;
         _ship = ship;
-        _rng = rng;
     }
 
     internal bool IsAutoPilotOn { get; private set; }
 
     internal void AutoDock()
     {
-        ShipBase ship = new(_draw, _rng)
+        ShipBase ship = new(_draw)
         {
             Rotmat = VectorMaths.GetLeftHandedBasisMatrix,
             Location = Vector4.Zero,

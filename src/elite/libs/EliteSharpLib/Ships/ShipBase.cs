@@ -59,7 +59,7 @@ internal class ShipBase : IShip
     private const float DetailScreenRadius = 16f;
 
     private readonly IEliteDraw _draw;
-    private readonly RNG _rng;
+    private readonly IRandomSource _rng;
 
     // What the model's shape implies. Derived whenever the model is set, so
     // the two always agree.
@@ -70,10 +70,10 @@ internal class ShipBase : IShip
     private Vector4[] _pointList = [];
     private Vector3[] _cameraList = [];
 
-    internal ShipBase(IEliteDraw draw, RNG rng)
+    internal ShipBase(IEliteDraw draw)
     {
         _draw = draw;
-        _rng = rng;
+        _rng = draw.Jitter;
         Model = ModelReader.None;
     }
 

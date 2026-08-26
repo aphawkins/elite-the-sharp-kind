@@ -8,6 +8,7 @@ using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
 using SharpKind;
 using SharpKind.Assets.Palettes;
+using SharpKind.Fakes;
 using SharpKind.Fakes.Assets;
 using SharpKind.Graphics;
 using SharpKind.Graphics.Fakes;
@@ -22,6 +23,12 @@ internal class FakeEliteDraw : IEliteDraw
     public string Rendition { get; set; } = "16-bit";
 
     public float Focus => 512;
+
+    // No jitter at all, rather than a seeded stream: the shimmer is
+    // cosmetic, and a test asserting where a laser bolt lands wants the
+    // geometry, not a random offset it would have to model to predict.
+    // Settable so a test that does care can force a spread.
+    public IRandomSource Jitter { get; set; } = new FakeRandomSource();
 
     public IGraphics Graphics { get; set; } = new RecordingGraphics();
 

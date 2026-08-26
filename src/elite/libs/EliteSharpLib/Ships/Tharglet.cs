@@ -9,8 +9,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Tharglet : ShipBase
 {
-    internal Tharglet(IEliteDraw draw, RNG rng)
-        : base(draw, rng)
+    internal Tharglet(IEliteDraw draw)
+        : base(draw)
     {
         Type = ShipType.Tharglet;
         Flags = ShipProperties.Tharglet | ShipProperties.Angry;

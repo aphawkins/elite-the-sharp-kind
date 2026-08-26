@@ -31,9 +31,9 @@ public class VisualDumpTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, TestAssets.Locator());
         GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
         ZBufferRenderer shipRenderer = new(graphics);
-        RNG rng = new(new Random(0));
+        RenderRandom rng = new(new Random(0));
         EliteDraw draw = new(gameState, graphics, new(512, 512), TestAssets.Locator(), new SixteenBitRendition(), shipRenderer, rng);
-        ShipFactory factory = ShipFactory.Create(TestAssets.Locator(), draw, rng);
+        ShipFactory factory = ShipFactory.Create(TestAssets.Locator(), draw, new RNG(new Random(0)));
 
         void RenderAndSave(string name, params IShip[] ships)
         {
@@ -118,9 +118,9 @@ public class VisualDumpTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, TestAssets.Locator());
         WireframeRenderer shipRenderer = new(graphics, TestAssets.Locator());
         GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
-        RNG rng = new(new Random(0));
+        RenderRandom rng = new(new Random(0));
         EliteDraw draw = new(gameState, graphics, new(512, 512), TestAssets.Locator(), new SixteenBitRendition(), shipRenderer, rng);
-        ShipFactory factory = ShipFactory.Create(TestAssets.Locator(), draw, rng);
+        ShipFactory factory = ShipFactory.Create(TestAssets.Locator(), draw, new RNG(new Random(0)));
 
         IShip missile = factory.CreateShip("Missile");
         missile.Location = new(0, 0, 120, 0);
@@ -150,7 +150,7 @@ public class VisualDumpTests
             new SixteenBitRendition(),
             solidRenderer,
             rng);
-        IShip solidMissile = ShipFactory.Create(TestAssets.Locator(), solidDraw, rng).CreateShip("Missile");
+        IShip solidMissile = ShipFactory.Create(TestAssets.Locator(), solidDraw, new RNG(new Random(0))).CreateShip("Missile");
         solidMissile.Location = new(0, 0, 120, 0);
 
         for (int i = 0; i < 6; i++)
@@ -184,9 +184,9 @@ public class VisualDumpTests
             using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, TestAssets.Locator());
             IPolygonRenderer shipRenderer = createRenderer(graphics);
             GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
-            RNG rng = new(new Random(0));
+            RenderRandom rng = new(new Random(0));
             EliteDraw draw = new(gameState, graphics, new(512, 512), TestAssets.Locator(), new SixteenBitRendition(), shipRenderer, rng);
-            ShipFactory factory = ShipFactory.Create(TestAssets.Locator(), draw, rng);
+            ShipFactory factory = ShipFactory.Create(TestAssets.Locator(), draw, new RNG(new Random(0)));
 
             IShip asteroid = factory.CreateShip("Asteroid");
             asteroid.Location = new(0, 0, 300, 0);

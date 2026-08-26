@@ -11,8 +11,8 @@ namespace EliteSharpLib.Fakes;
 
 internal sealed class FakeShip : ShipBase
 {
-    public FakeShip(IEliteDraw draw, RNG rng)
-        : base(draw, rng)
+    public FakeShip(IEliteDraw draw)
+        : base(draw)
     {
         Model = ModelReader.None;
         Name = "FakeShip";

@@ -7,7 +7,6 @@ using EliteSharpLib.Fakes;
 using EliteSharpLib.Ships;
 using SharpKind;
 using SharpKind.Assets.Models;
-using SharpKind.Fakes;
 
 namespace EliteSharpLib.Tests;
 
@@ -52,7 +51,7 @@ public class ShipBaseTests
         Face face = new() { Color = default, Points = [modelPointA, modelPointB], PointIndices = [0, 1] };
 
         FakeEliteDraw draw = new();
-        FakeShip ship = new(draw, new(new Random(0)))
+        FakeShip ship = new(draw)
         {
             Rotmat = rotmat,
             Location = location,
@@ -93,7 +92,7 @@ public class ShipBaseTests
         Point mountPoint = new() { Coords = mountCoords, FaceNormals = [] };
 
         FakeEliteDraw draw = new();
-        FakeShip ship = new(draw, new(new FakeRandomSource { RandomValue = 0 }))
+        FakeShip ship = new(draw)
         {
             Rotmat = Matrix4x4.Identity,
             Location = location,
@@ -148,7 +147,7 @@ public class ShipBaseTests
         Vector4 pointC = new(0, 100, 600, 0);
 
         FakeEliteDraw draw = new();
-        FakeShip ship = new(draw, new(new Random(0)))
+        FakeShip ship = new(draw)
         {
             Rotmat = Matrix4x4.Identity,
             Location = location,
@@ -185,7 +184,7 @@ public class ShipBaseTests
         ];
 
         FakeEliteDraw draw = new();
-        FakeShip ship = new(draw, new(new Random(0)))
+        FakeShip ship = new(draw)
         {
             Rotmat = Matrix4x4.Identity,
             Location = location,
@@ -223,7 +222,7 @@ public class ShipBaseTests
     {
         // Arrange
         FakeEliteDraw draw = new();
-        FakeShip ship = new(draw, new(new Random(0)))
+        FakeShip ship = new(draw)
         {
             Rotmat = Matrix4x4.Identity,
             Location = new(x, y, z, 0),
@@ -247,7 +246,7 @@ public class ShipBaseTests
         // back into view. A cull on the origin alone would clip the hull off
         // the edge of the screen.
         FakeEliteDraw draw = new();
-        FakeShip ship = new(draw, new(new Random(0)))
+        FakeShip ship = new(draw)
         {
             Rotmat = Matrix4x4.Identity,
             Location = new(540, 0, 1000, 0),
@@ -278,7 +277,7 @@ public class ShipBaseTests
         Vector4 pointC = new(0, 100, 100, 0);
 
         FakeEliteDraw draw = new();
-        FakeShip ship = new(draw, new(new Random(0)))
+        FakeShip ship = new(draw)
         {
             Rotmat = Matrix4x4.Identity,
             Location = Vector4.Zero,
@@ -313,7 +312,7 @@ public class ShipBaseTests
         ];
 
         FakeEliteDraw draw = new();
-        FakeShip ship = new(draw, new(new Random(0)))
+        FakeShip ship = new(draw)
         {
             Rotmat = Matrix4x4.Identity,
             Location = location,
@@ -345,7 +344,7 @@ public class ShipBaseTests
         Point end = new() { Coords = new(10, 0, 0, 0), FaceNormals = [shared] };
 
         FakeEliteDraw draw = new();
-        FakeShip ship = new(draw, new(new Random(0)))
+        FakeShip ship = new(draw)
         {
             Rotmat = Matrix4x4.Identity,
 
@@ -384,7 +383,7 @@ public class ShipBaseTests
         Point mountPoint = new() { Coords = new(10, 20, 50, 0), FaceNormals = [mountNormal] };
 
         FakeEliteDraw draw = new();
-        FakeShip ship = new(draw, new(new FakeRandomSource { RandomValue = 0 }))
+        FakeShip ship = new(draw)
         {
             Rotmat = Matrix4x4.Identity,
             Location = new(500, 0, 1000, 0),
@@ -424,7 +423,7 @@ public class ShipBaseTests
             new(0, 10, 0, 0),
         ];
 
-        FakeShip ship = new(new FakeEliteDraw(), new(new Random(0)))
+        FakeShip ship = new(new FakeEliteDraw())
         {
             Rotmat = Matrix4x4.Identity,
             Location = new(0, 0, 1000, 0),
@@ -453,7 +452,7 @@ public class ShipBaseTests
             new(0, 10 * MathF.Cos(MathF.PI / 6), -10 * MathF.Sin(MathF.PI / 6), 0),
         ];
 
-        FakeShip ship = new(new FakeEliteDraw(), new(new Random(0)))
+        FakeShip ship = new(new FakeEliteDraw())
         {
             Rotmat = Matrix4x4.Identity,
             Location = new(0, 0, 1000, 0),
@@ -497,7 +496,7 @@ public class ShipBaseTests
         }
 
         FakeEliteDraw draw = new() { ShadesPerVertex = true };
-        FakeShip ship = new(draw, new(new Random(0)))
+        FakeShip ship = new(draw)
         {
             Rotmat = Matrix4x4.Identity,
             Location = new(0, 0, 1000, 0),
@@ -538,7 +537,7 @@ public class ShipBaseTests
         ];
 
         FakeEliteDraw draw = new() { ShadesPerVertex = true };
-        FakeShip ship = new(draw, new(new Random(0)))
+        FakeShip ship = new(draw)
         {
             Rotmat = Matrix4x4.Identity,
             Location = new(0, 0, 1000, 0),
@@ -577,7 +576,7 @@ public class ShipBaseTests
         ];
 
         FakeEliteDraw draw = new();
-        FakeShip ship = new(draw, new(new Random(0)))
+        FakeShip ship = new(draw)
         {
             Rotmat = Matrix4x4.Identity,
             Location = new(0, 0, depth, 0),

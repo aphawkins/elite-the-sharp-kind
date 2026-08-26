@@ -40,6 +40,7 @@ public class SunBenchmarks : IDisposable
         _graphics = SoftwareGraphics.Create(ScreenWidth, ScreenHeight, (_) => { }, assetLocator);
         ZBufferRenderer shipRenderer = new(_graphics);
         RNG rng = new(Random.Shared);
+        RenderRandom renderRandom = new(Random.Shared);
         EliteDraw draw = new(
             gameState,
             _graphics,
@@ -47,7 +48,7 @@ public class SunBenchmarks : IDisposable
             assetLocator,
             new SixteenBitRendition(),
             shipRenderer,
-            rng);
+            renderRandom);
         SixteenBitRendition rendition = new();
         _gradientSun = Sun(draw, rendition, rng, SunStyle.Gradient);
         _solidSun = Sun(draw, rendition, rng, SunStyle.Solid);
@@ -85,6 +86,6 @@ public class SunBenchmarks : IDisposable
 
     // The renderer comes off the rendition now, so the benchmark builds one
     // the same way the game does.
-    private static Sun Sun(EliteDraw draw, SixteenBitRendition rendition, RNG rng, SunStyle style)
-        => new(draw, rendition.CreateSunRenderer(draw, new(style, rng)));
+    private static Sun Sun(EliteDraw draw, SixteenBitRendition rendition, RNG renderRandom, SunStyle style)
+        => new(draw, rendition.CreateSunRenderer(draw, new(style, renderRandom)));
 }

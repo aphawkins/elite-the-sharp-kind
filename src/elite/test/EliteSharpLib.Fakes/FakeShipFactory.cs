@@ -7,26 +7,26 @@ using EliteSharpLib.Ships;
 
 namespace EliteSharpLib.Fakes;
 
-internal sealed class FakeShipFactory(IEliteDraw draw, RNG rng) : IShipFactory
+internal sealed class FakeShipFactory(IEliteDraw draw) : IShipFactory
 {
-    public IShip CreateAsteroid() => new FakeShip(draw, rng);
+    public IShip CreateAsteroid() => new FakeShip(draw);
 
-    public IShip CreateLoneWolf() => new FakeShip(draw, rng)
+    public IShip CreateLoneWolf() => new FakeShip(draw)
     {
         Type = ShipType.FerDeLance,
         Flags = ShipProperties.LoneWolf | ShipProperties.BountyHunter,
     };
 
-    public IShip CreatePackHunter() => new FakeShip(draw, rng);
+    public IShip CreatePackHunter() => new FakeShip(draw);
 
-    public List<IShip> CreateParade() => [new FakeShip(draw, rng)];
+    public List<IShip> CreateParade() => [new FakeShip(draw)];
 
-    public IShip CreatePirate() => new FakeShip(draw, rng);
+    public IShip CreatePirate() => new FakeShip(draw);
 
-    public IShip CreateShip(string shipName) => new FakeShip(draw, rng)
+    public IShip CreateShip(string shipName) => new FakeShip(draw)
     {
         Type = ShipType.CobraMk3,
     };
 
-    public IShip CreateTrader() => new FakeShip(draw, rng);
+    public IShip CreateTrader() => new FakeShip(draw);
 }

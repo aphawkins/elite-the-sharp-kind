@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class CargoCannister : ShipBase
 {
-    internal CargoCannister(IEliteDraw draw, RNG rng)
-        : base(draw, rng)
+    internal CargoCannister(IEliteDraw draw)
+        : base(draw)
     {
         Type = ShipType.Cargo;
         Flags = ShipProperties.SpaceJunk | ShipProperties.Inactive;

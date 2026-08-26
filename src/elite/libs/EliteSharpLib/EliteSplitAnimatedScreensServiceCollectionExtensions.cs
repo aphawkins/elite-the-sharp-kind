@@ -59,7 +59,6 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
             sp.GetRequiredService<Pilot>(),
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<IShipFactory>(),
-            sp.GetRequiredService<RNG>(),
             sp.GetRequiredService<IView<EscapeCapsuleModel>>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<EscapeCapsuleController>()));
 

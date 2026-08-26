@@ -28,6 +28,14 @@ internal interface IEliteDraw : IViewSurface
     public float Focus { get; }
 
     /// <summary>
+    /// Gets the entropy for anything cosmetic in a drawing - a laser's aim
+    /// shimmer, an explosion's debris scatter. It rides on the draw surface
+    /// because it belongs to the drawing, and deliberately is not the game's
+    /// stream: see <see cref="RenderRandom"/>.
+    /// </summary>
+    public IRandomSource Jitter { get; }
+
+    /// <summary>
     /// Gets the perspective projection itself - <see cref="Focus"/> about the
     /// viewport centre. Everything that puts a camera-space point on screen
     /// goes through this, so there is one projection and not five.

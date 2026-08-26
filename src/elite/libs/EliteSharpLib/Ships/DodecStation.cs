@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class DodecStation : ShipBase
 {
-    internal DodecStation(IEliteDraw draw, RNG rng)
-        : base(draw, rng)
+    internal DodecStation(IEliteDraw draw)
+        : base(draw)
     {
         Type = ShipType.Dodec;
         Flags = ShipProperties.Station;

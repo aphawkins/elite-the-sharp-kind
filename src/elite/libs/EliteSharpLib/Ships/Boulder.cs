@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Boulder : ShipBase
 {
-    internal Boulder(IEliteDraw draw, RNG rng)
-        : base(draw, rng)
+    internal Boulder(IEliteDraw draw)
+        : base(draw)
     {
         Type = ShipType.Boulder;
         Flags = ShipProperties.SpaceJunk | ShipProperties.Inactive;

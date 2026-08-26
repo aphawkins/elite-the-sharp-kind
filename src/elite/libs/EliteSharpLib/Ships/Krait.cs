@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Krait : ShipBase
 {
-    internal Krait(IEliteDraw draw, RNG rng)
-        : base(draw, rng)
+    internal Krait(IEliteDraw draw)
+        : base(draw)
     {
         Type = ShipType.Krait;
         Flags = ShipProperties.PackHunter | ShipProperties.Bold | ShipProperties.Angry;

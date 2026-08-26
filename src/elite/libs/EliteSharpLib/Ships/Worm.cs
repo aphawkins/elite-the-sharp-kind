@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Worm : ShipBase
 {
-    internal Worm(IEliteDraw draw, RNG rng)
-        : base(draw, rng)
+    internal Worm(IEliteDraw draw)
+        : base(draw)
     {
         Type = ShipType.Worm;
         Flags = ShipProperties.PackHunter | ShipProperties.Slow | ShipProperties.Angry;
