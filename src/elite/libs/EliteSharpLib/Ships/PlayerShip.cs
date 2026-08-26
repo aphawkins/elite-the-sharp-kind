@@ -117,7 +117,11 @@ internal sealed class PlayerShip
 
     internal float Climb { get; set; }
 
-    internal int EcmActive { get; set; }
+    /// <summary>
+    /// Gets or sets how much longer an E.C.M. burst runs, counted in the
+    /// game's own ticks. Zero when none is running.
+    /// </summary>
+    internal float EcmActive { get; set; }
 
     /// <summary>
     /// Gets or sets the energy banks, between <see cref="EnergyMin"/> and

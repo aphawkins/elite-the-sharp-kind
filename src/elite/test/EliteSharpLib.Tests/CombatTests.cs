@@ -224,6 +224,57 @@ public class CombatTests
         Assert.True(Assert.Single(universe.GetAllObjects()).Flags.HasFlag(ShipProperties.Angry));
     }
 
+    [Fact]
+    public void AnEcmBurstLastsThirtyTwoTicksWhateverTheUpdateRate()
+    {
+        // No golden scenario fires an E.C.M., so this is the only thing that
+        // holds the burst to a length in time rather than in updates. At a
+        // quarter of a tick an update it takes four times as many updates to
+        // spend the same thirty-two ticks.
+        Combat combat = CreateCombat(out _, out PlayerShip ship, out _, out GameState state, randomValue: 0);
+        ship.EcmActive = 32;
+        state.Clock.BeginUpdate(1f / GameClock.StepsPerSecond / 4f);
+
+        for (int update = 0; update < (32 * 4) - 1; update++)
+        {
+            combat.TimeECM();
+        }
+
+        Assert.True(ship.EcmActive > 0);
+
+        combat.TimeECM();
+
+        Assert.Equal(0f, ship.EcmActive, 4);
+    }
+
+    [Fact]
+    public void AnEcmBurstCostsTheSameEnergyWhateverTheUpdateRate()
+    {
+        // Ours to run, so it drains a unit of energy per tick. The drain has
+        // to follow the same clock as the countdown or a faster rate would
+        // make E.C.M. cheap.
+        Combat combat = CreateCombat(out _, out PlayerShip whole, out _, out GameState wholeState, randomValue: 0);
+        float startingEnergy = whole.Energy;
+        whole.EcmActive = 32;
+        wholeState.Clock.BeginUpdate(1f / GameClock.StepsPerSecond);
+        for (int update = 0; update < 32; update++)
+        {
+            combat.TimeECM();
+        }
+
+        float wholeDrain = startingEnergy - whole.Energy;
+
+        Combat quarters = CreateCombat(out _, out PlayerShip fast, out _, out GameState fastState, randomValue: 0);
+        fast.EcmActive = 32;
+        fastState.Clock.BeginUpdate(1f / GameClock.StepsPerSecond / 4f);
+        for (int update = 0; update < 32 * 4; update++)
+        {
+            quarters.TimeECM();
+        }
+
+        Assert.Equal(wholeDrain, startingEnergy - fast.Energy, wholeDrain * 0.001f);
+    }
+
     private static void InvokeCreateLoneWolf(Combat combat)
     {
         MethodInfo method = typeof(Combat).GetMethod("CreateLoneWolf", BindingFlags.Instance | BindingFlags.NonPublic)

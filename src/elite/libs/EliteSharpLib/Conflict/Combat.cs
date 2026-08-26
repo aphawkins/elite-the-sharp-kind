@@ -411,15 +411,23 @@ internal sealed partial class Combat
         ShipTactics(ship);
     }
 
+    // A burst lasts thirty-two of the game's ticks and, if it is ours,
+    // costs a unit of energy for each of them - so both are counted in
+    // ticks rather than in updates, or a burst would last a quarter as long
+    // and cost a quarter as much at sixty frames a second.
     internal void TimeECM()
     {
-        if (_ship.EcmActive != 0)
+        if (_ship.EcmActive <= 0)
         {
-            _ship.EcmActive--;
-            if (_isEcmOurs)
-            {
-                _ship.DecreaseEnergy(-1);
-            }
+            return;
+        }
+
+        float ticks = MathF.Min(_gameState.Clock.Ticks, _ship.EcmActive);
+        _ship.EcmActive -= ticks;
+
+        if (_isEcmOurs)
+        {
+            _ship.DecreaseEnergy(-ticks);
         }
     }
 
