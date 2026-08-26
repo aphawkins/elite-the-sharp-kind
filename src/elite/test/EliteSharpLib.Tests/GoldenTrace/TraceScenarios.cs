@@ -29,7 +29,11 @@ internal static class TraceScenarios
         260,
         [
             new(1, ConsoleKey.N, KeyScriptAction.Tap),
-        ]);
+        ],
+
+        // A parade ship close and far, both against the starfield: the two
+        // things whose drawing order matters most on this screen.
+        [20, 150]);
 
     // Docked, then launched, then flown. Covers BreakPattern's 20 rings (the
     // launch animation), Space.LaunchPlayer, the station and planet moving
@@ -54,7 +58,11 @@ internal static class TraceScenarios
             new(130, ConsoleKey.OemPeriod, KeyScriptAction.Release),
             new(130, ConsoleKey.S, KeyScriptAction.Hold),
             new(170, ConsoleKey.S, KeyScriptAction.Release),
-        ]);
+        ],
+
+        // Mid break-pattern, then the front view with the station and the
+        // planet in it, then again mid-roll - the frame at its busiest.
+        [10, 60, 150]);
 
     // The same launch, then left alone long enough for MCount to wrap. That
     // is what this one is for: MCount counts 255 down to 0, so only a run
@@ -72,7 +80,8 @@ internal static class TraceScenarios
             new(4, ConsoleKey.F1, KeyScriptAction.Tap),
             new(40, ConsoleKey.Spacebar, KeyScriptAction.Hold),
             new(120, ConsoleKey.Spacebar, KeyScriptAction.Release),
-        ]);
+        ],
+        [80, 300]);
 
     // Launched, then the trigger held down. Covers what the flying scenarios
     // never touch: Combat.FireLaser, the laser temperature climbing and
@@ -91,7 +100,10 @@ internal static class TraceScenarios
             // the cooling ramp is in the trace as well as the heating one.
             new(30, ConsoleKey.A, KeyScriptAction.Hold),
             new(110, ConsoleKey.A, KeyScriptAction.Release),
-        ]);
+        ],
+
+        // While the beam is drawn, and after it has stopped.
+        [40, 120]);
 
     // Launched, then the trigger held down until something wanders into it
     // and dies. This is the one scenario that reaches the explosion cloud,
@@ -124,7 +136,10 @@ internal static class TraceScenarios
             // Never released: the beam has to still be firing whenever the
             // encounter arrives.
             new(30, ConsoleKey.A, KeyScriptAction.Hold),
-        ]);
+        ],
+
+        // The cloud early and late, then just after the wreck is gone.
+        [275, 310, 335]);
 
     internal static IReadOnlyList<TraceScenario> All { get; } =
         [IntroParade, LaunchAndFly, LongFlight, LaserFire, Explosion];

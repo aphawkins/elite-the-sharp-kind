@@ -98,12 +98,16 @@ afterwards.
       - `Stars.FrontStarfield`/`RearStarfield`/`SideStarfield` advance the
         stars and emit their marks together.
 
-      **The traces will not catch a drawing-order mistake.** They compare
-      state, not pixels, and nothing else does either — `VisualDumpTests`
-      writes BMPs for a human to look at and asserts nothing. Stars are
-      drawn *before* the universe today; move them naively into a compose
-      pass and they paint over the ships with every test still green. Either
-      keep the compose order exactly, or add a frame check first.
+      **The frame check that guards this landed 2026-08-26** (see
+      [CHANGELOG.md](../CHANGELOG.md)): twelve composed frames across the
+      five scenarios, each signed by an exact pixel hash plus a 32x32
+      brightness grid that shows where a change is. The traces compare state
+      and cannot see drawing order — stars are drawn *before* the universe
+      today, and moving them naively into a compose pass would paint them
+      over the ships with every trace still green. Proven by doing it: a
+      pure draw-order change left all five traces green and failed four of
+      the five frame checks. Regenerate both with the same
+      `ELITE_REGENERATE_TRACES=1`.
 - [ ] [EliteSharpLib] Make the game clock explicit and convert the `MCount`
       housekeeping. Thread an elapsed-seconds value into the simulate half,
       and replace the 0..255 down-counter's bit tests with scheduled

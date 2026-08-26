@@ -51,7 +51,7 @@
     <!-- Read from the build output so a test run never depends on the source
          tree being where it was compiled. Regenerating writes back to the
          source copy instead - see TraceBaselines. -->
-    <None Include="GoldenTrace\Baselines\*.trace"
+    <None Include="GoldenTrace\Baselines\*.*"
           LinkBase="GoldenTrace\Baselines"
           CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

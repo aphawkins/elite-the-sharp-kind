@@ -24,11 +24,11 @@ internal static class TraceBaselines
     internal static bool Regenerating
         => Environment.GetEnvironmentVariable(RegenerateEnvVar) is "1" or "true";
 
-    internal static string OutputPath(string scenarioName)
-        => Path.Combine(AppContext.BaseDirectory, "GoldenTrace", Folder, scenarioName + TraceFile.Extension);
+    internal static string OutputPath(string scenarioName, string extension = TraceFile.Extension)
+        => Path.Combine(AppContext.BaseDirectory, "GoldenTrace", Folder, scenarioName + extension);
 
-    internal static string SourcePath(string scenarioName)
-        => Path.Combine(SourceFolder(), Folder, scenarioName + TraceFile.Extension);
+    internal static string SourcePath(string scenarioName, string extension = TraceFile.Extension)
+        => Path.Combine(SourceFolder(), Folder, scenarioName + extension);
 
     // Found by walking up from the build output to the project folder, not
     // by [CallerFilePath]: this repo builds with deterministic source paths,

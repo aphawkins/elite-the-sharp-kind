@@ -93,15 +93,15 @@ public abstract class HeadlessGameHarnessBase<TState> : IDisposable
 
     // Renders the whole game (screens and HUD included) and saves it as a
     // BMP.
-    public void SaveFrame(string path)
+    public void SaveFrame(string path) => BitmapWriter.Write(CaptureFrame(), path);
+
+    // The composed frame itself, for a caller that wants to measure it
+    // rather than look at it - a frame-check test comparing what was drawn
+    // against a committed reference, say.
+    public FastBitmap CaptureFrame()
     {
         DrawGame();
-        if (_lastFrame is null)
-        {
-            throw new InvalidOperationException("No frame has been rendered yet.");
-        }
-
-        BitmapWriter.Write(_lastFrame, path);
+        return _lastFrame ?? throw new InvalidOperationException("No frame has been rendered yet.");
     }
 
     public void Dispose()

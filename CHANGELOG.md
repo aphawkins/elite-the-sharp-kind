@@ -7,6 +7,34 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Elite frame check, 2026-08-26)
+
+- **The golden traces compare state and cannot see the order things are
+  drawn in.** That is the risk in the rest of the simulate/compose split:
+  the starfield is drawn before the universe today, and moving it into a
+  compose pass without preserving that would paint the stars over the ships
+  with every trace still green. `VisualDumpTests` writes BMPs for a human to
+  look at and asserts nothing, so nothing else covered it either.
+- Twelve frames across the five scenarios are now signed and committed.
+  `HeadlessGameHarnessBase` gained `CaptureFrame()` (`SaveFrame` is now one
+  line on top of it), and `TraceScenario` gained the ticks to capture.
+- **Signed twice over, because one alone is not enough.** An exact SHA-256
+  of every pixel catches any change at all; a 32x32 brightness grid shows
+  *where* it changed. The grid is the half a reviewer reads - the repo has
+  no image diff and no PNG writer, so without it a failure would be a
+  changed hex string and nothing else. On failure the two grids print side
+  by side with the differing rows marked.
+- The ramp is square-rooted rather than linear. Elite draws thin bright
+  lines on black, so a cell holding a break-pattern arc or a dozen stars
+  averages about eight out of 255 and would round to "empty" on a linear
+  ramp - exactly the content worth seeing. Curved, the break pattern's
+  concentric rings, the viewport border and the HUD band all read.
+- **Verified by breaking it on purpose.** Moving the view's chrome to draw
+  before the universe - a change to pixels only, touching no state - left
+  all five traces green and failed four of the five frame checks, with the
+  differing rows landing exactly where the "Front View" header had been
+  covered by the planet. Whole suite: 1543 tests.
+
 ### Changed (Elite: the drawing stops touching the game, 2026-08-26)
 
 - **The explosion left the renderer.** `EliteDraw.DrawObject` seeded
