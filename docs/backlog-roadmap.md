@@ -84,6 +84,12 @@ covered by `GameClockTests` and `RateIndependentMotionTests` instead.
 
 Two corrections to what this list used to say:
 
+- **`MCount` is not freed for deletion, and should not be.** This list
+  expected the AI item to be the one that removed it. It is not: the count is
+  the shared phase every housekeeping job hangs off, and the one
+  `Space.JumpWarp` re-phases by masking to six bits. Items 3, 4 and 5 all
+  keep it and pace *it* instead. `Combat` now asks `TacticsSchedule` rather
+  than testing the bits itself, but it still asks about the count.
 - **`RotateByteLeft` is not in the motion path** and must not be converted.
   It is the galactic hyperdrive's seed shuffle (`Cmdr.Galaxy.A`..`F`), a byte
   rotation of the RNG seed, not a rate. The `±127` spin clamps beside it in
@@ -118,13 +124,6 @@ survive a rate change cleanly. Elite's feel and difficulty change at 60Hz.
 That is the accepted price of the decision, not a defect to tune away
 afterwards.
 
-- [ ] [EliteSharpLib] Rate-independent AI pacing. `Combat.Tactics` runs a
-      ship's tactics one tick in eight, phase-spread across the universe
-      slots by `((un ^ _gameState.MCount) & 7) != 0`
-      ([Combat.cs:391](../src/elite/libs/EliteSharpLib/Conflict/Combat.cs)).
-      It must stay one-in-eight *per unit time* with the spread preserved,
-      so ships keep costing what they cost and never all think on the same
-      frame. This is the item that frees `MCount` for deletion.
 - [ ] [EliteSharpLib] Rate-independent animations and dwell times. Laser
       cooling's `_laserCounter - 2`
       ([Combat.cs:130](../src/elite/libs/EliteSharpLib/Conflict/Combat.cs)),

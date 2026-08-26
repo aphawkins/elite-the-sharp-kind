@@ -7,6 +7,32 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Elite's ships think on the clock, 2026-08-26)
+
+- **A ship now thinks once per count rather than once per update.** Combat
+  spread its thinking across the universe slots by phase - a ship runs its
+  tactics on the counts whose low three bits match its slot - so one slot in
+  eight thinks per count and no two in the same eight think together. That is
+  kept exactly. What the phase test can no longer do alone is stay *once*:
+  the count moves 13.5 times a second whatever the update rate, so at a
+  faster rate it stays true for several updates together and a ship would
+  think four or five times where it thought once.
+- `TacticsSchedule` remembers the count each slot last thought on and refuses
+  a repeat within it. It cannot hold a ship back - a slot's next matching
+  count is eight on, and the same value only returns after a full turn of the
+  counter, by which time that slot has thought on thirty-one other counts. It
+  is cleared with the universe, since a slot outlives the ship in it.
+- Its own type rather than three more fields on `Combat`, which was already
+  at the enforced file-length limit - and the rule reads better named than as
+  a bit test in the middle of a tactics routine.
+- **`MCount` survives.** The backlog expected this item to remove it; it
+  should not. The count is the shared phase every housekeeping job hangs off
+  and the one `Space.JumpWarp` re-phases by masking to six bits. What changed
+  is what paces it, not whether it exists.
+- Traces and frames bit-identical again; `TacticsScheduleTests` covers what
+  they cannot, including the five-thoughts-instead-of-one failure the refusal
+  exists to prevent.
+
 ### Changed (Elite runs on a clock, 2026-08-26)
 
 - **The housekeeping is paced in seconds.** Elite hung six jobs off its
