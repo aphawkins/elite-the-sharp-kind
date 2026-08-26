@@ -40,6 +40,13 @@ public sealed class EliteMain : IGame, IGameApp
     // frame to frame, producing judder.
     private const float GameTickRate = 13.5f;
 
+    // What one call to Update is worth in game time. Derived from the rate
+    // the loop is driven at rather than measured: GameLoop is a fixed
+    // timestep, so a tick is worth the same however long it took to compute.
+    // When the game eventually updates at the configured Fps, this is where
+    // that shows up.
+    private const float SecondsPerUpdate = 1f / GameTickRate;
+
     private readonly IAbstraction _abstraction;
     private readonly IGraphics _graphics;
     private readonly IKeyboard _keyboard;
@@ -50,6 +57,7 @@ public sealed class EliteMain : IGame, IGameApp
     private readonly IBaseView _baseView;
     private readonly IEliteDraw _draw;
     private readonly List<long> _framesDrawn = [];
+    private readonly GameClock _clock = new();
     private readonly Pilot _pilot;
     private readonly SaveFile _save;
     private readonly ScannerController _scanner;
@@ -211,10 +219,6 @@ public sealed class EliteMain : IGame, IGameApp
         if (_pilot.IsAutoPilotOn)
         {
             _pilot.AutoDock();
-            if ((State.MCount & 127) == 0)
-            {
-                State.InfoMessage("Docking Computers On");
-            }
         }
 
         _pendingMessage = null;
@@ -284,10 +288,39 @@ public sealed class EliteMain : IGame, IGameApp
         if (_space.IsHyperspaceReady)
         {
             _pendingCountdown = _space.HyperCountdown;
-            if ((State.MCount & 3) == 0)
-            {
-                _space.CountdownHyperspace();
-            }
+        }
+
+        // However many steps this update is worth. At the game's own rate
+        // that is exactly one, as it has always been.
+        int due = _clock.Advance(SecondsPerUpdate);
+        for (int step = 0; step < due; step++)
+        {
+            Housekeeping();
+        }
+
+        _combat.TimeECM();
+    }
+
+    // One step of the MCount clock and the jobs hung off it.
+    //
+    // The order is the original's and the phases are load-bearing: the
+    // hyperspace countdown and the docking-computer reminder read the count
+    // *before* it moves, everything below reads it after. Swapping either
+    // side of the decrement shifts which tick those jobs land on.
+    private void Housekeeping()
+    {
+        if (_space.IsHyperspaceReady && (State.MCount & 3) == 0)
+        {
+            _space.CountdownHyperspace();
+        }
+
+        // Moved here from beside the autopilot itself, which still steers
+        // every update: the reminder is a periodic message, so it belongs on
+        // the clock rather than firing on every frame the count happens to
+        // be sitting on a multiple of 128.
+        if (_pilot.IsAutoPilotOn && (State.MCount & 127) == 0)
+        {
+            State.InfoMessage("Docking Computers On");
         }
 
         State.MCount--;
@@ -321,8 +354,6 @@ public sealed class EliteMain : IGame, IGameApp
         {
             _combat.RandomEncounter();
         }
-
-        _combat.TimeECM();
     }
 
     private void HandleViewKeys()
