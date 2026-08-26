@@ -40,6 +40,10 @@ internal sealed class Space
     /// <inheritdoc cref="ExplosionStart"/>
     private const int ExplosionEnd = 251;
 
+    // This tick's view-space clones, in the order they were moved, which is
+    // the order they are drawn in.
+    private readonly List<IObject> _toDraw = [];
+
     private readonly AudioController _audio;
     private readonly Combat _combat;
     private readonly IEliteDraw _draw;
@@ -402,11 +406,19 @@ internal sealed class Space
     }
 
     /// <summary>
-    /// Update all the objects in the universe and render them.
+    /// Move every object in the universe on by a tick, collecting the
+    /// view-space copies that <see cref="DrawUniverse"/> will draw.
     /// </summary>
-    internal void UpdateUniverse()
+    /// <remarks>
+    /// This used to draw each object as it moved it. Composing a frame is
+    /// now a separate pass, so what the two share is the clone: the game
+    /// works out where everything is and what it looks like from here, and
+    /// the frame is painted from that. A clone is a snapshot, so drawing it
+    /// later cannot see a position the tick has since changed.
+    /// </remarks>
+    internal void MoveUniverse()
     {
-        _draw.RenderStart();
+        _toDraw.Clear();
         int i = -1;
 
         foreach (IObject obj in _universe.GetAllObjects())
@@ -415,8 +427,22 @@ internal sealed class Space
             UpdateUniverseObject(obj, i);
         }
 
-        _draw.RenderEnd();
         _gameState.DetonateBomb = false;
+    }
+
+    /// <summary>
+    /// Draw what <see cref="MoveUniverse"/> put in front of the camera.
+    /// </summary>
+    internal void DrawUniverse()
+    {
+        _draw.RenderStart();
+
+        foreach (IObject obj in _toDraw)
+        {
+            _draw.DrawObject(obj);
+        }
+
+        _draw.RenderEnd();
     }
 
     private static int RotateByteLeft(int x) => ((x << 1) | (x >> 7)) & 255;
@@ -552,7 +578,7 @@ internal sealed class Space
         }
 
         AgeExplosion((IShip)flip);
-        _draw.DrawObject(flip);
+        _toDraw.Add(flip);
         obj.Flags = flip.Flags;
         ((IShip)obj).ExpDelta = ((IShip)flip).ExpDelta;
         obj.Flags &= ~ShipProperties.Firing;
@@ -639,7 +665,7 @@ internal sealed class Space
             MakeStationAppear();
         }
 
-        _draw.DrawObject(flip);
+        _toDraw.Add(flip);
     }
 
     private void DockOrScoop(IObject obj)

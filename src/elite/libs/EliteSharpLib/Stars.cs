@@ -52,6 +52,25 @@ internal sealed class Stars
     private float StarHalfHeight => _draw.Layout.ViewportCentre.Y / StarScale;
 
     /// <summary>
+    /// Hands this tick's starfield to the rendition, then empties it.
+    /// </summary>
+    /// <remarks>
+    /// Separate from the four starfield passes, which now only move the
+    /// stars and collect what to show: the marks are worked out while the
+    /// game ticks and drawn while the frame is composed.
+    /// <para>
+    /// Emptying as it draws is what makes it safe to call every frame. A
+    /// screen with no starfield never fills the list, so it draws nothing,
+    /// rather than repainting whatever the last cockpit view left behind.
+    /// </para>
+    /// </remarks>
+    internal void Draw()
+    {
+        _renderer.Draw(_marks);
+        _marks.Clear();
+    }
+
+    /// <summary>
     /// Refills normal space with the rendition's own <see
     /// cref="IStarfieldRenderer.NormalSpaceStarCount"/>.
     /// </summary>
@@ -130,7 +149,6 @@ internal sealed class Stars
         }
 
         WarpStars = false;
-        _renderer.Draw(_marks);
     }
 
     internal void LeftStarfield()
@@ -183,7 +201,6 @@ internal sealed class Stars
         }
 
         WarpStars = false;
-        _renderer.Draw(_marks);
     }
 
     internal void RightStarfield()
@@ -324,6 +341,5 @@ internal sealed class Stars
         }
 
         WarpStars = false;
-        _renderer.Draw(_marks);
     }
 }

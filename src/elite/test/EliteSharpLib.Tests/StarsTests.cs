@@ -26,6 +26,11 @@ public class StarsTests
         stars.CreateNewStars();
         stars.FrontStarfield();
 
+        // The starfield pass moves the stars and collects the marks; Draw is
+        // what hands them to the rendition, now that the game ticks and the
+        // frame is composed separately.
+        stars.Draw();
+
         Assert.Equal(27, renderer.LastDrawCount);
     }
 
@@ -39,6 +44,7 @@ public class StarsTests
 
         stars.CreateNewWitchspaceStars();
         stars.FrontStarfield();
+        stars.Draw();
 
         Assert.Equal(5, renderer.LastDrawCount);
     }

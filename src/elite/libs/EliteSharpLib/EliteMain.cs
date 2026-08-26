@@ -61,6 +61,15 @@ public sealed class EliteMain : IGame, IGameApp
     // Which mission screen the next Ctrl-M jumps to (HandleMissionJumpKeys).
     private int _missionJumpStage;
 
+    // What this tick decided the two flight overlays should say, captured at
+    // the moment it decided - see UpdateInFlight for why they cannot simply
+    // be read again while the frame is composed. Cleared at the top of every
+    // tick, so a docked or paused frame shows neither.
+    private string? _pendingMessage;
+
+    /// <inheritdoc cref="_pendingMessage"/>
+    private int? _pendingCountdown;
+
     internal EliteMain(
         IAbstraction abstraction,
         GameState gameState,
@@ -125,10 +134,51 @@ public sealed class EliteMain : IGame, IGameApp
     // present), so this can render at the configured rate directly.
     public void Run() => GameHost.Run(_abstraction, this, GameTickRate, State.Config.Engine.Graphics.Fps);
 
-    // One fixed-rate game tick. Elite's update draws the universe as it
-    // moves it (as The New Kind did), so this composes the whole frame into
-    // the framebuffer and Draw only presents it.
+    // One fixed-rate game tick: move the game on, paint what it now looks
+    // like, then read the controls.
+    //
+    // Simulate and Compose were one method until 2026-08-26, because Elite's
+    // update drew the universe as it moved it (as The New Kind did). They
+    // are separated so the two can eventually run at rates of their own;
+    // both still run exactly once per tick here, and the frame is unchanged.
+    //
+    // Input stays a third phase at the end because that is where this port
+    // has always read it: moving it ahead of Compose would show a screen
+    // change a tick earlier than it does today. Which phase it really
+    // belongs to is the last frame-rate item's question, not this one's.
     public void Update()
+    {
+        if (!Simulate())
+        {
+            return;
+        }
+
+        Compose();
+        State.CurrentView.HandleInput();
+    }
+
+    // Present the frame composed by the last update. Runs at GameTickRate,
+    // once per tick.
+    public void Draw()
+    {
+        // keep only the presents from the last second, for the FPS display
+        int stale = 0;
+        long oneSecondAgo = Stopwatch.GetTimestamp() - Stopwatch.Frequency;
+        while (stale < _framesDrawn.Count && _framesDrawn[stale] <= oneSecondAgo)
+        {
+            stale++;
+        }
+
+        _framesDrawn.RemoveRange(0, stale);
+        _framesDrawn.Add(Stopwatch.GetTimestamp());
+
+        _graphics.ScreenUpdate();
+    }
+
+    // Everything the tick changes. Returns false when the game is paused,
+    // which is also the signal not to compose: the framebuffer is left
+    // alone so the paused frame stays on screen.
+    private bool Simulate()
     {
         InitialiseGame();
         _audio.UpdateSound();
@@ -138,18 +188,13 @@ public sealed class EliteMain : IGame, IGameApp
 
         if (State.IsGamePaused)
         {
-            // leave the framebuffer untouched so the pause screen persists
             if (_keyboard.IsPressed(ConsoleKey.R))
             {
                 State.IsGamePaused = false;
             }
 
-            return;
+            return false;
         }
-
-        _draw.SetFullScreenClipRegion();
-        _graphics.Clear();
-        _draw.SetViewClipRegion();
 
         if (_ship.Energy < PlayerShip.EnergyMin)
         {
@@ -172,8 +217,31 @@ public sealed class EliteMain : IGame, IGameApp
             }
         }
 
+        _pendingMessage = null;
+        _pendingCountdown = null;
+
         State.CurrentView.Update();
-        _space.UpdateUniverse();
+        _space.MoveUniverse();
+
+        if (!State.IsDocked && !State.IsGameOver)
+        {
+            UpdateInFlight();
+        }
+
+        return true;
+    }
+
+    // Everything the tick draws, in the order the frame is built up: the
+    // starfield behind the universe, the universe behind the view's own
+    // chrome, and the console across the bottom of all of it.
+    private void Compose()
+    {
+        _draw.SetFullScreenClipRegion();
+        _graphics.Clear();
+        _draw.SetViewClipRegion();
+
+        _stars.Draw();
+        _space.DrawUniverse();
         State.CurrentView.Draw();
 
         if (State.Config.Engine.Graphics.ShowFps)
@@ -181,49 +249,41 @@ public sealed class EliteMain : IGame, IGameApp
             _baseView.DrawFps(_framesDrawn.Count);
         }
 
-        if (!State.IsDocked && !State.IsGameOver)
+        if (_pendingMessage is string message)
         {
-            UpdateInFlight();
+            _baseView.DrawInfoMessage(message);
+        }
+
+        if (_pendingCountdown is int countdown)
+        {
+            _baseView.DrawHyperspaceCountdown(countdown);
         }
 
         _draw.SetFullScreenClipRegion();
-
         _scanner.UpdateConsole();
-        State.CurrentView.HandleInput();
-    }
-
-    // Present the frame composed by the last update. Runs at GameTickRate,
-    // once per tick.
-    public void Draw()
-    {
-        // keep only the presents from the last second, for the FPS display
-        int stale = 0;
-        long oneSecondAgo = Stopwatch.GetTimestamp() - Stopwatch.Frequency;
-        while (stale < _framesDrawn.Count && _framesDrawn[stale] <= oneSecondAgo)
-        {
-            stale++;
-        }
-
-        _framesDrawn.RemoveRange(0, stale);
-        _framesDrawn.Add(Stopwatch.GetTimestamp());
-
-        _graphics.ScreenUpdate();
     }
 
     // The part of a tick that only applies while flying: laser cooling,
     // messages, the hyperspace countdown and the MCount-driven housekeeping.
+    //
+    // The two overlays are recorded rather than drawn, and that is not
+    // tidiness - it is the whole reason the fields exist. Both say something
+    // about the middle of the tick that is no longer true at the end of it:
+    // the countdown is shown before it is decremented, and the message is
+    // the one already on screen, not the "ENERGY LOW" this same method may
+    // raise a few lines further down. Compose cannot read either back.
     private void UpdateInFlight()
     {
         _combat.CoolLaser();
 
         if (State.MessageCount > 0)
         {
-            _baseView.DrawInfoMessage(State.MessageString);
+            _pendingMessage = State.MessageString;
         }
 
         if (_space.IsHyperspaceReady)
         {
-            _baseView.DrawHyperspaceCountdown(_space.HyperCountdown);
+            _pendingCountdown = _space.HyperCountdown;
             if ((State.MCount & 3) == 0)
             {
                 _space.CountdownHyperspace();

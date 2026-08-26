@@ -313,7 +313,7 @@ public class SpaceTests
         FakeShip constrictor = new(draw) { Type = ShipType.Constrictor };
         universe.AddNewShip(constrictor, new(0, 0, 500, 0), Matrix4x4.Identity, 0, 0);
 
-        space.UpdateUniverse();
+        space.MoveUniverse();
 
         Assert.True(constrictor.Flags.HasFlag(ShipProperties.Dead));
     }
@@ -333,7 +333,7 @@ public class SpaceTests
         FakeShip planet = new(draw) { Type = ShipType.Planet, Rotmat = Matrix4x4.Identity };
         universe.AddNewShip(planet, new(1000, 0, 500, 0), Matrix4x4.Identity, 0, 0);
 
-        space.UpdateUniverse();
+        space.MoveUniverse();
 
         Assert.Equal(Matrix4x4.Identity, sun.Rotmat);
         Assert.NotEqual(Matrix4x4.Identity, planet.Rotmat);
