@@ -48,16 +48,107 @@ that mentions a decision.
 
 ### From decisions (2026-07-27)
 
-Committed by the maintainer decisions in [decisions.md](decisions.md);
-not yet scoped into concrete steps.
+Committed by the maintainer decisions in [decisions.md](decisions.md). The
+frame-rate item was audited and scoped on 2026-08-26 and is now the ordered
+list below; the data-driven content item is still a placeholder.
 
-- [ ] **[LARGE]** [EliteSharpLib] Decouple Elite's frame composition from
-      the fixed 13.5Hz tick: compose frames at the configured `Fps`
-      setting instead of only at 13.5Hz (not via interpolation). Requires
-      auditing everything currently timed against the 13.5Hz tick
-      (tactics/AI pacing in `Space.UpdateUniverse`, animations, etc.) and
-      reworking it to stay correct at other `Fps` values. Scope the audit
-      before starting.
+Elite's frame rate vs the 13.5Hz tick (split 2026-08-26 from the [LARGE]
+placeholder the 2026-07-27 decision left; the audit it asked for is done and
+its findings are folded into the items below). The tick is not one thing to
+unpick but two: composition is *fused* with simulation in four places, and
+roughly two dozen rates and counters are expressed per tick rather than per
+second. Nothing here works until the fusion is undone, so do the items
+strictly in order — each one leaves the game playable and the traces green.
+
+**The golden-trace harness that was first on this list landed 2026-08-26**
+(see [CHANGELOG.md](../CHANGELOG.md)): four scripted scenarios recorded per
+tick against committed baselines, under
+`src/elite/test/EliteSharpLib.Tests/GoldenTrace`. Every item below is
+validated against it.
+
+The maintainer chose (2026-08-26) **true per-second rates at any `Fps`**,
+over snapping `Fps` to a whole multiple of 13.5. So the ported constants
+below convert to rates rather than divide into sub-ticks, and the golden
+traces compare with tolerances rather than exactly. Note what that costs:
+these constants are faithful ports of 6502/TNK integer logic, and its
+semantics (`& 7`, `& 31`, the `±127` clamps, `RotateByteLeft`) do not
+survive a rate change cleanly. Elite's feel and difficulty change at 60Hz.
+That is the accepted price of the decision, not a defect to tune away
+afterwards.
+
+- [ ] [EliteSharpLib] Separate simulate from compose. This is the structural
+      blocker: today `EliteMain.Update` composes the whole frame and `Draw`
+      only presents it, and three places move state and draw it in one pass —
+      `Space.UpdateUniverseObject`
+      ([Space.cs:493](../src/elite/libs/EliteSharpLib/Space.cs)) moves each
+      object then draws it; `EliteDraw.DrawObject`
+      ([EliteDraw.cs:214-267](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs))
+      *mutates game state while drawing* (sets `ShipProperties.Explosion`,
+      `ExpDelta = 18`, `ExpDelta += 4`, `ShipProperties.Remove`); and
+      `Stars.FrontStarfield`/`RearStarfield`/`SideStarfield` advance the
+      stars and emit their marks together. Split each into a move pass and a
+      draw pass, and move `ExpDelta`'s advance out of the renderer. Both
+      halves still run once per tick — zero behaviour change, traces
+      identical, no tolerances needed yet.
+- [ ] [EliteSharpLib] Make the game clock explicit and convert the `MCount`
+      housekeeping. Thread an elapsed-seconds value into the simulate half,
+      and replace the 0..255 down-counter's bit tests with scheduled
+      intervals: hyperspace countdown (`& 3`), shield regen (`& 7`),
+      energy-low + altitude (`& 31 == 10`), cabin temp (`& 31 == 20`),
+      random encounter (`== 0`) and the docking-computer message
+      (`& 127`), all in
+      [EliteMain.cs:227-261](../src/elite/libs/EliteSharpLib/EliteMain.cs),
+      plus `MCount &= 63` at
+      [Space.cs:155](../src/elite/libs/EliteSharpLib/Space.cs). `MCount`
+      itself is also read by the AI item below, so leave it in place until
+      that lands.
+- [ ] [EliteSharpLib] Rate-independent motion. Convert the per-tick step
+      sizes: `ApplyShipVelocity`'s `Velocity * 1.5f`
+      ([Space.cs:435](../src/elite/libs/EliteSharpLib/Space.cs)),
+      `SpinUniverseObject`/`RotateXFirst`'s fixed 1/512 and 1/19 rotation
+      steps with `RotX`/`RotZ` decaying by 1 a tick
+      ([Space.cs:409-488](../src/elite/libs/EliteSharpLib/Space.cs)), the
+      player's `IncreaseRoll`/`DecreaseClimb` ±1 — which `PilotController`
+      calls *twice* per tick
+      ([PilotController.cs:179-249](../src/elite/libs/EliteSharpLib/Views/PilotController.cs))
+      — and the starfield's `delta = _ship.Speed`
+      ([Stars.cs](../src/elite/libs/EliteSharpLib/Stars.cs)). The `±127`
+      rotation clamps and `RotateByteLeft` are byte-domain and need an
+      explicit float equivalent, not a cast.
+- [ ] [EliteSharpLib] Rate-independent AI pacing. `Combat.Tactics` runs a
+      ship's tactics one tick in eight, phase-spread across the universe
+      slots by `((un ^ _gameState.MCount) & 7) != 0`
+      ([Combat.cs:391](../src/elite/libs/EliteSharpLib/Conflict/Combat.cs)).
+      It must stay one-in-eight *per unit time* with the spread preserved,
+      so ships keep costing what they cost and never all think on the same
+      frame. This is the item that frees `MCount` for deletion.
+- [ ] [EliteSharpLib] Rate-independent animations and dwell times. Laser
+      cooling's `_laserCounter - 2`
+      ([Combat.cs:130](../src/elite/libs/EliteSharpLib/Conflict/Combat.cs)),
+      `MessageCount = 37`
+      ([GameState.cs:163](../src/elite/libs/EliteSharpLib/GameState.cs)),
+      `BreakPattern`'s 20 rings (launch, dock and hyperspace),
+      `GameOverController.TicksBeforeRestart = 100`,
+      `EscapeCapsuleController`'s `LaunchTicks = 90`/`ExplosionTick = 40`
+      and its `Z += 2`, `Intro1Controller`'s `Z -= 100`,
+      `Intro2Controller`'s `_showTime >= 140` parade, and the explosion
+      cloud's `ExpDelta` 18→251 in +4 steps. **`SfxSample`'s
+      `ReduceTimeRemaining`, driven by `AudioController.UpdateSound`, lives
+      in `SharpKind.Audio` and is shared with Stunt Car Racer** — sound
+      effect lifetimes are counted in the caller's ticks, so whatever
+      lands must leave SCR's pacing untouched.
+- [ ] [EliteSharpLib + SharpKind.Abstraction] Run at `Fps`. Collapse
+      `GameHost.Run(_abstraction, this, GameTickRate, Fps)` to one rate and
+      delete `EliteMain.GameTickRate` and the two comment blocks that
+      explain the split
+      ([EliteMain.cs:36-41 and :117-125](../src/elite/libs/EliteSharpLib/EliteMain.cs)).
+      Decide the input cadence with it: `Keyboard.Poll()` and the one-shot
+      `IsPressed` run once per update in
+      [GameHost.Run](../src/useful/libs/SharpKind.Abstraction/GameHost.cs),
+      so menu navigation currently steps one row per tick and would step
+      one row per frame. Then fix the fallout — `EliteMain._framesDrawn`
+      and `DrawFps` start counting genuinely composed frames, and every
+      headless test's "N ticks" becomes rate-dependent.
 - [ ] **[LARGE]** [EliteSharpLib] Data-driven game content model: replace
       hardcoded/reflection-based game data — `EquipmentType`, `StockType`,
       ship definitions, and `ShipFactory.CreateShipFromName`'s

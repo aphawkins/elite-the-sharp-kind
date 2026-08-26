@@ -7,6 +7,50 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Elite golden-trace harness, 2026-08-26)
+
+- **The frame-rate rework needed a regression net before it could start.**
+  Elite's simulation is about to have roughly two dozen per-tick rates and
+  counters converted to per-second ones (see
+  [backlog-roadmap.md](docs/backlog-roadmap.md)), and nothing existed that
+  could say whether a conversion had changed the game. Four scripted
+  scenarios - the title parade, a launch and flight, a long flight, and
+  holding the trigger down - now run against the real `EliteMain` through
+  `HeadlessGameHarness` and record the game state after every tick to
+  committed baselines under
+  `src/elite/test/EliteSharpLib.Tests/GoldenTrace`.
+- **They characterise, they do not judge.** A trace records what the game
+  does, not what it should do; a baseline changing is a prompt to explain
+  why, not automatically a bug. `ELITE_REGENERATE_TRACES=1` rewrites them
+  and deliberately fails the run, so a regenerated baseline cannot reach a
+  commit unnoticed.
+- **Not a rendered frame.** The comparison is state - screen, docked and
+  game-over flags, `MCount`, message count, laser temperature, roll, climb,
+  speed, energy, shields, fuel, cabin temperature, altitude, and every
+  universe slot's type, position, spin and flags. The rate items change
+  *when* things happen, not what they look like, so a pixel comparison
+  would fail for reasons that have nothing to do with them. There is no
+  player position because Elite has none: the ship sits at the origin and
+  the universe moves past it.
+- **Numbers compare with a tolerance, discrete fields never do.** The
+  tolerance is zero today and rises when the rate conversion makes exact
+  arithmetic impossible; a screen, a ship type or a flag set that differs
+  means the run took another path, which is a regression however small the
+  numbers are. Both sides are compared as stored: the file keeps four
+  decimals, which for a coordinate in the thousands is finer than a
+  `float`'s own resolution, so reading one back does not land on the bits
+  that were written.
+- **Two things had to be pinned before a trace could be reproducible.**
+  `HeadlessGameHarness` gained an optional seed that replaces the app's
+  `Random.Shared`. And `ELITE_DEBUG_COMMANDER` - read in `SaveFile`'s
+  constructor, and set on at least one developer machine - swaps Commander
+  Jameson for a fully equipped Max, whose stronger front laser changes the
+  firing cadence: the first baselines silently recorded the debug
+  commander, and `SaveFileTests` clearing the variable mid-run was what
+  exposed it. `TraceRecorder` now clears it too, so a trace records the
+  commander the game ships with rather than the one the machine asks for.
+- Test-only: no game code changed.
+
 ### Added (Gamepad and joystick support, 2026-08-22)
 
 - **Neither game could be played with anything but a keyboard.** A new

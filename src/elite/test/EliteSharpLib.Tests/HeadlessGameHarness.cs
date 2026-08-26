@@ -27,7 +27,11 @@ internal sealed class HeadlessGameHarness : HeadlessGameHarnessBase<GameStateSum
     // 512x512, matching SDLProgram's real ScreenWidth/ScreenHeight: EliteDraw
     // derives its layout (Centre, ScannerTop, ...) from these, and a 0x0
     // screen produces negative ranges that blow up star generation.
-    public HeadlessGameHarness(int width = 512, int height = 512)
+    // randomSeed replaces the app's unseeded Random.Shared, so a run can be
+    // reproduced exactly. Null keeps the shipped behaviour. Golden traces
+    // need it: without a fixed seed the laser aim jitter, the encounter
+    // rolls and the ship spins all differ run to run.
+    public HeadlessGameHarness(int width = 512, int height = 512, int? randomSeed = null)
         : base(width, height, TestAssets.Locator())
     {
         FakeAbstraction abstraction = new(Graphics, new(width, height));
@@ -46,6 +50,14 @@ internal sealed class HeadlessGameHarness : HeadlessGameHarnessBase<GameStateSum
         services.AddSingleton(_ => TestAssets.Locator());
         services.AddEliteConfig(_configDirectory);
         services.AddEliteMain(EliteServiceCollectionExtensions.LoadRendition("16-bit", NullLoggerFactory.Instance));
+
+        // After AddEliteMain, so this wins: the container resolves the last
+        // registration for a service type, and AddEliteCore registered
+        // Random.Shared.
+        if (randomSeed is int seed)
+        {
+            services.AddSingleton(new Random(seed));
+        }
 
         _provider = services.BuildServiceProvider();
         Game = _provider.GetRequiredService<EliteMain>();

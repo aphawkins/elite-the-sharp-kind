@@ -1,4 +1,4 @@
-# Maintainer Decisions — The Sharp Kind
+﻿# Maintainer Decisions — The Sharp Kind
 
 Consolidated log of maintainer decisions for the repository, split out of
 [backlog-roadmap.md](backlog-roadmap.md) so the backlog stays about work
@@ -8,6 +8,43 @@ itself split on 2026-07-31 into [backlog-issues.md](backlog-issues.md)
 decision may reshape items in either. Newest first. When a decision
 reshapes or unblocks backlog items, those items are updated in the backlog
 to reference the decision here rather than restating it.
+
+## Resolved (2026-08-26) — a rate is per second, whatever it costs
+
+The 2026-07-27 decision below left Elite's frame rate item as a [LARGE]
+placeholder pending an audit. The audit is done and the item is now seven
+scoped items in [backlog-roadmap.md](backlog-roadmap.md). It found two things
+rather than one.
+
+**Composition is fused with simulation in four places**, so no rate work can
+start until they separate: `EliteMain.Update` composes the whole frame while
+`Draw` only presents it, `Space.UpdateUniverseObject` moves each object and
+then draws it, `Stars`' three starfield passes advance the stars and emit
+their marks together, and — the one that surprised — `EliteDraw.DrawObject`
+*mutates game state while drawing*, setting `ShipProperties.Explosion`,
+seeding `ExpDelta` and advancing it four a frame. Drawing twice as often
+would have run the explosions twice as fast.
+
+**Roughly two dozen rates and counters are per tick, not per second**: the
+`MCount` down-counter's six bit-tested housekeeping jobs, `Combat.Tactics`'
+one-in-eight AI pacing, ship velocity and spin decay, player roll and climb,
+the starfield delta, and every dwell time from the break pattern to the
+game-over hold to sound-effect lifetimes.
+
+**The rate model: true per-second rates at any `Fps`.** Snapping `Fps` to a
+whole multiple of 13.5 (27/54/108Hz) was the cheaper option and was
+considered — every per-tick counter would have stayed a whole number, the
+work would have been sub-tick division rather than conversion, and the
+golden traces would have compared exactly. It was declined because it makes
+the `Fps` setting a lie: a player who asks for 60 gets 54.
+
+What that costs, recorded here so it is not re-litigated as a defect later:
+the constants being converted are faithful ports of 6502/TNK integer logic,
+and its semantics — `& 7`, `& 31`, the `±127` clamps, `RotateByteLeft` — do
+not survive a rate change cleanly. **Elite's feel and difficulty change at
+60Hz.** That is the price of the decision, not a bug to tune away
+afterwards. The golden-trace harness that goes first therefore compares with
+tolerances, not exactly, from the third item onward.
 
 ## Resolved (2026-08-06) — every control is bound, and nothing is told
 
@@ -637,9 +674,9 @@ settling how assets are laid out and constrained per tier. Full design in
   anything currently timed against the 13.5Hz update tick (tactics/AI
   pacing in `Space.UpdateUniverse`, animations, etc.) needs auditing and
   reworking so it stays correct when `Fps` differs from 13.5Hz.
-  **[LARGE]** — not yet broken into scoped backlog items; see the new
-  placeholder under [backlog-roadmap.md](backlog-roadmap.md)'s Could
-  section.
+  **Audited and split on 2026-08-26** into seven ordered items under
+  [backlog-roadmap.md](backlog-roadmap.md)'s Could section; the rate model
+  and what it costs are settled in the 2026-08-26 entry above.
 - **UI/graphics scale model**: the existing `Scale` setting is untested
   and buggy. Decided: scale is **per-element and game-aware**, not a
   single discrete multiplier applied only at the framebuffer/present

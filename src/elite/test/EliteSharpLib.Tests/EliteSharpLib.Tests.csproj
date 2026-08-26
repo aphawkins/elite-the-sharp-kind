@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
@@ -48,6 +48,12 @@
     <None Update="Graphics\2x2redtopleft.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <!-- Read from the build output so a test run never depends on the source
+         tree being where it was compiled. Regenerating writes back to the
+         source copy instead - see TraceBaselines. -->
+    <None Include="GoldenTrace\Baselines\*.trace"
+          LinkBase="GoldenTrace\Baselines"
+          CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <!-- The shipped missions, into a Missions folder, exactly as the app's build
