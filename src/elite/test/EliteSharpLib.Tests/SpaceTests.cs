@@ -313,7 +313,7 @@ public class SpaceTests
         FakeShip constrictor = new(draw) { Type = ShipType.Constrictor };
         universe.AddNewShip(constrictor, new(0, 0, 500, 0), Matrix4x4.Identity, 0, 0);
 
-        space.MoveUniverse();
+        space.MoveUniverse(1);
 
         Assert.True(constrictor.Flags.HasFlag(ShipProperties.Dead));
     }
@@ -333,7 +333,7 @@ public class SpaceTests
         FakeShip planet = new(draw) { Type = ShipType.Planet, Rotmat = Matrix4x4.Identity };
         universe.AddNewShip(planet, new(1000, 0, 500, 0), Matrix4x4.Identity, 0, 0);
 
-        space.MoveUniverse();
+        space.MoveUniverse(1);
 
         Assert.Equal(Matrix4x4.Identity, sun.Rotmat);
         Assert.NotEqual(Matrix4x4.Identity, planet.Rotmat);
@@ -614,7 +614,7 @@ public class SpaceTests
         views.Add(Screen.GameOver, new FakeView());
         views.Add(Screen.Hyperspace, new FakeView());
         gameState = new(views, TestMissions.Registry());
-        ship = new PlayerShip();
+        ship = new PlayerShip(gameState);
         trade = new Trade(gameState, ship);
         draw = new FakeEliteDraw();
         randomSource = new FakeRandomSource();

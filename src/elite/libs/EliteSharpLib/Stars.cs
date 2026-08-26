@@ -98,7 +98,7 @@ internal sealed class Stars
     internal void FrontStarfield()
     {
         _marks.Clear();
-        float delta = WarpStars ? 50 : _ship.Speed;
+        float delta = (WarpStars ? 50 : _ship.Speed) * _gameState.Clock.Ticks;
         float alpha = _ship.Roll;
         float beta = _ship.Climb;
 
@@ -153,14 +153,14 @@ internal sealed class Stars
 
     internal void LeftStarfield()
     {
-        float delta = WarpStars ? 50 : _ship.Speed;
+        float delta = (WarpStars ? 50 : _ship.Speed) * _gameState.Clock.Ticks;
         SideStarfield(-_ship.Roll, -_ship.Climb, -delta);
     }
 
     internal void RearStarfield()
     {
         _marks.Clear();
-        float delta = WarpStars ? 50 : _ship.Speed;
+        float delta = (WarpStars ? 50 : _ship.Speed) * _gameState.Clock.Ticks;
         float alpha = -_ship.Roll;
         float beta = -_ship.Climb;
 
@@ -205,7 +205,7 @@ internal sealed class Stars
 
     internal void RightStarfield()
     {
-        float delta = WarpStars ? 50 : _ship.Speed;
+        float delta = (WarpStars ? 50 : _ship.Speed) * _gameState.Clock.Ticks;
         SideStarfield(_ship.Roll, _ship.Climb, delta);
     }
 

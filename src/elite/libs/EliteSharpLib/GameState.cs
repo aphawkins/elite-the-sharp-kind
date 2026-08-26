@@ -114,6 +114,20 @@ internal sealed class GameState
         Screen.IntroOne or Screen.IntroTwo or
         Screen.GameOver or Screen.EscapeCapsule or Screen.MissionBriefing;
 
+    /// <summary>
+    /// Gets how much time an update is worth and how many housekeeping steps
+    /// it has bought.
+    /// </summary>
+    /// <remarks>
+    /// It lives here, next to the <see cref="MCount"/> it drives, rather than
+    /// as a service of its own: what it holds - the count's unspent time, and
+    /// how much of a tick this update is - is state of the running game in
+    /// exactly the way everything else on this class is. Everything that
+    /// needs the clock already has the game state, so nothing had to be
+    /// rewired to reach it.
+    /// </remarks>
+    internal GameClock Clock { get; } = new();
+
     internal int MCount { get; set; }
 
     internal int MessageCount { get; set; }

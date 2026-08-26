@@ -74,7 +74,7 @@ public class PlanetDataControllerTests
         gameState = new(views, TestMissions.Registry());
         RNG rng = new(new FakeRandomSource());
 
-        PlayerShip ship = new();
+        PlayerShip ship = new(gameState);
         PlanetController planet = new(gameState);
 
         return new PlanetDataController(

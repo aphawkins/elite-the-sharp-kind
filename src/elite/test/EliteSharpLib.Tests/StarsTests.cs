@@ -55,12 +55,12 @@ public class StarsTests
         int witchspaceStarCount = 3)
     {
         FakeEliteDraw draw = new();
-        PlayerShip ship = new();
         renderer = new(normalSpaceStarCount, witchspaceStarCount);
         RNG rng = new(new FakeRandomSource());
 
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
         GameState gameState = new(views, TestMissions.Registry());
+        PlayerShip ship = new(gameState);
         return new(gameState, draw, ship, renderer, rng);
     }
 

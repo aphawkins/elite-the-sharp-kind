@@ -57,7 +57,6 @@ public sealed class EliteMain : IGame, IGameApp
     private readonly IBaseView _baseView;
     private readonly IEliteDraw _draw;
     private readonly List<long> _framesDrawn = [];
-    private readonly GameClock _clock = new();
     private readonly Pilot _pilot;
     private readonly SaveFile _save;
     private readonly ScannerController _scanner;
@@ -189,6 +188,7 @@ public sealed class EliteMain : IGame, IGameApp
     private bool Simulate()
     {
         InitialiseGame();
+        State.Clock.BeginUpdate(SecondsPerUpdate);
         _audio.UpdateSound();
         _ship.IsRolling = false;
         _ship.IsClimbing = false;
@@ -225,7 +225,7 @@ public sealed class EliteMain : IGame, IGameApp
         _pendingCountdown = null;
 
         State.CurrentView.Update();
-        _space.MoveUniverse();
+        _space.MoveUniverse(State.Clock.Ticks);
 
         if (!State.IsDocked && !State.IsGameOver)
         {
@@ -292,7 +292,7 @@ public sealed class EliteMain : IGame, IGameApp
 
         // However many steps this update is worth. At the game's own rate
         // that is exactly one, as it has always been.
-        int due = _clock.Advance(SecondsPerUpdate);
+        int due = State.Clock.Advance();
         for (int step = 0; step < due; step++)
         {
             Housekeeping();

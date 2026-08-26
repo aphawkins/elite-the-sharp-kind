@@ -40,6 +40,12 @@ internal sealed class Space
     /// <inheritdoc cref="ExplosionStart"/>
     private const int ExplosionEnd = 251;
 
+    /// <summary>
+    /// The fastest an object can be left spinning. A spin pegged here does
+    /// not wind down - see <see cref="DecayTowardsZero"/>.
+    /// </summary>
+    private const float MaxSpin = 127;
+
     // This tick's view-space clones, in the order they were moved, which is
     // the order they are drawn in.
     private readonly List<IObject> _toDraw = [];
@@ -416,7 +422,7 @@ internal sealed class Space
     /// the frame is painted from that. A clone is a snapshot, so drawing it
     /// later cannot see a position the tick has since changed.
     /// </remarks>
-    internal void MoveUniverse()
+    internal void MoveUniverse(float ticks)
     {
         _toDraw.Clear();
         int i = -1;
@@ -424,7 +430,7 @@ internal sealed class Space
         foreach (IObject obj in _universe.GetAllObjects())
         {
             i++;
-            UpdateUniverseObject(obj, i);
+            UpdateUniverseObject(obj, i, ticks);
         }
 
         _gameState.DetonateBomb = false;
@@ -447,20 +453,47 @@ internal sealed class Space
 
     private static int RotateByteLeft(int x) => ((x << 1) | (x >> 7)) & 255;
 
-    private static (Vector4 A, Vector4 B) RotateXFirst(Vector4 a, Vector4 b, float direction)
+    // A spin winds down by one unit a tick unless it is pegged at the limit,
+    // where the original held it steady - a ship rolling flat out keeps
+    // rolling. The test used to be an exact match against 127, which only
+    // works while the rate arrives in whole units; at a fraction of a tick a
+    // spin can sit just inside the peg and never equal it, so the comparison
+    // is against the magnitude instead. Clamped at zero for the same reason
+    // LevelOut is: a part-tick step could otherwise cross it.
+    private static float DecayTowardsZero(float spin, float ticks)
+        => MathF.Abs(spin) >= MaxSpin
+            ? spin
+            : spin < 0 ? MathF.Min(spin + ticks, 0) : MathF.Max(spin - ticks, 0);
+
+    // A tick's worth of the original's small-angle rotation: a turn of about
+    // 1/19 of a radian with a 1/512 correction pulling the basis back towards
+    // unit length. Both are scaled by ticks, which keeps it a first-order
+    // approximation - which is what it already was - while making the turn
+    // rate a speed rather than a step.
+    private static (Vector4 A, Vector4 B) RotateXFirst(Vector4 a, Vector4 b, float direction, float ticks)
     {
         Vector4 fx = a;
         Vector4 ux = b;
 
+        // Divided first and scaled second, which is not the same thing as
+        // scaling the divisor: a nineteenth is not exactly representable, so
+        // multiplying by ticks/19 moves the result a fraction even when ticks
+        // is one. Done this way a whole tick reproduces the original's
+        // arithmetic to the bit, and the scaling only bites when it should.
+        Vector4 shrinkX = fx / 512 * ticks;
+        Vector4 shrinkU = ux / 512 * ticks;
+        Vector4 turnX = fx / 19 * ticks;
+        Vector4 turnU = ux / 19 * ticks;
+
         if (direction < 0)
         {
-            a = fx - (fx / 512) + (ux / 19);
-            b = ux - (ux / 512) - (fx / 19);
+            a = fx - shrinkX + turnU;
+            b = ux - shrinkU - turnX;
         }
         else
         {
-            a = fx - (fx / 512) - (ux / 19);
-            b = ux - (ux / 512) + (fx / 19);
+            a = fx - shrinkX - turnU;
+            b = ux - shrinkU + turnX;
         }
 
         return (a, b);
@@ -469,11 +502,11 @@ internal sealed class Space
     /// <summary>
     /// Move a ship along its nose vector and apply any pending acceleration.
     /// </summary>
-    private static Vector4 ApplyShipVelocity(IShip ship, Vector4 position)
+    private static Vector4 ApplyShipVelocity(IShip ship, Vector4 position, float ticks)
     {
         if ((int)ship.Velocity != 0)
         {
-            position += ship.Rotmat.GetRow(2) * ship.Velocity * 1.5f;
+            position += ship.Rotmat.GetRow(2) * ship.Velocity * 1.5f * ticks;
         }
 
         if (ship.Acceleration != 0)
@@ -498,7 +531,7 @@ internal sealed class Space
     /// Apply an object's own pitch and roll, damping each back towards zero
     /// unless it is pegged at the maximum rate.
     /// </summary>
-    private static void SpinUniverseObject(IObject obj)
+    private static void SpinUniverseObject(IObject obj, float ticks)
     {
         float rotx = obj.RotX;
         float rotz = obj.RotZ;
@@ -506,32 +539,26 @@ internal sealed class Space
         // If necessary rotate the object around the X axis...
         if ((int)rotx != 0)
         {
-            (Vector4 nose, Vector4 roof) = RotateXFirst(obj.Rotmat.GetRow(2), obj.Rotmat.GetRow(1), rotx);
+            (Vector4 nose, Vector4 roof) = RotateXFirst(obj.Rotmat.GetRow(2), obj.Rotmat.GetRow(1), rotx, ticks);
             obj.Rotmat = obj.Rotmat.WithRow(2, nose).WithRow(1, roof);
 
-            if (rotx is not 127 and not -127)
-            {
-                obj.RotX -= (rotx < 0) ? -1 : 1;
-            }
+            obj.RotX = DecayTowardsZero(rotx, ticks);
         }
 
         // If necessary rotate the object around the Z axis...
         if ((int)rotz != 0)
         {
-            (Vector4 side, Vector4 roof) = RotateXFirst(obj.Rotmat.GetRow(0), obj.Rotmat.GetRow(1), rotz);
+            (Vector4 side, Vector4 roof) = RotateXFirst(obj.Rotmat.GetRow(0), obj.Rotmat.GetRow(1), rotz, ticks);
             obj.Rotmat = obj.Rotmat.WithRow(0, side).WithRow(1, roof);
 
-            if (rotz is not 127 and not -127)
-            {
-                obj.RotZ -= (rotz < 0) ? -1 : 1;
-            }
+            obj.RotZ = DecayTowardsZero(rotz, ticks);
         }
     }
 
     /// <summary>
     /// Update and render a single object in the universe.
     /// </summary>
-    private void UpdateUniverseObject(IObject obj, int i)
+    private void UpdateUniverseObject(IObject obj, int i, float ticks)
     {
         if (obj.Type == ShipType.None)
         {
@@ -555,7 +582,7 @@ internal sealed class Space
             _combat.Tactics((IShip)obj, i);
         }
 
-        MoveUniverseObject(obj);
+        MoveUniverseObject(obj, ticks);
         IObject flip = obj.Clone();
         SwitchToView(flip);
 
@@ -983,7 +1010,7 @@ internal sealed class Space
     /// <summary>
     /// Update an objects location in the universe.
     /// </summary>
-    private void MoveUniverseObject(IObject obj)
+    private void MoveUniverseObject(IObject obj, float ticks)
     {
         float alpha = _ship.Roll / 256;
         float beta = _ship.Climb / 256;
@@ -994,7 +1021,7 @@ internal sealed class Space
             obj.Type != ShipType.Sun
             && obj.Type != ShipType.Planet)
         {
-            position = ApplyShipVelocity(shipEx, position);
+            position = ApplyShipVelocity(shipEx, position, ticks);
         }
 
         float k2 = position.Y - (alpha * position.X);
@@ -1026,7 +1053,7 @@ internal sealed class Space
             return;
         }
 
-        SpinUniverseObject(obj);
+        SpinUniverseObject(obj, ticks);
 
         // Orthonormalize the rotation matrix...
         obj.Rotmat = VectorMaths.OrthonormalizeBasis(obj.Rotmat);

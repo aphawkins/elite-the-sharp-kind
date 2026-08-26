@@ -41,7 +41,7 @@ internal static class SettingsControllerFixture
 
         draw = new FakeEliteDraw();
         RNG rng = new(new FakeRandomSource());
-        PlayerShip ship = new();
+        PlayerShip ship = new(gameState);
         Trade trade = new(gameState, ship);
         FakeShipFactory shipFactory = new(draw);
         Universe universe = new(shipFactory, rng);

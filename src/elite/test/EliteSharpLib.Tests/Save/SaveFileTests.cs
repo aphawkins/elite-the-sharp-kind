@@ -376,7 +376,7 @@ public class SaveFileTests
 
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
         gameState = new(views, TestMissions.Registry());
-        PlayerShip ship = new();
+        PlayerShip ship = new(gameState);
         trade = new(gameState, ship);
         PlanetController planet = new(gameState);
         directory = Path.Combine(Path.GetTempPath(), "SaveFileTests_" + Guid.NewGuid().ToString("N"));

@@ -40,10 +40,34 @@ internal sealed class GameClock
     private const float SecondsPerStep = 1f / StepsPerSecond;
 
     private float _unspent;
+    private float _elapsed = SecondsPerStep;
 
     /// <summary>
-    /// Adds <paramref name="elapsedSeconds"/> to the clock and returns how
-    /// many housekeeping steps are now due.
+    /// Gets how much of one of the game's own ticks this update is worth:
+    /// exactly one while the game updates at 13.5Hz, and a fraction of one
+    /// when it updates faster.
+    /// </summary>
+    /// <remarks>
+    /// Every rate the game was written as "per tick" is multiplied by this,
+    /// which is what turns a step size into a speed. It is a division of one
+    /// float by the identical float at the game's own rate, so it is exactly
+    /// 1 there and the arithmetic is untouched - a rate conversion that
+    /// changes nothing until the rate changes.
+    /// </remarks>
+    internal float Ticks { get; private set; } = 1f;
+
+    /// <summary>
+    /// Opens an update worth <paramref name="elapsedSeconds"/> of game time.
+    /// </summary>
+    internal void BeginUpdate(float elapsedSeconds)
+    {
+        _elapsed = elapsedSeconds;
+        Ticks = elapsedSeconds / SecondsPerStep;
+    }
+
+    /// <summary>
+    /// Adds this update's elapsed time to the clock and returns how many
+    /// housekeeping steps are now due.
     /// </summary>
     /// <remarks>
     /// The remainder is kept rather than dropped, so a rate that does not
@@ -51,6 +75,9 @@ internal sealed class GameClock
     /// Feeding it exactly <see cref="SecondsPerStep"/> takes the same float
     /// away as it added, leaving nothing behind to accumulate into drift.
     /// </remarks>
+    internal int Advance() => Advance(_elapsed);
+
+    /// <inheritdoc cref="Advance()"/>
     internal int Advance(float elapsedSeconds)
     {
         _unspent += elapsedSeconds;

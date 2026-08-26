@@ -250,7 +250,7 @@ public class MissionBriefingControllerTests
         ScreenManager<Screen, IScreenController> views = new(_keyboard);
         views.Add(Screen.CommanderStatus, new FakeView());
         gameState = new(views, TestMissions.Registry());
-        ship = new();
+        ship = new(gameState);
         trade = new(gameState, ship);
         FakeEliteDraw draw = new();
         RNG rng = new(new FakeRandomSource());

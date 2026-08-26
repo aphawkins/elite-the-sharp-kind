@@ -151,7 +151,7 @@ public static class EliteServiceCollectionExtensions
                 Config = config,
             };
         });
-        services.AddSingleton(_ => new PlayerShip());
+        services.AddSingleton(sp => new PlayerShip(sp.GetRequiredService<GameState>()));
         services.AddSingleton(sp => new Trade(sp.GetRequiredService<GameState>(), sp.GetRequiredService<PlayerShip>()));
         services.AddSingleton(sp => new PlanetController(sp.GetRequiredService<GameState>()));
 

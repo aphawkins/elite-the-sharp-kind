@@ -71,7 +71,7 @@ public class Intro2ControllerTests
         keyboard = new FakeKeyboard();
         ScreenManager<Screen, IScreenController> views = new(keyboard);
         GameState gameState = new(views, TestMissions.Registry());
-        PlayerShip ship = new();
+        PlayerShip ship = new(gameState);
         FakeEliteDraw draw = new();
         RNG rng = new(new FakeRandomSource());
         FakeShipFactory shipFactory = new(draw);

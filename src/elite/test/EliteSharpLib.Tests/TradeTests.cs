@@ -47,7 +47,7 @@ public class TradeTests
     {
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
         GameState gameState = new(views, TestMissions.Registry());
-        PlayerShip ship = new();
+        PlayerShip ship = new(gameState);
         return new Trade(gameState, ship);
     }
 }

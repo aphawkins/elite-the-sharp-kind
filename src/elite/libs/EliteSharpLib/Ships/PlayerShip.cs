@@ -93,7 +93,13 @@ internal sealed class PlayerShip
     /// </summary>
     private const float ShieldStep = 1f / 256f;
 
-    internal PlayerShip() => Reset();
+    private readonly GameClock _clock;
+
+    internal PlayerShip(GameState gameState)
+    {
+        _clock = gameState.Clock;
+        Reset();
+    }
 
     /// <summary>
     /// Gets or sets the height above the planet, between
@@ -205,7 +211,17 @@ internal sealed class PlayerShip
         }
     }
 
-    internal void DecreaseClimb() => Climb = Math.Clamp(Climb - 1, -MaxClimb, MaxClimb);
+    /// <summary>
+    /// Pitch and roll change by one unit per tick of the game's own clock.
+    /// </summary>
+    /// <remarks>
+    /// The clock is read here rather than passed in by each of the sixteen
+    /// call sites across the pilot, the autopilot and the controller. What
+    /// those callers are saying is "the stick is over", which is a fact about
+    /// the controls; how far that moves the ship this update is a fact about
+    /// the clock, and the ship is where the two meet.
+    /// </remarks>
+    internal void DecreaseClimb() => Climb = Math.Clamp(Climb - _clock.Ticks, -MaxClimb, MaxClimb);
 
     /// <summary>
     /// Drain the energy banks. The amount is in the original's 0-255 units, so
@@ -213,29 +229,42 @@ internal sealed class PlayerShip
     /// </summary>
     internal void DecreaseEnergy(float amount) => Energy += amount * EnergyStep;
 
-    internal void DecreaseRoll() => Roll = Math.Clamp(Roll - 1, -MaxRoll, MaxRoll);
+    /// <inheritdoc cref="DecreaseClimb"/>
+    internal void DecreaseRoll() => Roll = Math.Clamp(Roll - _clock.Ticks, -MaxRoll, MaxRoll);
 
     internal void DecreaseSpeed() => Speed = Math.Clamp(Speed - 1, 0, MaxSpeed);
 
-    internal void IncreaseClimb() => Climb = Math.Clamp(Climb + 1, -MaxClimb, MaxClimb);
+    /// <inheritdoc cref="DecreaseClimb"/>
+    internal void IncreaseClimb() => Climb = Math.Clamp(Climb + _clock.Ticks, -MaxClimb, MaxClimb);
 
-    internal void IncreaseRoll() => Roll = Math.Clamp(Roll + 1, -MaxRoll, MaxRoll);
+    /// <inheritdoc cref="DecreaseClimb"/>
+    internal void IncreaseRoll() => Roll = Math.Clamp(Roll + _clock.Ticks, -MaxRoll, MaxRoll);
 
     internal void IncreaseSpeed() => Speed = Math.Clamp(Speed + 1, 0, MaxSpeed);
 
     internal bool IsEnergyLow() => Energy < LowEnergy;
 
+    /// <summary>
+    /// Let the stick centre itself, a tick's worth at a time.
+    /// </summary>
+    /// <remarks>
+    /// The decay is clamped at zero rather than allowed to step past it. A
+    /// whole tick could never overshoot, because roll and pitch are whole
+    /// numbers of units; a fraction of a tick can, and a ship that levelled
+    /// out by jittering either side of centre would be the frame rate
+    /// showing through.
+    /// </remarks>
     internal void LevelOut()
     {
         if (!IsRolling)
         {
             if (Roll > 0)
             {
-                DecreaseRoll();
+                Roll = MathF.Max(Roll - _clock.Ticks, 0);
             }
             else if (Roll < 0)
             {
-                IncreaseRoll();
+                Roll = MathF.Min(Roll + _clock.Ticks, 0);
             }
         }
 
@@ -243,11 +272,11 @@ internal sealed class PlayerShip
         {
             if (Climb > 0)
             {
-                DecreaseClimb();
+                Climb = MathF.Max(Climb - _clock.Ticks, 0);
             }
             else if (Climb < 0)
             {
-                IncreaseClimb();
+                Climb = MathF.Min(Climb + _clock.Ticks, 0);
             }
         }
     }

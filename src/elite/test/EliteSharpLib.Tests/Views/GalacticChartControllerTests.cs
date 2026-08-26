@@ -192,7 +192,7 @@ public class GalacticChartControllerTests
             gameState,
             keyboard,
             new PlanetController(gameState),
-            new PlayerShip(),
+            new PlayerShip(gameState),
             new FakeGalacticChartView());
     }
 

@@ -79,7 +79,7 @@ public class SaveCommanderControllerTests
         ScreenManager<Screen, IScreenController> views = new(keyboard);
         views.Add(Screen.Options, new FakeView());
         gameState = new(views, TestMissions.Registry());
-        PlayerShip ship = new();
+        PlayerShip ship = new(gameState);
         Trade trade = new(gameState, ship);
         string directory = Path.Combine(Path.GetTempPath(), "SaveCommanderControllerTests_" + Guid.NewGuid().ToString("N"));
         save = new SaveFile(gameState, ship, trade, new PlanetController(gameState), TestMissions.Registry(), directory);
