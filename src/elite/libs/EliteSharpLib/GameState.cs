@@ -98,6 +98,22 @@ internal sealed class GameState
     /// </summary>
     internal float LaserTemp { get; set; }
 
+    /// <summary>
+    /// Gets a value indicating whether the current screen shows the universe:
+    /// the four cockpit views plus the handful of screens that stage
+    /// something in space behind them.
+    /// </summary>
+    /// <remarks>
+    /// Derived rather than stored, and one definition rather than two: both
+    /// the renderer, deciding whether to draw an object, and <see
+    /// cref="Space"/>, deciding whether to age an explosion, have to agree
+    /// about this or a wreck would burn on a screen that never showed it.
+    /// </remarks>
+    internal bool ShowsUniverse => CurrentScreen is
+        Screen.FrontView or Screen.RearView or Screen.LeftView or Screen.RightView or
+        Screen.IntroOne or Screen.IntroTwo or
+        Screen.GameOver or Screen.EscapeCapsule or Screen.MissionBriefing;
+
     internal int MCount { get; set; }
 
     internal int MessageCount { get; set; }

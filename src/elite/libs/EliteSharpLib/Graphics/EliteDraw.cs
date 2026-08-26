@@ -8,7 +8,6 @@ using EliteSharp.Abstractions.Assets;
 using EliteSharp.Abstractions.Renditions;
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Ships;
-using EliteSharpLib.Views;
 using SharpKind;
 using SharpKind.Abstraction.Config;
 using SharpKind.Assets;
@@ -203,19 +202,9 @@ internal sealed class EliteDraw : IEliteDraw
     /// </summary>
     public void DrawObject(IObject obj)
     {
-        if (_gameState.CurrentScreen is not Screen.FrontView and not Screen.RearView and
-            not Screen.LeftView and not Screen.RightView and
-            not Screen.IntroOne and not Screen.IntroTwo and
-            not Screen.GameOver and not Screen.EscapeCapsule and
-            not Screen.MissionBriefing)
+        if (!_gameState.ShowsUniverse)
         {
             return;
-        }
-
-        if (obj.Flags.HasFlag(ShipProperties.Dead) && !obj.Flags.HasFlag(ShipProperties.Explosion))
-        {
-            obj.Flags |= ShipProperties.Explosion;
-            ((IShip)obj).ExpDelta = 18;
         }
 
         if (obj.Flags.HasFlag(ShipProperties.Explosion))
@@ -256,15 +245,18 @@ internal sealed class EliteDraw : IEliteDraw
 
     public void RenderStart() => _shipRenderer.StartFrame();
 
+    // Draws the cloud at whatever age Space.AgeExplosion has already given
+    // it this tick. The age itself is not touched here: a renderer that
+    // advanced it would run the explosion at the frame rate rather than the
+    // game's, which is exactly what the frame-rate rework exists to stop.
     private void DrawExplosion(IShip ship)
     {
-        if (ship.ExpDelta > 251)
+        // The tick the cloud expires it is flagged for removal and not drawn;
+        // Space takes it out of the universe on the next one.
+        if (ship.Flags.HasFlag(ShipProperties.Remove))
         {
-            ship.Flags |= ShipProperties.Remove;
             return;
         }
-
-        ship.ExpDelta += 4;
 
         if (ship.Location.Z <= 0)
         {

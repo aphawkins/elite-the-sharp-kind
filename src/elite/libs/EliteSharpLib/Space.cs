@@ -25,6 +25,21 @@ namespace EliteSharpLib;
 /// </summary>
 internal sealed class Space
 {
+    /// <summary>
+    /// The explosion cloud's age: lit at <see cref="ExplosionStart"/>, grown
+    /// by <see cref="ExplosionStep"/> a tick, and past <see
+    /// cref="ExplosionEnd"/> the wreck is flagged for removal. The renderer
+    /// reads the age to size the cloud; only <see cref="AgeExplosion"/>
+    /// changes it.
+    /// </summary>
+    private const int ExplosionStart = 18;
+
+    /// <inheritdoc cref="ExplosionStart"/>
+    private const int ExplosionStep = 4;
+
+    /// <inheritdoc cref="ExplosionStart"/>
+    private const int ExplosionEnd = 251;
+
     private readonly AudioController _audio;
     private readonly Combat _combat;
     private readonly IEliteDraw _draw;
@@ -536,6 +551,7 @@ internal sealed class Space
             return;
         }
 
+        AgeExplosion((IShip)flip);
         _draw.DrawObject(flip);
         obj.Flags = flip.Flags;
         ((IShip)obj).ExpDelta = ((IShip)flip).ExpDelta;
@@ -547,6 +563,49 @@ internal sealed class Space
         }
 
         _combat.CheckTarget((IShip)obj, flip);
+    }
+
+    /// <summary>
+    /// Light a dead ship's explosion and age it one tick, flagging the wreck
+    /// for removal once the cloud has spread as far as it goes.
+    /// </summary>
+    /// <remarks>
+    /// This used to live in <c>EliteDraw.DrawObject</c>/<c>DrawExplosion</c>,
+    /// which meant the renderer owned a piece of game state and advanced it
+    /// once per drawn frame. Here it advances once per tick, whatever the
+    /// frame rate does.
+    /// <para>
+    /// The screen test is what the renderer applied before it would touch
+    /// anything, so a wreck on a chart screen still does not burn down. The
+    /// seed-then-advance order is the original's too: a cloud is lit at 18
+    /// and immediately aged to 22, which is the first size ever drawn.
+    /// </para>
+    /// </remarks>
+    private void AgeExplosion(IShip ship)
+    {
+        if (!_gameState.ShowsUniverse)
+        {
+            return;
+        }
+
+        if (ship.Flags.HasFlag(ShipProperties.Dead) && !ship.Flags.HasFlag(ShipProperties.Explosion))
+        {
+            ship.Flags |= ShipProperties.Explosion;
+            ship.ExpDelta = ExplosionStart;
+        }
+
+        if (!ship.Flags.HasFlag(ShipProperties.Explosion))
+        {
+            return;
+        }
+
+        if (ship.ExpDelta > ExplosionEnd)
+        {
+            ship.Flags |= ShipProperties.Remove;
+            return;
+        }
+
+        ship.ExpDelta += ExplosionStep;
     }
 
     /// <summary>
