@@ -58,22 +58,10 @@ Elite's frame rate vs the 13.5Hz tick — **done 2026-08-26** (see
 frame-check harness, the simulate/compose split, the housekeeping clock, the
 motion, the AI pacing, the animations, and running at the configured `Fps`.
 
-Two things it left behind, worth their own entries rather than being lost:
-
-- [ ] [EliteSharpLib] The starfield recycles its stars out of the **game's**
-      random stream (`Stars.CreateNewStar`, `RecycleStarAtEdge`), so how many
-      draws the game has taken depends on how many updates went by. The
-      encounter rolls therefore differ between update rates: the same twenty
-      seconds at 13.5Hz and at 60Hz end in the same place but need not meet
-      the same ship. This is the same coupling the drawing had before
-      `RenderRandom` (see [decisions.md](decisions.md), 2026-08-26), one
-      layer in: the starfield is decoration, and its entropy has no business
-      being the game's. Moving it costs one baseline regeneration.
-- [ ] [EliteSharpLib] `Combat.TimeECM` still counts down once per update
-      rather than per second, so an E.C.M. burst lasts a quarter as long at
-      60Hz and drains a quarter of the energy. Missed because no golden
-      scenario fires an E.C.M. — the fix is the same shape as everything in
-      the animations item, and it wants a scenario that arms a missile first.
+The two gaps it left were closed the same day: the starfield no longer draws
+from the game's random stream, and an E.C.M. burst is counted in ticks. The
+same twenty seconds at 13.5Hz and at 60Hz now end on the same screen, within
+one housekeeping step, and meet the same ships.
 
 - [ ] **[LARGE]** [EliteSharpLib] Data-driven game content model: replace
       hardcoded/reflection-based game data — `EquipmentType`, `StockType`,

@@ -7,6 +7,33 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Elite: the last two rate couplings, 2026-08-26)
+
+- **The starfield drew from the game's random stream.** Where a recycled star
+  reappears decides nothing - the stars are scenery - but taking those
+  numbers from the game's stream meant the game's *other* rolls depended on
+  how many updates had gone by, because a star is recycled when it leaves the
+  view and that is tested once per update. The same twenty seconds at two
+  rates could then meet different ships, which is what the cross-rate test
+  found: a Transporter at 13.5Hz, nothing at 60Hz. It moves to
+  `RenderRandom`, reached through `IEliteDraw.Jitter`, which `Stars` already
+  had - the constructor loses a parameter rather than gaining one.
+- **Both rates now meet the same ships**, and that is a test rather than a
+  claim. Encounters are rolled on the housekeeping clock, so the same seconds
+  roll the same dice, and nothing draws from the stream once per update in
+  between any more.
+- **An E.C.M. burst is counted in ticks.** `TimeECM` ran down once per
+  update, so a burst that should last thirty-two ticks lasted a quarter as
+  long at sixty frames a second, and cost a quarter of the energy with it. It
+  was missed because no golden scenario arms a missile, so nothing ever ran
+  the code - hence two tests that reach it directly.
+- The two baselines part company over the starfield change. Traces record
+  state and keep an **unseeded** render stream, which is what makes their
+  reproducibility test mean something; frames record pixels and now need it
+  pinned, because the starfield is scattered from it. Both regenerated - the
+  `long-flight` encounter is a Shuttle where it was a Transporter, which is
+  the coupling coming out.
+
 ### Changed (Elite runs at the configured frame rate, 2026-08-26)
 
 - **One rate for both halves.** `GameTickRate` is gone: `Update` and `Draw`
