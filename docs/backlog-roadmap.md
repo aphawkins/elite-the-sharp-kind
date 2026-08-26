@@ -58,6 +58,16 @@ Elite's frame rate vs the 13.5Hz tick — **done 2026-08-26** (see
 frame-check harness, the simulate/compose split, the housekeeping clock, the
 motion, the AI pacing, the animations, and running at the configured `Fps`.
 
+- [ ] [EliteSharpLib] The docking computer's throttle ramp is fixed but
+      untested. `Pilot.ApplyAutoDockSpeed` nudges the throttle each time it
+      runs and it runs every update, so it was scaled like everything else -
+      but a harness test for it was written, found to pass with the fix
+      reverted, and removed rather than left giving false assurance. It
+      saturates: the computer settles at 22 within about ten ticks and both
+      rates then read 22. Testing it properly needs a scenario positioned so
+      the approach is still accelerating when it is sampled, which means
+      understanding the docking geometry rather than flying at it and hoping.
+
 The two gaps it left were closed the same day: the starfield no longer draws
 from the game's random stream, and an E.C.M. burst is counted in ticks. The
 same twenty seconds at 13.5Hz and at 60Hz now end on the same screen, within
