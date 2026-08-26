@@ -104,6 +104,10 @@ inherit:
 
 - **Input is a third phase**, run after `Compose` because that is where this
   port has always read it. Where it belongs is the last item's question.
+- **Watch for equality tests against a count.** Anything of the shape
+  `tick == N` is stepped straight over by a fractional tick and must become a
+  crossing (`was < N && now >= N`). The escape capsule's explosion was one;
+  the spin peg's `== 127` was the same shape. Assume there are more.
 - **Watch the float ordering.** Scaling a rate by `Ticks` is only a no-op
   at 13.5Hz if the scaling is applied *after* an inexact divide, not folded
   into it. `RotateXFirst` divides first and scales second for exactly this
@@ -124,21 +128,6 @@ survive a rate change cleanly. Elite's feel and difficulty change at 60Hz.
 That is the accepted price of the decision, not a defect to tune away
 afterwards.
 
-- [ ] [EliteSharpLib] Rate-independent animations and dwell times. Laser
-      cooling's `_laserCounter - 2`
-      ([Combat.cs:130](../src/elite/libs/EliteSharpLib/Conflict/Combat.cs)),
-      `MessageCount = 37`
-      ([GameState.cs:163](../src/elite/libs/EliteSharpLib/GameState.cs)),
-      `BreakPattern`'s 20 rings (launch, dock and hyperspace),
-      `GameOverController.TicksBeforeRestart = 100`,
-      `EscapeCapsuleController`'s `LaunchTicks = 90`/`ExplosionTick = 40`
-      and its `Z += 2`, `Intro1Controller`'s `Z -= 100`,
-      `Intro2Controller`'s `_showTime >= 140` parade, and the explosion
-      cloud's `ExpDelta` 18→251 in +4 steps. **`SfxSample`'s
-      `ReduceTimeRemaining`, driven by `AudioController.UpdateSound`, lives
-      in `SharpKind.Audio` and is shared with Stunt Car Racer** — sound
-      effect lifetimes are counted in the caller's ticks, so whatever
-      lands must leave SCR's pacing untouched.
 - [ ] [EliteSharpLib + SharpKind.Abstraction] Run at `Fps`. Collapse
       `GameHost.Run(_abstraction, this, GameTickRate, Fps)` to one rate and
       delete `EliteMain.GameTickRate` and the two comment blocks that

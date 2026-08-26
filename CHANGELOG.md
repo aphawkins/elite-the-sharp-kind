@@ -7,6 +7,31 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Elite's animations run on time, 2026-08-26)
+
+- **Everything that counted updates now counts time**: the laser's
+  temperature and its reload counter, the info message's dwell, the break
+  pattern's twenty rings, the game-over hold, the escape-capsule sequence and
+  the ship it leaves behind, both intro screens, and the explosion cloud.
+- **One new trap, the mirror of the spin peg.** The capsule's abandoned ship
+  blew up on the tick that *equalled* forty. A whole tick lands on forty
+  exactly; a third of one steps from just under to just over and never lands,
+  leaving the ship to fly on intact. It is a crossing test now. Anything of
+  the shape `tick == N` has the same problem.
+- **`SfxSample` is shared with Stunt Car Racer**, which counts sample
+  lifetimes in whole updates and says nothing about time. `UpdateSound` has
+  two overloads rather than an optional argument: SCR calls the one meaning
+  "a whole tick" and is untouched by construction, and the test that already
+  covered that path still passes unchanged.
+- `MessageCount` and `ExpDelta` became floats, so the trace format moves to
+  v3 and the baselines are regenerated. Every value is unchanged - only the
+  printing of two columns - checked against the committed files rather than
+  assumed. The frame signatures were **not** regenerated and still pass, so
+  every pixel is identical too.
+- `CoolLaser` moved to a `Combat.Laser` partial: the conversion took the file
+  past the enforced length, and the two things it counts down belong
+  together.
+
 ### Changed (Elite's ships think on the clock, 2026-08-26)
 
 - **A ship now thinks once per count rather than once per update.** Combat
