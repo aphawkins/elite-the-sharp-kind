@@ -60,11 +60,29 @@ roughly two dozen rates and counters are expressed per tick rather than per
 second. Nothing here works until the fusion is undone, so do the items
 strictly in order — each one leaves the game playable and the traces green.
 
-**The golden-trace harness that was first on this list landed 2026-08-26**
-(see [CHANGELOG.md](../CHANGELOG.md)): four scripted scenarios recorded per
-tick against committed baselines, under
-`src/elite/test/EliteSharpLib.Tests/GoldenTrace`. Every item below is
-validated against it.
+**The first two items on this list landed 2026-08-26** (see
+[CHANGELOG.md](../CHANGELOG.md)). The harness is five scripted scenarios
+recorded per tick against committed baselines, plus twelve composed frames
+signed by pixel hash and a brightness grid, under
+`src/elite/test/EliteSharpLib.Tests/GoldenTrace`; the traces catch a change
+in what the game does, the frames a change in what it draws or the order it
+draws in. Every item below is validated against both.
+
+Simulate and compose are now separate: `EliteMain.Simulate`/`Compose`,
+`Space.MoveUniverse`/`DrawUniverse`, `Stars`' passes and `Stars.Draw`, with
+the explosion moved out of the renderer and the drawing given its own random
+stream. So the items below have a simulate half to change and a compose half
+that will not fight them.
+
+Two things that split left behind, which the next items inherit:
+
+- **Input is a third phase**, run after `Compose` because that is where this
+  port has always read it. Where it belongs is the last item's question.
+- **`EliteMain` holds two frame fields** (`_pendingMessage`,
+  `_pendingCountdown`) because the hyperspace countdown is drawn before it
+  is decremented and the info message is the one already on screen, not the
+  "ENERGY LOW" the same tick may raise afterwards. Anything else that turns
+  out to be true only in the middle of a tick needs the same treatment.
 
 The maintainer chose (2026-08-26) **true per-second rates at any `Fps`**,
 over snapping `Fps` to a whole multiple of 13.5. So the ported constants
@@ -76,38 +94,6 @@ survive a rate change cleanly. Elite's feel and difficulty change at 60Hz.
 That is the accepted price of the decision, not a defect to tune away
 afterwards.
 
-- [ ] [EliteSharpLib] Separate simulate from compose. **Two of the four
-      fusion sites are done (2026-08-26, see [CHANGELOG.md](../CHANGELOG.md));
-      what is left is the top-level split.** Done: the explosion no longer
-      lives in the renderer — `Space.AgeExplosion` owns it and
-      `EliteDraw.DrawExplosion` only draws; and the drawing has its own
-      random stream, which the audit had missed and which blocked everything
-      else (see the 2026-08-26 entry in [decisions.md](decisions.md)).
-      Still to do:
-      - `EliteMain.Update` composes the whole frame and `Draw` only presents
-        it. Split into a simulate half and a compose half. Note the frame's
-        order is load-bearing: clear, then the starfield (drawn inside
-        `CurrentView.Update`), then the universe, then the view's chrome,
-        then messages, then the scanner — and `CurrentView.HandleInput()`
-        runs at the *end* of the same method.
-      - `Space.UpdateUniverseObject`
-        ([Space.cs](../src/elite/libs/EliteSharpLib/Space.cs)) moves each
-        object and then draws it in one pass, and the view-space clone it
-        draws (`flip`) is also what `Combat.CheckTarget` needs, so the two
-        halves share more than a loop.
-      - `Stars.FrontStarfield`/`RearStarfield`/`SideStarfield` advance the
-        stars and emit their marks together.
-
-      **The frame check that guards this landed 2026-08-26** (see
-      [CHANGELOG.md](../CHANGELOG.md)): twelve composed frames across the
-      five scenarios, each signed by an exact pixel hash plus a 32x32
-      brightness grid that shows where a change is. The traces compare state
-      and cannot see drawing order — stars are drawn *before* the universe
-      today, and moving them naively into a compose pass would paint them
-      over the ships with every trace still green. Proven by doing it: a
-      pure draw-order change left all five traces green and failed four of
-      the five frame checks. Regenerate both with the same
-      `ELITE_REGENERATE_TRACES=1`.
 - [ ] [EliteSharpLib] Make the game clock explicit and convert the `MCount`
       housekeeping. Thread an elapsed-seconds value into the simulate half,
       and replace the 0..255 down-counter's bit tests with scheduled

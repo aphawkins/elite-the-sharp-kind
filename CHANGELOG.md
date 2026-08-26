@@ -7,6 +7,34 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Elite simulates and composes separately, 2026-08-26)
+
+- **`EliteMain.Update` is now `Simulate` then `Compose`** - everything the
+  tick changes, then everything it draws - with the frame built in the same
+  order as before: the starfield behind the universe, the universe behind
+  the view's chrome, the console across all of it.
+- `Space.UpdateUniverse` became `MoveUniverse` and `DrawUniverse`. They
+  share the view-space clones: the game works out where everything is and
+  what it looks like from here, and the frame is painted from that. A clone
+  is a snapshot, so drawing it later cannot see a position the tick has
+  since changed.
+- `Stars`' four passes now only move the stars and collect their marks;
+  `Stars.Draw` hands them to the rendition and empties the list as it goes,
+  which is what makes it safe to call on every screen - one with no
+  starfield draws nothing rather than repainting the last cockpit view's.
+- **Two orderings had to be recorded rather than rediscovered**, and that is
+  why `EliteMain` grew two fields. The hyperspace countdown is drawn before
+  it is decremented; the info message is the one already on screen, not the
+  "ENERGY LOW" the same method may raise a few lines later. Both are true
+  only in the middle of a tick, so the tick records them and `Compose`
+  paints them.
+- Input stays a third phase after `Compose`, where this port has always read
+  it. Moving it earlier would show a screen change a tick sooner than it
+  does today; which phase it belongs to is the frame-rate list's last item.
+- **All five traces and all five frame checks are identical** - the state is
+  unchanged and so is every pixel, which is what a refactor of the drawing
+  should be able to claim.
+
 ### Added (Elite frame check, 2026-08-26)
 
 - **The golden traces compare state and cannot see the order things are
