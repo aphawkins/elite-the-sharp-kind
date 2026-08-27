@@ -114,7 +114,7 @@ public class LoadCommanderControllerTests
         views.Add(Screen.CommanderStatus, new FakeView());
         gameState = new(views, TestMissions.Registry());
         PlayerShip ship = new(gameState);
-        Trade trade = new(gameState, ship);
+        Trade trade = TestGoods.Trade(gameState, ship);
         string directory = Path.Combine(Path.GetTempPath(), "LoadCommanderControllerTests_" + Guid.NewGuid().ToString("N"));
         save = new SaveFile(gameState, ship, trade, new PlanetController(gameState), TestMissions.Registry(), directory);
 

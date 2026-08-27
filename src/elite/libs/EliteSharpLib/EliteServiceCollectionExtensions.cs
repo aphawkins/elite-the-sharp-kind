@@ -18,7 +18,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SharpKind.Abstraction;
 using SharpKind.Abstraction.Config;
-using SharpKind.Assets;
 using SharpKind.Audio;
 using SharpKind.Config;
 using SharpKind.Input;
@@ -108,18 +107,6 @@ public static class EliteServiceCollectionExtensions
             loggerFactory.CreateLogger(typeof(RenditionLoader)));
     }
 
-    // The rendition's own artwork, palette, fonts and models, plus the audio
-    // the game keeps for itself. Registered over the one AddGameEngine put
-    // there, which knows only about the executable's own Assets folder.
-    public static IServiceCollection AddRenditionAssets(this IServiceCollection services, InstalledRenditions renditions)
-    {
-        ArgumentNullException.ThrowIfNull(renditions);
-
-        return services.AddSingleton<IAssetLocator>(_ => new RenditionAssets(
-            AssetLocator.CreateFrom(renditions.Folder, renditions.Chosen.Name),
-            AssetLocator.Create(renditions.Chosen.Name)));
-    }
-
     // Both the engine and the game halves repair themselves; this is the
     // hook ConfigFile calls to do it.
     internal static bool RepairConfig(EliteConfig config) => config.Repair();
@@ -152,7 +139,21 @@ public static class EliteServiceCollectionExtensions
             };
         });
         services.AddSingleton(sp => new PlayerShip(sp.GetRequiredService<GameState>()));
-        services.AddSingleton(sp => new Trade(sp.GetRequiredService<GameState>(), sp.GetRequiredService<PlayerShip>()));
+
+        // The goods are a plugin too, found in the Goods folder beside the
+        // executable the same way the missions and renditions are. Unlike a
+        // mission and like a rendition, a missing set is fatal - there is no
+        // market without one - so the loader throws and names the folder rather
+        // than starting a game that cannot trade.
+        services.AddSingleton(sp => new GoodsRegistry(
+            GoodsLoader.LoadFrom(
+                AppContext.BaseDirectory,
+                sp.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(GoodsLoader))),
+            sp.GetRequiredService<ILoggerFactory>().CreateLogger<GoodsRegistry>()));
+        services.AddSingleton(sp => new Trade(
+            sp.GetRequiredService<GameState>(),
+            sp.GetRequiredService<PlayerShip>(),
+            sp.GetRequiredService<GoodsRegistry>()));
         services.AddSingleton(sp => new PlanetController(sp.GetRequiredService<GameState>()));
 
         // Every mission is a plugin now, including the two the game has always

@@ -58,6 +58,37 @@ still will not say which check failed - and that is a Should in
 [backlog-issues.md](backlog-issues.md), sequenced before the goods item so
 its new check arrives already explaining itself.
 
+### Follow-up (2026-08-27) — the goods plugin landed, and the save keeps its verdict
+
+Building it out settled two things the scoping left open.
+
+**One set in the folder, or the game will not start.** The loader mirrors
+the rendition loader, not the mission loader: an absent or empty `Goods`
+folder throws and names the folder, and *two* sets throws and names both -
+the game trades one economy, and picking silently would be worse than
+stopping. A config key to select among several was considered and left out:
+nobody ships a second set yet, and "swap the DLL" is the whole ask. When a
+second set arrives, `engine.goods` is a two-line addition then.
+
+**The save keeps the existing all-or-nothing check.** `IsValidStock`
+already rejects a `.cmdr` whose goods do not match the live set exactly, by
+count and by name, so a file from another economy is turned away today with
+no new field and no version bump. The maintainer's "make failure loud"
+applies through the startup-failure fix above and the open in-game-diagnostics
+issue - not through a partial load, which would silently alter a commander's
+hold and credits. `SaveState` is unchanged.
+
+**A missing ship-drop good is fatal, listed.** `Alloy`, `EscapeCapsule`,
+`RockSplinter` and `Tharglet` name Alloys, Slaves, Minerals and AlienItems
+via `ScoopableGoods.Required`; `GoodsRegistry`'s constructor throws at
+startup naming any the set leaves out, and any id it repeats or blanks.
+
+**Coupling paid for by moving, not suppressing.** `GoodsRegistry` +
+`GoodsLoader` tipped `EliteServiceCollectionExtensions` over CA1506, so
+`AddRenditionAssets` moved to its own
+`EliteRenditionAssetsServiceCollectionExtensions` - the same
+split-for-coupling the screen registrations already use.
+
 ## Resolved (2026-08-26) — the drawing gets its own dice
 
 Separating simulate from compose (item 2 of the frame-rate list) ran into

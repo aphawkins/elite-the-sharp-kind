@@ -5,7 +5,6 @@
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Tests.Missions;
-using EliteSharpLib.Trader;
 using EliteSharpLib.Types;
 using EliteSharpLib.Views;
 using SharpKind.Abstraction;
@@ -81,7 +80,7 @@ public class PlanetDataControllerTests
             gameState,
             planet,
             rng,
-            TestMissions.Runner(gameState, ship, new Trade(gameState, ship)),
+            TestMissions.Runner(gameState, ship, TestGoods.Trade(gameState, ship)),
             new FakePlanetDataView());
     }
 

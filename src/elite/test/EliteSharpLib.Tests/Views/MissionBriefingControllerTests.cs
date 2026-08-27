@@ -251,7 +251,7 @@ public class MissionBriefingControllerTests
         views.Add(Screen.CommanderStatus, new FakeView());
         gameState = new(views, TestMissions.Registry());
         ship = new(gameState);
-        trade = new(gameState, ship);
+        trade = TestGoods.Trade(gameState, ship);
         FakeEliteDraw draw = new();
         RNG rng = new(new FakeRandomSource());
         FakeShipFactory shipFactory = new(draw);

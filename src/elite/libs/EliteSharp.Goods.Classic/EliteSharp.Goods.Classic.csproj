@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The seventeen goods Elite has always traded in, as a plugin. It
+       references the contracts and nothing else - not the game - which is the
+       whole point: whatever the game can do for these it can do for anyone's.
+       It is not referenced by the game either; the app's build drops the DLL
+       into the Goods folder beside the executable and the loader finds it
+       there. -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\EliteSharp.Abstractions\EliteSharp.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

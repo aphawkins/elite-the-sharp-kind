@@ -2,19 +2,13 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-namespace EliteSharpLib.Trader;
+namespace EliteSharp.Abstractions.Trading;
 
 /// <summary>
-/// One tradeable good, as the game is configured with it: everything true of
-/// the good itself, none of which changes while playing. What does change - the
-/// price today, what the station has left, what is in the hold - belongs to
-/// <see cref="StockItem"/>.
-/// <para>
-/// The split is what lets a whole set of goods arrive from outside the game
-/// rather than being written into it. Until that lands the classic seventeen
-/// are declared in <see cref="ClassicGoods"/>, which is the only thing that
-/// then has to move.
-/// </para>
+/// One tradeable good, as a goods set declares it: everything true of the good
+/// itself, none of which changes while playing. The price today, what the
+/// station has left, and what is in the hold are the game's to track, not the
+/// set's to state.
 /// </summary>
 /// <param name="Id">
 /// What a save file calls this good. It has to stay put across releases, as a
@@ -31,25 +25,23 @@ namespace EliteSharpLib.Trader;
 /// <param name="Units">The suffix the screens print after a quantity.</param>
 /// <param name="FillsHold">
 /// Whether a unit takes up cargo space. Stated rather than inferred from
-/// <paramref name="Units"/>: the classic set happens to weigh everything held
-/// in tonnes and nothing else, but that is a fact about those goods, not a rule
-/// about units, and a set naming its unit differently must not silently start
-/// carrying free cargo.
+/// <paramref name="Units"/>: a set is free to weigh its goods in whatever it
+/// likes, and naming a unit must not be what decides whether cargo is free.
 /// </param>
 /// <param name="OpeningStationStock">What a new commander's station has on the shelf.</param>
 /// <param name="IsSoldByStations">
-/// Whether a station ever offers it. Alien Items are the classic set's only no:
-/// they are scooped from a dead Thargoid and sold, never bought.
+/// Whether a station ever offers it. A good scooped from a wreck and sold but
+/// never bought - the classic set's Alien Items - says no.
 /// </param>
 /// <param name="ContrabandWeight">
 /// How heavily one unit counts when the police weigh the hold. Zero is legal
 /// cargo.
 /// </param>
 /// <param name="IsDroppedByShips">
-/// Whether a cargo canister can hold it. The classic set drops the first eight,
-/// contraband included - a canister is nobody's paperwork.
+/// Whether a cargo canister can hold it. A canister is nobody's paperwork, so a
+/// set may drop contraband this way.
 /// </param>
-internal sealed record GoodsDefinition(
+public sealed record Good(
     string Id,
     string Name,
     float BasePrice,

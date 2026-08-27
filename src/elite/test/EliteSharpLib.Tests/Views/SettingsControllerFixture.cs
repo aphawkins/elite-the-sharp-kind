@@ -42,7 +42,7 @@ internal static class SettingsControllerFixture
         draw = new FakeEliteDraw();
         RNG rng = new(new FakeRandomSource());
         PlayerShip ship = new(gameState);
-        Trade trade = new(gameState, ship);
+        Trade trade = TestGoods.Trade(gameState, ship);
         FakeShipFactory shipFactory = new(draw);
         Universe universe = new(shipFactory, rng);
         audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());

@@ -2,22 +2,23 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Abstractions.Trading;
+
 namespace EliteSharpLib.Trader;
 
 /// <summary>
 /// One good as it stands right now: today's price, what is left on the shelf,
 /// and what the commander is carrying. What the good <i>is</i> stays on its
-/// <see cref="GoodsDefinition"/>, which nothing here can write to - the base
-/// price and the mask used to be settable alongside the quantity, and nothing
-/// ever set them.
+/// <see cref="EliteSharp.Abstractions.Trading.Good"/>, which nothing here can
+/// write to.
 /// </summary>
-internal sealed class StockItem(GoodsDefinition definition)
+internal sealed class StockItem(Good good)
 {
     /// <summary>
     /// Gets what this good is: its name, its price before the market, and the
     /// rules the game trades it under.
     /// </summary>
-    internal GoodsDefinition Definition { get; } = definition;
+    internal Good Good { get; } = good;
 
     /// <summary>
     /// Gets or sets how many units are in the hold.

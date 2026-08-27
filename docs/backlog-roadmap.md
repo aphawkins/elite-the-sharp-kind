@@ -87,83 +87,36 @@ one housekeeping step, and meet the same ships.
       that day; the ship definitions are the piece it touches, through
       the four ships that name a good.
 
-- [ ] **[LARGE]** [EliteSharpLib] Configurable goods: `StockType` becomes a
-      goods set supplied by a plugin, so a new set can trade in different
-      wares. Split from the item above on 2026-08-27. Affects starting
-      quantities, the stock market and contraband. The maintainer's calls
-      that day settle the shape:
+- [ ] [EliteSharpLib] Configurable goods — **the last step**: the market
+      screen's list control. Split from the item above on 2026-08-27; the
+      first three sessions landed (see [CHANGELOG.md](../CHANGELOG.md) and
+      [decisions.md](decisions.md)), and this is what is left.
 
-      **Progress (2026-08-27): the naming step is done, in place.** The
-      enum is gone, `GoodsDefinition` carries what the game used to
-      hardcode about a good in four places, and the classic seventeen are
-      declared once in `ClassicGoods` — which is now the only thing that
-      has to move. No behaviour changed: the golden-trace baselines are
-      untouched, and `ClassicGoodsTests` pins what the ordinals and the
-      lists beside them used to say. What is left is the plugin boundary
-      (the paragraphs below), and then the market's list control.
+      `StockType` is gone, a goods set is a plugin
+      (`EliteSharp.Goods.Classic` through the `Goods` folder), and the
+      classic economy is intact and byte-identical against the
+      golden-trace baselines. But the market and inventory screens are
+      still drawn per-rendition (`MarketView8Bit`, `MarketView16Bit`),
+      and the 8-bit one has a hard seventeen-row budget: `FirstRow = 5`,
+      `CashRow = 23`, so an eighteenth good draws over the cash line. A
+      set bigger than the classic one cannot be shown.
 
-      **It is a new plugin family, not a rendition.** `IGoodsSet` joins
-      `EliteSharp.Abstractions`, is found in a `Goods` folder beside the
-      executable through the same MEF door as the missions
-      (`MissionLoader.FolderName`), and the seventeen classic wares go out
-      in `EliteSharp.Goods.Classic` — the door a stranger would come
-      through being the one the game itself uses, as with missions and
-      renditions. Renditions were considered and lost: `IRendition` is
-      presentation only, and the trade screens are already goods-agnostic
-      — `MarketRow` and `InventoryModel` carry name, units, price and
-      counts as plain data, and both renditions loop over `model.Rows` —
-      so a new goods set needs no rendition change at all. Goods there
-      would also force both shipped renditions to carry a copy of the
-      classic table, and make "classic goods, 8-bit look" a third
-      rendition. Like a rendition and unlike a mission, a missing set is
-      fatal: there is no market without one.
+      The maintainer chose (2026-08-27): **a `ListView<TControl>` in
+      `SharpKind.UI`** — a scroll window over `Container<T>`'s layout —
+      and the market rebuilt on controls, with a `MarketListStyle` per
+      rendition carrying colours, column positions and a visible-row
+      count, the way `SettingsListStyle` already does. `MarketView8Bit`
+      and `MarketView16Bit` are deleted; `IRendition.CreateMarketListStyle`
+      replaces them. This overturns part of the 2026-08-03 "a rendition
+      draws everything" decision for this one screen — recorded in
+      [decisions.md](decisions.md).
 
-      **Goods are named, not numbered.** `StockType`'s ordinals are
-      load-bearing in two places and both have to go: `Combat.cs:350`
-      draws loot as `(StockType)_rng.Random(1, 9)` — Food to Machinery by
-      ordinal — and `MarketController.cs:41` moves the cursor by adding to
-      the enum value. The first becomes a draw over the goods the set
-      marks as ship cargo, the second an index into the set's own order.
-      Keep the classic draw to one call over a nine-wide range or the
-      golden-trace baselines shift.
-
-      **A good carries what the game hardcodes about it today.** Base
-      price, economy adjustment, base quantity, mask and units already sit
-      on `StockItem`; add the opening station stock (from
-      `CommanderFactory.s_startingStationStock`), whether the station ever
-      sells it (Alien Items never do — `Trade.cs:113` and `:140`
-      special-case them by name), and how heavily it counts as contraband
-      (`Trade.IsCarryingContraband` hardcodes Slaves and Narcotics at two
-      each, Firearms at one). `CommanderFactory.s_maxCargo` then stops
-      being a list and is derived: every good the station sells that is
-      not contraband — which is what its comment already says it is.
-
-      **Four ships name a good and must keep working.** `Alloy`,
-      `EscapeCapsule`, `RockSplinter` and `Tharglet` set `ScoopedType` to
-      Alloys, Slaves, Minerals and Alien Items. They keep naming the good,
-      and a set that does not provide all four fails at startup with the
-      missing names listed — the loud-and-early shape `ViewRegistry`
-      already uses for a rendition that is a screen short. That imposes a
-      small required vocabulary on a set author; it beat tagging each good
-      with the ship that drops it, because an unfilled tag needs the same
-      check anyway.
-
-      **Saves need no new field.** Cargo and station stock are already
-      keyed by the goods' own names, and `SaveFile.IsValidStock` already
-      turns away a file whose goods do not match the live market exactly,
-      by count and by name. What is missing is *why*: it logs
-      `CommanderValidationFailed` with the path alone, and the screen says
-      only "Error Loading Commander!". Make both name the goods that could
-      not be accounted for. The general form of that complaint is a defect
-      and lives in [backlog-issues.md](backlog-issues.md).
-
-      **Watch the row budget.** The 8-bit market screen holds seventeen
-      rows and no more: `MarketView8Bit` puts the first at `FirstRow = 5`
-      and the cash line at `CashRow = 23`, so an eighteenth good draws
-      over the cash. That is the one thing a goods set can break in a
-      rendition, and it is a limit rather than ownership — decide whether
-      a rendition declares a maximum or the market screen scrolls, before
-      shipping a set bigger than the classic one.
+      Two risks named at scoping: a market row is five columns and
+      `ComboBox` is label-plus-value, so a multi-column row control is
+      needed and the column set has to live in `MarketListStyle` (the
+      8-bit tier drops a column); and the market stops being a `ViewSet`
+      entry, so `ViewRegistry`'s completeness check and
+      `RenditionRegistryTests` both move.
 
 ### 3D pipeline — modern-pipeline gaps
 

@@ -568,7 +568,7 @@ internal sealed partial class Combat
     private void ScoopCargo(StockItem stock, IShip obj)
     {
         stock.CurrentCargo++;
-        _gameState.InfoMessage(stock.Definition.Name);
+        _gameState.InfoMessage(stock.Good.Name);
         RemoveShip(obj);
     }
 

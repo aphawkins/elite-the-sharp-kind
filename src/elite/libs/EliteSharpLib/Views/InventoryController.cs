@@ -45,5 +45,5 @@ internal sealed class InventoryController : IScreenController
         $"{_trade.Credits:N1} Credits",
         [.. _trade.StockMarket
             .Where(stock => stock.CurrentCargo > 0)
-            .Select(stock => (stock.Definition.Name, $"{stock.CurrentCargo}{stock.Definition.Units}"))]);
+            .Select(stock => (stock.Good.Name, $"{stock.CurrentCargo}{stock.Good.Units}"))]);
 }

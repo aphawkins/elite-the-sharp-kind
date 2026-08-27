@@ -615,7 +615,7 @@ public class SpaceTests
         views.Add(Screen.Hyperspace, new FakeView());
         gameState = new(views, TestMissions.Registry());
         ship = new PlayerShip(gameState);
-        trade = new Trade(gameState, ship);
+        trade = TestGoods.Trade(gameState, ship);
         draw = new FakeEliteDraw();
         randomSource = new FakeRandomSource();
         rng = new(randomSource);

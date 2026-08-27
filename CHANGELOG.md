@@ -7,6 +7,31 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (goods are a plugin, 2026-08-27)
+
+- **`StockType` is gone; a goods set is an assembly.** `IGoodsSet` joins
+  `EliteSharp.Abstractions.Trading`, and the seventeen classic wares ship
+  as `EliteSharp.Goods.Classic`, found in a `Goods` folder beside the
+  executable through the same MEF door as the missions and renditions. A
+  different economy is now an assembly, not an edit.
+- **Missing is fatal, like a rendition.** No `Goods` folder, an empty one,
+  or two sets in it all stop the game at startup with a message that names
+  the folder - there is no market without exactly one set. `GoodsRegistry`
+  then checks the chosen set at startup: it throws, listing names, if the
+  set repeats or blanks an id, or leaves out one of the four goods a
+  wrecked ship drops (`ScoopableGoods.Required`).
+- **The classic economy is byte-identical.** Prices, quantities, the
+  opening station shelf, the contraband weights and the canister-loot draw
+  all came out of four hardcoded places and into one `ClassicGoodsSet`
+  declaration; the golden-trace baselines did not move, and
+  `ClassicGoodsTests` pins what the old enum ordinals and side-lists said.
+- Saves are unchanged. `SaveFile.IsValidStock` already turned away a
+  `.cmdr` whose goods do not match the live set exactly, so a file from a
+  different economy is rejected with no new field and no version bump.
+- `AddRenditionAssets` moved to its own extension class to keep
+  `EliteServiceCollectionExtensions` under the class-coupling limit - the
+  same split the screen registrations already use.
+
 ### Fixed (a failure to start now says so, 2026-08-27)
 
 - **The composition moved inside the try/catch.** `GameApp.Run` only ever

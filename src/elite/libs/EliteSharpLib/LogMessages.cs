@@ -70,4 +70,28 @@ internal static partial class LogMessages
         Level = LogLevel.Information,
         Message = "Loaded {RenditionCount} rendition(s) from {AssemblyCount} plugin assemblies; drawing {Name}.")]
     internal static partial void RenditionsLoaded(ILogger logger, int renditionCount, int assemblyCount, string name);
+
+    [LoggerMessage(
+        EventId = 13,
+        Level = LogLevel.Warning,
+        Message = "Skipped goods plugin '{Path}': it could not be read.")]
+    internal static partial void GoodsAssemblyUnreadable(ILogger logger, string path, Exception ex);
+
+    [LoggerMessage(
+        EventId = 14,
+        Level = LogLevel.Information,
+        Message = "Loaded {SetCount} goods set(s) from {AssemblyCount} plugin assemblies; trading {Name}.")]
+    internal static partial void GoodsLoaded(ILogger logger, int setCount, int assemblyCount, string name);
+
+    [LoggerMessage(
+        EventId = 15,
+        Level = LogLevel.Critical,
+        Message = "The '{Name}' goods set is missing goods that ships drop: {Missing}.")]
+    internal static partial void GoodsSetMissingShipDrops(ILogger logger, string name, string missing);
+
+    [LoggerMessage(
+        EventId = 16,
+        Level = LogLevel.Critical,
+        Message = "The '{Name}' goods set names a good '{Id}' more than once, or with no name at all.")]
+    internal static partial void GoodsSetHasBadIds(ILogger logger, string name, string id);
 }

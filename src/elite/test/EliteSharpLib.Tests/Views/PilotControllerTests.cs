@@ -125,7 +125,7 @@ public class PilotControllerTests
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
         gameState = new(views, TestMissions.Registry());
         ship = new PlayerShip(gameState);
-        Trade trade = new(gameState, ship);
+        Trade trade = TestGoods.Trade(gameState, ship);
         FakeEliteDraw draw = new();
         RNG rng = new(new FakeRandomSource());
         FakeShipFactory shipFactory = new(draw);

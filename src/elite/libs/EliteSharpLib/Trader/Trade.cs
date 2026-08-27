@@ -2,31 +2,37 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Abstractions.Trading;
 using EliteSharpLib.Ships;
 
 namespace EliteSharpLib.Trader;
 
 internal sealed class Trade
 {
-    internal const string GRAMS = "g";
-    internal const string KILOGRAMS = "Kg";
-    internal const string TONNES = "t";
-
     private readonly GameState _gameState;
 
     private readonly PlayerShip _ship;
 
     private readonly Dictionary<string, StockItem> _byId;
 
-    internal Trade(GameState gameState, PlayerShip ship)
+    internal Trade(GameState gameState, PlayerShip ship, GoodsRegistry goods)
     {
+        ArgumentNullException.ThrowIfNull(goods);
+
         _gameState = gameState;
         _ship = ship;
 
-        StockMarket = [.. ClassicGoods.All.Select(definition => new StockItem(definition))];
-        _byId = StockMarket.ToDictionary(stock => stock.Definition.Id, StringComparer.Ordinal);
-        DroppedByShips = [.. StockMarket.Where(stock => stock.Definition.IsDroppedByShips)];
+        Goods = goods.Goods;
+        StockMarket = [.. goods.Goods.Select(good => new StockItem(good))];
+        _byId = StockMarket.ToDictionary(stock => stock.Good.Id, StringComparer.Ordinal);
+        DroppedByShips = [.. StockMarket.Where(stock => stock.Good.IsDroppedByShips)];
     }
+
+    /// <summary>
+    /// Gets the goods the game is trading, for the parts that build a starting
+    /// commander or check a save against the set.
+    /// </summary>
+    internal IReadOnlyList<Good> Goods { get; }
 
     internal float Credits { get; set; }
 
@@ -49,7 +55,7 @@ internal sealed class Trade
     /// <summary>
     /// The good that goes by this name.
     /// </summary>
-    /// <param name="id">The good's <see cref="GoodsDefinition.Id"/>.</param>
+    /// <param name="id">The good's <see cref="Good.Id"/>.</param>
     /// <returns>That good's current standing.</returns>
     internal StockItem this[string id] => _byId[id];
 
@@ -62,7 +68,7 @@ internal sealed class Trade
             return;
         }
 
-        if (stock.Definition.FillsHold && TotalCargoTonnage() == _ship.CargoCapacity)
+        if (stock.Good.FillsHold && TotalCargoTonnage() == _ship.CargoCapacity)
         {
             return;
         }
@@ -90,36 +96,36 @@ internal sealed class Trade
     {
         foreach (StockItem stock in StockMarket)
         {
-            GoodsDefinition definition = stock.Definition;
+            Good good = stock.Good;
 
             // Start with the base price
-            float price = definition.BasePrice;
+            float price = good.BasePrice;
 
             // Add in a random amount
-            price += (MarketRandomiser & definition.Mask) / 10f;
+            price += (MarketRandomiser & good.Mask) / 10f;
 
             // Adjust for planet economy
-            price += _gameState.CurrentPlanetData.Economy * definition.EconomyAdjust / 10f;
+            price += _gameState.CurrentPlanetData.Economy * good.EconomyAdjust / 10f;
 
             // Start with the base quantity
-            int quant = definition.BaseQuantity;
+            int quant = good.BaseQuantity;
 
             // Add in a random amount
-            quant += MarketRandomiser & definition.Mask;
+            quant += MarketRandomiser & good.Mask;
 
             // Adjust for planet economy
-            quant -= _gameState.CurrentPlanetData.Economy * definition.EconomyAdjust;
+            quant -= _gameState.CurrentPlanetData.Economy * good.EconomyAdjust;
 
             // Quantities range from 0..63
             quant = Math.Clamp(quant, 0, 63);
 
             stock.CurrentPrice = price * 4;
-            stock.CurrentQuantity = definition.IsSoldByStations ? quant : 0;
+            stock.CurrentQuantity = good.IsSoldByStations ? quant : 0;
         }
     }
 
     internal int IsCarryingContraband()
-        => StockMarket.Sum(stock => stock.CurrentCargo * stock.Definition.ContrabandWeight);
+        => StockMarket.Sum(stock => stock.CurrentCargo * stock.Good.ContrabandWeight);
 
     internal void SellStock(StockItem stock)
     {
@@ -139,7 +145,7 @@ internal sealed class Trade
     {
         foreach (StockItem stock in StockMarket)
         {
-            stock.CurrentQuantity = stock.Definition.IsSoldByStations ? stock.StationStock : 0;
+            stock.CurrentQuantity = stock.Good.IsSoldByStations ? stock.StationStock : 0;
         }
     }
 
@@ -149,7 +155,7 @@ internal sealed class Trade
 
         foreach (StockItem stock in StockMarket)
         {
-            if (stock.CurrentCargo > 0 && stock.Definition.FillsHold)
+            if (stock.CurrentCargo > 0 && stock.Good.FillsHold)
             {
                 cargo += stock.CurrentCargo;
             }

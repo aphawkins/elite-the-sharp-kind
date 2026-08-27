@@ -73,8 +73,8 @@ internal sealed class MarketController : IScreenController
         {
             StockItem stock = _trade.StockMarket[row];
             rows.Add(new(
-                stock.Definition.Name,
-                stock.Definition.Units,
+                stock.Good.Name,
+                stock.Good.Units,
                 stock.CurrentPrice,
                 stock.CurrentQuantity,
                 stock.CurrentCargo,

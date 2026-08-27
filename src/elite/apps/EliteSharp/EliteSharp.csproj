@@ -28,6 +28,13 @@
                       ReferenceOutputAssembly="false"
                       Private="false" />
 
+    <!-- And so are the goods. Same arrangement as the missions; unlike them,
+         and like the renditions, they are not optional - remove the set and
+         the game has no market, and says so at startup. -->
+    <ProjectReference Include="..\..\libs\EliteSharp.Goods.Classic\EliteSharp.Goods.Classic.csproj"
+                      ReferenceOutputAssembly="false"
+                      Private="false" />
+
     <!-- And so are both tiers of screens. Same arrangement, and the same
          reason: the game must find its own tiers the way it would find
          anyone else's. Unlike the missions, these are not optional - remove
@@ -54,6 +61,23 @@
           SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(MissionPlugin)"
           DestinationFolder="$(PublishDir)Missions"
+          SkipUnchangedFiles="true"
+          Condition="'$(PublishDir)' != ''" />
+  </Target>
+
+  <!-- Into a Goods folder beside the executable, which is where GoodsLoader
+       looks. Same shape as the missions above. -->
+  <Target Name="CopyGoodsPlugins" AfterTargets="Build;Publish">
+    <MSBuild Projects="..\..\libs\EliteSharp.Goods.Classic\EliteSharp.Goods.Classic.csproj"
+             Targets="GetTargetPath"
+             Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework)">
+      <Output TaskParameter="TargetOutputs" ItemName="GoodsPlugin" />
+    </MSBuild>
+    <Copy SourceFiles="@(GoodsPlugin)"
+          DestinationFolder="$(OutDir)Goods"
+          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(GoodsPlugin)"
+          DestinationFolder="$(PublishDir)Goods"
           SkipUnchangedFiles="true"
           Condition="'$(PublishDir)' != ''" />
   </Target>

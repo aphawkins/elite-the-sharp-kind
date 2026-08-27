@@ -78,7 +78,7 @@ public class MarketControllerTests
         ScreenManager<Screen, IScreenController> views = new(keyboard);
         GameState gameState = new(views, TestMissions.Registry());
         PlayerShip ship = new(gameState);
-        Trade trade = new(gameState, ship);
+        Trade trade = TestGoods.Trade(gameState, ship);
 
         return new MarketController(gameState, keyboard, trade, new PlanetController(gameState), new FakeMarketView());
     }

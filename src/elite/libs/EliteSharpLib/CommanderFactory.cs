@@ -2,8 +2,8 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Abstractions.Trading;
 using EliteSharpLib.Save;
-using EliteSharpLib.Trader;
 using EliteSharpLib.Types;
 
 namespace EliteSharpLib;
@@ -13,8 +13,9 @@ internal static class CommanderFactory
     /// <summary>
     /// The default commander. Do not modify.
     /// </summary>
+    /// <param name="goods">The goods set in play, for the hold and the shelf.</param>
     /// <returns>Commander Jameson.</returns>
-    internal static SaveState Jameson() => new()
+    internal static SaveState Jameson(IReadOnlyList<Good> goods) => new()
     {
         SavedAtUtc = DateTimeOffset.UtcNow,
         CommanderName = "JAMESON",
@@ -26,7 +27,7 @@ internal static class CommanderFactory
         GalaxyNumber = 0,
         Lasers = new() { Front = "Pulse", Rear = "None", Left = "None", Right = "None" },
         CargoCapacity = 20,
-        Cargo = Cargo(loaded: false),
+        Cargo = Cargo(goods, loaded: false),
         HasECM = false,
         HasFuelScoop = false,
         HasEnergyBomb = false,
@@ -36,7 +37,7 @@ internal static class CommanderFactory
         HasEscapeCapsule = false,
         Missiles = 3,
         LegalStatus = new() { Status = LegalStatusBand.For(0), Bounty = 0 },
-        StationStock = StartingStationStock(),
+        StationStock = StartingStationStock(goods),
         MarketRandomiser = 0,
         Score = 0,
     };
@@ -44,8 +45,9 @@ internal static class CommanderFactory
     /// <summary>
     /// The maximum equipment level, for testing purposes.
     /// </summary>
+    /// <param name="goods">The goods set in play, for the hold and the shelf.</param>
     /// <returns>Commander Max.</returns>
-    internal static SaveState Max() => new()
+    internal static SaveState Max(IReadOnlyList<Good> goods) => new()
     {
         SavedAtUtc = DateTimeOffset.UtcNow,
         CommanderName = "MAX",
@@ -57,7 +59,7 @@ internal static class CommanderFactory
         GalaxyNumber = 0,
         Lasers = new() { Front = "Military", Rear = "Pulse", Left = "Mining", Right = "Beam" },
         CargoCapacity = 35,
-        Cargo = Cargo(loaded: true),
+        Cargo = Cargo(goods, loaded: true),
         HasECM = true,
         HasFuelScoop = true,
         HasEnergyBomb = true,
@@ -67,7 +69,7 @@ internal static class CommanderFactory
         HasEscapeCapsule = true,
         Missiles = 4,
         LegalStatus = new() { Status = LegalStatusBand.For(0), Bounty = 0 },
-        StationStock = StartingStationStock(),
+        StationStock = StartingStationStock(goods),
         MarketRandomiser = 0,
         Score = 0x1900,
     };
@@ -76,9 +78,10 @@ internal static class CommanderFactory
     /// An empty hold, or one holding a unit of everything Commander Max is
     /// allowed to be carrying.
     /// </summary>
+    /// <param name="goods">The goods set in play.</param>
     /// <param name="loaded">Whether to fill it.</param>
-    private static Dictionary<string, int> Cargo(bool loaded)
-        => ClassicGoods.All.ToDictionary(
+    private static Dictionary<string, int> Cargo(IReadOnlyList<Good> goods, bool loaded)
+        => goods.ToDictionary(
             good => good.Id,
             good => loaded && IsSafeForMax(good) ? 1 : 0,
             StringComparer.Ordinal);
@@ -89,7 +92,7 @@ internal static class CommanderFactory
     /// have been bought to be aboard. Derived from the goods themselves rather
     /// than listed, so a set with different contraband still gets a clean Max.
     /// </summary>
-    private static bool IsSafeForMax(GoodsDefinition good)
+    private static bool IsSafeForMax(Good good)
         => good.IsSoldByStations && good.ContrabandWeight == 0;
 
     /// <summary>
@@ -105,6 +108,6 @@ internal static class CommanderFactory
     /// The station's opening stock, which both commanders start docked at. It
     /// is the goods' own declaration now rather than a second list beside them.
     /// </summary>
-    private static Dictionary<string, int> StartingStationStock()
-        => ClassicGoods.All.ToDictionary(good => good.Id, good => good.OpeningStationStock, StringComparer.Ordinal);
+    private static Dictionary<string, int> StartingStationStock(IReadOnlyList<Good> goods)
+        => goods.ToDictionary(good => good.Id, good => good.OpeningStationStock, StringComparer.Ordinal);
 }

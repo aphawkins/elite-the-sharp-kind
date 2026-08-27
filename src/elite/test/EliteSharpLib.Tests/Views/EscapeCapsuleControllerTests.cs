@@ -109,7 +109,7 @@ public class EscapeCapsuleControllerTests
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
         gameState = new(views, TestMissions.Registry());
         PlayerShip ship = new(gameState);
-        Trade trade = new(gameState, ship);
+        Trade trade = TestGoods.Trade(gameState, ship);
         FakeEliteDraw draw = new();
         RNG rng = new(new FakeRandomSource());
         FakeShipFactory shipFactory = new(draw);

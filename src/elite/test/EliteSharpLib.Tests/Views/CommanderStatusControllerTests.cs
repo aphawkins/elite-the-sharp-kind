@@ -107,7 +107,7 @@ public class CommanderStatusControllerTests
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
         gameState = new(views, TestMissions.Registry());
         ship = new PlayerShip(gameState);
-        Trade trade = new(gameState, ship);
+        Trade trade = TestGoods.Trade(gameState, ship);
         RNG rng = new(new FakeRandomSource());
         FakeEliteDraw draw = new();
 
