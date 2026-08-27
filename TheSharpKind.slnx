@@ -81,6 +81,7 @@
     <Project Path="src/useful/perf/SharpKind.Graphics.Benchmarks/SharpKind.Graphics.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/src/useful/test/">
+    <Project Path="src/useful/test/SharpKind.App.Tests/SharpKind.App.Tests.csproj" />
     <Project Path="src/useful/test/SharpKind.Assets.Tests/SharpKind.Assets.Tests.csproj" />
     <Project Path="src/useful/test/SharpKind.Audio.Tests/SharpKind.Audio.Tests.csproj" />
     <Project Path="src/useful/test/SharpKind.Input.Tests/SharpKind.Input.Tests.csproj" Id="71806841-6acf-4385-9ca4-a722f492b109" />

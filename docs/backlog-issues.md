@@ -34,6 +34,20 @@ there before starting an item that mentions a decision.
 
 ## Should
 
+- [ ] [EliteSharpLib] A commander that fails to load says only "Error
+      Loading Commander!", and the log says only which path it was. The
+      startup half of this complaint is fixed (2026-08-27, see
+      [CHANGELOG.md](../CHANGELOG.md)); the in-game half is not.
+      `SaveFile.IsValidSave` turns a file away on any of a dozen
+      conditions — an unknown laser, a mission nobody provides, cargo that
+      overflows the hold — and reports none of them, so a commander whose
+      save is one field wrong cannot tell that from a corrupt file.
+      `LogMessages.CommanderValidationFailed` should name the field and
+      the value, and `LoadCommanderController.ErrorMessage` should say
+      which check failed rather than that one did. The goods item in
+      [backlog-roadmap.md](backlog-roadmap.md) adds another such check, so
+      doing this first means it arrives already explaining itself.
+
 ## Could
 
 ## Won't

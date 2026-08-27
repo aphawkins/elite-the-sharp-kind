@@ -57,16 +57,25 @@ public static class GameApp
     /// logger factory and the already-read engine settings. It must register
     /// an <see cref="IGameApp"/>.
     /// </param>
+    /// <param name="reportFailure">
+    /// How a failure reaches a player with no console to read, given the title
+    /// and the message. Both games pass
+    /// <see cref="SDL.SDLMessageBox.ShowError"/>; it is a parameter rather than
+    /// that call directly so a test can watch what a failure reports without
+    /// opening a real dialog and waiting for somebody to dismiss it.
+    /// </param>
     /// <returns>The process exit code.</returns>
     public static int Run(
         string title,
         string logFileName,
         string logLevelEnvironmentVariable,
         Func<string, ILoggerFactory, EngineConfigSettings> readEngineSettings,
-        Func<string, ILoggerFactory, EngineConfigSettings, ServiceCollection> buildServices)
+        Func<string, ILoggerFactory, EngineConfigSettings, ServiceCollection> buildServices,
+        Action<string, string> reportFailure)
     {
         ArgumentNullException.ThrowIfNull(readEngineSettings);
         ArgumentNullException.ThrowIfNull(buildServices);
+        ArgumentNullException.ThrowIfNull(reportFailure);
 
         if (!AppStartup.TryResolveUserDataPath(out string userDataPath))
         {
@@ -84,15 +93,23 @@ public static class GameApp
         using LoggerFactory loggerFactory = new();
         loggerFactory.AddSerilog(seriLogger);
 
-        using ServiceProvider provider = buildServices(userDataPath, loggerFactory, engine).BuildServiceProvider();
-
         Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger(nameof(GameApp));
 
+        // Logged before the composition rather than after it, so a startup
+        // failure still leaves behind which build and which settings were being
+        // tried. It used to be the other way round, and a failure to compose
+        // took this diagnostic down with it.
         LogMessages.StartingTitle(logger, title);
         LogStartupDiagnostics(logger, engine);
 
         try
         {
+            // The composition is inside the try because it is where the
+            // startup failures actually happen - the configured rendition, its
+            // assets, the mission plugins. It used to sit outside, so those
+            // unwound through Main as a raw stack trace and, from a shortcut,
+            // as a window that never appeared.
+            using ServiceProvider provider = buildServices(userDataPath, loggerFactory, engine).BuildServiceProvider();
             IGameApp game = provider.GetRequiredService<IGameApp>();
             game.Run();
         }
@@ -104,6 +121,10 @@ public static class GameApp
             // terminating before the rethrow could surface.
             LogMessages.CriticalAppTerminated(logger, ex);
             AppStartup.WriteFailureHint(ex, userDataPath);
+
+            // stderr is not enough on its own: a game started from a shortcut
+            // has no console to print it to.
+            reportFailure(title, AppStartup.DescribeFailure(ex, userDataPath));
             return -1;
         }
 

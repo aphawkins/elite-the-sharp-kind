@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SharpKind.Abstraction.Config;
 using SharpKind.App;
+using SharpKind.SDL;
 
 [assembly: CLSCompliant(false)]
 
@@ -24,7 +25,8 @@ internal static class SDLProgram
             logFileName: "elite-.log",
             logLevelEnvironmentVariable: "ELITE_LOG_LEVEL",
             EliteServiceCollectionExtensions.ReadEngineSettings,
-            BuildServices);
+            BuildServices,
+            SDLMessageBox.ShowError);
 
     private static ServiceCollection BuildServices(string userDataPath, ILoggerFactory loggerFactory, EngineConfigSettings engine)
     {

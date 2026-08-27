@@ -40,21 +40,39 @@ public static class AppStartup
     /// logger before calling this; it only improves what the user sees on the console.
     /// </summary>
     public static void WriteFailureHint(Exception ex, string userDataPath)
+        => Console.Error.WriteLine(DescribeFailure(ex, userDataPath));
+
+    /// <summary>
+    /// The player-facing account of an unhandled startup or runtime failure: what went wrong,
+    /// and where the rest of it is written down. Separate from <see cref="WriteFailureHint"/>
+    /// because the console is not the only place this has to reach - a game started from a
+    /// shortcut has no console to read - and the two must not drift apart.
+    /// </summary>
+    /// <param name="ex">The failure to describe.</param>
+    /// <param name="userDataPath">Where the log directory sits, so the text can name it.</param>
+    /// <returns>The text to show, over several lines.</returns>
+    public static string DescribeFailure(Exception ex, string userDataPath)
     {
-        if (ex is DllNotFoundException)
-        {
+        ArgumentNullException.ThrowIfNull(ex);
+
+        // The exception's own message is included because it is usually the only part that says
+        // what actually failed - which rendition was not installed, which asset was missing -
+        // and a player who cannot see the log has nothing else to go on.
+        string cause = ex is DllNotFoundException
+
             // The SDL3 native libraries ship inside the ppy.SDL3*-CS NuGet packages, so there's
             // no separate runtime package to install - a DllNotFoundException here more likely
             // means an unsupported platform/architecture.
-            Console.Error.WriteLine("A required native library could not be loaded.");
-            Console.Error.WriteLine("This usually means the current platform/architecture isn't supported.");
-        }
-        else
-        {
-            Console.Error.WriteLine("Application terminated unexpectedly.");
-        }
+            ? "A required native library could not be loaded."
+                + Environment.NewLine
+                + "This usually means the current platform/architecture isn't supported."
+            : "Application terminated unexpectedly."
+                + Environment.NewLine
+                + ex.Message;
 
-        Console.Error.WriteLine($"See the log file under {Path.Combine(userDataPath, "logs")} for full details.");
+        return cause
+            + Environment.NewLine
+            + $"See the log file under {Path.Combine(userDataPath, "logs")} for full details.";
     }
 
     private static void WriteFallbackStartupLog(string message)

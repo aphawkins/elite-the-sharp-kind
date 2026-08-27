@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SharpKind.Abstraction.Config;
 using SharpKind.App;
+using SharpKind.SDL;
 using StuntCarRacerSharpLib;
 
 [assembly: CLSCompliant(false)]
@@ -25,7 +26,8 @@ internal static class SDLProgram
             logFileName: "scr-.log",
             logLevelEnvironmentVariable: "SCR_LOG_LEVEL",
             StuntCarRacerServiceCollectionExtensions.ReadEngineSettings,
-            BuildServices);
+            BuildServices,
+            SDLMessageBox.ShowError);
 
     private static ServiceCollection BuildServices(string userDataPath, ILoggerFactory loggerFactory, EngineConfigSettings engine)
     {

@@ -7,6 +7,34 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (a failure to start now says so, 2026-08-27)
+
+- **The composition moved inside the try/catch.** `GameApp.Run` only ever
+  guarded `game.Run()`, so everything `buildServices` does - loading the
+  configured rendition, its assets, the mission plugins - unwound through
+  `Main` as a raw stack trace. Started from a shortcut rather than a
+  terminal that was a window which never appeared and no explanation
+  anywhere. A test pins it: a `buildServices` that throws now returns -1 and
+  reports, and it fails against the old arrangement.
+- **A failure reaches the player, not just the console.**
+  `AppStartup.WriteFailureHint` wrote to stderr, which a double-clicked app
+  has nowhere to show. `SDLMessageBox.ShowError` puts the same text in a
+  dialog - SDL's simple message box works before `SDL_Init` and without a
+  window, which is exactly the ground a startup failure covers. It is passed
+  in rather than called directly so a test can watch what a failure reports
+  without opening a real dialog nobody is there to dismiss.
+- **The message names the cause.** `AppStartup.DescribeFailure` is the one
+  account both channels read from, and it now carries the exception's own
+  message: a bad rendition reports "Nothing in ...\Renditions is called
+  '8-bot', so there is nothing to draw the game with" rather than
+  "Application terminated unexpectedly". A missing native library keeps its
+  own wording, being the one failure whose message helps nobody.
+- **The startup diagnostics are logged before the composition**, so a
+  failure to compose leaves behind which build and which settings were being
+  tried. They used to be written after it, and went down with it.
+- `SharpKind.App` had no tests; it has some now. Both games and the control
+  gallery share `GameApp`, so all three were smoke-tested live.
+
 ### Fixed (Elite: the last two rate couplings, 2026-08-26)
 
 - **The starfield drew from the game's random stream.** Where a recycled star

@@ -6,6 +6,7 @@ using SharpKind.Abstraction;
 using SharpKind.Abstraction.Config;
 using SharpKind.App;
 using SharpKind.Graphics;
+using SharpKind.SDL;
 
 [assembly: CLSCompliant(false)]
 
@@ -54,7 +55,8 @@ internal static class Program
             logFileName: "gallery-.log",
             logLevelEnvironmentVariable: "GALLERY_LOG_LEVEL",
             ReadEngineSettings,
-            BuildServices);
+            BuildServices,
+            SDLMessageBox.ShowError);
 
     private static EngineConfigSettings ReadEngineSettings(string userDataPath, ILoggerFactory loggerFactory)
         => EngineConfigReader.Read<GalleryConfig>(userDataPath, ConfigFileName, RepairConfig, loggerFactory);
