@@ -93,6 +93,15 @@ one housekeeping step, and meet the same ships.
       quantities, the stock market and contraband. The maintainer's calls
       that day settle the shape:
 
+      **Progress (2026-08-27): the naming step is done, in place.** The
+      enum is gone, `GoodsDefinition` carries what the game used to
+      hardcode about a good in four places, and the classic seventeen are
+      declared once in `ClassicGoods` — which is now the only thing that
+      has to move. No behaviour changed: the golden-trace baselines are
+      untouched, and `ClassicGoodsTests` pins what the ordinals and the
+      lists beside them used to say. What is left is the plugin boundary
+      (the paragraphs below), and then the market's list control.
+
       **It is a new plugin family, not a rendition.** `IGoodsSet` joins
       `EliteSharp.Abstractions`, is found in a `Goods` folder beside the
       executable through the same MEF door as the missions

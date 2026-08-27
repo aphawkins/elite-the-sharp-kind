@@ -20,7 +20,7 @@ internal sealed class MarketController : IScreenController
     private readonly Trade _trade;
     private readonly IView<MarketModel> _view;
 
-    private StockType _highlightedStock;
+    private int _highlightedRow;
 
     internal MarketController(GameState gameState, IKeyboard keyboard, Trade trade, PlanetController planet, IView<MarketModel> view)
     {
@@ -37,27 +37,29 @@ internal sealed class MarketController : IScreenController
     {
         if (_keyboard.IsPressed(ConsoleKey.S) || _keyboard.IsPressed(ConsoleKey.UpArrow))
         {
-            // StockType runs 1 (Food) to Count (AlienItems), not 0-based.
-            _highlightedStock = (StockType)Math.Clamp((int)_highlightedStock - 1, 1, _trade.StockMarket.Count);
+            // A row in the list rather than a good's number: the goods are a
+            // set the game is given now, and what they are called says nothing
+            // about what order they come in.
+            _highlightedRow = Math.Clamp(_highlightedRow - 1, 0, _trade.StockMarket.Count - 1);
         }
 
         if (_keyboard.IsPressed(ConsoleKey.X) || _keyboard.IsPressed(ConsoleKey.DownArrow))
         {
-            _highlightedStock = (StockType)Math.Clamp((int)_highlightedStock + 1, 1, _trade.StockMarket.Count);
+            _highlightedRow = Math.Clamp(_highlightedRow + 1, 0, _trade.StockMarket.Count - 1);
         }
 
         if (_keyboard.IsPressed(ConsoleKey.OemComma) || _keyboard.IsPressed(ConsoleKey.LeftArrow))
         {
-            _trade.SellStock(_highlightedStock);
+            _trade.SellStock(_trade.StockMarket[_highlightedRow]);
         }
 
         if (_keyboard.IsPressed(ConsoleKey.OemPeriod) || _keyboard.IsPressed(ConsoleKey.RightArrow))
         {
-            _trade.BuyStock(_highlightedStock);
+            _trade.BuyStock(_trade.StockMarket[_highlightedRow]);
         }
     }
 
-    public void Reset() => _highlightedStock = StockType.Food;
+    public void Reset() => _highlightedRow = 0;
 
     public void Update()
     {
@@ -67,15 +69,16 @@ internal sealed class MarketController : IScreenController
     internal MarketModel BuildModel()
     {
         List<MarketRow> rows = [];
-        foreach (KeyValuePair<StockType, StockItem> stock in _trade.StockMarket)
+        for (int row = 0; row < _trade.StockMarket.Count; row++)
         {
+            StockItem stock = _trade.StockMarket[row];
             rows.Add(new(
-                stock.Value.Name,
-                stock.Value.Units,
-                stock.Value.CurrentPrice,
-                stock.Value.CurrentQuantity,
-                stock.Value.CurrentCargo,
-                stock.Key == _highlightedStock));
+                stock.Definition.Name,
+                stock.Definition.Units,
+                stock.CurrentPrice,
+                stock.CurrentQuantity,
+                stock.CurrentCargo,
+                row == _highlightedRow));
         }
 
         return new($"{_planet.NamePlanet(_gameState.DockedPlanet)} MARKET PRICES", rows, _trade.Credits);

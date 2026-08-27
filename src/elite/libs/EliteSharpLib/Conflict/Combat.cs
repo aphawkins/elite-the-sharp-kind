@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -347,19 +347,17 @@ internal sealed partial class Combat
 
         if (type == ShipType.Cargo)
         {
-            StockType trade = (StockType)_rng.Random(1, 9);
-            _trade.AddCargo(trade);
-            _gameState.InfoMessage(_trade.StockMarket[trade].Name);
-            RemoveShip(obj);
+            // A canister could hold any of the eight the original numbered
+            // first, which is what the 1..9 range this replaces was really
+            // saying. One draw over the same width, so the dice land where
+            // they always did.
+            ScoopCargo(_trade.DroppedByShips[_rng.Random(_trade.DroppedByShips.Count)], obj);
             return;
         }
 
-        if (obj.ScoopedType != StockType.None)
+        if (obj.ScoopedType != null)
         {
-            StockType trade = obj.ScoopedType;
-            _trade.AddCargo(trade);
-            _gameState.InfoMessage(_trade.StockMarket[trade].Name);
-            RemoveShip(obj);
+            ScoopCargo(_trade[obj.ScoopedType], obj);
             return;
         }
 
@@ -562,6 +560,16 @@ internal sealed partial class Combat
         {
             obj.Energy -= _laserStrength;
         }
+    }
+
+    // Taking a unit aboard, naming it, and letting the thing it came out of go.
+    // The same three steps whether a canister was opened or a ship left the one
+    // thing it carries behind.
+    private void ScoopCargo(StockItem stock, IShip obj)
+    {
+        stock.CurrentCargo++;
+        _gameState.InfoMessage(stock.Definition.Name);
+        RemoveShip(obj);
     }
 
     private void DestroyTarget(IShip obj)

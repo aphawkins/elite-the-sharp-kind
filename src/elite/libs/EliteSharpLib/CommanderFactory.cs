@@ -11,52 +11,6 @@ namespace EliteSharpLib;
 internal static class CommanderFactory
 {
     /// <summary>
-    /// The station's opening stock, which both commanders start docked at.
-    /// </summary>
-    private static readonly (StockType Type, int Quantity)[] s_startingStationStock =
-    [
-        (StockType.Food, 0x10),
-        (StockType.Textiles, 0x0F),
-        (StockType.Radioactives, 0x11),
-        (StockType.Slaves, 0x00),
-        (StockType.LiquorWines, 0x03),
-        (StockType.Luxuries, 0x1C),
-        (StockType.Narcotics, 0x0E),
-        (StockType.Computers, 0x00),
-        (StockType.Machinery, 0x00),
-        (StockType.Alloys, 0x0A),
-        (StockType.Firearms, 0x00),
-        (StockType.Furs, 0x11),
-        (StockType.Minerals, 0x3A),
-        (StockType.Gold, 0x07),
-        (StockType.Platinum, 0x09),
-        (StockType.GemStones, 0x08),
-        (StockType.AlienItems, 0x00),
-    ];
-
-    /// <summary>
-    /// The goods Commander Max starts with a unit of. The contraband is left
-    /// out so the test commander does not launch as an Offender, and Alien
-    /// Items cannot be bought at all.
-    /// </summary>
-    private static readonly StockType[] s_maxCargo =
-    [
-        StockType.Food,
-        StockType.Textiles,
-        StockType.Radioactives,
-        StockType.LiquorWines,
-        StockType.Luxuries,
-        StockType.Computers,
-        StockType.Machinery,
-        StockType.Alloys,
-        StockType.Furs,
-        StockType.Minerals,
-        StockType.Gold,
-        StockType.Platinum,
-        StockType.GemStones,
-    ];
-
-    /// <summary>
     /// The default commander. Do not modify.
     /// </summary>
     /// <returns>Commander Jameson.</returns>
@@ -72,7 +26,7 @@ internal static class CommanderFactory
         GalaxyNumber = 0,
         Lasers = new() { Front = "Pulse", Rear = "None", Left = "None", Right = "None" },
         CargoCapacity = 20,
-        Cargo = Cargo([]),
+        Cargo = Cargo(loaded: false),
         HasECM = false,
         HasFuelScoop = false,
         HasEnergyBomb = false,
@@ -103,7 +57,7 @@ internal static class CommanderFactory
         GalaxyNumber = 0,
         Lasers = new() { Front = "Military", Rear = "Pulse", Left = "Mining", Right = "Beam" },
         CargoCapacity = 35,
-        Cargo = Cargo(s_maxCargo),
+        Cargo = Cargo(loaded: true),
         HasECM = true,
         HasFuelScoop = true,
         HasEnergyBomb = true,
@@ -119,12 +73,24 @@ internal static class CommanderFactory
     };
 
     /// <summary>
-    /// An empty hold, holding one unit of each of the goods named.
+    /// An empty hold, or one holding a unit of everything Commander Max is
+    /// allowed to be carrying.
     /// </summary>
-    private static Dictionary<string, int> Cargo(IReadOnlyCollection<StockType> carrying)
-        => Enum.GetValues<StockType>()
-            .Where(type => type != StockType.None)
-            .ToDictionary(type => type.ToString(), type => carrying.Contains(type) ? 1 : 0, StringComparer.Ordinal);
+    /// <param name="loaded">Whether to fill it.</param>
+    private static Dictionary<string, int> Cargo(bool loaded)
+        => ClassicGoods.All.ToDictionary(
+            good => good.Id,
+            good => loaded && IsSafeForMax(good) ? 1 : 0,
+            StringComparer.Ordinal);
+
+    /// <summary>
+    /// Whether the test commander may carry this. Contraband is left out so Max
+    /// does not launch as an Offender, and what a station never sells could not
+    /// have been bought to be aboard. Derived from the goods themselves rather
+    /// than listed, so a set with different contraband still gets a clean Max.
+    /// </summary>
+    private static bool IsSafeForMax(GoodsDefinition good)
+        => good.IsSoldByStations && good.ContrabandWeight == 0;
 
     /// <summary>
     /// No mission started, which both commanders begin at. The save file holds
@@ -135,6 +101,10 @@ internal static class CommanderFactory
     private static Dictionary<string, MissionState> NoMissionsStarted()
         => new(StringComparer.Ordinal);
 
+    /// <summary>
+    /// The station's opening stock, which both commanders start docked at. It
+    /// is the goods' own declaration now rather than a second list beside them.
+    /// </summary>
     private static Dictionary<string, int> StartingStationStock()
-        => s_startingStationStock.ToDictionary(x => x.Type.ToString(), x => x.Quantity, StringComparer.Ordinal);
+        => ClassicGoods.All.ToDictionary(good => good.Id, good => good.OpeningStationStock, StringComparer.Ordinal);
 }

@@ -2,7 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using EliteSharpLib.Trader;
 using SharpKind.Assets.Models;
 
 namespace EliteSharpLib.Ships;
@@ -37,7 +36,7 @@ internal interface IShip : IObject
 
     public string Name { get; set; }
 
-    public StockType ScoopedType { get; set; }
+    public string? ScoopedType { get; set; }
 
     public float Size { get; set; }
 

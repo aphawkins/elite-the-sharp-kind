@@ -3,7 +3,6 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
-using EliteSharpLib.Trader;
 
 namespace EliteSharpLib.Ships;
 
@@ -19,7 +18,7 @@ internal sealed class Tharglet : ShipBase
         LaserStrength = 8;
         MinDistance = 384;
         Name = "Tharglet";
-        ScoopedType = StockType.AlienItems;
+        ScoopedType = "AlienItems";
         Size = 1600;
         VanishPoint = 20;
         VelocityMax = 30;

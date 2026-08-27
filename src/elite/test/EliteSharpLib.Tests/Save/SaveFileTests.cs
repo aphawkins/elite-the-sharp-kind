@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -96,8 +96,8 @@ public class SaveFileTests
         Assert.Equal("Clean", (string?)save["legalStatus"]!["status"]);
         Assert.Equal("Pulse", (string?)save["lasers"]!["front"]);
         Assert.Equal("None", (string?)save["lasers"]!["rear"]);
-        Assert.Equal(0, (int?)save["cargo"]![nameof(StockType.Narcotics)]);
-        Assert.Equal(0x3A, (int?)save["stationStock"]![nameof(StockType.Minerals)]);
+        Assert.Equal(0, (int?)save["cargo"]!["Narcotics"]);
+        Assert.Equal(0x3A, (int?)save["stationStock"]!["Minerals"]);
     }
 
     [Fact]
@@ -107,14 +107,14 @@ public class SaveFileTests
         // on whichever one happens to sit at that position.
         SaveFile saveFile = CreateSaveFile(out string directory, out Trade trade);
         saveFile.SaveCommander("Cargo");
-        Edit(directory, "Cargo", save => save["cargo"]![nameof(StockType.Furs)] = 3);
+        Edit(directory, "Cargo", save => save["cargo"]!["Furs"] = 3);
 
         // Act
         bool loaded = saveFile.LoadCommander("Cargo");
 
         // Assert
         Assert.True(loaded);
-        Assert.Equal(3, trade.StockMarket[StockType.Furs].CurrentCargo);
+        Assert.Equal(3, trade["Furs"].CurrentCargo);
     }
 
     [Theory]
@@ -255,7 +255,7 @@ public class SaveFileTests
             save =>
             {
                 JsonObject cargo = save["cargo"]!.AsObject();
-                cargo.Remove(nameof(StockType.Furs));
+                cargo.Remove("Furs");
                 cargo["Pelts"] = 0;
             });
 
@@ -272,7 +272,7 @@ public class SaveFileTests
         // Arrange
         SaveFile saveFile = CreateSaveFile(out string directory);
         saveFile.SaveCommander("Overstocked");
-        Edit(directory, "Overstocked", save => save["stationStock"]![nameof(StockType.Food)] = 64);
+        Edit(directory, "Overstocked", save => save["stationStock"]!["Food"] = 64);
 
         // Act
         bool result = saveFile.LoadCommander("Overstocked");
@@ -288,7 +288,7 @@ public class SaveFileTests
         // tonnage and not the number of goods that has to fit.
         SaveFile saveFile = CreateSaveFile(out string directory);
         saveFile.SaveCommander("Overloaded");
-        Edit(directory, "Overloaded", save => save["cargo"]![nameof(StockType.Food)] = 21);
+        Edit(directory, "Overloaded", save => save["cargo"]!["Food"] = 21);
 
         // Act
         bool result = saveFile.LoadCommander("Overloaded");

@@ -12,11 +12,13 @@ using SharpKind.Fakes.Input;
 
 namespace EliteSharpLib.Tests.Views;
 
-// The market's cursor, with no renderer involved. StockType runs 1 (Food) to
-// 17 (AlienItems), so the cursor's bounds are clamped to that range rather
-// than a plain 0-based one - the original clamped to [0, Count-1], which left
-// nothing highlighted at reset (position 0 is StockType.None) and made the
-// last row unreachable.
+// The market's cursor, with no renderer involved. It is a row in the list now
+// rather than a good's number: the goods used to be an enum running 1 (Food)
+// to 17 (Alien Items) and the cursor was clamped to that range, which is what a
+// 0-based clamp over an ordered list says without needing the numbering. The
+// bug the old comment recorded - a [0, Count-1] clamp leaving nothing
+// highlighted at reset, because 0 was the enum's None - cannot come back: there
+// is no None, and row 0 is a good.
 public class MarketControllerTests
 {
     [Fact]

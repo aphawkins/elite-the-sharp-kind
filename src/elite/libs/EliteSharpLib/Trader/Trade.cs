@@ -16,61 +16,67 @@ internal sealed class Trade
 
     private readonly PlayerShip _ship;
 
+    private readonly Dictionary<string, StockItem> _byId;
+
     internal Trade(GameState gameState, PlayerShip ship)
     {
         _gameState = gameState;
         _ship = ship;
+
+        StockMarket = [.. ClassicGoods.All.Select(definition => new StockItem(definition))];
+        _byId = StockMarket.ToDictionary(stock => stock.Definition.Id, StringComparer.Ordinal);
+        DroppedByShips = [.. StockMarket.Where(stock => stock.Definition.IsDroppedByShips)];
     }
 
     internal float Credits { get; set; }
 
     internal int MarketRandomiser { get; set; }
 
-    internal Dictionary<StockType, StockItem> StockMarket { get; } = new()
-    {
-        { StockType.Food,         new("Food",          0, 0,  1.9f, -2,   6,   1, TONNES,    0, 0) },
-        { StockType.Textiles,     new("Textiles",      0, 0,  2.0f, -1,  10,   3, TONNES,    0, 0) },
-        { StockType.Radioactives, new("Radioactives",  0, 0,  6.5f, -3,   2,   7, TONNES,    0, 0) },
-        { StockType.Slaves,       new("Slaves",        0, 0,  4.0f, -5, 226,  31, TONNES,    0, 0) },
-        { StockType.LiquorWines,  new("Liquor/Wines",  0, 0,  8.3f, -5, 251,  15, TONNES,    0, 0) },
-        { StockType.Luxuries,     new("Luxuries",      0, 0, 19.6f,  8,  54,   3, TONNES,    0, 0) },
-        { StockType.Narcotics,    new("Narcotics",     0, 0, 23.5f, 29,   8, 120, TONNES,    0, 0) },
-        { StockType.Computers,    new("Computers",     0, 0, 15.4f, 14,  56,   3, TONNES,    0, 0) },
-        { StockType.Machinery,    new("Machinery",     0, 0, 11.7f,  6,  40,   7, TONNES,    0, 0) },
-        { StockType.Alloys,       new("Alloys",        0, 0,  7.8f,  1,  17,  31, TONNES,    0, 0) },
-        { StockType.Firearms,     new("Firearms",      0, 0, 12.4f, 13,  29,   7, TONNES,    0, 0) },
-        { StockType.Furs,         new("Furs",          0, 0, 17.6f, -9, 220,  63, TONNES,    0, 0) },
-        { StockType.Minerals,     new("Minerals",      0, 0,  3.2f, -1,  53,   3, TONNES,    0, 0) },
-        { StockType.Gold,         new("Gold",          0, 0,  9.7f, -1,  66,   7, KILOGRAMS, 0, 0) },
-        { StockType.Platinum,     new("Platinum",      0, 0, 17.1f, -2,  55,  31, KILOGRAMS, 0, 0) },
-        { StockType.GemStones,    new("Gem-Stones",    0, 0,  4.5f, -1, 250,  15, GRAMS,     0, 0) },
-        { StockType.AlienItems,   new("Alien Items",   0, 0,  5.3f, 15, 192,   7, TONNES,    0, 0) },
-    };
+    /// <summary>
+    /// Gets every good, in the order the market screen lists them. An ordered
+    /// list rather than a dictionary because that order is shown to the
+    /// commander and saved to file, and a dictionary only happens to keep it.
+    /// </summary>
+    internal IReadOnlyList<StockItem> StockMarket { get; }
 
-    internal void AddCargo(StockType stock) => StockMarket[stock].CurrentCargo++;
+    /// <summary>
+    /// Gets the goods a cargo canister can hold, in the same order. Held rather
+    /// than filtered each time because a canister is opened mid-combat and the
+    /// answer never changes.
+    /// </summary>
+    internal IReadOnlyList<StockItem> DroppedByShips { get; }
 
-    internal void BuyStock(StockType stock)
+    /// <summary>
+    /// The good that goes by this name.
+    /// </summary>
+    /// <param name="id">The good's <see cref="GoodsDefinition.Id"/>.</param>
+    /// <returns>That good's current standing.</returns>
+    internal StockItem this[string id] => _byId[id];
+
+    internal void BuyStock(StockItem stock)
     {
-        if (StockMarket[stock].CurrentQuantity == 0 || Credits < StockMarket[stock].CurrentPrice)
+        ArgumentNullException.ThrowIfNull(stock);
+
+        if (stock.CurrentQuantity == 0 || Credits < stock.CurrentPrice)
         {
             return;
         }
 
-        if (StockMarket[stock].Units == TONNES && TotalCargoTonnage() == _ship.CargoCapacity)
+        if (stock.Definition.FillsHold && TotalCargoTonnage() == _ship.CargoCapacity)
         {
             return;
         }
 
-        StockMarket[stock].CurrentCargo++;
-        StockMarket[stock].CurrentQuantity--;
-        Credits -= StockMarket[stock].CurrentPrice;
+        stock.CurrentCargo++;
+        stock.CurrentQuantity--;
+        Credits -= stock.CurrentPrice;
     }
 
     internal void ClearCurrentCargo()
     {
-        foreach (KeyValuePair<StockType, StockItem> stock in StockMarket)
+        foreach (StockItem stock in StockMarket)
         {
-            stock.Value.CurrentCargo = 0;
+            stock.CurrentCargo = 0;
         }
     }
 
@@ -82,73 +88,70 @@ internal sealed class Trade
     /// </summary>
     internal void GenerateStockMarket()
     {
-        foreach (KeyValuePair<StockType, StockItem> stock in StockMarket)
+        foreach (StockItem stock in StockMarket)
         {
+            GoodsDefinition definition = stock.Definition;
+
             // Start with the base price
-            float price = stock.Value.BasePrice;
+            float price = definition.BasePrice;
 
             // Add in a random amount
-            price += (MarketRandomiser & stock.Value.Mask) / 10f;
+            price += (MarketRandomiser & definition.Mask) / 10f;
 
             // Adjust for planet economy
-            price += _gameState.CurrentPlanetData.Economy * stock.Value.EconomyAdjust / 10f;
+            price += _gameState.CurrentPlanetData.Economy * definition.EconomyAdjust / 10f;
 
             // Start with the base quantity
-            int quant = stock.Value.BaseQuantity;
+            int quant = definition.BaseQuantity;
 
             // Add in a random amount
-            quant += MarketRandomiser & stock.Value.Mask;
+            quant += MarketRandomiser & definition.Mask;
 
             // Adjust for planet economy
-            quant -= _gameState.CurrentPlanetData.Economy * stock.Value.EconomyAdjust;
+            quant -= _gameState.CurrentPlanetData.Economy * definition.EconomyAdjust;
 
             // Quantities range from 0..63
             quant = Math.Clamp(quant, 0, 63);
 
-            stock.Value.CurrentPrice = price * 4;
-            stock.Value.CurrentQuantity = quant;
+            stock.CurrentPrice = price * 4;
+            stock.CurrentQuantity = definition.IsSoldByStations ? quant : 0;
         }
-
-        // Alien Items are never available for purchase
-        StockMarket[StockType.AlienItems].CurrentQuantity = 0;
     }
 
-    internal int IsCarryingContraband() => ((StockMarket[StockType.Slaves].CurrentCargo + StockMarket[StockType.Narcotics].CurrentCargo)
-        * 2)
-        + StockMarket[StockType.Firearms].CurrentCargo;
+    internal int IsCarryingContraband()
+        => StockMarket.Sum(stock => stock.CurrentCargo * stock.Definition.ContrabandWeight);
 
-    internal void SellStock(StockType stock)
+    internal void SellStock(StockItem stock)
     {
-        if (StockMarket[stock].CurrentCargo == 0)
+        ArgumentNullException.ThrowIfNull(stock);
+
+        if (stock.CurrentCargo == 0)
         {
             return;
         }
 
-        StockMarket[stock].CurrentCargo--;
-        StockMarket[stock].CurrentQuantity++;
-        Credits += StockMarket[stock].CurrentPrice;
+        stock.CurrentCargo--;
+        stock.CurrentQuantity++;
+        Credits += stock.CurrentPrice;
     }
 
     internal void SetStockQuantities()
     {
-        foreach (KeyValuePair<StockType, StockItem> stock in StockMarket)
+        foreach (StockItem stock in StockMarket)
         {
-            stock.Value.CurrentQuantity = stock.Value.StationStock;
+            stock.CurrentQuantity = stock.Definition.IsSoldByStations ? stock.StationStock : 0;
         }
-
-        // Alien Items are never available for purchase
-        StockMarket[StockType.AlienItems].CurrentQuantity = 0;
     }
 
     internal int TotalCargoTonnage()
     {
         int cargo = 0;
 
-        foreach (KeyValuePair<StockType, StockItem> stock in StockMarket)
+        foreach (StockItem stock in StockMarket)
         {
-            if (stock.Value.CurrentCargo > 0 && stock.Value.Units == TONNES)
+            if (stock.CurrentCargo > 0 && stock.Definition.FillsHold)
             {
-                cargo += stock.Value.CurrentCargo;
+                cargo += stock.CurrentCargo;
             }
         }
 

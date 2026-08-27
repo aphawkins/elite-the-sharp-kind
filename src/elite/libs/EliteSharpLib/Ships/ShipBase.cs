@@ -5,7 +5,6 @@
 using System.Numerics;
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Graphics;
-using EliteSharpLib.Trader;
 using SharpKind;
 using SharpKind.Assets.Models;
 using SharpKind.Graphics;
@@ -120,7 +119,7 @@ internal class ShipBase : IShip
 
     public float RotZ { get; set; }
 
-    public StockType ScoopedType { get; set; }
+    public string? ScoopedType { get; set; }
 
     public float Size { get; set; }
 

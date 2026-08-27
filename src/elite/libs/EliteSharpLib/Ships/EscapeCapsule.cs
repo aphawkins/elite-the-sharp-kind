@@ -3,7 +3,6 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
-using EliteSharpLib.Trader;
 
 namespace EliteSharpLib.Ships;
 
@@ -17,7 +16,7 @@ internal sealed class EscapeCapsule : ShipBase
         EnergyMax = 17;
         MinDistance = 200;
         Name = "Escape Capsule";
-        ScoopedType = StockType.Slaves;
+        ScoopedType = "Slaves";
         Size = 256;
         VanishPoint = 8;
         VelocityMax = 8;

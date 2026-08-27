@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -287,16 +287,16 @@ internal sealed class SaveFile
 
     private bool IsValidStock(IDictionary<string, int>? stock) => stock is { } goods
         && goods.Count == _trade.StockMarket.Count
-        && _trade.StockMarket.Keys.All(type
-            => goods.TryGetValue(type.ToString(), out int quantity) && quantity is >= 0 and <= QuantityMax);
+        && _trade.StockMarket.All(item
+            => goods.TryGetValue(item.Definition.Id, out int quantity) && quantity is >= 0 and <= QuantityMax);
 
     /// <summary>
     /// The hold the cargo would take up. Gold, platinum and gem stones are weighed in
     /// kilograms and grams, so they do not count against the cargo bay.
     /// </summary>
     private int TonnageOf(IDictionary<string, int> cargo) => _trade.StockMarket
-        .Where(x => x.Value.Units == Trade.TONNES)
-        .Sum(x => cargo[x.Key.ToString()]);
+        .Where(item => item.Definition.FillsHold)
+        .Sum(item => cargo[item.Definition.Id]);
 
     private SaveState GameStateToSaveState(string newName) => new()
     {
@@ -306,7 +306,7 @@ internal sealed class SaveFile
         CargoCapacity = _ship.CargoCapacity,
         CommanderName = newName,
         Credits = _trade.Credits,
-        Cargo = _trade.StockMarket.ToDictionary(x => x.Key.ToString(), x => x.Value.CurrentCargo, StringComparer.Ordinal),
+        Cargo = _trade.StockMarket.ToDictionary(x => x.Definition.Id, x => x.CurrentCargo, StringComparer.Ordinal),
         EnergyUnit = _ship.EnergyUnit.ToString(),
         Fuel = _ship.Fuel,
         GalaxyNumber = _state.Cmdr.GalaxyNumber,
@@ -349,7 +349,7 @@ internal sealed class SaveFile
             D = _state.DockedPlanet.D,
             B = _state.DockedPlanet.B,
         },
-        StationStock = _trade.StockMarket.ToDictionary(x => x.Key.ToString(), x => x.Value.StationStock, StringComparer.Ordinal),
+        StationStock = _trade.StockMarket.ToDictionary(x => x.Definition.Id, x => x.StationStock, StringComparer.Ordinal),
     };
 
     private void RestoreSavedCommander()
@@ -367,9 +367,9 @@ internal sealed class SaveFile
         _ship.CargoCapacity = _lastSaved.CargoCapacity;
         _state.Cmdr.Name = _lastSaved.CommanderName;
         _trade.Credits = _lastSaved.Credits;
-        foreach (StockType type in _trade.StockMarket.Keys)
+        foreach (StockItem stock in _trade.StockMarket)
         {
-            _trade.StockMarket[type].CurrentCargo = _lastSaved.Cargo[type.ToString()];
+            stock.CurrentCargo = _lastSaved.Cargo[stock.Definition.Id];
         }
 
         _ship.EnergyUnit = Enum.Parse<EnergyUnit>(_lastSaved.EnergyUnit);
@@ -403,9 +403,9 @@ internal sealed class SaveFile
         _state.Cmdr.Score = _lastSaved.Score;
         _state.DockedPlanet.D = _lastSaved.ShipLocation.D;
         _state.DockedPlanet.B = _lastSaved.ShipLocation.B;
-        foreach (StockType type in _trade.StockMarket.Keys)
+        foreach (StockItem stock in _trade.StockMarket)
         {
-            _trade.StockMarket[type].StationStock = _lastSaved.StationStock[type.ToString()];
+            stock.StationStock = _lastSaved.StationStock[stock.Definition.Id];
         }
     }
 }

@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -31,7 +31,7 @@ public class SpaceTests
         // up IsCarryingContraband() on launch, not just at other checkpoints.
         Space space = CreateSpace(
             out GameState gameState, out _, out _, out Trade trade, out _, out _, out _, out _);
-        trade.AddCargo(StockType.Narcotics);
+        trade["Narcotics"].CurrentCargo++;
 
         space.LaunchPlayer();
 

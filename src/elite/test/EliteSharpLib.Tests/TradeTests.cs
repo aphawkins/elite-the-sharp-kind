@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -18,9 +18,9 @@ public class TradeTests
     {
         // Arrange
         Trade trade = CreateTrade();
-        trade.StockMarket[StockType.Slaves].CurrentCargo = 2;
-        trade.StockMarket[StockType.Narcotics].CurrentCargo = 3;
-        trade.StockMarket[StockType.Firearms].CurrentCargo = 1;
+        trade["Slaves"].CurrentCargo = 2;
+        trade["Narcotics"].CurrentCargo = 3;
+        trade["Firearms"].CurrentCargo = 1;
 
         // Act
         int contraband = trade.IsCarryingContraband();
@@ -34,7 +34,7 @@ public class TradeTests
     {
         // Arrange
         Trade trade = CreateTrade();
-        trade.StockMarket[StockType.Food].CurrentCargo = 10;
+        trade["Food"].CurrentCargo = 10;
 
         // Act
         int contraband = trade.IsCarryingContraband();
