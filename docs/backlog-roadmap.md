@@ -74,15 +74,87 @@ same twenty seconds at 13.5Hz and at 60Hz now end on the same screen, within
 one housekeeping step, and meet the same ships.
 
 - [ ] **[LARGE]** [EliteSharpLib] Data-driven game content model: replace
-      hardcoded/reflection-based game data — `EquipmentType`, `StockType`,
-      ship definitions, and `ShipFactory.CreateShipFromName`'s
+      hardcoded/reflection-based game data — `EquipmentType`, ship
+      definitions, and `ShipFactory.CreateShipFromName`'s
       reflection-based construction (see the smaller interim cleanup
       below) — with a proper config-driven model. Design/scope the config
       shape before starting. **Missions were the pilot and are done**
       (2026-08-02, see [decisions.md](decisions.md)): they went to plugin
       assemblies rather than config, because a mission carries behaviour.
       What is left here is the inert content, which is the config-shaped
-      half of the problem.
+      half of the problem. **`StockType` split out on 2026-08-27** into
+      the configurable-goods item below, which the maintainer scoped
+      that day; the ship definitions are the piece it touches, through
+      the four ships that name a good.
+
+- [ ] **[LARGE]** [EliteSharpLib] Configurable goods: `StockType` becomes a
+      goods set supplied by a plugin, so a new set can trade in different
+      wares. Split from the item above on 2026-08-27. Affects starting
+      quantities, the stock market and contraband. The maintainer's calls
+      that day settle the shape:
+
+      **It is a new plugin family, not a rendition.** `IGoodsSet` joins
+      `EliteSharp.Abstractions`, is found in a `Goods` folder beside the
+      executable through the same MEF door as the missions
+      (`MissionLoader.FolderName`), and the seventeen classic wares go out
+      in `EliteSharp.Goods.Classic` — the door a stranger would come
+      through being the one the game itself uses, as with missions and
+      renditions. Renditions were considered and lost: `IRendition` is
+      presentation only, and the trade screens are already goods-agnostic
+      — `MarketRow` and `InventoryModel` carry name, units, price and
+      counts as plain data, and both renditions loop over `model.Rows` —
+      so a new goods set needs no rendition change at all. Goods there
+      would also force both shipped renditions to carry a copy of the
+      classic table, and make "classic goods, 8-bit look" a third
+      rendition. Like a rendition and unlike a mission, a missing set is
+      fatal: there is no market without one.
+
+      **Goods are named, not numbered.** `StockType`'s ordinals are
+      load-bearing in two places and both have to go: `Combat.cs:350`
+      draws loot as `(StockType)_rng.Random(1, 9)` — Food to Machinery by
+      ordinal — and `MarketController.cs:41` moves the cursor by adding to
+      the enum value. The first becomes a draw over the goods the set
+      marks as ship cargo, the second an index into the set's own order.
+      Keep the classic draw to one call over a nine-wide range or the
+      golden-trace baselines shift.
+
+      **A good carries what the game hardcodes about it today.** Base
+      price, economy adjustment, base quantity, mask and units already sit
+      on `StockItem`; add the opening station stock (from
+      `CommanderFactory.s_startingStationStock`), whether the station ever
+      sells it (Alien Items never do — `Trade.cs:113` and `:140`
+      special-case them by name), and how heavily it counts as contraband
+      (`Trade.IsCarryingContraband` hardcodes Slaves and Narcotics at two
+      each, Firearms at one). `CommanderFactory.s_maxCargo` then stops
+      being a list and is derived: every good the station sells that is
+      not contraband — which is what its comment already says it is.
+
+      **Four ships name a good and must keep working.** `Alloy`,
+      `EscapeCapsule`, `RockSplinter` and `Tharglet` set `ScoopedType` to
+      Alloys, Slaves, Minerals and Alien Items. They keep naming the good,
+      and a set that does not provide all four fails at startup with the
+      missing names listed — the loud-and-early shape `ViewRegistry`
+      already uses for a rendition that is a screen short. That imposes a
+      small required vocabulary on a set author; it beat tagging each good
+      with the ship that drops it, because an unfilled tag needs the same
+      check anyway.
+
+      **Saves need no new field.** Cargo and station stock are already
+      keyed by the goods' own names, and `SaveFile.IsValidStock` already
+      turns away a file whose goods do not match the live market exactly,
+      by count and by name. What is missing is *why*: it logs
+      `CommanderValidationFailed` with the path alone, and the screen says
+      only "Error Loading Commander!". Make both name the goods that could
+      not be accounted for. The general form of that complaint is a defect
+      and lives in [backlog-issues.md](backlog-issues.md).
+
+      **Watch the row budget.** The 8-bit market screen holds seventeen
+      rows and no more: `MarketView8Bit` puts the first at `FirstRow = 5`
+      and the cash line at `CashRow = 23`, so an eighteenth good draws
+      over the cash. That is the one thing a goods set can break in a
+      rendition, and it is a limit rather than ownership — decide whether
+      a rendition declares a maximum or the market screen scrolls, before
+      shipping a set bigger than the classic one.
 
 ### 3D pipeline — modern-pipeline gaps
 

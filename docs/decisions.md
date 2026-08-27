@@ -9,6 +9,55 @@ decision may reshape items in either. Newest first. When a decision
 reshapes or unblocks backlog items, those items are updated in the backlog
 to reference the decision here rather than restating it.
 
+## Resolved (2026-08-27) — goods are a plugin family, and failure is loud
+
+Scoping the configurable-`StockType` roadmap item. The starting question was
+whether goods belong in the renditions; four calls came out of it, and the
+last one is not about goods at all.
+
+**Goods are their own plugin family, not a rendition's property.** A
+rendition is presentation, and the trade screens are already goods-agnostic
+— `MarketRow` and `InventoryModel` carry name, units, price and counts as
+plain data, and both renditions loop over `model.Rows` — so a new goods set
+needs no rendition change whatever. Goods on `IRendition` would have made a
+rendition a whole game variant, forced both shipped ones to carry a copy of
+the classic table, and made "classic goods, 8-bit look" a third rendition.
+So `IGoodsSet` goes in `EliteSharp.Abstractions` and comes through the
+missions' door, from a `Goods` folder. This **narrows the 2026-08-02
+missions entry**, which said inert content like stock was "a config-shaped
+problem": the shape is right, the container is an assembly, because that
+door already exists and works.
+
+**A good is named, not numbered.** As with mission stages, a closed enum
+cannot name goods the game was never built against. Two ordinal
+dependencies have to go with it — the loot draw at `Combat.cs:350` and the
+market cursor at `MarketController.cs:41`.
+
+**Four ships keep naming their good.** `Alloy`, `EscapeCapsule`,
+`RockSplinter` and `Tharglet` name Alloys, Slaves, Minerals and Alien
+Items, and a set that does not supply all four fails at startup with the
+missing names listed. Tagging each good with the ship that drops it was
+considered and lost: an unfilled tag needs the same check, for more
+machinery.
+
+**Saves need no new field — they need a reason.** `SaveFile.IsValidStock`
+already rejects a save whose goods do not match the live market, by count
+and by name, so a file from another set is turned away correctly today. It
+just will not say why.
+
+**Which is the general complaint, and it is a defect.** Any validation
+failure — a missing asset, an unreadable config, a save the game will not
+take — must be logged *and* shown, and the app must never simply vanish.
+Today `GameApp.Run` catches only around `game.Run()`, so a startup failure
+unwinds through `Main` as a raw stack trace, and even the caught case
+reports to stderr, which a double-clicked app has nowhere to show. **The
+startup half was fixed the same day** (see [CHANGELOG.md](../CHANGELOG.md)):
+the composition is inside the handler, and the message reaches an SDL dialog
+as well as the console. What is left is the in-game half - a save turned away
+still will not say which check failed - and that is a Should in
+[backlog-issues.md](backlog-issues.md), sequenced before the goods item so
+its new check arrives already explaining itself.
+
 ## Resolved (2026-08-26) — the drawing gets its own dice
 
 Separating simulate from compose (item 2 of the frame-rate list) ran into
