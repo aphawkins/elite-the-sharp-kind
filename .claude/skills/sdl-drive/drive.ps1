@@ -6,6 +6,37 @@
 # mappings. Not tied to any one game: any SDL window on Windows works
 # the same way.
 #
+# TWO MODES.
+#
+# -KeyScript (PREFERRED, and the only reliable one for capture): the app
+# drives itself. GAME_KEY_SCRIPT feeds tick-exact input straight into the
+# game's own keyboard sink, and GAME_FRAME_DUMP_DIR makes the game write its
+# own framebuffer out on a SaveFrame command. Nothing depends on the window
+# being focused, on top, or even visible, and nothing depends on wall-clock
+# timing - two runs of the same script produce byte-identical frames. The
+# dump is the native render target (320x256 for Elite's 8-bit rendition), so
+# there is no window chrome and no magnification to undo. Frames are
+# converted to PNG and named in the order they were taken.
+#
+#   & ".claude/skills/sdl-drive/drive.ps1" -ExePath "...\Some.exe" -Name market -KeyScript @'
+#   30 Tap N
+#   90 Tap Spacebar
+#   150 Tap F8
+#   210 SaveFrame
+#   '@
+#
+# Script syntax is "<tick> <Tap|Hold|Release> <ConsoleKey> [modifiers]" or
+# "<tick> SaveFrame"; # starts a comment. A tick is one game update, so the
+# tick numbers depend on the app's configured update rate (Elite: engine.fps
+# in elite.sharp, 60 by default). See KeyScriptParser in SharpKind.Input.
+#
+# -Steps (legacy): OS-level key injection and a screen-scrape of the window
+# rect. Keep using it to poke at a running window interactively, but know
+# that its screenshots capture whatever is covering the window - if anything
+# is, they silently capture that instead, and the only clue is a warning.
+# PrintWindow was tried as a fix and returns a black client area for this
+# SDL window, as it does for any composited one.
+#
 # Each element of -Steps is one of:
 #   launch                 - start the exe, wait for its window, foreground it
 #   screenshot:<name>      - capture the window to <ScreenshotDir>/<name>.png
@@ -30,8 +61,10 @@
 param(
     [Parameter(Mandatory = $true)]
     [string]$ExePath,
-    [Parameter(Mandatory = $true)]
     [string[]]$Steps,
+    [string]$KeyScript,
+    [string]$Name = "frame",
+    [int]$TimeoutSeconds = 30,
     [string]$ScreenshotDir = $(if ($env:SCREENSHOT_DIR) { $env:SCREENSHOT_DIR } else { Join-Path $env:TEMP "sdl-app-shots" }),
     [int]$LaunchTimeoutMs = 15000
 )
@@ -65,6 +98,14 @@ public static class SdlDriveWin32 {
 
 if (-not (Test-Path $ExePath)) {
     throw "Executable not found at '$ExePath'. Build it first."
+}
+
+if (-not $Steps -and -not $KeyScript) {
+    throw "Give either -KeyScript (preferred) or -Steps."
+}
+
+if ($Steps -and $KeyScript) {
+    throw "Give -KeyScript or -Steps, not both: one drives the app from inside, the other from outside."
 }
 
 New-Item -ItemType Directory -Force -Path $ScreenshotDir | Out-Null
@@ -250,6 +291,81 @@ function Invoke-Quit {
 
     $script:proc = $null
     $script:hwnd = [IntPtr]::Zero
+}
+
+function Invoke-ScriptedRun {
+    # The script may be given inline or as a path; the game reads a file, so
+    # inline text is written to one.
+    $ownsScriptFile = -not (Test-Path -LiteralPath $KeyScript -PathType Leaf)
+    $scriptPath = if ($ownsScriptFile) {
+        $temp = Join-Path ([System.IO.Path]::GetTempPath()) "sdl-drive-$([Guid]::NewGuid().ToString('N')).keys"
+        Set-Content -LiteralPath $temp -Value $KeyScript -Encoding UTF8
+        $temp
+    }
+    else {
+        (Resolve-Path -LiteralPath $KeyScript).Path
+    }
+
+    $scriptText = Get-Content -LiteralPath $scriptPath -Raw
+    $expected = ([regex]::Matches($scriptText, '(?im)^\s*\d+\s+SaveFrame\s*$')).Count
+    if ($expected -eq 0) {
+        Write-Warning "the script has no SaveFrame command, so no frames will be captured"
+    }
+
+    $dumpDir = Join-Path ([System.IO.Path]::GetTempPath()) "sdl-drive-frames-$([Guid]::NewGuid().ToString('N'))"
+    New-Item -ItemType Directory -Force -Path $dumpDir | Out-Null
+
+    $env:GAME_KEY_SCRIPT = $scriptPath
+    $env:GAME_FRAME_DUMP_DIR = $dumpDir
+
+    try {
+        $proc = Start-Process -FilePath $ExePath -PassThru -WorkingDirectory (Split-Path $ExePath)
+        Write-Output "launched: PID $($proc.Id) (scripted, no window focus needed)"
+
+        # Stop as soon as every frame the script asked for has been written,
+        # rather than sleeping for a fixed time and hoping.
+        $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+        while ((Get-Date) -lt $deadline) {
+            if ($expected -gt 0 -and (Get-ChildItem $dumpDir -Filter *.bmp).Count -ge $expected) { break }
+            if ($proc.HasExited) { break }
+            Start-Sleep -Milliseconds 200
+        }
+
+        # A moment for the last file to be closed before the process is torn
+        # down under it.
+        Start-Sleep -Milliseconds 300
+
+        if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force }
+    }
+    finally {
+        Remove-Item Env:GAME_KEY_SCRIPT, Env:GAME_FRAME_DUMP_DIR -ErrorAction SilentlyContinue
+
+        # Only the script's own temp file; a path the caller gave is theirs.
+        if ($ownsScriptFile) { Remove-Item -LiteralPath $scriptPath -Force -ErrorAction SilentlyContinue }
+    }
+
+    $frames = @(Get-ChildItem $dumpDir -Filter *.bmp | Sort-Object Name)
+    if ($frames.Count -lt $expected) {
+        Write-Warning "the script asked for $expected frame(s) but $($frames.Count) were written - raise -TimeoutSeconds, or check the tick numbers against the app's update rate"
+    }
+
+    # BMP is what the game writes; PNG is what an image viewer will open.
+    $index = 0
+    foreach ($frame in $frames) {
+        $index++
+        $suffix = if ($frames.Count -gt 1) { "-{0:D2}" -f $index } else { "" }
+        $png = Join-Path $ScreenshotDir "$Name$suffix.png"
+        $image = [System.Drawing.Image]::FromFile($frame.FullName)
+        try { $image.Save($png, [System.Drawing.Imaging.ImageFormat]::Png) } finally { $image.Dispose() }
+        Write-Output "frame: $png"
+    }
+
+    Remove-Item $dumpDir -Recurse -Force -ErrorAction SilentlyContinue
+}
+
+if ($KeyScript) {
+    Invoke-ScriptedRun
+    return
 }
 
 foreach ($step in $Steps) {

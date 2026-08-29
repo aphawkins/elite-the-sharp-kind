@@ -19,7 +19,64 @@ dotnet build TheSharpKind.slnx -c Debug
 Exe path:
 `src/scr/apps/StuntCarRacerSharp/bin/Debug/net10.0/StuntCarRacerSharp.exe`.
 
-## Run
+## Run — the reliable way (scripted, preferred)
+
+The app drives itself and dumps its own framebuffer. `GAME_KEY_SCRIPT`
+feeds tick-exact input straight into the game's keyboard sink and
+`GAME_FRAME_DUMP_DIR` makes it write a frame out on a `SaveFrame`
+command, so **nothing depends on the window being focused, on top, or
+even visible**, and nothing depends on wall-clock key-hold timing. Two
+runs of the same script produce byte-identical frames.
+
+Use this whenever you are capturing something to look at or to compare.
+Reach for `-Steps` below only to poke at a window interactively.
+
+```powershell
+& ".claude/skills/sdl-drive/drive.ps1" `
+  -ExePath "src\scr\apps\StuntCarRacerSharp\bin\Debug\net10.0\StuntCarRacerSharp.exe" `
+  -Name "race" `
+  -KeyScript @'
+# the track menu, then the preview fly-through
+30 SaveFrame
+60 Tap S
+200 SaveFrame
+'@
+```
+
+Frames land in `%TEMP%\sdl-app-shots\` as `<Name>.png`, or
+`<Name>-01.png`, `<Name>-02.png`... in the order they were taken when a
+script asks for several. They are the **native render target** - 320x256
+for Elite's 8-bit rendition - so there is no window chrome and no window
+magnification to undo, which makes two frames directly diffable.
+
+Script syntax is one event per line (`KeyScriptParser` in
+`SharpKind.Input`):
+
+| line | what it does |
+|---|---|
+| `<tick> Tap <ConsoleKey> [Mods]` | press and release within that one tick |
+| `<tick> Hold <ConsoleKey> [Mods]` | press and leave held |
+| `<tick> Release <ConsoleKey> [Mods]` | release a held key |
+| `<tick> SaveFrame` | dump the current framebuffer |
+
+`<ConsoleKey>` is a `System.ConsoleKey` name - `Spacebar`, not `Space`;
+`F8`; `X`; `UpArrow` - and modifiers are `Shift,Control,Alt`.
+
+**Known gap:** a one-tick `Tap S` on **TrackPreview** does not start the
+race, though the same key does move **TrackMenu** on. The example above
+therefore stops at the preview. If you need a scripted frame of the race
+itself, work out what TrackPreview wants first - `Hold`/`Release` over
+several ticks is the thing to try - and correct this example once you
+have seen it work. Blank
+lines and `#` comments are ignored. A tick is one game update, so how
+much wall-clock and simulated time a tick is worth follows the app's
+configured update rate (`engine.fps`); a script is reproducible against
+a given configuration, not across different ones. The run stops as soon
+as every requested frame is written, or after `-TimeoutSeconds`
+(default 30).
+
+## Run — driving the live window (`-Steps`, legacy)
+
 
 Use the PowerShell tool and invoke with the call operator `&`, **not**
 by prefixing `pwsh` (see Gotchas — nested `pwsh.exe` breaks array
@@ -42,7 +99,8 @@ binding):
 
 Screenshots land in `%TEMP%\sdl-app-shots\` (override with the
 `SCREENSHOT_DIR` env var or `-ScreenshotDir`). Then actually open each
-PNG with the Read tool — don't just check the process didn't crash.
+PNG with the Read tool — don't just check the process didn't crash, and
+don't trust one that came with a foreground warning.
 
 ### Steps (shared driver — same for every skill that uses it)
 
@@ -118,7 +176,7 @@ These apply to `sdl-drive/drive.ps1` itself, so they're the same for
   `IsPressed` ever sees them. The driver's default 150ms hold covers
   this; SCR's driving controls use `IsHeld` instead (see above) and
   read correctly for as long as you hold the key via `key:<Name>:<ms>`.
-- **The window must actually be on-screen and unobstructed** —
+- **`-Steps` screenshots need the window on-screen and unobstructed** —
   capture is a real `CopyFromScreen`, not an off-screen render. Don't
   minimize or cover the window between `launch` and `quit`. The driver
   re-foregrounds the window before every `screenshot` step and waits for
@@ -127,5 +185,13 @@ These apply to `sdl-drive/drive.ps1` itself, so they're the same for
   doesn't already own the foreground — and a window merely *behind*
   another one silently captures that other window's pixels, which reads
   as "the app ignored my keys"). If it can't get there within two
-  seconds it warns; treat that warning as "these screenshots are not the
-  app".
+  seconds it warns; **treat that warning as "these screenshots are not
+  the app"** — it has bitten real work, capturing an unrelated
+  full-screen application and a browser window, and a diff against one
+  of those is worse than no diff at all. `-KeyScript` has none of this
+  exposure and is why it exists: use it for anything you intend to look
+  at closely or compare.
+- **`PrintWindow` is not a fix for that** — it was tried, with and
+  without `PW_RENDERFULLCONTENT`, and returns the window frame with a
+  black client area, as it does for any compositor-presented window.
+  The app dumping its own framebuffer is the way round it.

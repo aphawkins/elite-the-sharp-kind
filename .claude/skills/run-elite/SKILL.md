@@ -1,4 +1,4 @@
----
+﻿---
 description: Launch and visually smoke-test EliteSharp (the SDL desktop app under src/elite/apps/EliteSharp) by driving its real OS window - inject key presses, capture screenshots. Use when asked to run, screenshot, or visually verify EliteSharp, or to confirm a change to it works in the real app.
 ---
 
@@ -18,7 +18,61 @@ dotnet build TheSharpKind.slnx -c Debug
 
 Exe path: `src/elite/apps/EliteSharp/bin/Debug/net10.0/EliteSharp.exe`.
 
-## Run
+## Run — the reliable way (scripted, preferred)
+
+The app drives itself and dumps its own framebuffer. `GAME_KEY_SCRIPT`
+feeds tick-exact input straight into the game's keyboard sink and
+`GAME_FRAME_DUMP_DIR` makes it write a frame out on a `SaveFrame`
+command, so **nothing depends on the window being focused, on top, or
+even visible**, and nothing depends on wall-clock key-hold timing. Two
+runs of the same script produce byte-identical frames.
+
+Use this whenever you are capturing something to look at or to compare.
+Reach for `-Steps` below only to poke at a window interactively.
+
+```powershell
+& ".claude/skills/sdl-drive/drive.ps1" `
+  -ExePath "src\elite\apps\EliteSharp\bin\Debug\net10.0\EliteSharp.exe" `
+  -Name "market" `
+  -KeyScript @'
+# intro -> market, cursor down 3 rows, capture
+30 Tap N
+90 Tap Spacebar
+150 Tap F8
+180 Tap X
+190 Tap X
+200 Tap X
+210 SaveFrame
+'@
+```
+
+Frames land in `%TEMP%\sdl-app-shots\` as `<Name>.png`, or
+`<Name>-01.png`, `<Name>-02.png`... in the order they were taken when a
+script asks for several. They are the **native render target** - 320x256
+for Elite's 8-bit rendition - so there is no window chrome and no window
+magnification to undo, which makes two frames directly diffable.
+
+Script syntax is one event per line (`KeyScriptParser` in
+`SharpKind.Input`):
+
+| line | what it does |
+|---|---|
+| `<tick> Tap <ConsoleKey> [Mods]` | press and release within that one tick |
+| `<tick> Hold <ConsoleKey> [Mods]` | press and leave held |
+| `<tick> Release <ConsoleKey> [Mods]` | release a held key |
+| `<tick> SaveFrame` | dump the current framebuffer |
+
+`<ConsoleKey>` is a `System.ConsoleKey` name - `Spacebar`, not `Space`;
+`F8`; `X`; `UpArrow` - and modifiers are `Shift,Control,Alt`. Blank
+lines and `#` comments are ignored. A tick is one game update, so how
+much wall-clock and simulated time a tick is worth follows the app's
+configured update rate (`engine.fps`); a script is reproducible against
+a given configuration, not across different ones. The run stops as soon
+as every requested frame is written, or after `-TimeoutSeconds`
+(default 30).
+
+## Run — driving the live window (`-Steps`, legacy)
+
 
 Use the PowerShell tool and invoke with the call operator `&`, **not**
 by prefixing `pwsh` (see Gotchas in `sdl-drive`'s SKILL-shared notes
@@ -42,7 +96,8 @@ below — nested `pwsh.exe` breaks array binding):
 
 Screenshots land in `%TEMP%\sdl-app-shots\` (override with the
 `SCREENSHOT_DIR` env var or `-ScreenshotDir`). Then actually open each
-PNG with the Read tool — don't just check the process didn't crash.
+PNG with the Read tool — don't just check the process didn't crash, and
+don't trust one that came with a foreground warning.
 
 ## Known screen flow (from EliteMain.cs / Views/*.cs)
 
@@ -74,11 +129,18 @@ invocation trap, why `PostMessage` is used instead of
 `SendKeys`/`SendInput`, and the key-hold-duration timing issue) — they
 apply here unchanged since both skills drive the same script.
 
+Both of the shared gotchas about *timing* and the one about a covered
+window are `-Steps` problems only. `-KeyScript` sidesteps all of them:
+input goes into the keyboard sink rather than through SDL's event queue,
+so no hold duration can be swallowed, and the frame comes from the game
+rather than the screen, so nothing can cover it. Prefer it.
+
 Elite-specific: when `engine.backend` in
 `%APPDATA%\The Sharp Kind\elite.sharp` is `"Hardware"` (the
 maintainer's normal value is `"Software"`), give the app a longer
 settle before the first key and hold each key longer — `"wait:5000"`
-after `launch`, and `key:N:400` instead of `key:N`.
+after `launch`, and `key:N:400` instead of `key:N`. A `-KeyScript` run
+needs no such allowance: a tick is a tick whatever the backend is doing.
 
 Input itself is backend-independent: `SDLAbstraction` and
 `SoftwareAbstraction` build the same `SoftwareKeyboard(new SDLInput())`
