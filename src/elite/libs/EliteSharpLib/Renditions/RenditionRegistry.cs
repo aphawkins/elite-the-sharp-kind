@@ -30,7 +30,6 @@ internal sealed class RenditionRegistry
         typeof(GameOverModel),
         typeof(Intro1Model),
         typeof(Intro2Model),
-        typeof(InventoryModel),
         typeof(LoadCommanderModel),
         typeof(OptionsModel),
         typeof(PilotModel),
@@ -52,6 +51,7 @@ internal sealed class RenditionRegistry
         Starfield = rendition.CreateStarfieldRenderer(surface);
         SettingsListStyle = rendition.CreateSettingsListStyle(surface);
         MarketListStyle = rendition.CreateMarketListStyle(surface);
+        InventoryListStyle = rendition.CreateInventoryListStyle(surface);
         _views = rendition.CreateViews(surface);
 
         string[] missing = [.. s_requiredModels
@@ -87,6 +87,13 @@ internal sealed class RenditionRegistry
     /// for rather than being written against a known number of them.
     /// </summary>
     internal MarketListStyle MarketListStyle { get; }
+
+    /// <summary>
+    /// Gets how the inventory screen looks in this tier. Like the market it has
+    /// no view of its own: what a commander can be carrying depends on the
+    /// goods set, so the tier declares how many rows it has room for.
+    /// </summary>
+    internal InventoryListStyle InventoryListStyle { get; }
 
     /// <summary>
     /// Gets the screen every mission's messages are drawn on.

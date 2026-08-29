@@ -122,9 +122,25 @@ nothing scrolls and the rebuilt screen was checked against a capture taken
 before the rewrite: zero differing pixels across the list area. Scrolling was
 then proved live with a temporary 25-ware set.
 
-**Left open: the inventory screen has the same ceiling**, and is still a
-per-rendition view. It is in [backlog-roadmap.md](backlog-roadmap.md); the
-machinery to fix it now exists.
+**The inventory followed the same day.** It had the same ceiling and was
+worse off for it - the market at least stopped at the cash line, while the
+inventory drew into the scanner and then off the bottom, losing wares
+silently. It is now a `ListView<TableRow>` too, and that screen settled two
+things the market did not have to:
+
+- **A list can scroll without showing a cursor.** Nothing on the inventory
+  can be chosen. The cursor still exists, because something has to decide
+  which way the window moves, but `ShowCursor` keeps it from being drawn -
+  a highlight bar would offer a choice the screen does not have.
+- **A list whose contents change keeps its place.** The inventory lists only
+  what is aboard, so rows come and go as cargo is traded. `SetRows` replaces
+  them and clamps the cursor rather than resetting it; `Clear` followed by
+  `Add` would send the commander back to the top of a scrolled list every
+  time they sold something.
+
+Both screens are pixel-identical to their hand-drawn predecessors for the
+classic seventeen, which is what makes the whole rewrite checkable rather
+than merely plausible.
 
 ## Resolved (2026-08-26) — the drawing gets its own dice
 

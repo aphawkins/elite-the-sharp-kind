@@ -42,6 +42,14 @@ public sealed class ListView<TControl>(IGraphics graphics, ControlStyle style)
     public int VisibleCount { get; set; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the row the cursor is on is
+    /// drawn selected. A read-only list still has a cursor - something has to
+    /// decide which way the window moves - but showing it would offer the
+    /// commander a choice the screen does not have.
+    /// </summary>
+    public bool ShowCursor { get; set; } = true;
+
+    /// <summary>
     /// Gets the rows, in the order they are stacked.
     /// </summary>
     public IReadOnlyList<TControl> Rows => _rows;
@@ -92,6 +100,23 @@ public sealed class ListView<TControl>(IGraphics graphics, ControlStyle style)
     }
 
     /// <summary>
+    /// Replaces every row, keeping the cursor where it was as far as the new
+    /// rows allow. This is what a list whose contents change under it wants -
+    /// an inventory gains and loses rows as cargo is traded - and it is why
+    /// this is not <see cref="Clear"/> followed by <see cref="Add"/>: that
+    /// would send the commander back to the top of the list on every change.
+    /// </summary>
+    /// <param name="rows">The rows to show, in order.</param>
+    public void SetRows(IEnumerable<TControl> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        _rows.Clear();
+        _rows.AddRange(rows);
+        SelectedIndex = _selectedIndex;
+    }
+
+    /// <summary>
     /// Moves the cursor by one row, stopping at either end. Stopping rather
     /// than wrapping because a long list scrolled to its end is somewhere the
     /// commander walked to, and jumping back to the top would lose their place.
@@ -117,7 +142,7 @@ public sealed class ListView<TControl>(IGraphics graphics, ControlStyle style)
             row.Position = new(Position.X, y);
             row.Width = Width;
             row.Height = Height;
-            row.State = i == _selectedIndex ? ControlState.Selected : ControlState.Normal;
+            row.State = ShowCursor && i == _selectedIndex ? ControlState.Selected : ControlState.Normal;
             row.Draw();
 
             y += Spacing;

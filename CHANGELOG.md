@@ -7,6 +7,30 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (the inventory no longer runs off the screen, 2026-08-27)
+
+- **A hold with more sorts of thing in it than the screen had rows for drew
+  into the HUD and then off the bottom.** `InventoryView8Bit` started its
+  cargo list at row 7 of a twenty-five-row viewport and drew one row per
+  good carried, with nothing stopping it; the wares past the eighteenth
+  were simply lost, and the eighteenth was cut in half by the scanner.
+  Reachable as soon as a goods set larger than the classic seventeen is
+  installed, which the goods plugin now allows.
+- The screen is built from `ListView<TableRow>` like the market, with an
+  `InventoryListStyle` per rendition declaring how many rows fit (17 at
+  8-bit, computed from the viewport at 16-bit). It scrolls past that.
+- **The list shows no cursor.** Nothing on this screen can be chosen, so
+  `ListView.ShowCursor` is off: the cursor still exists, because something
+  has to decide which way the window moves, but drawing it would offer a
+  choice the screen does not have.
+- **A trade keeps the commander's place.** `ListView.SetRows` replaces the
+  rows while keeping the cursor where the new list allows, so selling
+  something out of a scrolled list does not jump back to the top -
+  the reason it is not `Clear` followed by `Add`.
+- Unchanged for the classic seventeen, pixel for pixel: a capture of the
+  rebuilt screen differs from one taken before the rewrite in zero pixels.
+- `InventoryController` had no tests; it has six now.
+
 ### Changed (the market scrolls, 2026-08-27)
 
 - **`ListView<TControl>` and `TableRow` join `SharpKind.UI`.** A list view

@@ -19,15 +19,15 @@ public class RenditionRegistryTests
     [Fact]
     public void RefusesAPackThatIsAScreenShort()
     {
-        // Arrange: a rendition that draws everything but the inventory. The
-        // commander must not find that out by opening the inventory.
-        ShortRendition rendition = new(typeof(InventoryModel));
+        // Arrange: a rendition that draws everything but the equip-ship
+        // screen. The commander must not find that out by opening it.
+        ShortRendition rendition = new(typeof(EquipmentModel));
 
         // Act & Assert
         InvalidOperationException ex = Assert.Throws<InvalidOperationException>(
             () => new RenditionRegistry(rendition, new FakeEliteDraw()));
 
-        Assert.Contains(nameof(InventoryModel), ex.Message, StringComparison.Ordinal);
+        Assert.Contains(nameof(EquipmentModel), ex.Message, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -35,14 +35,14 @@ public class RenditionRegistryTests
     {
         // Arrange: naming one at a time would mean starting the game once per
         // missing screen to find out what is needed.
-        ShortRendition rendition = new(typeof(InventoryModel), typeof(QuitModel));
+        ShortRendition rendition = new(typeof(EquipmentModel), typeof(QuitModel));
 
         // Act
         InvalidOperationException ex = Assert.Throws<InvalidOperationException>(
             () => new RenditionRegistry(rendition, new FakeEliteDraw()));
 
         // Assert
-        Assert.Contains(nameof(InventoryModel), ex.Message, StringComparison.Ordinal);
+        Assert.Contains(nameof(EquipmentModel), ex.Message, StringComparison.Ordinal);
         Assert.Contains(nameof(QuitModel), ex.Message, StringComparison.Ordinal);
     }
 
@@ -53,7 +53,7 @@ public class RenditionRegistryTests
         RenditionRegistry registry = new(new ShortRendition(), new FakeEliteDraw());
 
         // Act
-        IView<InventoryModel> view = registry.View<InventoryModel>();
+        IView<EquipmentModel> view = registry.View<EquipmentModel>();
 
         // Assert
         Assert.NotNull(view);
@@ -65,10 +65,10 @@ public class RenditionRegistryTests
         // Arrange: one of the two would never draw, so it is a mistake rather
         // than an override.
         ViewSet views = new();
-        views.Add(new NothingView<InventoryModel>());
+        views.Add(new NothingView<EquipmentModel>());
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => views.Add(new NothingView<InventoryModel>()));
+        Assert.Throws<InvalidOperationException>(() => views.Add(new NothingView<EquipmentModel>()));
     }
 
     // Draws every screen except the ones it was told to leave out.
@@ -114,6 +114,14 @@ public class RenditionRegistryTests
             return new(style, style, [], [], 0, 0, 0, 0, 0, default, default);
         }
 
+        public InventoryListStyle CreateInventoryListStyle(IViewSurface surface)
+        {
+            ControlColors nothing = new(default, default);
+            ControlStyle style = new("Small", nothing, nothing, nothing);
+
+            return new(style, style, [], default, default, default, default, 0, 0, 0, 0, 0);
+        }
+
         public ViewSet CreateViews(IViewSurface surface)
         {
             ViewSet views = new();
@@ -125,7 +133,6 @@ public class RenditionRegistryTests
             Add<GameOverModel>(views);
             Add<Intro1Model>(views);
             Add<Intro2Model>(views);
-            Add<InventoryModel>(views);
             Add<LoadCommanderModel>(views);
             Add<OptionsModel>(views);
             Add<PilotModel>(views);

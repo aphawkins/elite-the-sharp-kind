@@ -96,11 +96,15 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<Universe>(),
             sp.GetRequiredService<IView<CommanderStatusModel>>()));
 
-        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<InventoryModel>());
+        // The inventory has no view of its own either: the rendition supplies a
+        // style and the game builds the list, as it does for the market.
         services.AddSingleton(sp => new InventoryController(
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<Trade>(),
-            sp.GetRequiredService<IView<InventoryModel>>()));
+            sp.GetRequiredService<IKeyboard>(),
+            sp.GetRequiredService<IBaseView>(),
+            sp.GetRequiredService<IEliteDraw>(),
+            sp.GetRequiredService<RenditionRegistry>().InventoryListStyle));
 
         services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<PlanetDataModel>());
         services.AddSingleton(sp => new PlanetDataController(

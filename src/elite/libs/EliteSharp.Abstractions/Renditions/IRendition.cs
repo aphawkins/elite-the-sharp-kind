@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -127,6 +127,16 @@ public interface IRendition
     /// <param name="surface">The surface whose palette the colours come from.</param>
     /// <returns>This rendition's market list style.</returns>
     public MarketListStyle CreateMarketListStyle(IViewSurface surface);
+
+    /// <summary>
+    /// How the inventory screen looks in this rendition. It has no view of its
+    /// own for the same reason the market does not: what a commander can be
+    /// carrying depends on the goods set, so a rendition declares how many rows
+    /// it has room for and the game's list scrolls.
+    /// </summary>
+    /// <param name="surface">The surface whose palette the colours come from.</param>
+    /// <returns>This rendition's inventory list style.</returns>
+    public InventoryListStyle CreateInventoryListStyle(IViewSurface surface);
 
     /// <summary>
     /// Builds a renderer for one planet. Planets live in the universe rather

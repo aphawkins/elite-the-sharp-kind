@@ -114,6 +114,9 @@ public sealed class EightBitRendition : IRendition
     public MarketListStyle CreateMarketListStyle(IViewSurface surface)
         => MarketListStyle8Bit.Create(surface);
 
+    public InventoryListStyle CreateInventoryListStyle(IViewSurface surface)
+        => InventoryListStyle8Bit.Create(surface);
+
     // Split from CreateViews to keep each method under CA1506's coupling
     // limit, which naming every screen in one place goes past.
     private static ViewSet AddFlightViews(ViewSet views, IViewSurface surface)
@@ -121,7 +124,6 @@ public sealed class EightBitRendition : IRendition
         ArgumentNullException.ThrowIfNull(views);
 
         return views
-            .Add(new InventoryView8Bit(surface))
             .Add(new LoadCommanderView8Bit(surface))
             .Add(new OptionsView8Bit(surface))
             .Add(new PilotView8Bit(surface))

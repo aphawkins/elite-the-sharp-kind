@@ -89,18 +89,6 @@ one housekeeping step, and meet the same ships.
       right, the container was not. The ship definitions are the piece
       that item touched, through the four ships that name a good.
 
-- [ ] [EliteSharpLib] The inventory screen has the market's old ceiling.
-      Configurable goods is done (2026-08-27, see
-      [CHANGELOG.md](../CHANGELOG.md)) and the market scrolls, but
-      `InventoryView8Bit` and `InventoryView16Bit` still draw one row per
-      good carried with no window. A hold is capped at 35 tonnes and the
-      8-bit screen has room for far fewer rows than that, so a commander
-      carrying enough different wares overruns the screen — today only a
-      goods set larger than the classic seventeen can get there, which is
-      exactly what the goods plugin now allows. The machinery to fix it
-      already exists: `ListView<TControl>`, `TableRow` and the
-      `MarketListStyle` pattern. This is the same change one screen over.
-
 ### 3D pipeline — modern-pipeline gaps
 
 From the 2026-07-31 gap analysis of both games against a modern
