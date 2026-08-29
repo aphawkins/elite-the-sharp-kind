@@ -82,41 +82,24 @@ one housekeeping step, and meet the same ships.
       (2026-08-02, see [decisions.md](decisions.md)): they went to plugin
       assemblies rather than config, because a mission carries behaviour.
       What is left here is the inert content, which is the config-shaped
-      half of the problem. **`StockType` split out on 2026-08-27** into
-      the configurable-goods item below, which the maintainer scoped
-      that day; the ship definitions are the piece it touches, through
-      the four ships that name a good.
+      half of the problem. **`StockType` split out on 2026-08-27 and is
+      done** (see [CHANGELOG.md](../CHANGELOG.md)): the goods went to a
+      plugin assembly, as the missions did, so the answer for inert
+      content turned out to be an assembly too - the config shape was
+      right, the container was not. The ship definitions are the piece
+      that item touched, through the four ships that name a good.
 
-- [ ] [EliteSharpLib] Configurable goods — **the last step**: the market
-      screen's list control. Split from the item above on 2026-08-27; the
-      first three sessions landed (see [CHANGELOG.md](../CHANGELOG.md) and
-      [decisions.md](decisions.md)), and this is what is left.
-
-      `StockType` is gone, a goods set is a plugin
-      (`EliteSharp.Goods.Classic` through the `Goods` folder), and the
-      classic economy is intact and byte-identical against the
-      golden-trace baselines. But the market and inventory screens are
-      still drawn per-rendition (`MarketView8Bit`, `MarketView16Bit`),
-      and the 8-bit one has a hard seventeen-row budget: `FirstRow = 5`,
-      `CashRow = 23`, so an eighteenth good draws over the cash line. A
-      set bigger than the classic one cannot be shown.
-
-      The maintainer chose (2026-08-27): **a `ListView<TControl>` in
-      `SharpKind.UI`** — a scroll window over `Container<T>`'s layout —
-      and the market rebuilt on controls, with a `MarketListStyle` per
-      rendition carrying colours, column positions and a visible-row
-      count, the way `SettingsListStyle` already does. `MarketView8Bit`
-      and `MarketView16Bit` are deleted; `IRendition.CreateMarketListStyle`
-      replaces them. This overturns part of the 2026-08-03 "a rendition
-      draws everything" decision for this one screen — recorded in
-      [decisions.md](decisions.md).
-
-      Two risks named at scoping: a market row is five columns and
-      `ComboBox` is label-plus-value, so a multi-column row control is
-      needed and the column set has to live in `MarketListStyle` (the
-      8-bit tier drops a column); and the market stops being a `ViewSet`
-      entry, so `ViewRegistry`'s completeness check and
-      `RenditionRegistryTests` both move.
+- [ ] [EliteSharpLib] The inventory screen has the market's old ceiling.
+      Configurable goods is done (2026-08-27, see
+      [CHANGELOG.md](../CHANGELOG.md)) and the market scrolls, but
+      `InventoryView8Bit` and `InventoryView16Bit` still draw one row per
+      good carried with no window. A hold is capped at 35 tonnes and the
+      8-bit screen has room for far fewer rows than that, so a commander
+      carrying enough different wares overruns the screen — today only a
+      goods set larger than the classic seventeen can get there, which is
+      exactly what the goods plugin now allows. The machinery to fix it
+      already exists: `ListView<TControl>`, `TableRow` and the
+      `MarketListStyle` pattern. This is the same change one screen over.
 
 ### 3D pipeline — modern-pipeline gaps
 

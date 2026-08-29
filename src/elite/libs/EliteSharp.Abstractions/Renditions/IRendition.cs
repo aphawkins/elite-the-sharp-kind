@@ -118,6 +118,17 @@ public interface IRendition
     public SettingsListStyle CreateSettingsListStyle(IViewSurface surface);
 
     /// <summary>
+    /// How the market screen looks in this rendition. It has no view of its own
+    /// for the same reason the settings screens do not, and one more: the goods
+    /// are a plugin, so how many rows there are is not something a rendition can
+    /// be written against. It declares how many it has room for and the game's
+    /// list scrolls.
+    /// </summary>
+    /// <param name="surface">The surface whose palette the colours come from.</param>
+    /// <returns>This rendition's market list style.</returns>
+    public MarketListStyle CreateMarketListStyle(IViewSurface surface);
+
+    /// <summary>
     /// Builds a renderer for one planet. Planets live in the universe rather
     /// than on a screen - they move, they are cloned - so the game keeps the
     /// planet and the rendition supplies only what it looks like.

@@ -3,53 +3,54 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Abstractions.Views;
+using EliteSharpLib.Fakes;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
 using SharpKind.Abstraction;
 using SharpKind.Fakes.Input;
+using SharpKind.UI;
 
 namespace EliteSharpLib.Tests.Views;
 
-// The market's cursor, with no renderer involved. It is a row in the list now
-// rather than a good's number: the goods used to be an enum running 1 (Food)
-// to 17 (Alien Items) and the cursor was clamped to that range, which is what a
-// 0-based clamp over an ordered list says without needing the numbering. The
-// bug the old comment recorded - a [0, Count-1] clamp leaving nothing
-// highlighted at reset, because 0 was the enum's None - cannot come back: there
-// is no None, and row 0 is a good.
+// The market's cursor and its window, with no rendition involved. The cursor is
+// a row in the list: the goods used to be an enum running 1 (Food) to 17 (Alien
+// Items) and the cursor was clamped to that range, which is what a 0-based
+// clamp over an ordered list says without needing the numbering. The bug the
+// old comment recorded - a [0, Count-1] clamp leaving nothing highlighted at
+// reset, because 0 was the enum's None - cannot come back: there is no None,
+// and row 0 is a good.
 public class MarketControllerTests
 {
     [Fact]
     public void ResetHighlightsTheFirstRow()
     {
-        MarketController controller = CreateController(out _);
+        MarketController controller = CreateController(out _, out Trade trade);
 
         controller.Reset();
 
-        MarketModel model = controller.BuildModel();
-        Assert.Equal("Food", model.Rows[0].Name);
-        Assert.True(model.Rows[0].IsHighlighted);
-        Assert.DoesNotContain(model.Rows.Skip(1), row => row.IsHighlighted);
+        Assert.Equal(0, controller.HighlightedRow);
+        Assert.Equal("Food", controller.HighlightedStock.Good.Name);
+        Assert.Equal(trade.StockMarket[0], controller.HighlightedStock);
     }
 
     [Fact]
     public void MovingUpAtTheFirstRowStaysThere()
     {
-        MarketController controller = CreateController(out FakeKeyboard keyboard);
+        MarketController controller = CreateController(out FakeKeyboard keyboard, out _);
         controller.Reset();
 
         keyboard.KeyDown(ConsoleKey.UpArrow, default);
         controller.HandleInput();
 
-        Assert.True(controller.BuildModel().Rows[0].IsHighlighted);
+        Assert.Equal(0, controller.HighlightedRow);
     }
 
     [Fact]
     public void MovingDownReachesTheLastRow()
     {
-        MarketController controller = CreateController(out FakeKeyboard keyboard);
+        MarketController controller = CreateController(out FakeKeyboard keyboard, out Trade trade);
         controller.Reset();
 
         // A press is read once, so each step down needs its own key-down.
@@ -59,35 +60,142 @@ public class MarketControllerTests
             controller.HandleInput();
         }
 
-        MarketModel model = controller.BuildModel();
-        Assert.Equal("Alien Items", model.Rows[^1].Name);
-        Assert.True(model.Rows[^1].IsHighlighted);
+        Assert.Equal(trade.StockMarket.Count - 1, controller.HighlightedRow);
+        Assert.Equal("Alien Items", controller.HighlightedStock.Good.Name);
     }
 
     [Fact]
-    public void TitleNamesTheDockedPlanet()
+    public void BuyingActsOnTheHighlightedGood()
     {
-        MarketController controller = CreateController(out _);
+        MarketController controller = CreateController(out FakeKeyboard keyboard, out Trade trade);
+        controller.Reset();
+        trade.Credits = 1000;
+        trade.StockMarket[0].CurrentPrice = 10;
+        trade.StockMarket[0].CurrentQuantity = 5;
 
-        Assert.EndsWith("MARKET PRICES", controller.BuildModel().Title, StringComparison.Ordinal);
+        keyboard.KeyDown(ConsoleKey.OemPeriod, default);
+        controller.HandleInput();
+
+        Assert.Equal(1, trade.StockMarket[0].CurrentCargo);
+        Assert.Equal(4, trade.StockMarket[0].CurrentQuantity);
     }
 
-    private static MarketController CreateController(out FakeKeyboard keyboard)
+    // The window is the rendition's answer to how many rows it has room for.
+    // A list that fits never scrolls, which is what makes the classic
+    // seventeen draw where they always did.
+    [Fact]
+    public void AListThatFitsTheWindowNeverScrolls()
+    {
+        MarketController controller = CreateController(out FakeKeyboard keyboard, out _, visibleRows: 17);
+        controller.Reset();
+
+        for (int i = 0; i < 20; i++)
+        {
+            keyboard.KeyDown(ConsoleKey.DownArrow, default);
+            controller.HandleInput();
+            controller.Draw();
+        }
+
+        Assert.Equal(0, controller.FirstVisibleRow);
+    }
+
+    // And a list that does not fit scrolls exactly far enough to keep the
+    // cursor on screen - which is the thing that lets a goods set larger than
+    // the screen be traded at all.
+    [Fact]
+    public void ACursorLeavingASmallWindowScrollsIt()
+    {
+        MarketController controller = CreateController(out FakeKeyboard keyboard, out _, visibleRows: 5);
+        controller.Reset();
+        controller.Draw();
+
+        Assert.Equal(0, controller.FirstVisibleRow);
+
+        for (int i = 0; i < 6; i++)
+        {
+            keyboard.KeyDown(ConsoleKey.DownArrow, default);
+            controller.HandleInput();
+            controller.Draw();
+        }
+
+        // Six steps down from row 0 puts the cursor on row 6, so a five-row
+        // window has to start at row 2 to still show it.
+        Assert.Equal(6, controller.HighlightedRow);
+        Assert.Equal(2, controller.FirstVisibleRow);
+    }
+
+    private static MarketController CreateController(
+        out FakeKeyboard keyboard,
+        out Trade trade,
+        int visibleRows = 17)
     {
         keyboard = new FakeKeyboard();
         ScreenManager<Screen, IScreenController> views = new(keyboard);
         GameState gameState = new(views, TestMissions.Registry());
-        PlayerShip ship = new(gameState);
-        Trade trade = TestGoods.Trade(gameState, ship);
 
-        return new MarketController(gameState, keyboard, trade, new PlanetController(gameState), new FakeMarketView());
+        // A ship with no hold refuses every purchase, which a commander loaded
+        // from a save never is: the standard bay is what Jameson launches with.
+        PlayerShip ship = new(gameState) { CargoCapacity = 20 };
+        trade = TestGoods.Trade(gameState, ship);
+        FakeEliteDraw draw = new();
+
+        return new MarketController(
+            gameState,
+            keyboard,
+            trade,
+            new PlanetController(gameState),
+            new FakeBaseView(),
+            draw,
+            Style(visibleRows));
     }
 
-    private sealed class FakeMarketView : IView<MarketModel>
+    private static MarketListStyle Style(int visibleRows)
     {
-        public void Draw(MarketModel model)
+        ControlColors nothing = new(default, default);
+        ControlStyle style = new("Small", nothing, nothing, nothing);
+
+        return new(
+            RowStyle: style,
+            HeadingStyle: style,
+            Columns: [new(0, TextAlignment.Left)],
+            Headings: [],
+            RowsLeft: 0,
+            FirstRowY: 0,
+            RowHeight: 8,
+            RowWidth: 100,
+            VisibleRows: visibleRows,
+            CashCaption: new("Cash:", 0, 0, TextAlignment.Left),
+            CashAmount: new(string.Empty, 0, 0, TextAlignment.Right));
+    }
+
+    private sealed class FakeBaseView : IBaseView
+    {
+        public SharpKind.Graphics.IGraphics Graphics => throw new NotSupportedException();
+
+        public ViewLayout Layout => throw new NotSupportedException();
+
+        public void DrawBorder()
         {
-            // Drawing is not under test here.
+        }
+
+        public void DrawFps(int fps)
+        {
+        }
+
+        public void DrawHyperspaceCountdown(int countdown)
+        {
+        }
+
+        public void DrawInfoMessage(string message)
+        {
+        }
+
+        public void DrawTextPretty(System.Numerics.Vector2 position, float width, string text)
+        {
+        }
+
+        public void DrawViewHeader(string title)
+        {
         }
     }
 }

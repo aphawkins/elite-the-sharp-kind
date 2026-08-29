@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -19,15 +19,15 @@ public class RenditionRegistryTests
     [Fact]
     public void RefusesAPackThatIsAScreenShort()
     {
-        // Arrange: a rendition that draws everything but the market. The commander
-        // must not find that out by opening the market.
-        ShortRendition rendition = new(typeof(MarketModel));
+        // Arrange: a rendition that draws everything but the inventory. The
+        // commander must not find that out by opening the inventory.
+        ShortRendition rendition = new(typeof(InventoryModel));
 
         // Act & Assert
         InvalidOperationException ex = Assert.Throws<InvalidOperationException>(
             () => new RenditionRegistry(rendition, new FakeEliteDraw()));
 
-        Assert.Contains(nameof(MarketModel), ex.Message, StringComparison.Ordinal);
+        Assert.Contains(nameof(InventoryModel), ex.Message, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -35,14 +35,14 @@ public class RenditionRegistryTests
     {
         // Arrange: naming one at a time would mean starting the game once per
         // missing screen to find out what is needed.
-        ShortRendition rendition = new(typeof(MarketModel), typeof(QuitModel));
+        ShortRendition rendition = new(typeof(InventoryModel), typeof(QuitModel));
 
         // Act
         InvalidOperationException ex = Assert.Throws<InvalidOperationException>(
             () => new RenditionRegistry(rendition, new FakeEliteDraw()));
 
         // Assert
-        Assert.Contains(nameof(MarketModel), ex.Message, StringComparison.Ordinal);
+        Assert.Contains(nameof(InventoryModel), ex.Message, StringComparison.Ordinal);
         Assert.Contains(nameof(QuitModel), ex.Message, StringComparison.Ordinal);
     }
 
@@ -53,7 +53,7 @@ public class RenditionRegistryTests
         RenditionRegistry registry = new(new ShortRendition(), new FakeEliteDraw());
 
         // Act
-        IView<MarketModel> view = registry.View<MarketModel>();
+        IView<InventoryModel> view = registry.View<InventoryModel>();
 
         // Assert
         Assert.NotNull(view);
@@ -65,10 +65,10 @@ public class RenditionRegistryTests
         // Arrange: one of the two would never draw, so it is a mistake rather
         // than an override.
         ViewSet views = new();
-        views.Add(new NothingView<MarketModel>());
+        views.Add(new NothingView<InventoryModel>());
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => views.Add(new NothingView<MarketModel>()));
+        Assert.Throws<InvalidOperationException>(() => views.Add(new NothingView<InventoryModel>()));
     }
 
     // Draws every screen except the ones it was told to leave out.
@@ -106,6 +106,14 @@ public class RenditionRegistryTests
             return new(style, style, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
 
+        public MarketListStyle CreateMarketListStyle(IViewSurface surface)
+        {
+            ControlColors nothing = new(default, default);
+            ControlStyle style = new("Small", nothing, nothing, nothing);
+
+            return new(style, style, [], [], 0, 0, 0, 0, 0, default, default);
+        }
+
         public ViewSet CreateViews(IViewSurface surface)
         {
             ViewSet views = new();
@@ -119,7 +127,6 @@ public class RenditionRegistryTests
             Add<Intro2Model>(views);
             Add<InventoryModel>(views);
             Add<LoadCommanderModel>(views);
-            Add<MarketModel>(views);
             Add<OptionsModel>(views);
             Add<PilotModel>(views);
             Add<PlanetDataModel>(views);

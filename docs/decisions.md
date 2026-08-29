@@ -89,6 +89,43 @@ startup naming any the set leaves out, and any id it repeats or blanks.
 `EliteRenditionAssetsServiceCollectionExtensions` - the same
 split-for-coupling the screen registrations already use.
 
+### Follow-up (2026-08-27) — the market screen is controls, not a view
+
+The last step of the goods work, and the one that needed a decision rather
+than a mechanism. The goods being a plugin means **how many rows there are
+is no longer something a rendition can be written against**, and the 8-bit
+market had a hard seventeen-row budget with the cash line immediately under
+it. Something had to give.
+
+**Decided: the market joins the settings screens.** A rendition supplies a
+`MarketListStyle` - colours, column offsets, headings, and how many rows it
+has room for - and the game builds a `ListView<TableRow>` over the goods it
+is trading. `MarketView8Bit` and `MarketView16Bit` are deleted.
+
+**This narrows the 2026-08-03 "a rendition draws everything" entry**, and
+knowingly. That entry's own carve-out for the settings screens was "a screen
+whose whole tier-specific content is a set of numbers does not need an
+assembly's worth of drawing code in each rendition". The market now qualifies
+on the same grounds *and* on one the settings screens did not have: a screen
+whose row count is decided by a plugin cannot be hand-laid-out per tier at
+all. The carve-out is a second exception, not the rule reversed - every
+world renderer and every other screen is still the rendition's.
+
+**A cell is anchored, not boxed.** `Label` aligns text inside its own bounds
+and deliberately avoids `DrawTextRight`, which aligns against a point. A
+table cell wants exactly that point alignment - it is what lets the units
+suffix share a column with the quantity it follows, which both tiers do - so
+`TableRow` is its own control rather than a `Container` of labels.
+
+**Verified pixel-identical.** The classic seventeen fit both windows, so
+nothing scrolls and the rebuilt screen was checked against a capture taken
+before the rewrite: zero differing pixels across the list area. Scrolling was
+then proved live with a temporary 25-ware set.
+
+**Left open: the inventory screen has the same ceiling**, and is still a
+per-rendition view. It is in [backlog-roadmap.md](backlog-roadmap.md); the
+machinery to fix it now exists.
+
 ## Resolved (2026-08-26) — the drawing gets its own dice
 
 Separating simulate from compose (item 2 of the frame-rate list) ran into

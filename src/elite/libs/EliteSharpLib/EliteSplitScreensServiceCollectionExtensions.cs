@@ -128,13 +128,17 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<IKeyboard>(),
             sp.GetRequiredService<IView<CreditsModel>>()));
 
-        services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<MarketModel>());
+        // The market has no view of its own: the rendition supplies a style and
+        // the game builds the list, so this takes the surface and the style
+        // where the other screens take a view.
         services.AddSingleton(sp => new MarketController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
             sp.GetRequiredService<Trade>(),
             sp.GetRequiredService<PlanetController>(),
-            sp.GetRequiredService<IView<MarketModel>>()));
+            sp.GetRequiredService<IBaseView>(),
+            sp.GetRequiredService<IEliteDraw>(),
+            sp.GetRequiredService<RenditionRegistry>().MarketListStyle));
 
         services.AddSingleton(sp => sp.GetRequiredService<RenditionRegistry>().View<EquipmentModel>());
         services.AddSingleton(sp => new EquipmentController(

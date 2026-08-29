@@ -7,6 +7,32 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (the market scrolls, 2026-08-27)
+
+- **`ListView<TControl>` and `TableRow` join `SharpKind.UI`.** A list view
+  owns a cursor and a window onto however many rows fit, and scrolls to
+  follow the one from the other; a table row is several cells anchored at
+  fixed columns sharing one highlight block. A list shorter than its window
+  never scrolls, which is what lets a screen that drew a fixed number of
+  rows keep drawing them exactly where it did.
+- **The market screen is built from those controls.** `MarketView8Bit` and
+  `MarketView16Bit` are deleted, and `MarketModel`/`MarketRow` with them; a
+  rendition supplies a `MarketListStyle` - colours, column offsets,
+  headings and a visible-row count - the way it already supplies a
+  `SettingsListStyle`. This deliberately narrows the 2026-08-03 "a
+  rendition draws everything" decision for this one screen; see
+  [decisions.md](docs/decisions.md).
+- **A goods set larger than the screen can now be traded.** The 8-bit
+  market had a hard seventeen-row budget - first row at 5, cash line at 23
+  - so an eighteenth good drew over the cash. That number is the
+  rendition's declared `VisibleRows` now (17 at 8-bit, 19 at 16-bit) and
+  the list scrolls past it. Verified live with a 25-ware set: seventeen
+  rows shown, cash line intact, and the window following the cursor to the
+  last ware.
+- **The classic market is unchanged, pixel for pixel.** A capture of the
+  rebuilt screen differs from one taken before the rewrite in zero pixels
+  across the whole list area.
+
 ### Changed (goods are a plugin, 2026-08-27)
 
 - **`StockType` is gone; a goods set is an assembly.** `IGoodsSet` joins

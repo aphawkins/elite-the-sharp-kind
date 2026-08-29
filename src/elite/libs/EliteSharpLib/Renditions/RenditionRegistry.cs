@@ -32,7 +32,6 @@ internal sealed class RenditionRegistry
         typeof(Intro2Model),
         typeof(InventoryModel),
         typeof(LoadCommanderModel),
-        typeof(MarketModel),
         typeof(OptionsModel),
         typeof(PilotModel),
         typeof(PlanetDataModel),
@@ -52,6 +51,7 @@ internal sealed class RenditionRegistry
         MissionBriefingView = rendition.CreateMissionBriefingView(surface);
         Starfield = rendition.CreateStarfieldRenderer(surface);
         SettingsListStyle = rendition.CreateSettingsListStyle(surface);
+        MarketListStyle = rendition.CreateMarketListStyle(surface);
         _views = rendition.CreateViews(surface);
 
         string[] missing = [.. s_requiredModels
@@ -79,6 +79,14 @@ internal sealed class RenditionRegistry
     /// positions instead.
     /// </summary>
     internal SettingsListStyle SettingsListStyle { get; }
+
+    /// <summary>
+    /// Gets how the market screen looks in this tier. Like the settings
+    /// screens it has no view of its own, and for one further reason: the
+    /// goods are a plugin, so a rendition declares how many rows it has room
+    /// for rather than being written against a known number of them.
+    /// </summary>
+    internal MarketListStyle MarketListStyle { get; }
 
     /// <summary>
     /// Gets the screen every mission's messages are drawn on.

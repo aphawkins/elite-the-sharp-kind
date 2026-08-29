@@ -110,6 +110,9 @@ public sealed class SixteenBitRendition : IRendition
     public SettingsListStyle CreateSettingsListStyle(IViewSurface surface)
         => SettingsListStyle16Bit.Create(surface);
 
+    public MarketListStyle CreateMarketListStyle(IViewSurface surface)
+        => MarketListStyle16Bit.Create(surface);
+
     // Split from CreateViews to keep each method under CA1506's coupling
     // limit, which naming every screen in one place goes past.
     private static ViewSet AddFlightViews(ViewSet views, IViewSurface surface)
@@ -119,7 +122,6 @@ public sealed class SixteenBitRendition : IRendition
         return views
             .Add(new InventoryView16Bit(surface))
             .Add(new LoadCommanderView16Bit(surface))
-            .Add(new MarketView16Bit(surface))
             .Add(new OptionsView16Bit(surface))
             .Add(new PilotView16Bit(surface))
             .Add(new PlanetDataView16Bit(surface))
