@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -187,6 +187,23 @@ internal sealed class SaveFile
             LogMessages.FailedToSaveCommander(_logger, path, ex);
             throw;
         }
+    }
+
+    /// <summary>
+    /// The file a commander of this name is kept in. The name is upper-cased
+    /// because that is the only case the load and save screens can produce: a
+    /// keyboard letter arrives as <see cref="ConsoleKey.A"/> upwards, so a
+    /// commander cannot type a lower-case name to match a file that has one.
+    /// Windows would find the file anyway, Linux would not, and the game would
+    /// say "No Such Commander" about a save sitting right there.
+    /// </summary>
+    /// <param name="name">The commander name, in any case.</param>
+    /// <returns>The full path of that commander's save file.</returns>
+    internal string PathFor(string name)
+    {
+        char[] invalidChars = Path.GetInvalidFileNameChars();
+        string sanitized = string.Concat(name.Select(c => invalidChars.Contains(c) ? '_' : c));
+        return Path.Combine(_baseDirectory, sanitized.ToUpperInvariant() + FileExtension);
     }
 
     /// <summary>
@@ -379,13 +396,6 @@ internal sealed class SaveFile
         return goods.Count == market.Count
             ? null
             : new(field, $"{goods.Count} goods listed, but this game trades {market.Count}");
-    }
-
-    private string PathFor(string name)
-    {
-        char[] invalidChars = Path.GetInvalidFileNameChars();
-        string sanitized = string.Concat(name.Select(c => invalidChars.Contains(c) ? '_' : c));
-        return Path.Combine(_baseDirectory, sanitized + FileExtension);
     }
 
     /// <summary>

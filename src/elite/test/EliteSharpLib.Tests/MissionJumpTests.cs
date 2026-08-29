@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -58,26 +58,17 @@ public class MissionJumpTests
     [Fact]
     public void ABareMIsLeftForTheMissile()
     {
-        string? original = Environment.GetEnvironmentVariable(MissionJump.EnvVar);
-        Environment.SetEnvironmentVariable(MissionJump.EnvVar, "1");
+        using EnvironmentVariableScope jump = EnvironmentVariableScope.Set(MissionJump.EnvVar, "1");
+        using HeadlessGameHarness harness = new();
+        harness.Run(3, [new(1, ConsoleKey.N, KeyScriptAction.Tap), new(2, ConsoleKey.Spacebar, KeyScriptAction.Tap)]);
 
-        try
-        {
-            using HeadlessGameHarness harness = new();
-            harness.Run(3, [new(1, ConsoleKey.N, KeyScriptAction.Tap), new(2, ConsoleKey.Spacebar, KeyScriptAction.Tap)]);
+        // Docked, so nothing else claims M either: whether the press
+        // survives the tick is exactly whether the cheat swallowed it.
+        Assert.True(harness.Game.State.IsDocked);
+        harness.Keyboard.KeyDown(ConsoleKey.M, ConsoleModifiers.None);
+        harness.Step([]);
 
-            // Docked, so nothing else claims M either: whether the press
-            // survives the tick is exactly whether the cheat swallowed it.
-            Assert.True(harness.Game.State.IsDocked);
-            harness.Keyboard.KeyDown(ConsoleKey.M, ConsoleModifiers.None);
-            harness.Step([]);
-
-            Assert.True(harness.Keyboard.IsPressed(ConsoleKey.M));
-        }
-        finally
-        {
-            Environment.SetEnvironmentVariable(MissionJump.EnvVar, original);
-        }
+        Assert.True(harness.Keyboard.IsPressed(ConsoleKey.M));
     }
 
     [Fact]

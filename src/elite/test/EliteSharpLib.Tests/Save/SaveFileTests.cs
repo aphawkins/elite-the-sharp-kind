@@ -33,8 +33,8 @@ public class SaveFileTests
     public void LoadCommanderWithCorruptJsonReturnsFalseInsteadOfThrowing()
     {
         // Arrange
-        SaveFile saveFile = CreateSaveFile(out string directory);
-        File.WriteAllText(Path.Combine(directory, "Corrupt.cmdr"), "{ not valid json");
+        SaveFile saveFile = CreateSaveFile(out _);
+        File.WriteAllText(saveFile.PathFor("Corrupt"), "{ not valid json");
 
         // Act
         bool result = saveFile.LoadCommander("Corrupt");
@@ -48,9 +48,9 @@ public class SaveFileTests
     {
         // Arrange: a hand-edited file missing nearly everything - the mapping reads the
         // seed and the goods without checking, so without validation this used to throw.
-        SaveFile saveFile = CreateSaveFile(out string directory);
+        SaveFile saveFile = CreateSaveFile(out _);
         File.WriteAllText(
-            Path.Combine(directory, "Truncated.cmdr"),
+            saveFile.PathFor("Truncated"),
             /*lang=json,strict*/ "{\"galaxySeed\": {\"a\": 1}}");
 
         // Act
@@ -80,11 +80,11 @@ public class SaveFileTests
     {
         // Arrange: the point of the format - nothing positional, so a save can be read
         // without counting array indices against the code that wrote it.
-        SaveFile saveFile = CreateSaveFile(out string directory);
+        SaveFile saveFile = CreateSaveFile(out _);
 
         // Act
         saveFile.SaveCommander("Named");
-        JsonObject save = ReadSave(directory, "Named");
+        JsonObject save = ReadSave(saveFile, "Named");
 
         // Assert
         Assert.Equal(SaveState.CurrentFileType, (string?)save["fileType"]);
@@ -105,9 +105,9 @@ public class SaveFileTests
     {
         // Arrange: cargo is keyed by name, so it has to land on the named good and not
         // on whichever one happens to sit at that position.
-        SaveFile saveFile = CreateSaveFile(out string directory, out Trade trade);
+        SaveFile saveFile = CreateSaveFile(out _, out Trade trade);
         saveFile.SaveCommander("Cargo");
-        Edit(directory, "Cargo", save => save["cargo"]!["Furs"] = 3);
+        Edit(saveFile, "Cargo", save => save["cargo"]!["Furs"] = 3);
 
         // Act
         bool loaded = saveFile.LoadCommander("Cargo");
@@ -137,9 +137,9 @@ public class SaveFileTests
     public void LoadCommanderRejectsAValueTheGameCouldNotHaveWritten(string property, object value)
     {
         // Arrange
-        SaveFile saveFile = CreateSaveFile(out string directory);
+        SaveFile saveFile = CreateSaveFile(out _);
         saveFile.SaveCommander("Edited");
-        Edit(directory, "Edited", save => save[property] = JsonValue.Create(value));
+        Edit(saveFile, "Edited", save => save[property] = JsonValue.Create(value));
 
         // Act
         bool result = saveFile.LoadCommander("Edited");
@@ -160,10 +160,10 @@ public class SaveFileTests
     {
         // Arrange: each mission declares its own stages, so one mission's stages are not
         // another's - the single mission number this replaced could not tell them apart.
-        SaveFile saveFile = CreateSaveFile(out string directory);
+        SaveFile saveFile = CreateSaveFile(out _);
         saveFile.SaveCommander("WrongStage");
         Edit(
-            directory,
+            saveFile,
             "WrongStage",
             save => save["missions"]!.AsObject()[mission] = new JsonObject { ["stage"] = stage });
 
@@ -179,10 +179,10 @@ public class SaveFileTests
     {
         // Arrange: a mission from a later version of the game, or a typo'd name. Either
         // way the file holds something this build cannot act on.
-        SaveFile saveFile = CreateSaveFile(out string directory);
+        SaveFile saveFile = CreateSaveFile(out _);
         saveFile.SaveCommander("Unknown");
         Edit(
-            directory,
+            saveFile,
             "Unknown",
             save => save["missions"]!.AsObject()["Generation"] = new JsonObject { ["stage"] = "Briefed" });
 
@@ -198,10 +198,10 @@ public class SaveFileTests
     {
         // Arrange: the point of a mission each - the Constrictor being finished and the
         // Thargoid run being under way is one state, not two readings of one number.
-        SaveFile saveFile = CreateSaveFile(out string directory, out _, out GameState gameState);
+        SaveFile saveFile = CreateSaveFile(out _, out _, out GameState gameState);
         saveFile.SaveCommander("MidRun");
         Edit(
-            directory,
+            saveFile,
             "MidRun",
             save =>
             {
@@ -225,10 +225,10 @@ public class SaveFileTests
         // Arrange: a commander saved before a mission existed, or one who has simply
         // never met it. Either way the absence is the answer, not a reason to refuse
         // the file.
-        SaveFile saveFile = CreateSaveFile(out string directory, out _, out GameState gameState);
+        SaveFile saveFile = CreateSaveFile(out _, out _, out GameState gameState);
         saveFile.SaveCommander("PartWay");
         Edit(
-            directory,
+            saveFile,
             "PartWay",
             save => save["missions"]!.AsObject()[ConstrictorMission.Id]
                 = new JsonObject { ["stage"] = ConstrictorMission.Briefed });
@@ -247,10 +247,10 @@ public class SaveFileTests
     {
         // Arrange: a typo'd name would have been read as a missing one, and the array
         // format could not have caught it at all.
-        SaveFile saveFile = CreateSaveFile(out string directory);
+        SaveFile saveFile = CreateSaveFile(out _);
         saveFile.SaveCommander("Typo");
         Edit(
-            directory,
+            saveFile,
             "Typo",
             save =>
             {
@@ -270,9 +270,9 @@ public class SaveFileTests
     public void LoadCommanderRejectsAQuantityTheMarketCouldNotHold()
     {
         // Arrange
-        SaveFile saveFile = CreateSaveFile(out string directory);
+        SaveFile saveFile = CreateSaveFile(out _);
         saveFile.SaveCommander("Overstocked");
-        Edit(directory, "Overstocked", save => save["stationStock"]!["Food"] = 64);
+        Edit(saveFile, "Overstocked", save => save["stationStock"]!["Food"] = 64);
 
         // Act
         bool result = saveFile.LoadCommander("Overstocked");
@@ -286,9 +286,9 @@ public class SaveFileTests
     {
         // Arrange: gold, platinum and gem stones are not weighed in tonnes, so it is the
         // tonnage and not the number of goods that has to fit.
-        SaveFile saveFile = CreateSaveFile(out string directory);
+        SaveFile saveFile = CreateSaveFile(out _);
         saveFile.SaveCommander("Overloaded");
-        Edit(directory, "Overloaded", save => save["cargo"]!["Food"] = 21);
+        Edit(saveFile, "Overloaded", save => save["cargo"]!["Food"] = 21);
 
         // Act
         bool result = saveFile.LoadCommander("Overloaded");
@@ -302,9 +302,9 @@ public class SaveFileTests
     {
         // Arrange: the bounty is what the game works in, so a file naming a band its
         // bounty does not fall in has been edited wrongly rather than usefully.
-        SaveFile saveFile = CreateSaveFile(out string directory);
+        SaveFile saveFile = CreateSaveFile(out _);
         saveFile.SaveCommander("Liar");
-        Edit(directory, "Liar", save => save["legalStatus"]!["bounty"] = 64);
+        Edit(saveFile, "Liar", save => save["legalStatus"]!["bounty"] = 64);
 
         // Act
         bool result = saveFile.LoadCommander("Liar");
@@ -317,10 +317,10 @@ public class SaveFileTests
     public void LoadCommanderRestoresABountyItsBandAgreesWith()
     {
         // Arrange
-        SaveFile saveFile = CreateSaveFile(out string directory, out _, out GameState gameState);
+        SaveFile saveFile = CreateSaveFile(out _, out _, out GameState gameState);
         saveFile.SaveCommander("Fugitive");
         Edit(
-            directory,
+            saveFile,
             "Fugitive",
             save =>
             {
@@ -351,12 +351,45 @@ public class SaveFileTests
         Assert.Single(Directory.GetFiles(directory));
     }
 
-    private static JsonObject ReadSave(string directory, string name)
-        => JsonNode.Parse(File.ReadAllText(Path.Combine(directory, name + ".cmdr")))!.AsObject();
-
-    private static void Edit(string directory, string name, Action<JsonObject> edit)
+    // The load and save screens can only make upper-case names, because a
+    // letter arrives as a ConsoleKey. A file whose name is in any other case -
+    // hand-edited, or written by an older build - would be unreachable on a
+    // case-sensitive filesystem while looking perfectly present in the folder.
+    [Theory]
+    [InlineData("Mixed", "MIXED")]
+    [InlineData("lower", "LOWER")]
+    [InlineData("UPPER", "upper")]
+    public void ACommanderLoadsWhateverCaseTheNameIsGivenIn(string saved, string loaded)
     {
-        string path = Path.Combine(directory, name + ".cmdr");
+        SaveFile saveFile = CreateSaveFile(out _);
+
+        Assert.True(saveFile.SaveCommander(saved));
+        Assert.True(saveFile.LoadCommander(loaded));
+        Assert.Equal(string.Empty, saveFile.LastLoadError);
+    }
+
+    // One commander, one file: saving the same name in two cases must not
+    // leave two saves that a case-sensitive filesystem tells apart.
+    [Fact]
+    public void TwoCasesOfOneNameAreOneCommander()
+    {
+        SaveFile saveFile = CreateSaveFile(out string directory);
+
+        Assert.True(saveFile.SaveCommander("Twice"));
+        Assert.True(saveFile.SaveCommander("TWICE"));
+
+        Assert.Single(Directory.GetFiles(directory));
+    }
+
+    // Both helpers ask the save file where a commander lives. Rebuilding the
+    // path here would let the tests disagree with the game about case, which
+    // only a case-sensitive filesystem would ever report.
+    private static JsonObject ReadSave(SaveFile saveFile, string name)
+        => JsonNode.Parse(File.ReadAllText(saveFile.PathFor(name)))!.AsObject();
+
+    private static void Edit(SaveFile saveFile, string name, Action<JsonObject> edit)
+    {
+        string path = saveFile.PathFor(name);
         JsonObject save = JsonNode.Parse(File.ReadAllText(path))!.AsObject();
         edit(save);
         File.WriteAllText(path, save.ToJsonString());
@@ -371,8 +404,11 @@ public class SaveFileTests
     private static SaveFile CreateSaveFile(out string directory, out Trade trade, out GameState gameState)
     {
         // These tests are written against Commander Jameson, so the debug commander is
-        // cleared for this process rather than left to whatever the machine has set.
-        Environment.SetEnvironmentVariable(SaveFile.DebugCommanderEnvVar, null);
+        // cleared rather than left to whatever the machine has set. Only
+        // SaveFile's constructor reads it, so the scope ends with this method
+        // and the process is left as it was found.
+        using EnvironmentVariableScope commander =
+            EnvironmentVariableScope.Set(SaveFile.DebugCommanderEnvVar, null);
 
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
         gameState = new(views, TestMissions.Registry());

@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -23,7 +23,7 @@ public class SaveFileErrorTests
     [Fact]
     public void AMissingFileSaysThereIsNoSuchCommander()
     {
-        SaveFile saveFile = CreateSaveFile(out _);
+        SaveFile saveFile = CreateSaveFile();
 
         Assert.False(saveFile.LoadCommander("NoSuchCommander"));
         Assert.Equal("No Such Commander", saveFile.LastLoadError);
@@ -32,8 +32,8 @@ public class SaveFileErrorTests
     [Fact]
     public void AFileThatIsNotJsonSaysItCouldNotBeRead()
     {
-        SaveFile saveFile = CreateSaveFile(out string directory);
-        File.WriteAllText(Path.Combine(directory, "Corrupt.cmdr"), "{ not valid json");
+        SaveFile saveFile = CreateSaveFile();
+        File.WriteAllText(saveFile.PathFor("Corrupt"), "{ not valid json");
 
         Assert.False(saveFile.LoadCommander("Corrupt"));
         Assert.Equal("Unreadable Commander File", saveFile.LastLoadError);
@@ -49,9 +49,9 @@ public class SaveFileErrorTests
     [InlineData("version", 99, "Bad Version")]
     public void AFieldOutOfRangeIsNamed(string field, int value, string expected)
     {
-        SaveFile saveFile = CreateSaveFile(out string directory);
+        SaveFile saveFile = CreateSaveFile();
         saveFile.SaveCommander("Edited");
-        Edit(directory, "Edited", save => save[field] = value);
+        Edit(saveFile, "Edited", save => save[field] = value);
 
         Assert.False(saveFile.LoadCommander("Edited"));
         Assert.Equal(expected, saveFile.LastLoadError);
@@ -60,9 +60,9 @@ public class SaveFileErrorTests
     [Fact]
     public void AnUnknownLaserIsNamedAsALaser()
     {
-        SaveFile saveFile = CreateSaveFile(out string directory);
+        SaveFile saveFile = CreateSaveFile();
         saveFile.SaveCommander("Laser");
-        Edit(directory, "Laser", save => save["lasers"]!["rear"] = "Disintegrator");
+        Edit(saveFile, "Laser", save => save["lasers"]!["rear"] = "Disintegrator");
 
         Assert.False(saveFile.LoadCommander("Laser"));
         Assert.Equal("Bad Lasers", saveFile.LastLoadError);
@@ -71,10 +71,10 @@ public class SaveFileErrorTests
     [Fact]
     public void AGoodTheSetDoesNotHaveIsNamedAsCargo()
     {
-        SaveFile saveFile = CreateSaveFile(out string directory);
+        SaveFile saveFile = CreateSaveFile();
         saveFile.SaveCommander("Typo");
         Edit(
-            directory,
+            saveFile,
             "Typo",
             save =>
             {
@@ -90,9 +90,9 @@ public class SaveFileErrorTests
     [Fact]
     public void StationStockIsNamedSeparatelyFromCargo()
     {
-        SaveFile saveFile = CreateSaveFile(out string directory);
+        SaveFile saveFile = CreateSaveFile();
         saveFile.SaveCommander("Shelf");
-        Edit(directory, "Shelf", save => save["stationStock"]!["Food"] = 64);
+        Edit(saveFile, "Shelf", save => save["stationStock"]!["Food"] = 64);
 
         Assert.False(saveFile.LoadCommander("Shelf"));
         Assert.Equal("Bad Station Stock", saveFile.LastLoadError);
@@ -101,9 +101,9 @@ public class SaveFileErrorTests
     [Fact]
     public void AMissionNothingProvidesIsNamedAsAMission()
     {
-        SaveFile saveFile = CreateSaveFile(out string directory);
+        SaveFile saveFile = CreateSaveFile();
         saveFile.SaveCommander("Unknown");
-        Edit(directory, "Unknown", save => save["missions"]!["Smuggling"] = new JsonObject { ["stage"] = "Briefed" });
+        Edit(saveFile, "Unknown", save => save["missions"]!["Smuggling"] = new JsonObject { ["stage"] = "Briefed" });
 
         Assert.False(saveFile.LoadCommander("Unknown"));
         Assert.Equal("Bad Missions", saveFile.LastLoadError);
@@ -114,9 +114,9 @@ public class SaveFileErrorTests
     [Fact]
     public void MoreCargoThanTheHoldTakesIsNamedAsCargo()
     {
-        SaveFile saveFile = CreateSaveFile(out string directory);
+        SaveFile saveFile = CreateSaveFile();
         saveFile.SaveCommander("Overloaded");
-        Edit(directory, "Overloaded", save => save["cargo"]!["Food"] = 21);
+        Edit(saveFile, "Overloaded", save => save["cargo"]!["Food"] = 21);
 
         Assert.False(saveFile.LoadCommander("Overloaded"));
         Assert.Equal("Bad Cargo", saveFile.LastLoadError);
@@ -125,7 +125,7 @@ public class SaveFileErrorTests
     [Fact]
     public void ALoadThatWorksLeavesNoError()
     {
-        SaveFile saveFile = CreateSaveFile(out _);
+        SaveFile saveFile = CreateSaveFile();
         saveFile.SaveCommander("Fine");
 
         Assert.True(saveFile.LoadCommander("Fine"));
@@ -146,16 +146,15 @@ public class SaveFileErrorTests
         SaveFile saveFile = new(gameState, ship, trade, new PlanetController(gameState), TestMissions.Registry(), directory);
         LoadCommanderController controller = new(gameState, keyboard, saveFile, new FakeLoadView());
 
-        saveFile.SaveCommander("Broken");
-        Edit(directory, "Broken", save => save["fuel"] = 99);
-
         controller.Reset();
-        foreach (char letter in "BROKEN")
-        {
-            keyboard.KeyDown((ConsoleKey)letter, default);
-            controller.HandleInput();
-            keyboard.KeyUp((ConsoleKey)letter, default);
-        }
+
+        // The commander is saved under the name the keys actually produced,
+        // not under a second copy of it spelled out here. Spelling it again
+        // lets the test pick a case the keyboard cannot make, which Windows
+        // forgives and Linux does not.
+        string typed = Type(controller, keyboard, "BROKEN");
+        saveFile.SaveCommander(typed);
+        Edit(saveFile, typed, save => save["fuel"] = 99);
 
         keyboard.KeyDown(ConsoleKey.Enter, default);
         controller.HandleInput();
@@ -163,23 +162,44 @@ public class SaveFileErrorTests
         Assert.Equal("Bad Fuel", controller.BuildModel().ErrorMessage);
     }
 
-    private static void Edit(string directory, string name, Action<JsonObject> edit)
+    // Letters reach the screen as ConsoleKey values, so a typed name is always
+    // upper case. Returning what the controller made of the keys keeps that
+    // fact in one place.
+    private static string Type(LoadCommanderController controller, FakeKeyboard keyboard, string text)
     {
-        string path = Path.Combine(directory, name + ".cmdr");
+        foreach (char letter in text)
+        {
+            keyboard.KeyDown((ConsoleKey)letter, default);
+            controller.HandleInput();
+            keyboard.KeyUp((ConsoleKey)letter, default);
+        }
+
+        return controller.BuildModel().Name;
+    }
+
+    // The path comes from the save file itself. A test that rebuilds it here
+    // is free to disagree with the game about case or extension, and on
+    // Windows nothing would ever say so.
+    private static void Edit(SaveFile saveFile, string name, Action<JsonObject> edit)
+    {
+        string path = saveFile.PathFor(name);
         JsonObject save = JsonNode.Parse(File.ReadAllText(path))!.AsObject();
         edit(save);
         File.WriteAllText(path, save.ToJsonString());
     }
 
-    private static SaveFile CreateSaveFile(out string directory)
+    private static SaveFile CreateSaveFile()
     {
-        Environment.SetEnvironmentVariable(SaveFile.DebugCommanderEnvVar, null);
+        // Only SaveFile's constructor reads the variable, so the scope need
+        // not outlive it - and restoring leaves the process as it was found.
+        using EnvironmentVariableScope commander =
+            EnvironmentVariableScope.Set(SaveFile.DebugCommanderEnvVar, null);
 
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
         GameState gameState = new(views, TestMissions.Registry());
         PlayerShip ship = new(gameState);
         Trade trade = TestGoods.Trade(gameState, ship);
-        directory = Path.Combine(Path.GetTempPath(), "SaveFileErrorTests_" + Guid.NewGuid().ToString("N"));
+        string directory = Path.Combine(Path.GetTempPath(), "SaveFileErrorTests_" + Guid.NewGuid().ToString("N"));
 
         SaveFile saveFile = new(
             gameState,

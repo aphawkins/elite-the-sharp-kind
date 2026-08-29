@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -28,7 +28,8 @@ internal static class TraceRecorder
         // firing cadence and so the whole laser-fire trace. Cleared here for
         // the same reason SaveFileTests clears it, and clearing rather than
         // setting keeps the two agreeing whichever order they run in.
-        Environment.SetEnvironmentVariable(SaveFile.DebugCommanderEnvVar, null);
+        using EnvironmentVariableScope commander =
+            EnvironmentVariableScope.Set(SaveFile.DebugCommanderEnvVar, null);
 
         using HeadlessGameHarness harness = new(randomSeed: scenario.RandomSeed);
         PlayerShip ship = harness.Resolve<PlayerShip>();

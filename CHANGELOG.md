@@ -7,6 +7,30 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (a commander loads whatever case the name is typed in, 2026-08-29)
+
+- **A save was unreachable on Linux unless its file name was already upper
+  case.** Letters reach the load and save screens as `ConsoleKey` values, so a
+  typed name is always upper case, but the file was written under whatever case
+  the name was given in. Windows treats the two as one file and macOS usually
+  does; Linux does not, so a save sitting plainly in the folder answered "No
+  Such Commander". Save paths are now upper-cased with `ToUpperInvariant`, which
+  is a no-op for every name the game itself makes and rescues hand-edited and
+  older files. Two cases of one name are now one commander, not two saves.
+- The tests that missed it spelled the save path out a second time instead of
+  asking the game for it, so they were free to disagree with it about case -
+  and on Windows nothing ever said so. `SaveFile.PathFor` is internal now and
+  every test goes through it, including the load-screen test, which takes the
+  commander name from the keys it pressed rather than writing it out again.
+- `scripts/test-case-sensitive.ps1` runs the suite against a case-sensitive
+  temporary directory on Windows, so this class of difference is found before
+  the push rather than by CI. It needs the WSL optional component, which is
+  what provides the per-directory flag, and no elevation.
+- Tests that set an environment variable now do it through an
+  `EnvironmentVariableScope` that puts the previous value back. The variable
+  belongs to the process rather than the test, and xUnit runs test classes in
+  parallel, so one left behind changes the answer for whoever reads it next.
+
 ### Fixed (a rejected commander file says which field, 2026-08-27)
 
 - **Loading a save said only "Error Loading Commander!", whichever of a dozen

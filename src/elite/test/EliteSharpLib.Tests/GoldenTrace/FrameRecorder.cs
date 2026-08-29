@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -20,7 +20,8 @@ internal static class FrameRecorder
         // Same reason as TraceRecorder: a frame must show the commander the
         // game ships with, not the one the machine asks for. Commander Max
         // carries different equipment, and the HUD draws it.
-        Environment.SetEnvironmentVariable(SaveFile.DebugCommanderEnvVar, null);
+        using EnvironmentVariableScope commander =
+            EnvironmentVariableScope.Set(SaveFile.DebugCommanderEnvVar, null);
 
         // Unlike the traces, this one pins the drawing's stream too: the
         // starfield is scattered from it, and a frame hash cannot be
