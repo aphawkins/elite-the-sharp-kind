@@ -66,17 +66,22 @@
   </Target>
 
   <!-- Into a Goods folder beside the executable, which is where GoodsLoader
-       looks. Same shape as the missions above. -->
+       looks. Same shape as the missions above, plus the table itself: the set
+       reads goods.json from beside its own assembly, so the two travel
+       together. -->
   <Target Name="CopyGoodsPlugins" AfterTargets="Build;Publish">
     <MSBuild Projects="..\..\libs\EliteSharp.Goods.Classic\EliteSharp.Goods.Classic.csproj"
              Targets="GetTargetPath"
              Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework)">
       <Output TaskParameter="TargetOutputs" ItemName="GoodsPlugin" />
     </MSBuild>
-    <Copy SourceFiles="@(GoodsPlugin)"
+    <ItemGroup>
+      <GoodsData Include="..\..\libs\EliteSharp.Goods.Classic\goods.json" />
+    </ItemGroup>
+    <Copy SourceFiles="@(GoodsPlugin);@(GoodsData)"
           DestinationFolder="$(OutDir)Goods"
           SkipUnchangedFiles="true" />
-    <Copy SourceFiles="@(GoodsPlugin)"
+    <Copy SourceFiles="@(GoodsPlugin);@(GoodsData)"
           DestinationFolder="$(PublishDir)Goods"
           SkipUnchangedFiles="true"
           Condition="'$(PublishDir)' != ''" />

@@ -7,6 +7,33 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (the classic goods are a file, 2026-08-27)
+
+- **`ClassicGoodsSet` reads `goods.json` instead of hardcoding seventeen
+  wares.** The file ships beside the assembly and is read from there, the
+  way a rendition reads the artwork it brought with it. The class is only
+  what finds and checks it: nothing in the plugin's code knows the word
+  "Food" any more, and the set's own name comes from the file too - so a
+  different economy is a different JSON beside the same DLL, with no
+  compiler involved.
+- With the plugin assembly as the door and the file as the table, the
+  2026-08-02 missions entry's "inert content is a config-shaped problem"
+  turns out to have been right about the shape and wrong only about it
+  being a choice between the two. See [decisions.md](docs/decisions.md).
+- **A bad table stops the game and says which file and why.** Missing,
+  unparseable, describing no goods, naming no set, or a good with a blank
+  id, name or unit - each throws with the path, and the JSON reader's own
+  line and position come through for a parse error. Duplicate ids and the
+  goods a wrecked ship drops stay `GoodsRegistry`'s checks, since those
+  depend on what else is installed.
+- The opening station stock was written in hex after the original (`0x10`,
+  `0x3A`); JSON has none, so the file carries 16 and 58. The values are
+  unchanged and pinned by test.
+- The market drawn from the file differs from the market drawn from the
+  literal in zero pixels. `EliteSharp.Goods.TestPlugin` deliberately keeps
+  building its goods in C#, so `IGoodsSet` stays demonstrably implementable
+  either way.
+
 ### Fixed (the inventory no longer runs off the screen, 2026-08-27)
 
 - **A hold with more sorts of thing in it than the screen had rows for drew

@@ -90,7 +90,10 @@
              Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework)">
       <Output TaskParameter="TargetOutputs" ItemName="GoodsPlugin" />
     </MSBuild>
-    <Copy SourceFiles="@(GoodsPlugin)"
+    <ItemGroup>
+      <GoodsData Include="..\..\libs\EliteSharp.Goods.Classic\goods.json" />
+    </ItemGroup>
+    <Copy SourceFiles="@(GoodsPlugin);@(GoodsData)"
           DestinationFolder="$(OutDir)Goods"
           SkipUnchangedFiles="true" />
   </Target>

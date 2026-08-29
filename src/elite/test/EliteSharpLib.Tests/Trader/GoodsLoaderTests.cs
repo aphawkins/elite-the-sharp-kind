@@ -12,6 +12,7 @@ public sealed class GoodsLoaderTests : IDisposable
 {
     private const string TestPluginAssembly = "EliteSharp.Goods.TestPlugin.dll";
     private const string ClassicAssembly = "EliteSharp.Goods.Classic.dll";
+    private const string GoodsDataFile = "goods.json";
 
     private readonly string _baseDirectory;
     private bool _isDisposed;
@@ -103,9 +104,17 @@ public sealed class GoodsLoaderTests : IDisposable
 
     private string GoodsFolder() => Path.Combine(_baseDirectory, GoodsLoader.FolderName);
 
+    // The classic set reads its table from beside its own assembly, so a copy
+    // of it that leaves the table behind is one that cannot be constructed.
     private void GivenPlugin(string assembly)
     {
         string folder = Directory.CreateDirectory(GoodsFolder()).FullName;
         File.Copy(Path.Combine(AppContext.BaseDirectory, assembly), Path.Combine(folder, assembly));
+
+        string data = Path.Combine(AppContext.BaseDirectory, GoodsDataFile);
+        if (File.Exists(data))
+        {
+            File.Copy(data, Path.Combine(folder, GoodsDataFile), overwrite: true);
+        }
     }
 }

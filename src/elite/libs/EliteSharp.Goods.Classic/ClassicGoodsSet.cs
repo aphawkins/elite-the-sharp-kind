@@ -1,51 +1,178 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Text.Json;
 using EliteSharp.Abstractions.Trading;
 
 namespace EliteSharp.Goods.Classic;
 
 /// <summary>
-/// The seventeen goods the original traded in. Everything the game used to hold
-/// about them in four different places - the market table, the starting
+/// The seventeen goods the original traded in, read from the
+/// <c>goods.json</c> that ships beside this assembly. Everything the game used
+/// to hold about them in four different places - the market table, the starting
 /// station's shelf, which of them the police care about, and which a canister
-/// can contain - is gathered here as one declaration.
+/// can contain - is that one file now.
 /// <para>
-/// The order is the order the market screen lists them, and it is also the
-/// order the original numbered them in, which two pieces of behaviour used to
-/// depend on. Nothing depends on it now except what the commander reads down.
+/// The table is data rather than code, so changing an economy - or writing a
+/// different one - is editing a file rather than rebuilding an assembly. The
+/// class is only what finds and checks it; nothing here knows the word "Food".
+/// The set's own name comes from the file too, so this assembly is not tied to
+/// the classic wares beyond the name it is filed under.
+/// </para>
+/// <para>
+/// The file is found beside the assembly, the same way a rendition finds the
+/// artwork it brought with it. Only one goods set may be installed at a time -
+/// the loader refuses two - so there is no question which file is whose.
 /// </para>
 /// </summary>
 public sealed class ClassicGoodsSet : IGoodsSet
 {
-    private const string Grams = "g";
-    private const string Kilograms = "Kg";
-    private const string Tonnes = "t";
+    /// <summary>
+    /// The data file's name, beside this assembly.
+    /// </summary>
+    internal const string FileName = "goods.json";
+
+    private static readonly JsonSerializerOptions s_options = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        PropertyNameCaseInsensitive = true,
+        AllowTrailingCommas = true,
+        ReadCommentHandling = JsonCommentHandling.Skip,
+    };
+
+    private readonly GoodsFile _file;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ClassicGoodsSet"/> class,
+    /// reading the goods from the file beside this assembly.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// The file is missing, unreadable, not the shape a goods file is, or
+    /// describes no goods at all. A set that cannot say what it trades is not
+    /// one the game can start with, so this says which file and why rather than
+    /// handing back an empty market.
+    /// </exception>
+    public ClassicGoodsSet()
+        : this(Path.Combine(AssemblyFolder(), FileName))
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ClassicGoodsSet"/> class
+    /// from a named file, which is how the tests reach one without installing
+    /// it.
+    /// </summary>
+    /// <param name="path">The goods file to read.</param>
+    /// <exception cref="InvalidOperationException">As the default constructor.</exception>
+    internal ClassicGoodsSet(string path)
+    {
+        _file = Read(path);
+        Goods = [.. _file.Goods.Select(ToGood)];
+    }
 
     /// <inheritdoc/>
-    public string Name => "Classic";
+    public string Name => _file.Name;
 
     /// <inheritdoc/>
-    // Id              Name            Price  Econ  Qty  Mask  Units      Hold   Stock  Sold   Contra  Dropped
-    public IReadOnlyList<Good> Goods { get; } =
-    [
-        new("Food",         "Food",          1.9f,  -2,    6,    1, Tonnes,    true,  0x10,  true,      0, true),
-        new("Textiles",     "Textiles",      2.0f,  -1,   10,    3, Tonnes,    true,  0x0F,  true,      0, true),
-        new("Radioactives", "Radioactives",  6.5f,  -3,    2,    7, Tonnes,    true,  0x11,  true,      0, true),
-        new("Slaves",       "Slaves",        4.0f,  -5,  226,   31, Tonnes,    true,  0x00,  true,      2, true),
-        new("LiquorWines",  "Liquor/Wines",  8.3f,  -5,  251,   15, Tonnes,    true,  0x03,  true,      0, true),
-        new("Luxuries",     "Luxuries",     19.6f,   8,   54,    3, Tonnes,    true,  0x1C,  true,      0, true),
-        new("Narcotics",    "Narcotics",    23.5f,  29,    8,  120, Tonnes,    true,  0x0E,  true,      2, true),
-        new("Computers",    "Computers",    15.4f,  14,   56,    3, Tonnes,    true,  0x00,  true,      0, true),
-        new("Machinery",    "Machinery",    11.7f,   6,   40,    7, Tonnes,    true,  0x00,  true,      0, false),
-        new("Alloys",       "Alloys",        7.8f,   1,   17,   31, Tonnes,    true,  0x0A,  true,      0, false),
-        new("Firearms",     "Firearms",     12.4f,  13,   29,    7, Tonnes,    true,  0x00,  true,      1, false),
-        new("Furs",         "Furs",         17.6f,  -9,  220,   63, Tonnes,    true,  0x11,  true,      0, false),
-        new("Minerals",     "Minerals",      3.2f,  -1,   53,    3, Tonnes,    true,  0x3A,  true,      0, false),
-        new("Gold",         "Gold",          9.7f,  -1,   66,    7, Kilograms, false, 0x07,  true,      0, false),
-        new("Platinum",     "Platinum",     17.1f,  -2,   55,   31, Kilograms, false, 0x09,  true,      0, false),
-        new("GemStones",    "Gem-Stones",    4.5f,  -1,  250,   15, Grams,     false, 0x08,  true,      0, false),
-        new("AlienItems",   "Alien Items",   5.3f,  15,  192,    7, Tonnes,    true,  0x00,  false,     0, false),
-    ];
+    public IReadOnlyList<Good> Goods { get; }
+
+    private static string AssemblyFolder()
+        => Path.GetDirectoryName(typeof(ClassicGoodsSet).Assembly.Location) ?? AppContext.BaseDirectory;
+
+    private static GoodsFile Read(string path)
+    {
+        if (!File.Exists(path))
+        {
+            throw new InvalidOperationException($"The goods file '{path}' is not there, so there is nothing to trade.");
+        }
+
+        GoodsFile? file;
+
+        try
+        {
+            using FileStream stream = File.OpenRead(path);
+            file = JsonSerializer.Deserialize<GoodsFile>(stream, s_options);
+        }
+        catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException)
+        {
+            throw new InvalidOperationException($"The goods file '{path}' could not be read: {ex.Message}", ex);
+        }
+
+        if (file?.Goods is not { Count: > 0 })
+        {
+            throw new InvalidOperationException($"The goods file '{path}' describes no goods.");
+        }
+
+        if (string.IsNullOrWhiteSpace(file.Name))
+        {
+            throw new InvalidOperationException($"The goods file '{path}' does not name the set it describes.");
+        }
+
+        for (int i = 0; i < file.Goods.Count; i++)
+        {
+            Check(path, file.Goods[i], i);
+        }
+
+        return file;
+    }
+
+    // What the game cannot check later. Duplicate names and the goods a wrecked
+    // ship drops are the registry's business, because they depend on what else
+    // is installed; a blank field is this file's own problem.
+    private static void Check(string path, GoodsEntry entry, int index)
+    {
+        if (string.IsNullOrWhiteSpace(entry.Id))
+        {
+            throw new InvalidOperationException($"The goods file '{path}' has a good with no id at position {index}.");
+        }
+
+        if (string.IsNullOrWhiteSpace(entry.Name))
+        {
+            throw new InvalidOperationException($"The goods file '{path}' gives '{entry.Id}' no name to show.");
+        }
+
+        if (string.IsNullOrWhiteSpace(entry.Units))
+        {
+            throw new InvalidOperationException($"The goods file '{path}' gives '{entry.Id}' no units.");
+        }
+    }
+
+    private static Good ToGood(GoodsEntry entry) => new(
+        entry.Id,
+        entry.Name,
+        entry.BasePrice,
+        entry.EconomyAdjust,
+        entry.BaseQuantity,
+        entry.Mask,
+        entry.Units,
+        entry.FillsHold,
+        entry.OpeningStationStock,
+        entry.IsSoldByStations,
+        entry.ContrabandWeight,
+        entry.IsDroppedByShips);
+
+    /// <summary>
+    /// The file's shape. Separate from <see cref="Good"/> so the published
+    /// contract stays free of anything to do with how this plugin happens to
+    /// store its table. Positional records, so the reader binds through the
+    /// constructor and a member the file leaves out is a default rather than a
+    /// property nothing was ever seen to assign.
+    /// </summary>
+    private sealed record GoodsFile(string Name, IReadOnlyList<GoodsEntry> Goods);
+
+    /// <inheritdoc cref="GoodsFile"/>
+    private sealed record GoodsEntry(
+        string Id,
+        string Name,
+        float BasePrice,
+        int EconomyAdjust,
+        int BaseQuantity,
+        int Mask,
+        string Units,
+        bool FillsHold,
+        int OpeningStationStock,
+        bool IsSoldByStations,
+        int ContrabandWeight,
+        bool IsDroppedByShips);
 }

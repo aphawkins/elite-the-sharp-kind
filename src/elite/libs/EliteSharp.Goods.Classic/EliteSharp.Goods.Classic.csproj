@@ -11,4 +11,13 @@
     <ProjectReference Include="..\EliteSharp.Abstractions\EliteSharp.Abstractions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- The table itself, which travels with the assembly and is read from
+         beside it. Content rather than None, so a project that references this
+         one gets the file in its own output too - the tests do. -->
+    <Content Include="goods.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

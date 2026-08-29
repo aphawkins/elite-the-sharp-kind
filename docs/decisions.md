@@ -89,6 +89,38 @@ startup naming any the set leaves out, and any id it repeats or blanks.
 `EliteRenditionAssetsServiceCollectionExtensions` - the same
 split-for-coupling the screen registrations already use.
 
+### Follow-up (2026-08-27) — the classic table is a file, not a literal
+
+The maintainer asked for `ClassicGoodsSet` to stop hardcoding its seventeen
+wares and read them from JSON. That lands the config half of the original
+question after all, and the pair together is the answer the earlier entries
+were circling: **the assembly is the door, the file is the table.**
+
+`IGoodsSet` stays an assembly, because that is what the loader can find,
+check and refuse. What that assembly *contains* is now `goods.json`, read
+from beside itself the way a rendition reads the artwork it brought. So the
+missions entry's "inert content is a config-shaped problem" was right about
+the shape and wrong only about it being either/or.
+
+- **The plugin no longer knows the word "Food".** It finds the file, parses
+  it, and checks what the game cannot check later - a blank id, name or
+  unit, a file naming no set, a file describing no goods. Duplicate ids and
+  the goods a wrecked ship drops stay `GoodsRegistry`'s business, because
+  those depend on what else is installed.
+- **The set's own name comes from the file too**, so a different economy is
+  a different `goods.json` beside the same DLL - no compiler needed. That is
+  a consequence worth having rather than one to design around.
+- **Hex became decimal.** The opening station stock was written `0x10`,
+  `0x3A` and so on, after the original; JSON has no hex, so the file carries
+  16 and 58. The values are unchanged and the tests pin them.
+- **The test plugin stays hardcoded on purpose.** `BarterGoodsSet` builds
+  its goods in C#, so the contract is demonstrably implementable either way
+  and the seam is not accidentally coupled to one storage choice.
+
+Verified: the market drawn from the file differs from the market drawn from
+the literal in **zero pixels**, and a deliberately truncated `goods.json`
+stops the game with a dialog naming the file and the JSON position.
+
 ### Follow-up (2026-08-27) — the market screen is controls, not a view
 
 The last step of the goods work, and the one that needed a decision rather
