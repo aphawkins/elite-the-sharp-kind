@@ -7,6 +7,34 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (a rejected commander file says which field, 2026-08-27)
+
+- **Loading a save said only "Error Loading Commander!", whichever of a dozen
+  checks it failed**, and the log said only which path it was. A commander
+  whose file was one field wrong could not tell that from a file that was
+  never a save. The screen now names the field - "Bad Fuel", "Bad Cargo",
+  "Bad Missions" - and the log carries the value and what was expected
+  alongside it: *fuel 99 is outside 0..7*, *nothing is listed for 'Furs'*.
+- The one boolean `&&` chain became one named check per rule, chained with
+  `??` so the first failure wins and reports itself. A save written against
+  a different goods set now says which good is missing, which is what tells
+  a commander it is the wrong economy rather than a corrupt file.
+- `SaveNamesUnknownMission` and `SaveNamesUnknownStage` are gone: their
+  content is the problem's own detail now, so it travels to the screen
+  instead of only to the log.
+
+### Fixed (a brief key press on SCR's track preview did nothing, 2026-08-27)
+
+- **`TrackPreviewScreen` read its keys inside the physics gate**, which runs
+  one tick in four, so `IsPressed` - a one-shot read - missed any press
+  landing on the other three. A quick tap of `S` or `M` there did nothing,
+  while the same tap worked on every other screen. The keys are read every
+  tick now, before the gate; the physics cadence is unchanged and pinned by
+  a test.
+- The defect was known and worked around rather than fixed: the test
+  helper held `S` down for four ticks with the comment "hold S until a
+  physics tick reads it". It is one press now, which is the proof.
+
 ### Changed (the classic goods are a file, 2026-08-27)
 
 - **`ClassicGoodsSet` reads `goods.json` instead of hardcoding seventeen

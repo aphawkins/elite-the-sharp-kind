@@ -14,8 +14,6 @@ namespace EliteSharpLib.Views;
 /// </summary>
 internal sealed class LoadCommanderController : IScreenController
 {
-    private const string ErrorMessage = "Error Loading Commander!";
-
     private readonly GameState _gameState;
     private readonly IKeyboard _keyboard;
     private readonly SaveFile _save;
@@ -75,6 +73,10 @@ internal sealed class LoadCommanderController : IScreenController
     {
     }
 
-    // Exposed for tests: the typed name and whether the last attempt failed.
-    internal LoadCommanderModel BuildModel() => new(_name, _isLoaded ? string.Empty : ErrorMessage);
+    // Exposed for tests: the typed name and why the last attempt failed. The
+    // reason comes from the save file rather than being a fixed string here:
+    // "Bad Fuel" is something a commander can act on, where "error loading
+    // commander" left them unable to tell a one-field mistake from a file that
+    // was never a save at all.
+    internal LoadCommanderModel BuildModel() => new(_name, _isLoaded ? string.Empty : _save.LastLoadError);
 }

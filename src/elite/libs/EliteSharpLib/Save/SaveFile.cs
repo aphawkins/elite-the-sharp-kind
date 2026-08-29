@@ -100,6 +100,14 @@ internal sealed class SaveFile
             _lastSaved.CommanderName);
     }
 
+    /// <summary>
+    /// Gets what went wrong with the last <see cref="LoadCommander"/> that
+    /// failed, short enough for the screen to show. Empty when the last load
+    /// worked. A commander whose file is one field wrong could otherwise not
+    /// tell that from a file that is not a save at all.
+    /// </summary>
+    internal string LastLoadError { get; private set; } = string.Empty;
+
     internal void GetLastSave()
     {
         SaveStateToGameState();
@@ -111,6 +119,7 @@ internal sealed class SaveFile
         string path = PathFor(name);
         if (!File.Exists(path))
         {
+            LastLoadError = "No Such Commander";
             return false;
         }
 
@@ -120,19 +129,28 @@ internal sealed class SaveFile
             SaveState? save = JsonSerializer.Deserialize<SaveState>(stream, _options);
             if (save != null)
             {
-                if (IsValidSave(save))
+                SaveProblem? problem = FindProblem(save);
+
+                if (problem is null)
                 {
                     _lastSaved = save;
                     SaveStateToGameState();
+                    LastLoadError = string.Empty;
                     return true;
                 }
 
-                LogMessages.CommanderValidationFailed(_logger, path);
+                LogMessages.CommanderValidationFailed(_logger, path, problem.Field, problem.Detail);
+                LastLoadError = $"Bad {problem.Field}";
+            }
+            else
+            {
+                LastLoadError = "Empty Commander File";
             }
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
         {
             LogMessages.FailedToLoadCommander(_logger, path, ex);
+            LastLoadError = "Unreadable Commander File";
         }
 
         _lastSaved = CommanderFactory.Jameson(_trade.Goods);
@@ -186,29 +204,182 @@ internal sealed class SaveFile
             && Enum.TryParse(value, out T parsed)
             && Enum.IsDefined(parsed);
 
-    private static bool IsValidLegalStatus(LegalStatusState? legal)
-        => legal is { Bounty: >= 0 and <= LegalStatusBand.BountyMax }
-            && string.Equals(legal.Status, LegalStatusBand.For(legal.Bounty), StringComparison.Ordinal);
-
-    private static bool IsValidLasers(LaserMountState? lasers) => lasers is { } mounts
-        && IsNamed<LaserType>(mounts.Front)
-        && IsNamed<LaserType>(mounts.Rear)
-        && IsNamed<LaserType>(mounts.Left)
-        && IsNamed<LaserType>(mounts.Right);
-
-    private static bool IsValidGalaxySeed(GalaxySeedState? seed) => seed is { } bytes
-        && IsSeedByte(bytes.A)
-        && IsSeedByte(bytes.B)
-        && IsSeedByte(bytes.C)
-        && IsSeedByte(bytes.D)
-        && IsSeedByte(bytes.E)
-        && IsSeedByte(bytes.F);
-
-    private static bool IsValidShipLocation(ShipLocationState? location) => location is { } position
-        && IsSeedByte(position.D)
-        && IsSeedByte(position.B);
-
     private static bool IsSeedByte(int value) => value is >= 0 and <= SeedByteMax;
+
+    // Is this one of ours at all, and one this build can read?
+    private static SaveProblem? FindFileProblem(SaveState save)
+        => save.FileType != SaveState.CurrentFileType
+            ? new("File Type", $"'{save.FileType}' is not '{SaveState.CurrentFileType}'")
+            : save.Version != SaveState.CurrentVersion
+                ? new("Version", $"{save.Version}, but this build writes {SaveState.CurrentVersion}")
+                : null;
+
+    private static SaveProblem? FindNameProblem(SaveState save)
+        => string.IsNullOrWhiteSpace(save.CommanderName) ? new("Name", "the commander has no name") : null;
+
+    private static SaveProblem? FindScoreProblem(SaveState save)
+        => save.Score < 0 ? new("Score", $"{save.Score} is negative") : null;
+
+    private static SaveProblem? FindLegalStatusProblem(SaveState save)
+    {
+        if (save.LegalStatus is not { Bounty: >= 0 and <= LegalStatusBand.BountyMax } legal)
+        {
+            return new("Legal Status", $"bounty {save.LegalStatus?.Bounty} is outside 0..{LegalStatusBand.BountyMax}");
+        }
+
+        string band = LegalStatusBand.For(legal.Bounty);
+
+        return string.Equals(legal.Status, band, StringComparison.Ordinal)
+            ? null
+            : new("Legal Status", $"'{legal.Status}' does not match bounty {legal.Bounty} ('{band}')");
+    }
+
+    private static SaveProblem? FindCreditsProblem(SaveState save)
+        => !float.IsFinite(save.Credits) || save.Credits < 0
+            ? new("Credits", $"{save.Credits} is not a cash balance")
+            : null;
+
+    private static SaveProblem? FindFuelProblem(SaveState save, float maxFuel)
+        => !float.IsFinite(save.Fuel) || save.Fuel < 0 || save.Fuel > maxFuel
+            ? new("Fuel", $"{save.Fuel} is outside 0..{maxFuel}")
+            : null;
+
+    private static SaveProblem? FindMissileProblem(SaveState save)
+        => save.Missiles is < 0 or > MissilesMax
+            ? new("Missiles", $"{save.Missiles} is outside 0..{MissilesMax}")
+            : null;
+
+    private static SaveProblem? FindCargoBayProblem(SaveState save)
+        => save.CargoCapacity is not (CargoCapacityStandard or CargoCapacityLarge)
+            ? new("Cargo Bay", $"{save.CargoCapacity} is neither {CargoCapacityStandard} nor {CargoCapacityLarge}")
+            : null;
+
+    private static SaveProblem? FindEnergyUnitProblem(SaveState save)
+        => IsNamed<EnergyUnit>(save.EnergyUnit)
+            ? null
+            : new("Energy Unit", $"'{save.EnergyUnit}' is not one this game has");
+
+    private static SaveProblem? FindLaserProblem(LaserMountState? lasers)
+    {
+        if (lasers is not { } mounts)
+        {
+            return new("Lasers", "the file names no laser mounts");
+        }
+
+        (string Mount, string? Type)[] fitted =
+        [
+            ("front", mounts.Front),
+            ("rear", mounts.Rear),
+            ("left", mounts.Left),
+            ("right", mounts.Right),
+        ];
+
+        foreach ((string mount, string? type) in fitted)
+        {
+            if (!IsNamed<LaserType>(type))
+            {
+                return new("Lasers", $"the {mount} mount says '{type}', which is not a laser this game has");
+            }
+        }
+
+        return null;
+    }
+
+    private static SaveProblem? FindGalaxyProblem(SaveState save)
+        => save.GalaxyNumber is < 0 or > GalaxyNumberMax
+            ? new("Galaxy", $"{save.GalaxyNumber} is outside 0..{GalaxyNumberMax}")
+            : null;
+
+    private static SaveProblem? FindSeedProblem(GalaxySeedState? seed)
+    {
+        if (seed is not { } bytes)
+        {
+            return new("Galaxy Seed", "the file carries no seed");
+        }
+
+        int[] values = [bytes.A, bytes.B, bytes.C, bytes.D, bytes.E, bytes.F];
+
+        return Array.Exists(values, value => !IsSeedByte(value))
+            ? new("Galaxy Seed", $"[{string.Join(", ", values)}] is not six bytes of 0..{SeedByteMax}")
+            : null;
+    }
+
+    private static SaveProblem? FindShipLocationProblem(SaveState save)
+        => save.ShipLocation is not { } location || !IsSeedByte(location.D) || !IsSeedByte(location.B)
+            ? new("Ship Location", $"({save.ShipLocation?.D}, {save.ShipLocation?.B}) is not inside 0..{SeedByteMax}")
+            : null;
+
+    private static SaveProblem? FindMarketProblem(SaveState save)
+        => save.MarketRandomiser is < 0 or > SeedByteMax
+            ? new("Market", $"randomiser {save.MarketRandomiser} is outside 0..{SeedByteMax}")
+            : null;
+
+    /// <summary>
+    /// Whether every mission the save names is installed and is at one of the stages that
+    /// mission declares. The vocabulary comes from the missions themselves rather than from
+    /// an enum, which is the only way a mission that arrived in a plugin could be checked at
+    /// all. A save may name fewer missions than are installed - the rest have not been
+    /// started - but a mission it names that nothing provides is a save that cannot be
+    /// applied, so it is turned away rather than half-loaded.
+    /// </summary>
+    private static SaveProblem? FindMissionProblem(IDictionary<string, MissionState>? missions, MissionRegistry installed)
+    {
+        if (missions is null)
+        {
+            return new("Missions", "the file lists none");
+        }
+
+        foreach ((string name, MissionState state) in missions)
+        {
+            IMission? mission = installed.Find(name);
+
+            if (mission is null)
+            {
+                return new("Missions", $"'{name}' is a mission nothing installed provides");
+            }
+
+            if (state?.Stage is null || mission.Stages.IndexOf(state.Stage) < 0)
+            {
+                return new("Missions", $"'{name}' is at stage '{state?.Stage ?? "(none)"}', which it does not have");
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Whether the goods are named exactly once each, with a quantity the market could have
+    /// produced. Counting as well as looking each name up leaves no room for an unknown one -
+    /// and naming the good that is missing is what tells a commander their save was written
+    /// against a different goods set rather than simply corrupted.
+    /// </summary>
+    private static SaveProblem? FindStockProblem(
+        string field,
+        IDictionary<string, int>? stock,
+        IReadOnlyList<StockItem> market)
+    {
+        if (stock is not { } goods)
+        {
+            return new(field, "the file lists none");
+        }
+
+        foreach (StockItem item in market)
+        {
+            if (!goods.TryGetValue(item.Good.Id, out int quantity))
+            {
+                return new(field, $"nothing is listed for '{item.Good.Id}'");
+            }
+
+            if (quantity is < 0 or > QuantityMax)
+            {
+                return new(field, $"'{item.Good.Id}' is {quantity}, outside 0..{QuantityMax}");
+            }
+        }
+
+        return goods.Count == market.Count
+            ? null
+            : new(field, $"{goods.Count} goods listed, but this game trades {market.Count}");
+    }
 
     private string PathFor(string name)
     {
@@ -222,73 +393,48 @@ internal sealed class SaveFile
     /// file that is not ours or not this version, a name the enums do not know, a missing or
     /// unknown item of cargo, and any value outside the range the game itself keeps it in.
     /// A save that fails here is discarded rather than half-applied.
+    /// <para>
+    /// It reports the first thing it finds wrong rather than a bare yes or no. A file is
+    /// usually wrong in one place - a hand edit, or a save written against another goods set
+    /// - and "fuel is 99, and the tank holds 7" is something a commander can act on where
+    /// "error loading commander" is not. Each check is its own named method returning the
+    /// same nullable problem, so the whole thing is one chain of first-wins alternatives.
+    /// </para>
     /// </summary>
-    private bool IsValidSave(SaveState save) => save.FileType == SaveState.CurrentFileType
-        && save.Version == SaveState.CurrentVersion
-        && !string.IsNullOrWhiteSpace(save.CommanderName)
-        && IsValidMissions(save.Missions)
-        && save.Score >= 0
-        && IsValidLegalStatus(save.LegalStatus)
-        && float.IsFinite(save.Credits)
-        && save.Credits >= 0
-        && float.IsFinite(save.Fuel)
-        && save.Fuel >= 0
-        && save.Fuel <= _ship.MaxFuel
-        && save.Missiles is >= 0 and <= MissilesMax
-        && save.CargoCapacity is CargoCapacityStandard or CargoCapacityLarge
-        && IsNamed<EnergyUnit>(save.EnergyUnit)
-        && IsValidLasers(save.Lasers)
-        && save.GalaxyNumber is >= 0 and <= GalaxyNumberMax
-        && IsValidGalaxySeed(save.GalaxySeed)
-        && IsValidShipLocation(save.ShipLocation)
-        && save.MarketRandomiser is >= 0 and <= SeedByteMax
-        && IsValidStock(save.Cargo)
-        && IsValidStock(save.StationStock)
-        && TonnageOf(save.Cargo) <= save.CargoCapacity;
+    /// <param name="save">The file just read.</param>
+    /// <returns>The first problem found, or null if there is none.</returns>
+    private SaveProblem? FindProblem(SaveState save)
+        => FindFileProblem(save)
+            ?? FindNameProblem(save)
+            ?? FindScoreProblem(save)
+            ?? FindLegalStatusProblem(save)
+            ?? FindMissionProblem(save.Missions, _missions)
+            ?? FindCreditsProblem(save)
+            ?? FindFuelProblem(save, _ship.MaxFuel)
+            ?? FindMissileProblem(save)
+            ?? FindCargoBayProblem(save)
+            ?? FindEnergyUnitProblem(save)
+            ?? FindLaserProblem(save.Lasers)
+            ?? FindGalaxyProblem(save)
+            ?? FindSeedProblem(save.GalaxySeed)
+            ?? FindShipLocationProblem(save)
+            ?? FindMarketProblem(save)
+            ?? FindStockProblem("Cargo", save.Cargo, _trade.StockMarket)
+            ?? FindStockProblem("Station Stock", save.StationStock, _trade.StockMarket)
+            ?? FindHoldProblem(save);
 
     /// <summary>
-    /// Whether the goods are named exactly once each, with a quantity the market could have
-    /// produced. Counting as well as looking each name up leaves no room for an unknown one.
+    /// Whether the cargo would fit. Checked after the stock itself, so a file whose goods do
+    /// not match the set at all is reported as that rather than as an overloaded hold.
     /// </summary>
-    /// <summary>
-    /// Whether every mission the save names is installed and is at one of the stages that
-    /// mission declares. The vocabulary now comes from the missions themselves rather than
-    /// from an enum, which is the only way a mission that arrived in a plugin could be
-    /// checked at all. A save may name fewer missions than are installed - the rest have not
-    /// been started - but a mission it names that nothing provides is a save that cannot be
-    /// applied, so it is turned away and logged rather than half-loaded.
-    /// </summary>
-    private bool IsValidMissions(IDictionary<string, MissionState>? missions)
+    private SaveProblem? FindHoldProblem(SaveState save)
     {
-        if (missions is null)
-        {
-            return false;
-        }
+        int tonnage = TonnageOf(save.Cargo);
 
-        foreach ((string name, MissionState state) in missions)
-        {
-            IMission? mission = _missions.Find(name);
-
-            if (mission is null)
-            {
-                LogMessages.SaveNamesUnknownMission(_logger, name);
-                return false;
-            }
-
-            if (state?.Stage is null || mission.Stages.IndexOf(state.Stage) < 0)
-            {
-                LogMessages.SaveNamesUnknownStage(_logger, name, state?.Stage ?? "(none)");
-                return false;
-            }
-        }
-
-        return true;
+        return tonnage > save.CargoCapacity
+            ? new("Cargo", $"{tonnage}t is more than the {save.CargoCapacity}t bay holds")
+            : null;
     }
-
-    private bool IsValidStock(IDictionary<string, int>? stock) => stock is { } goods
-        && goods.Count == _trade.StockMarket.Count
-        && _trade.StockMarket.All(item
-            => goods.TryGetValue(item.Good.Id, out int quantity) && quantity is >= 0 and <= QuantityMax);
 
     /// <summary>
     /// The hold the cargo would take up. Gold, platinum and gem stones are weighed in
@@ -408,4 +554,15 @@ internal sealed class SaveFile
             stock.StationStock = _lastSaved.StationStock[stock.Good.Id];
         }
     }
+
+    /// <summary>
+    /// What is wrong with a save, if anything: the field a commander would
+    /// recognise and the detail worth writing to the log. Null means the file
+    /// is good.
+    /// </summary>
+    /// <param name="Field">
+    /// The part of the file at fault, short enough for the load screen.
+    /// </param>
+    /// <param name="Detail">What was wrong with it, and what was expected.</param>
+    private sealed record SaveProblem(string Field, string Detail);
 }

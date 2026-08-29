@@ -47,16 +47,19 @@ just will not say why.
 
 **Which is the general complaint, and it is a defect.** Any validation
 failure — a missing asset, an unreadable config, a save the game will not
-take — must be logged *and* shown, and the app must never simply vanish.
-Today `GameApp.Run` catches only around `game.Run()`, so a startup failure
-unwinds through `Main` as a raw stack trace, and even the caught case
-reports to stderr, which a double-clicked app has nowhere to show. **The
-startup half was fixed the same day** (see [CHANGELOG.md](../CHANGELOG.md)):
-the composition is inside the handler, and the message reaches an SDL dialog
-as well as the console. What is left is the in-game half - a save turned away
-still will not say which check failed - and that is a Should in
-[backlog-issues.md](backlog-issues.md), sequenced before the goods item so
-its new check arrives already explaining itself.
+take — must be logged *and* shown, and the app must never simply vanish. At
+the time of this decision `GameApp.Run` caught only around `game.Run()`, so
+a startup failure unwound through `Main` as a raw stack trace, and even the
+caught case reported to stderr, which a double-clicked app has nowhere to
+show; and a rejected commander file said "Error Loading Commander!" whichever
+of a dozen checks it had failed.
+
+**Both halves were fixed the same day** (see [CHANGELOG.md](../CHANGELOG.md)).
+The startup half: the composition moved inside the handler and the message
+reaches an SDL dialog as well as the console. The in-game half: the save's
+validation reports the field it rejected and why, so the goods check the
+item below added arrived already explaining itself — a file from another
+economy now says which good is missing rather than reading as corrupt.
 
 ### Follow-up (2026-08-27) — the goods plugin landed, and the save keeps its verdict
 
@@ -74,9 +77,9 @@ second set arrives, `engine.goods` is a two-line addition then.
 already rejects a `.cmdr` whose goods do not match the live set exactly, by
 count and by name, so a file from another economy is turned away today with
 no new field and no version bump. The maintainer's "make failure loud"
-applies through the startup-failure fix above and the open in-game-diagnostics
-issue - not through a partial load, which would silently alter a commander's
-hold and credits. `SaveState` is unchanged.
+applies through the startup-failure fix and the in-game diagnostics above -
+not through a partial load, which would silently alter a commander's hold and
+credits. `SaveState` is unchanged.
 
 **A missing ship-drop good is fatal, listed.** `Alloy`, `EscapeCapsule`,
 `RockSplinter` and `Tharglet` name Alloys, Slaves, Minerals and AlienItems

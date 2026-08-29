@@ -36,10 +36,11 @@ Reach for `-Steps` below only to poke at a window interactively.
   -ExePath "src\scr\apps\StuntCarRacerSharp\bin\Debug\net10.0\StuntCarRacerSharp.exe" `
   -Name "race" `
   -KeyScript @'
-# the track menu, then the preview fly-through
-30 SaveFrame
-60 Tap S
-200 SaveFrame
+# track menu -> preview -> race, accelerating
+30 Tap S
+90 Tap S
+150 Hold UpArrow
+300 SaveFrame
 '@
 ```
 
@@ -60,14 +61,7 @@ Script syntax is one event per line (`KeyScriptParser` in
 | `<tick> SaveFrame` | dump the current framebuffer |
 
 `<ConsoleKey>` is a `System.ConsoleKey` name - `Spacebar`, not `Space`;
-`F8`; `X`; `UpArrow` - and modifiers are `Shift,Control,Alt`.
-
-**Known gap:** a one-tick `Tap S` on **TrackPreview** does not start the
-race, though the same key does move **TrackMenu** on. The example above
-therefore stops at the preview. If you need a scripted frame of the race
-itself, work out what TrackPreview wants first - `Hold`/`Release` over
-several ticks is the thing to try - and correct this example once you
-have seen it work. Blank
+`F8`; `X`; `UpArrow` - and modifiers are `Shift,Control,Alt`. Blank
 lines and `#` comments are ignored. A tick is one game update, so how
 much wall-clock and simulated time a tick is worth follows the app's
 configured update rate (`engine.fps`); a script is reproducible against

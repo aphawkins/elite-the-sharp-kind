@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -14,8 +14,11 @@ internal static partial class LogMessages
     [LoggerMessage(EventId = 1, Level = LogLevel.Warning, Message = "Failed to read commander file '{Path}'.")]
     internal static partial void FailedToLoadCommander(ILogger logger, string path, Exception ex);
 
-    [LoggerMessage(EventId = 2, Level = LogLevel.Warning, Message = "Commander file '{Path}' failed validation.")]
-    internal static partial void CommanderValidationFailed(ILogger logger, string path);
+    [LoggerMessage(
+        EventId = 2,
+        Level = LogLevel.Warning,
+        Message = "Commander file '{Path}' failed validation on {Field}: {Detail}.")]
+    internal static partial void CommanderValidationFailed(ILogger logger, string path, string field, string detail);
 
     [LoggerMessage(EventId = 3, Level = LogLevel.Warning, Message = "Failed to save commander file '{Path}'.")]
     internal static partial void FailedToSaveCommander(ILogger logger, string path, Exception ex);
@@ -46,18 +49,6 @@ internal static partial class LogMessages
         Level = LogLevel.Critical,
         Message = "'{FirstAssembly}' and '{SecondAssembly}' both provide a mission called '{Name}'.")]
     internal static partial void DuplicateMissionName(ILogger logger, string name, string firstAssembly, string secondAssembly);
-
-    [LoggerMessage(
-        EventId = 9,
-        Level = LogLevel.Warning,
-        Message = "Commander file names mission '{Name}', which nothing provides.")]
-    internal static partial void SaveNamesUnknownMission(ILogger logger, string name);
-
-    [LoggerMessage(
-        EventId = 10,
-        Level = LogLevel.Warning,
-        Message = "Commander file puts mission '{Name}' at stage '{Stage}', which it does not have.")]
-    internal static partial void SaveNamesUnknownStage(ILogger logger, string name, string stage);
 
     [LoggerMessage(
         EventId = 11,

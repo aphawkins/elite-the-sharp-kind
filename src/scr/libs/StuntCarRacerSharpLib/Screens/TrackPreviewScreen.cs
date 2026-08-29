@@ -50,6 +50,23 @@ internal sealed class TrackPreviewScreen : IGameScreen
 
     public void Update()
     {
+        // Read the keys every tick, before the physics gate rather than after
+        // it. IsPressed is a one-shot read and the physics only runs every
+        // FrameGap ticks, so a press landing on one of the three ticks in four
+        // when the physics is idle used to be dropped: a brief tap on this
+        // screen did nothing, while the same tap worked on every other screen.
+        if (_keyboard.IsPressed(ConsoleKey.S) || _gamepad.IsPressed(GamepadButton.A))
+        {
+            _screens.Set(GameMode.GameInProgress);
+            return;
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.M) || _gamepad.IsPressed(GamepadButton.B))
+        {
+            _screens.Set(GameMode.TrackMenu);
+            return;
+        }
+
         if (!_race.PhysicsDue())
         {
             return;
@@ -70,15 +87,6 @@ internal sealed class TrackPreviewScreen : IGameScreen
         long viewZ = centre + ((_race.Opponent.Z - centre) / 2);
 
         _race.Camera.LookAt(viewX, viewY, viewZ, _race.Opponent.X, _race.Opponent.Y, _race.Opponent.Z);
-
-        if (_keyboard.IsPressed(ConsoleKey.S) || _gamepad.IsPressed(GamepadButton.A))
-        {
-            _screens.Set(GameMode.GameInProgress);
-        }
-        else if (_keyboard.IsPressed(ConsoleKey.M) || _gamepad.IsPressed(GamepadButton.B))
-        {
-            _screens.Set(GameMode.TrackMenu);
-        }
     }
 
     public void Draw()
