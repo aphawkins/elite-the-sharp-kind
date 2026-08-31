@@ -22,8 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharpKind.Input.Tests\SharpKind.Input.Tests.csproj" />
+    <ProjectReference Include="..\..\libs\SharpKind.Input\SharpKind.Input.csproj" />
     <ProjectReference Include="..\..\libs\SharpKind.SDL\SharpKind.SDL.csproj" />
+    <ProjectReference Include="..\SharpKind.Fakes\SharpKind.Fakes.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -7,6 +7,32 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Removed (dead code the tests were propping up, 2026-08-31)
+
+- **`MathsExtensions.GetRow` and `WithRow` could never be called.** .NET 10's
+  `System.Numerics.Matrix4x4` has instance methods of both names, and an
+  instance method beats an extension method, so all forty-odd call sites were
+  already binding to the framework's. Mutating `GetRow` to return nonsense
+  failed no test, which is how this came to light. Both are removed, and the
+  solution builds unchanged - proof that nothing was calling them.
+- The four `VectorMathsTests` that exercised them went with them. They were
+  asserting the framework's behaviour, not the project's.
+- `MathsExtensions.ToVector2` had no callers at all.
+- `SharpKind.SDL.Tests` project-referenced `SharpKind.Input.Tests` and used
+  nothing from it. A test project depending on another test project put
+  `SharpKind.Input.Tests.exe` in the SDL project's output, where a runner
+  could pick it up and run the input tests twice. It now references
+  `SharpKind.Input` and `SharpKind.Fakes` directly, which is all it was
+  getting through it.
+- `SharpKind.SDL.Tests` and `SharpKind.Graphics.Tests` each carried a
+  `global.json` selecting the test runner. A `global.json` is found by walking
+  up from the working directory, so those only applied when `dotnet` was run
+  from inside the project - an incomplete version of the fix now made once at
+  the repository root.
+- The eleven untracked `Useful.*` directories left behind by the SharpKind
+  rename are deleted. Every file in them was byte-identical to its
+  `SharpKind.*` counterpart once the rename was applied, so nothing was lost.
+
 ### Added (the player's own weapons are covered, 2026-08-31)
 
 - `Combat`'s tests were all about what the AI does. Thirty tests now cover the
