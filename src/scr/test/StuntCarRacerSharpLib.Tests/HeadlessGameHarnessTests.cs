@@ -8,6 +8,7 @@ using Xunit;
 
 namespace StuntCarRacerSharpLib.Tests;
 
+[Trait("Level", "Integration")]
 public class HeadlessGameHarnessTests
 {
     [Fact]

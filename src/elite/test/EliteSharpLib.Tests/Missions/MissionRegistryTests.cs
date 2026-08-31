@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace EliteSharpLib.Tests.Missions;
 
+[Trait("Level", "Integration")]
 public class MissionRegistryTests
 {
     [Fact]

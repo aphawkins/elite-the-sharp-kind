@@ -30,6 +30,7 @@ namespace EliteSharpLib.Tests.GoldenTrace;
 /// use, and review the grid diff before committing.
 /// </para>
 /// </remarks>
+[Trait("Level", "Integration")]
 public class FrameCheckTests
 {
     public static TheoryData<string> ScenarioNames

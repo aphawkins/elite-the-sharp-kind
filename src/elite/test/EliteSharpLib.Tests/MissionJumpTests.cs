@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -12,6 +12,7 @@ namespace EliteSharpLib.Tests;
 // that Reset run, so a jump landing on the wrong screen - or on the right
 // screen with the wrong briefing - means the entry conditions have drifted
 // from the controllers. That is exactly what these check.
+[Trait("Level", "Integration")]
 public class MissionJumpTests
 {
     // The first two stages belong to the Constrictor mission and the rest to

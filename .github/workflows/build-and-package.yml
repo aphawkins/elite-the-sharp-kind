@@ -40,15 +40,20 @@ jobs:
       - name: Build solution
         run: dotnet build --configuration Release
 
-      - name: Run tests with coverage
+      - name: Run unit tests with coverage
         # Release builds strip PDBs (Directory.Build.props), so force portable
         # PDBs back on for this build+test pass only - the coverage collector
         # needs them to map hits to source lines.
-        # One cobertura file per test project, left unmerged on purpose: the
-        # collector's own merge counts a line once per project that loaded it
-        # and keeps the lowest run rather than the union. ReportGenerator
-        # merges them correctly below.
-        run: dotnet test --configuration Release -p:DebugType=portable -p:DebugSymbols=true --coverage --coverage-output-format cobertura --results-directory ./TestResults
+        # The two levels run as separate steps so a broken unit test is named
+        # before the slower integration level runs at all. Both write into the
+        # same folder, one cobertura file per project per step, and
+        # ReportGenerator merges them. Merging in the collector instead counts
+        # a line once per project that loaded it and keeps the lowest run
+        # rather than the union.
+        run: dotnet test --configuration Release -p:DebugType=portable -p:DebugSymbols=true --coverage --coverage-output-format cobertura --results-directory ./TestResults -- --filter-not-trait "Level=Integration"
+
+      - name: Run integration tests with coverage
+        run: dotnet test --configuration Release -p:DebugType=portable -p:DebugSymbols=true --coverage --coverage-output-format cobertura --results-directory ./TestResults -- --filter-trait "Level=Integration"
 
       - name: Generate coverage report and badge
         run: reportgenerator -reports:"TestResults/*.cobertura.xml" -targetdir:coveragereport -reporttypes:"Cobertura;Badges" "-assemblyfilters:-*.Tests;-*.Fakes;-*.Benchmarks;-*.TestPlugin"

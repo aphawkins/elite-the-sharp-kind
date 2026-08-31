@@ -18,6 +18,7 @@ namespace EliteSharpLib.Tests;
 /// unchanged at the game's own 13.5Hz. Here the game is run at 60Hz for the
 /// same number of seconds and asked to be in the same place.
 /// </remarks>
+[Trait("Level", "Integration")]
 public class FrameRateIndependenceTests
 {
     private const float FastRate = 60f;

@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -19,6 +19,7 @@ namespace EliteSharpLib.Tests;
 // for visual inspection (found under EliteFrames in the temp dir).
 // The overlap/interpenetration scenes exercise the hidden-surface handling
 // that the painter's algorithm gets wrong per face.
+[Trait("Level", "Integration")]
 public class VisualDumpTests
 {
     [Fact]

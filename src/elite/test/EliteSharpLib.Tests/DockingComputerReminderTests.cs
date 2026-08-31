@@ -18,6 +18,7 @@ namespace EliteSharpLib.Tests;
 /// on a multiple of 128, which at 13.5Hz is once but at any faster rate is
 /// several times over.
 /// </remarks>
+[Trait("Level", "Integration")]
 public class DockingComputerReminderTests
 {
     [Fact]

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace EliteSharpLib.Tests.Missions;
 
+[Trait("Level", "Integration")]
 public sealed class MissionLoaderTests : IDisposable
 {
     private const string PluginAssembly = "EliteSharp.Missions.TestPlugin.dll";

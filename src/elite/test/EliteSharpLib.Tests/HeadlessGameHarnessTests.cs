@@ -7,6 +7,7 @@ using SharpKind.Input;
 
 namespace EliteSharpLib.Tests;
 
+[Trait("Level", "Integration")]
 public class HeadlessGameHarnessTests
 {
     [Fact]

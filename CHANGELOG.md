@@ -7,6 +7,20 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (the tests are split into two levels, 2026-08-31)
+
+- Fifteen test classes now carry `[Trait("Level", "Integration")]`. They drive
+  the real DI composition, the headless game harness, the file system or a
+  plugin loaded off disk, so they test components together rather than one
+  component on its own. Everything else stays unmarked and is a unit test.
+- The unit level is 1580 tests in 3.3 seconds, so it can be run on every save.
+  The integration level is the other 74 tests and takes 9.3 seconds by itself.
+- The build runs the two as separate steps, unit level first, so a broken unit
+  test is named before the slow level runs at all. Both steps collect coverage
+  into the same folder and the report merges them, so the badge still covers
+  the whole suite.
+- `CONTRIBUTING.md` says which level a new test belongs at.
+
 ### Fixed (coverage is measured again, 2026-08-31)
 
 - **The coverage figure came from a collector that no longer ran.**

@@ -25,6 +25,7 @@ namespace EliteSharpLib.Tests.GoldenTrace;
 /// thing this test exists to prevent.
 /// </para>
 /// </remarks>
+[Trait("Level", "Integration")]
 public class GoldenTraceTests
 {
     // Zero until the rate conversion starts. Items 1 and 2 change no

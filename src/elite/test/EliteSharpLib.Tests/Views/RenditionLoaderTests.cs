@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace EliteSharpLib.Tests.Views;
 
+[Trait("Level", "Integration")]
 public sealed class RenditionLoaderTests : IDisposable
 {
     private const string EightBitAssembly = "EliteSharp.Renditions.EightBit.dll";

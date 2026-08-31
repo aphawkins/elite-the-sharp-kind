@@ -14,6 +14,7 @@ namespace EliteSharpLib.Tests;
 // real update loop - Space moves the ships, Combat.Tactics steers the missile,
 // and the lock happens off the drawn (view-space) position. These drive the
 // whole loop rather than Combat alone, so a break anywhere along it shows up.
+[Trait("Level", "Integration")]
 public class MissileFlightTests
 {
     // Flying into the intro and out of the station, which every test here

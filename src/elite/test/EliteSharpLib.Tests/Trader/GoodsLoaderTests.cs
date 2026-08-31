@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace EliteSharpLib.Tests.Trader;
 
+[Trait("Level", "Integration")]
 public sealed class GoodsLoaderTests : IDisposable
 {
     private const string TestPluginAssembly = "EliteSharp.Goods.TestPlugin.dll";

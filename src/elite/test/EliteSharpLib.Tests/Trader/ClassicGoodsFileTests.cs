@@ -11,6 +11,7 @@ namespace EliteSharpLib.Tests.Trader;
 /// wrong. A set that cannot say what it trades must say which file and why:
 /// the game will not start without one, and "no market" is not a diagnosis.
 /// </summary>
+[Trait("Level", "Integration")]
 public sealed class ClassicGoodsFileTests : IDisposable
 {
     // The fixtures are real files, read from beside the assembly, rather than
