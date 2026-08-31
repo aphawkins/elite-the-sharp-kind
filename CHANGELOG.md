@@ -7,6 +7,24 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (the short range chart is covered, 2026-08-31)
+
+- **The short range chart had the thinnest cover of any screen: 12% of its
+  lines.** It is also the only controller that works in screen space, so the
+  cross-hair's box comes from the tier's layout rather than from the galaxy,
+  and none of that was held by a test.
+- 25 tests take it to 100%. The cross-hair's four edges are asserted at the
+  boundary rather than near it, each direction key is asserted with its alias
+  (S and Up, X and Down, comma and Left, full stop and Right), and the 8-bit
+  tier is asserted to be the 16-bit one halved, which is the claim that lets
+  one controller serve both.
+- The find prompt is walked through its states: opened, typed into,
+  backspaced (including backspacing an empty name, which must not underflow),
+  and closed on a name that exists and on one that does not.
+- The five-update delay on the distance readout is covered from both sides: it
+  does not report early while the player is still moving, and an untouched
+  chart does not re-measure at all.
+
 ### Changed (the frame-rate tests play the game four times, not fourteen, 2026-08-31)
 
 - Each of the seven `FrameRateIndependenceTests` started its own pair of game
