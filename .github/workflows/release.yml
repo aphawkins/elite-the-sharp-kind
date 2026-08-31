@@ -82,4 +82,4 @@ jobs:
           generate_release_notes: true
           files: dist/*.zip
           body: |
-            StuntCarRacerSharp builds are a **preview** release — see the open defects list in [docs/backlog-roadmap.md](https://github.com/${{ github.repository }}/blob/master/docs/backlog-roadmap.md).
+            StuntCarRacerSharp builds are a **preview** release — see the open defects list in [docs/backlog-roadmap.md](https://github.com/${{ github.repository }}/blob/main/docs/backlog-roadmap.md).

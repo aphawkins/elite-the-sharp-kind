@@ -36,4 +36,4 @@ Both games are built on a shared set of engine libraries under `src/useful/` —
 
 - [Project README](https://github.com/aphawkins/the-sharp-kind#readme)
 - [Architecture principles](architecture-principles.md)
-- [Changelog](https://github.com/aphawkins/the-sharp-kind/blob/master/CHANGELOG.md)
+- [Changelog](https://github.com/aphawkins/the-sharp-kind/blob/main/CHANGELOG.md)

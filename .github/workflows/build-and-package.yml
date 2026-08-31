@@ -2,9 +2,9 @@ name: Build and Package
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build-test-package:
@@ -71,14 +71,14 @@ jobs:
           path: coveragereport/Cobertura.xml
 
       - name: Update coverage badge file
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         # ReportGenerator emits the badge with CRLF, but .gitattributes normalizes
         # to LF on staging - so a copied-but-unchanged badge stages as a no-op and
         # create-pull-request fails on the empty commit. Strip the CRs up front.
         run: tr -d '\r' < coveragereport/badge_linecoverage.svg > docs/images/coverage-badge.svg
 
       - name: Create coverage badge PR
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         id: badge-pr
         uses: peter-evans/create-pull-request@v8
         with:
