@@ -78,6 +78,7 @@ Optional, and entirely alongside the keyboard. Only flight and fire are
 mapped: everything else Elite can do - docking, hyperspace, missiles, ECM,
 the charts and the trading screens - has no room on a one-stick joystick
 and stays on the keys. A device is picked up whenever it is plugged in.
+Tested with an Xbox One controller.
 
 Buttons are numbered as the device numbers them, which for a device SDL has
 no mapping for is simply the order its buttons are wired in. Fire sits on
