@@ -7,6 +7,22 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (coverage is measured again, 2026-08-31)
+
+- **The coverage figure came from a collector that no longer ran.**
+  `coverlet.collector` is a VSTest data collector, so it collected nothing
+  once the tests moved to the Microsoft.Testing.Platform runner. The test
+  projects now reference `Microsoft.Testing.Extensions.CodeCoverage`, set in
+  `Directory.Build.props` beside the runner it belongs to.
+- The build asks for one cobertura file per test project rather than one
+  merged file. The collector's own merge counts a line once for every project
+  that loaded the assembly, and reports the lowest run instead of the union:
+  it put `SharpKind.Input` at 0% and `SharpKind.Graphics` at 55.5% when the
+  figures are 95.7% and 94.5%. ReportGenerator merges the separate files
+  correctly.
+- The badge reads 77.8%, the first figure the tests have actually earned.
+  Line coverage is 14195 of 18236; branch coverage is 67.8%.
+
 ### Fixed (the test suite runs again on CI, 2026-08-31)
 
 - **`dotnet test` ran no tests at all.** `xunit.v3` marks a project as a

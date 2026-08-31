@@ -42,16 +42,16 @@ jobs:
 
       - name: Run tests with coverage
         # Release builds strip PDBs (Directory.Build.props), so force portable
-        # PDBs back on for this build+test pass only - coverlet needs them to
-        # map hits to source lines.
-        run: |
-          dotnet test --configuration Release -p:DebugType=portable -p:DebugSymbols=true \
-          --collect:"XPlat Code Coverage" --results-directory ./TestResults --verbosity normal
+        # PDBs back on for this build+test pass only - the coverage collector
+        # needs them to map hits to source lines.
+        # One cobertura file per test project, left unmerged on purpose: the
+        # collector's own merge counts a line once per project that loaded it
+        # and keeps the lowest run rather than the union. ReportGenerator
+        # merges them correctly below.
+        run: dotnet test --configuration Release -p:DebugType=portable -p:DebugSymbols=true --coverage --coverage-output-format cobertura --results-directory ./TestResults
 
       - name: Generate coverage report and badge
-        run: |
-          reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:coveragereport \
-          -reporttypes:"Cobertura;Badges" "-assemblyfilters:-*.Tests;-*.Fakes;-*.Benchmarks"
+        run: reportgenerator -reports:"TestResults/*.cobertura.xml" -targetdir:coveragereport -reporttypes:"Cobertura;Badges" "-assemblyfilters:-*.Tests;-*.Fakes;-*.Benchmarks;-*.TestPlugin"
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v7

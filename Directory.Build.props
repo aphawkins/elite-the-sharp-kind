@@ -40,6 +40,13 @@
     <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
   </PropertyGroup>
 
+  <ItemGroup Condition="$(MSBuildProjectName.EndsWith('.Tests'))">
+    <!-- Coverage for that runner. The coverlet collector this replaces is a
+         VSTest data collector, so it collected nothing once the runner
+         changed. -->
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
+  </ItemGroup>
+
   <ItemGroup>
     <!-- Sonar rule parameters (e.g. S1451's header format) can only be set
          from a SonarLint.xml additional file, not from .editorconfig. -->
