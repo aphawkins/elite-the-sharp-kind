@@ -13,19 +13,10 @@ namespace EliteSharpLib.Tests.Trader;
 /// </summary>
 public sealed class ClassicGoodsFileTests : IDisposable
 {
-    private const string OneGood = """
-        {
-          "name": "Test",
-          "goods": [
-            {
-              "id": "Food", "name": "Food", "basePrice": 1.9, "economyAdjust": -2,
-              "baseQuantity": 6, "mask": 1, "units": "t", "fillsHold": true,
-              "openingStationStock": 16, "isSoldByStations": true,
-              "contrabandWeight": 0, "isDroppedByShips": true
-            }
-          ]
-        }
-        """;
+    // The fixtures are real files, read from beside the assembly, rather than
+    // JSON spelled out in C#: the subject here is a file, and a string literal
+    // that happens to be JSON is not one.
+    private static readonly string s_oneGood = Fixture("one-good.json");
 
     private readonly string _directory;
     private bool _isDisposed;
@@ -39,7 +30,7 @@ public sealed class ClassicGoodsFileTests : IDisposable
     [Fact]
     public void ReadsTheSetAndItsGoods()
     {
-        ClassicGoodsSet set = new(Given(OneGood));
+        ClassicGoodsSet set = new(Given(s_oneGood));
 
         Assert.Equal("Test", set.Name);
         EliteSharp.Abstractions.Trading.Good good = Assert.Single(set.Goods);
@@ -75,7 +66,7 @@ public sealed class ClassicGoodsFileTests : IDisposable
     [Fact]
     public void RejectsAFileWithNoGoods()
     {
-        string path = Given("""{ "name": "Empty", "goods": [] }""");
+        string path = Given(Fixture("empty-goods.json"));
 
         InvalidOperationException ex = Assert.Throws<InvalidOperationException>(() => new ClassicGoodsSet(path));
 
@@ -85,7 +76,7 @@ public sealed class ClassicGoodsFileTests : IDisposable
     [Fact]
     public void RejectsAFileThatLeavesTheGoodsOut()
     {
-        string path = Given("""{ "name": "Nothing" }""");
+        string path = Given(Fixture("no-goods.json"));
 
         Assert.Throws<InvalidOperationException>(() => new ClassicGoodsSet(path));
     }
@@ -93,7 +84,7 @@ public sealed class ClassicGoodsFileTests : IDisposable
     [Fact]
     public void RejectsAFileThatDoesNotNameItsSet()
     {
-        string path = Given(OneGood.Replace("\"name\": \"Test\"", "\"name\": \" \"", StringComparison.Ordinal));
+        string path = Given(s_oneGood.Replace("\"name\": \"Test\"", "\"name\": \" \"", StringComparison.Ordinal));
 
         InvalidOperationException ex = Assert.Throws<InvalidOperationException>(() => new ClassicGoodsSet(path));
 
@@ -103,7 +94,7 @@ public sealed class ClassicGoodsFileTests : IDisposable
     [Fact]
     public void RejectsAGoodWithNoId()
     {
-        string path = Given(OneGood.Replace("\"id\": \"Food\"", "\"id\": \"\"", StringComparison.Ordinal));
+        string path = Given(s_oneGood.Replace("\"id\": \"Food\"", "\"id\": \"\"", StringComparison.Ordinal));
 
         InvalidOperationException ex = Assert.Throws<InvalidOperationException>(() => new ClassicGoodsSet(path));
 
@@ -113,7 +104,7 @@ public sealed class ClassicGoodsFileTests : IDisposable
     [Fact]
     public void RejectsAGoodWithNoUnits()
     {
-        string path = Given(OneGood.Replace("\"units\": \"t\"", "\"units\": \"\"", StringComparison.Ordinal));
+        string path = Given(s_oneGood.Replace("\"units\": \"t\"", "\"units\": \"\"", StringComparison.Ordinal));
 
         InvalidOperationException ex = Assert.Throws<InvalidOperationException>(() => new ClassicGoodsSet(path));
 
@@ -148,6 +139,10 @@ public sealed class ClassicGoodsFileTests : IDisposable
             _isDisposed = true;
         }
     }
+
+    // The fixture files sit beside the assembly, copied there by the build.
+    private static string Fixture(string name)
+        => File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Trader", "Fixtures", name));
 
     private string Given(string json)
     {

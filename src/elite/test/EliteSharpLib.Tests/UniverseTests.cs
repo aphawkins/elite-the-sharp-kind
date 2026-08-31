@@ -23,8 +23,7 @@ public class UniverseTests
         universe.AddNewShip(ship);
 
         // Assert
-        Assert.Single(universe.GetAllObjects());
-        Assert.Equal(ship, universe.GetAllObjects().First());
+        Assert.Equal(ship, Assert.Single(universe.GetAllObjects()));
         Assert.Equal(ship, universe.FirstShip);
         Assert.Null(universe.Planet);
         Assert.Null(universe.StationOrSun);

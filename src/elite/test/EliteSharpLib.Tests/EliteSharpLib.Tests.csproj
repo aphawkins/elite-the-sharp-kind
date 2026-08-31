@@ -58,6 +58,11 @@
     <None Update="Graphics\2x2redtopleft.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <!-- The goods-file fixtures, read from beside the assembly rather than
+         spelled out as JSON in C#. -->
+    <None Update="Trader\Fixtures\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <!-- Read from the build output so a test run never depends on the source
          tree being where it was compiled. Regenerating writes back to the
          source copy instead - see TraceBaselines. -->

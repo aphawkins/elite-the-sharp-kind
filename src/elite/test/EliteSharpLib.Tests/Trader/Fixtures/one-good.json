@@ -1,0 +1,11 @@
+{
+  "name": "Test",
+  "goods": [
+    {
+      "id": "Food", "name": "Food", "basePrice": 1.9, "economyAdjust": -2,
+      "baseQuantity": 6, "mask": 1, "units": "t", "fillsHold": true,
+      "openingStationStock": 16, "isSoldByStations": true,
+      "contrabandWeight": 0, "isDroppedByShips": true
+    }
+  ]
+}

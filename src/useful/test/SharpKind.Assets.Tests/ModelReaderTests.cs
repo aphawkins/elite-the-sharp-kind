@@ -49,8 +49,7 @@ public class ModelReaderTests
             Assert.Same(model.FaceNormals[1], model.Points[0].FaceNormals[1]);
 
             // Point 1 references face-normal index 0 only.
-            Assert.Single(model.Points[1].FaceNormals);
-            Assert.Same(model.FaceNormals[0], model.Points[1].FaceNormals[0]);
+            Assert.Same(model.FaceNormals[0], Assert.Single(model.Points[1].FaceNormals));
 
             // Point 2 has no face-normal references.
             Assert.Empty(model.Points[2].FaceNormals);
