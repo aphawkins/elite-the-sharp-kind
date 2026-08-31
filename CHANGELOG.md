@@ -7,6 +7,26 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (the frame-rate tests play the game four times, not fourteen, 2026-08-31)
+
+- Each of the seven `FrameRateIndependenceTests` started its own pair of game
+  runs, so the class played the game fourteen times for eight distinct runs.
+  The runs now live in a `FrameRateRuns` class fixture, built once for the
+  class.
+- Two of the runs went away entirely. The throttle tests stopped part way up a
+  ramp that the longer runs pass through anyway, so a run records the speed as
+  it goes by instead: the flight pair also serves the player's throttle test,
+  and the docking pair serves both halves of the autopilot's. Four runs cover
+  all seven tests.
+- The class takes 4.3 seconds rather than 9.4, and `EliteSharpLib.Tests` as a
+  whole takes 4.1 rather than 8.8. Nothing is asserted that was not asserted
+  before: a sample read at update 108 of a run that continues to 175 is the
+  same state a run that stopped at 108 ended in.
+- Both branches of `Pilot.ApplyAutoDockSpeed` were reverted in turn again, as
+  they were when the tests were written. The wind-down test still fails alone
+  for the deceleration branch and the wind-up test alone for the other, so the
+  shared runs have not blunted them.
+
 ### Added (the tests are split into two levels, 2026-08-31)
 
 - Fifteen test classes now carry `[Trait("Level", "Integration")]`. They drive
