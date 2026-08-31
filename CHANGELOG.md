@@ -7,6 +7,22 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (the coverage figure stops counting the SDL bindings, 2026-08-31)
+
+- `SharpKind.SDL` is out of the coverage denominator. It is the P/Invoke layer
+  over SDL3, and every line of it needs a live window, audio device or
+  gamepad, so 1434 lines that no test can reach were being counted as lines no
+  test had reached. The figure said the game was less tested than it is.
+- The parts of it that are not bindings are tested rather than excused. The
+  key table is now covered key by key - every letter, digit and function key -
+  because a case left out of the switch falls through to `ConsoleKey.None`,
+  which is exactly the fault the arrow-key regression already recorded there.
+  Both control keys are asserted to be a modifier and not a key.
+- `SaveState`'s copy constructor is covered by reflecting over the class's own
+  properties, so a property added to a save and forgotten in the copy fails
+  the test without the test being touched.
+- Line coverage is 89.5% and branch coverage 78.7%.
+
 ### Added (both renditions draw every screen in a test, 2026-08-31)
 
 - **Nothing had ever drawn an 8-bit screen.** The tier sat at 0.5% of its
