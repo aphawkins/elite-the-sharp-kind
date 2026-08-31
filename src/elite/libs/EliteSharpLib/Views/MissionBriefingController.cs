@@ -156,7 +156,7 @@ internal sealed class MissionBriefingController : IScreenController
 
         ship.Flags = ShipProperties.None;
         _ship.Roll = 0;
-        _ship.Climb = 0;
+        _ship.Pitch = 0;
         _ship.Speed = 0;
     }
 }

@@ -113,7 +113,7 @@ internal sealed class Stars
         float ticks = _gameState.Clock.Ticks;
         float delta = (WarpStars ? 50 : _ship.Speed) * ticks;
         float alpha = _ship.Roll * ticks;
-        float beta = _ship.Climb * ticks;
+        float beta = _ship.Pitch * ticks;
 
         alpha /= 256;
         delta /= 2;
@@ -168,7 +168,7 @@ internal sealed class Stars
     {
         float ticks = _gameState.Clock.Ticks;
         float delta = (WarpStars ? 50 : _ship.Speed) * ticks;
-        SideStarfield(-_ship.Roll * ticks, -_ship.Climb * ticks, -delta);
+        SideStarfield(-_ship.Roll * ticks, -_ship.Pitch * ticks, -delta);
     }
 
     internal void RearStarfield()
@@ -177,7 +177,7 @@ internal sealed class Stars
         float ticks = _gameState.Clock.Ticks;
         float delta = (WarpStars ? 50 : _ship.Speed) * ticks;
         float alpha = -_ship.Roll * ticks;
-        float beta = -_ship.Climb * ticks;
+        float beta = -_ship.Pitch * ticks;
 
         alpha /= 256;
         delta /= 2;
@@ -222,7 +222,7 @@ internal sealed class Stars
     {
         float ticks = _gameState.Clock.Ticks;
         float delta = (WarpStars ? 50 : _ship.Speed) * ticks;
-        SideStarfield(_ship.Roll * ticks, _ship.Climb * ticks, delta);
+        SideStarfield(_ship.Roll * ticks, _ship.Pitch * ticks, delta);
     }
 
     // Star space (centred on the view) to screen pixels.

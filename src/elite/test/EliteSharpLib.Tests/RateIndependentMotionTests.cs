@@ -46,9 +46,9 @@ public class RateIndependentMotionTests
         PlayerShip ship = NewShip(out GameState state);
 
         state.Clock.BeginUpdate(GameRate / 4);
-        ship.IncreaseClimb();
+        ship.IncreasePitch();
 
-        Assert.Equal(0.25f, ship.Climb, 4);
+        Assert.Equal(0.25f, ship.Pitch, 4);
     }
 
     [Fact]
@@ -61,7 +61,7 @@ public class RateIndependentMotionTests
         PlayerShip ship = NewShip(out GameState state);
         ship.Roll = 0.2f;
         ship.IsRolling = false;
-        ship.IsClimbing = true;
+        ship.IsPitching = true;
 
         state.Clock.BeginUpdate(GameRate);
         ship.LevelOut();
@@ -75,7 +75,7 @@ public class RateIndependentMotionTests
         PlayerShip ship = NewShip(out GameState state);
         ship.Roll = -0.2f;
         ship.IsRolling = false;
-        ship.IsClimbing = true;
+        ship.IsPitching = true;
 
         state.Clock.BeginUpdate(GameRate);
         ship.LevelOut();

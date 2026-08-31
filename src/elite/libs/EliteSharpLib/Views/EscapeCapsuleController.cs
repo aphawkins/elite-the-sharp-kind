@@ -77,7 +77,7 @@ internal sealed class EscapeCapsuleController : IScreenController
     {
         _ship.Speed = 1;
         _ship.Roll = 0;
-        _ship.Climb = 0;
+        _ship.Pitch = 0;
         Matrix4x4 rotmat = VectorMaths.GetRightHandedBasisMatrix;
         _newShip = _shipFactory.CreateShip("CobraMk3");
         if (!_universe.AddNewShip(_newShip, new(0, 0, 200, 0), rotmat, -127, -127))
@@ -105,7 +105,7 @@ internal sealed class EscapeCapsuleController : IScreenController
         {
             _pilot.AutoDock();
 
-            if ((MathF.Abs(_ship.Roll) < 3) && (MathF.Abs(_ship.Climb) < 3))
+            if ((MathF.Abs(_ship.Roll) < 3) && (MathF.Abs(_ship.Pitch) < 3))
             {
                 foreach (IObject universeObj in _universe.GetAllObjects())
                 {

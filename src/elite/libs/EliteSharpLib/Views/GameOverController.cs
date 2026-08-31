@@ -73,7 +73,7 @@ internal sealed class GameOverController : IScreenController
         _tick = 0;
         _ship.Speed = 6;
         _ship.Roll = 0;
-        _ship.Climb = 0;
+        _ship.Pitch = 0;
         _combat.Reset();
         _universe.ClearUniverse();
         IShip cobraMk3 = _shipFactory.CreateShip("CobraMk3");

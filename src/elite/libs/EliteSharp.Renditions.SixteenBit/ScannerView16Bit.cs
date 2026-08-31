@@ -66,7 +66,7 @@ internal sealed class ScannerView16Bit : ScannerViewBase
 
     protected override Vector2 RollPosition => new(544, 9 + 14);
 
-    protected override Vector2 ClimbPosition => new(544, 9 + 14 + 16);
+    protected override Vector2 PitchPosition => new(544, 9 + 14 + 16);
 
     protected override Vector2 CompassCentre => new(514, 26);
 

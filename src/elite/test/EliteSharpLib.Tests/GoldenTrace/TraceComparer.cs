@@ -53,7 +53,7 @@ internal static class TraceComparer
             ?? Near("messageCount", expected.MessageCount, actual.MessageCount, tolerance)
             ?? Near("laserTemp", expected.LaserTemp, actual.LaserTemp, tolerance)
             ?? Near("roll", expected.Roll, actual.Roll, tolerance)
-            ?? Near("climb", expected.Climb, actual.Climb, tolerance)
+            ?? Near("pitch", expected.Pitch, actual.Pitch, tolerance)
             ?? Near("speed", expected.Speed, actual.Speed, tolerance)
             ?? Near("energy", expected.Energy, actual.Energy, tolerance)
             ?? Near("shieldFront", expected.ShieldFront, actual.ShieldFront, tolerance)

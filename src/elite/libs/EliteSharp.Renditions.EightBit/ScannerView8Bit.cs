@@ -62,7 +62,7 @@ internal sealed class ScannerView8Bit : ScannerViewBase
     // half a dial's width in, which used to be baked in as a fixed 32.
     protected override Vector2 RollPosition => new(270, 10);
 
-    protected override Vector2 ClimbPosition => new(270, 18);
+    protected override Vector2 PitchPosition => new(270, 18);
 
     protected override Vector2 CompassCentre => new(257, 10);
 

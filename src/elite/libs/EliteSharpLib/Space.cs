@@ -191,7 +191,7 @@ internal sealed class Space
 
         // Rotate in the same direction that the station is spinning
         _ship.Roll = 15;
-        _ship.Climb = 0;
+        _ship.Pitch = 0;
         _gameState.Cmdr.LegalStatus |= _trade.IsCarryingContraband();
         _stars.CreateNewStars();
 
@@ -860,7 +860,7 @@ internal sealed class Space
             _ship.Fuel -= _hyperDistance;
             _gameState.Cmdr.LegalStatus /= 2;
 
-            if ((_rng.Random(256) >= 253) || (_ship.Climb >= _ship.MaxClimb))
+            if ((_rng.Random(256) >= 253) || (_ship.Pitch >= _ship.MaxPitch))
             {
                 EnterWitchspace();
                 return;
@@ -875,7 +875,7 @@ internal sealed class Space
 
         _ship.Speed = 12;
         _ship.Roll = 0;
-        _ship.Climb = 0;
+        _ship.Pitch = 0;
         _stars.CreateNewStars();
         _combat.Reset();
         _universe.ClearUniverse();
@@ -947,7 +947,7 @@ internal sealed class Space
 
         _ship.Speed = 12;
         _ship.Roll = 0;
-        _ship.Climb = 0;
+        _ship.Pitch = 0;
         _stars.CreateNewWitchspaceStars();
         _combat.Reset();
         _universe.ClearUniverse();
@@ -1035,7 +1035,7 @@ internal sealed class Space
         // speed slides the whole lot towards the camera - three more rates
         // that were once per tick and are now per second.
         float alpha = _ship.Roll / 256 * ticks;
-        float beta = _ship.Climb / 256 * ticks;
+        float beta = _ship.Pitch / 256 * ticks;
 
         Vector4 position = obj.Location;
         if (obj is IShip shipEx &&

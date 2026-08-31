@@ -61,7 +61,7 @@ public class SpaceTests
 
         Assert.Equal(12, ship.Speed);
         Assert.Equal(15, ship.Roll);
-        Assert.Equal(0, ship.Climb);
+        Assert.Equal(0, ship.Pitch);
         Assert.False(gameState.IsDocked);
         Assert.NotNull(universe.Planet);
 
@@ -319,7 +319,7 @@ public class SpaceTests
     }
 
     [Fact]
-    public void RollingAndClimbingDoesNotRotateTheSunsOwnOrientation()
+    public void RollingAndPitchingDoesNotRotateTheSunsOwnOrientation()
     {
         // Arrange: original MV45 - the sun returns before rotating its own
         // orientation vectors or spinning, "we don't need to rotate the sun
@@ -327,7 +327,7 @@ public class SpaceTests
         Space space = CreateSpace(
             out _, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out _, out _);
         ship.Roll = 30;
-        ship.Climb = 20;
+        ship.Pitch = 20;
         FakeShip sun = new(draw) { Type = ShipType.Sun, Rotmat = Matrix4x4.Identity };
         universe.AddNewShip(sun, new(0, 0, 500, 0), Matrix4x4.Identity, 0, 0);
         FakeShip planet = new(draw) { Type = ShipType.Planet, Rotmat = Matrix4x4.Identity };

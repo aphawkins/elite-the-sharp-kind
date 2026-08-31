@@ -32,7 +32,7 @@ namespace EliteSharp.Abstractions.Views;
 /// <param name="Speed">Speed as a fraction of maximum, 0 to 1.</param>
 /// <param name="IsSpeedWarning">Whether speed is high enough to draw in the warning colour.</param>
 /// <param name="Roll">Roll indicator offset from centre, -1 to 1, already reversed for display.</param>
-/// <param name="Climb">Climb indicator offset from centre, -1 to 1.</param>
+/// <param name="Pitch">Pitch indicator offset from centre, -1 to 1.</param>
 /// <param name="Missiles">The missile indicators, left to right.</param>
 /// <param name="IsStationPresent">Whether the station indicator is lit.</param>
 /// <param name="IsEcmActive">Whether the E.C.M. indicator is lit.</param>
@@ -56,7 +56,7 @@ public sealed record ScannerModel(
     float Speed,
     bool IsSpeedWarning,
     float Roll,
-    float Climb,
+    float Pitch,
     IReadOnlyList<MissileIndicator> Missiles,
     bool IsStationPresent,
     bool IsEcmActive,

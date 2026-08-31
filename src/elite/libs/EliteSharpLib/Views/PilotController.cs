@@ -152,12 +152,12 @@ internal sealed class PilotController : IScreenController
         => _keyboard.IsHeld(ConsoleKey.A)
             || GamepadControls.IsFiring(_gamepad);
 
-    private bool WantsClimb()
+    private bool WantsPitchUp()
         => _keyboard.IsHeld(ConsoleKey.S)
             || _keyboard.IsHeld(ConsoleKey.UpArrow)
             || GamepadControls.Pitch(_gamepad) < 0;
 
-    private bool WantsDive()
+    private bool WantsPitchDown()
         => _keyboard.IsHeld(ConsoleKey.X)
             || _keyboard.IsHeld(ConsoleKey.DownArrow)
             || GamepadControls.Pitch(_gamepad) > 0;
@@ -187,34 +187,34 @@ internal sealed class PilotController : IScreenController
             _gameState.DrawLasers = _combat.FireLaser();
         }
 
-        if (WantsClimb())
+        if (WantsPitchUp())
         {
-            if (_ship.Climb > 0)
+            if (_ship.Pitch > 0)
             {
-                _ship.Climb = 0;
+                _ship.Pitch = 0;
             }
             else
             {
-                _ship.DecreaseClimb();
-                _ship.DecreaseClimb();
+                _ship.DecreasePitch();
+                _ship.DecreasePitch();
             }
 
-            _ship.IsClimbing = true;
+            _ship.IsPitching = true;
         }
 
-        if (WantsDive())
+        if (WantsPitchDown())
         {
-            if (_ship.Climb < 0)
+            if (_ship.Pitch < 0)
             {
-                _ship.Climb = 0;
+                _ship.Pitch = 0;
             }
             else
             {
-                _ship.IncreaseClimb();
-                _ship.IncreaseClimb();
+                _ship.IncreasePitch();
+                _ship.IncreasePitch();
             }
 
-            _ship.IsClimbing = true;
+            _ship.IsPitching = true;
         }
 
         HandleRollControls();

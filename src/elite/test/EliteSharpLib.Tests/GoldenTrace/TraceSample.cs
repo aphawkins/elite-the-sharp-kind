@@ -23,7 +23,7 @@ internal sealed record TraceSample(
     float MessageCount,
     float LaserTemp,
     float Roll,
-    float Climb,
+    float Pitch,
     float Speed,
     float Energy,
     float ShieldFront,

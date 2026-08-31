@@ -115,7 +115,7 @@ internal sealed class PlayerShip
 
     internal int CargoCapacity { get; set; }
 
-    internal float Climb { get; set; }
+    internal float Pitch { get; set; }
 
     /// <summary>
     /// Gets or sets how much longer an E.C.M. burst runs, counted in the
@@ -146,7 +146,7 @@ internal sealed class PlayerShip
 
     internal bool HasGalacticHyperdrive { get; set; }
 
-    internal bool IsClimbing { get; set; }
+    internal bool IsPitching { get; set; }
 
     internal bool IsRolling { get; set; }
 
@@ -158,7 +158,7 @@ internal sealed class PlayerShip
 
     internal ILaser LaserRight { get; set; } = new LaserNone();
 
-    internal float MaxClimb { get; } = 8;
+    internal float MaxPitch { get; } = 8;
 
     internal float MaxFuel { get; } = 7;
 
@@ -225,7 +225,7 @@ internal sealed class PlayerShip
     /// the controls; how far that moves the ship this update is a fact about
     /// the clock, and the ship is where the two meet.
     /// </remarks>
-    internal void DecreaseClimb() => Climb = Math.Clamp(Climb - _clock.Ticks, -MaxClimb, MaxClimb);
+    internal void DecreasePitch() => Pitch = Math.Clamp(Pitch - _clock.Ticks, -MaxPitch, MaxPitch);
 
     /// <summary>
     /// Drain the energy banks. The amount is in the original's 0-255 units, so
@@ -233,19 +233,19 @@ internal sealed class PlayerShip
     /// </summary>
     internal void DecreaseEnergy(float amount) => Energy += amount * EnergyStep;
 
-    /// <inheritdoc cref="DecreaseClimb"/>
+    /// <inheritdoc cref="DecreasePitch"/>
     internal void DecreaseRoll() => Roll = Math.Clamp(Roll - _clock.Ticks, -MaxRoll, MaxRoll);
 
-    /// <inheritdoc cref="DecreaseClimb"/>
+    /// <inheritdoc cref="DecreasePitch"/>
     internal void DecreaseSpeed() => Speed = Math.Clamp(Speed - _clock.Ticks, 0, MaxSpeed);
 
-    /// <inheritdoc cref="DecreaseClimb"/>
-    internal void IncreaseClimb() => Climb = Math.Clamp(Climb + _clock.Ticks, -MaxClimb, MaxClimb);
+    /// <inheritdoc cref="DecreasePitch"/>
+    internal void IncreasePitch() => Pitch = Math.Clamp(Pitch + _clock.Ticks, -MaxPitch, MaxPitch);
 
-    /// <inheritdoc cref="DecreaseClimb"/>
+    /// <inheritdoc cref="DecreasePitch"/>
     internal void IncreaseRoll() => Roll = Math.Clamp(Roll + _clock.Ticks, -MaxRoll, MaxRoll);
 
-    /// <inheritdoc cref="DecreaseClimb"/>
+    /// <inheritdoc cref="DecreasePitch"/>
     internal void IncreaseSpeed() => Speed = Math.Clamp(Speed + _clock.Ticks, 0, MaxSpeed);
 
     internal bool IsEnergyLow() => Energy < LowEnergy;
@@ -274,15 +274,15 @@ internal sealed class PlayerShip
             }
         }
 
-        if (!IsClimbing)
+        if (!IsPitching)
         {
-            if (Climb > 0)
+            if (Pitch > 0)
             {
-                Climb = MathF.Max(Climb - _clock.Ticks, 0);
+                Pitch = MathF.Max(Pitch - _clock.Ticks, 0);
             }
-            else if (Climb < 0)
+            else if (Pitch < 0)
             {
-                Climb = MathF.Min(Climb + _clock.Ticks, 0);
+                Pitch = MathF.Min(Pitch + _clock.Ticks, 0);
             }
         }
     }
@@ -316,7 +316,7 @@ internal sealed class PlayerShip
         Altitude = AltitudeMax;
         CabinTemperature = AmbientTemperature;
         Roll = 0;
-        Climb = 0;
+        Pitch = 0;
         Speed = 0;
         Energy = EnergyMax;
         ShieldFront = ShieldMax;

@@ -59,13 +59,13 @@ public abstract class ScannerViewBase : IView<ScannerModel>
     protected abstract float DialBarWidth { get; }
 
     /// <summary>
-    /// Gets how far in pixels the roll and climb indicators travel either side
+    /// Gets how far in pixels the roll and pitch indicators travel either side
     /// of their dial's centre.
     /// </summary>
     protected abstract float IndicatorTravel { get; }
 
     /// <summary>
-    /// Gets the thickness in pixels of the roll and climb indicators.
+    /// Gets the thickness in pixels of the roll and pitch indicators.
     /// </summary>
     protected abstract int IndicatorWidth { get; }
 
@@ -94,7 +94,7 @@ public abstract class ScannerViewBase : IView<ScannerModel>
 
     protected abstract Vector2 RollPosition { get; }
 
-    protected abstract Vector2 ClimbPosition { get; }
+    protected abstract Vector2 PitchPosition { get; }
 
     protected abstract Vector2 CompassCentre { get; }
 
@@ -111,7 +111,7 @@ public abstract class ScannerViewBase : IView<ScannerModel>
     protected abstract Vector2 EcmIndicatorPosition { get; }
 
     /// <summary>
-    /// Gets the dial's top rule colour, which the roll, climb and speed
+    /// Gets the dial's top rule colour, which the roll, pitch and speed
     /// indicators also use.
     /// </summary>
     protected abstract FastColor DialTopColor { get; }
@@ -143,7 +143,7 @@ public abstract class ScannerViewBase : IView<ScannerModel>
 
         DrawScanner();
         DisplaySpeed(model);
-        DisplayIndicator(model.Climb, ScannerRelative(ClimbPosition));
+        DisplayIndicator(model.Pitch, ScannerRelative(PitchPosition));
         DisplayIndicator(model.Roll, ScannerRelative(RollPosition));
         DisplayDial(model.ShieldFront, ShieldFrontPosition);
         DisplayDial(model.ShieldRear, ShieldRearPosition);
@@ -240,7 +240,7 @@ public abstract class ScannerViewBase : IView<ScannerModel>
     }
 
     /// <summary>
-    /// Draw the roll or climb indicator: a short vertical block sliding either
+    /// Draw the roll or pitch indicator: a short vertical block sliding either
     /// side of its dial's centre.
     /// </summary>
     /// <param name="offset">How far from centre, between -1 and 1.</param>

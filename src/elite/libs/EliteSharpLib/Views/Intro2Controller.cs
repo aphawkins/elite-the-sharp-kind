@@ -103,7 +103,7 @@ internal sealed class Intro2Controller : IScreenController
         _shipNo = 0;
         _ship.Speed = 3;
         _ship.Roll = 0;
-        _ship.Climb = 0;
+        _ship.Pitch = 0;
         _combat.Reset();
         _stars.CreateNewStars();
         _rotmat = VectorMaths.GetLeftHandedBasisMatrix;

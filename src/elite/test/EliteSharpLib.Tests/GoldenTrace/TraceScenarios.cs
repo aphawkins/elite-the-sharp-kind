@@ -38,7 +38,7 @@ internal static class TraceScenarios
     // Docked, then launched, then flown. Covers BreakPattern's 20 rings (the
     // launch animation), Space.LaunchPlayer, the station and planet moving
     // past under MoveUniverseObject/ApplyShipVelocity, the front starfield's
-    // per-tick delta, and the player's roll/climb ramp - which
+    // per-tick delta, and the player's roll/pitch ramp - which
     // PilotController steps twice a tick.
     internal static TraceScenario LaunchAndFly { get; } = new(
         "launch-and-fly",
@@ -51,7 +51,7 @@ internal static class TraceScenarios
             // F1 while docked is Undocking, which is LaunchView.
             new(4, ConsoleKey.F1, KeyScriptAction.Tap),
 
-            // Accelerate for a while, then roll and climb into it.
+            // Accelerate for a while, then roll and pitch into it.
             new(40, ConsoleKey.Spacebar, KeyScriptAction.Hold),
             new(90, ConsoleKey.Spacebar, KeyScriptAction.Release),
             new(90, ConsoleKey.OemPeriod, KeyScriptAction.Hold),

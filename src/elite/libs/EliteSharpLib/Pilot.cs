@@ -57,7 +57,7 @@ internal sealed class Pilot
         AutoPilotShip(ship);
 
         ApplyAutoDockSpeed(ship);
-        ApplyAutoDockClimb(ship);
+        ApplyAutoDockPitch(ship);
         ApplyAutoDockRoll(ship);
     }
 
@@ -260,31 +260,31 @@ internal sealed class Pilot
         }
     }
 
-    // Translate the phantom ship's pitch into the player's climb.
-    private void ApplyAutoDockClimb(ShipBase ship)
+    // Translate the phantom ship's pitch into the player's pitch.
+    private void ApplyAutoDockPitch(ShipBase ship)
     {
         if ((int)ship.RotX == 0)
         {
-            _ship.Climb = 0;
+            _ship.Pitch = 0;
         }
 
         if (ship.RotX < 0)
         {
-            _ship.IncreaseClimb();
+            _ship.IncreasePitch();
 
             if (ship.RotX < -1)
             {
-                _ship.IncreaseClimb();
+                _ship.IncreasePitch();
             }
         }
 
         if (ship.RotX > 0)
         {
-            _ship.DecreaseClimb();
+            _ship.DecreasePitch();
 
             if (ship.RotX > 1)
             {
-                _ship.DecreaseClimb();
+                _ship.DecreasePitch();
             }
         }
     }

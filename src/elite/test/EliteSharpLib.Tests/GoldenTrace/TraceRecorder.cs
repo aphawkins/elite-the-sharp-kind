@@ -86,7 +86,7 @@ internal static class TraceRecorder
             state.MessageCount,
             state.LaserTemp,
             ship.Roll,
-            ship.Climb,
+            ship.Pitch,
             ship.Speed,
             ship.Energy,
             ship.ShieldFront,

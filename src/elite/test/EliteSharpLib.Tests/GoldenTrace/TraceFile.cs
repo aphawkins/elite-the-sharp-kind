@@ -55,7 +55,7 @@ internal static class TraceFile
                     Num(sample.MessageCount),
                     Num(sample.LaserTemp),
                     Num(sample.Roll),
-                    Num(sample.Climb),
+                    Num(sample.Pitch),
                     Num(sample.Speed),
                     Num(sample.Energy),
                     Num(sample.ShieldFront),

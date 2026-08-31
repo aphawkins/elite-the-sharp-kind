@@ -61,7 +61,7 @@ internal sealed class ScannerController
 
         // Roll reads the other way round: a roll to starboard slides left.
         -_ship.Roll / _ship.MaxRoll,
-        _ship.Climb / _ship.MaxClimb,
+        _ship.Pitch / _ship.MaxPitch,
         Missiles(),
         !_gameState.IsDocked && _universe.IsStationPresent,
         _ship.EcmActive != 0,
