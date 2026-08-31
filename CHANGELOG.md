@@ -7,6 +7,24 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (the docking computer's throttle ramp is covered, 2026-08-31)
+
+- **`Pilot.ApplyAutoDockSpeed`'s rate scaling was untested.** The autopilot
+  nudges the player's throttle a step every update, so the frame-rate rework
+  scaled it like everything else, but the first attempt at a test passed with
+  the fix reverted and was removed rather than left giving false assurance:
+  the ramp saturates at both ends, and it sampled the computer sitting at its
+  22 ceiling, where a rate four times too fast is invisible.
+- Two tests in `FrameRateIndependenceTests` now catch it, both sampling the
+  ramp while it is still moving. The computer is engaged at full speed
+  pointing away from the station, so it winds the throttle down first and
+  accelerates once it has turned around; one test stops part way down, the
+  other part way up. Each of `ApplyAutoDockSpeed`'s two branches was reverted
+  in turn to confirm which test covers it - the wind-down test alone passes
+  with the accelerating branch unscaled, which is why there are two.
+- The harness fits the docking computer mid-run, after the script's 'N' has
+  made the new commander that does not come with one.
+
 ### Fixed (a commander loads whatever case the name is typed in, 2026-08-29)
 
 - **A save was unreachable on Linux unless its file name was already upper

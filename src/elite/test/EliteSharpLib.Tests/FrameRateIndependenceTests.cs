@@ -29,6 +29,16 @@ public class FrameRateIndependenceTests
     // The update the accelerate key goes down on, at the game's own rate.
     private const int LaunchUpdates = 40;
 
+    // The update the docking computer is engaged on: far enough in that the
+    // ship is at full speed and well clear of the station.
+    private const int EngageUpdates = 80;
+
+    // The updates the two halves of the computer's throttle ramp are sampled
+    // at - one while it is still slowing the ship down, one after it has
+    // turned around and while it is still speeding it back up.
+    private const int WindDownUpdates = 108;
+    private const int WindUpUpdates = 175;
+
     [Fact]
     public void TheHousekeepingTakesTheSameStepsInTheSameTime()
     {
@@ -104,6 +114,41 @@ public class FrameRateIndependenceTests
         Assert.Equal(slowSpeed, fast.Resolve<PlayerShip>().Speed, 1.5f);
     }
 
+    [Fact]
+    public void TheDockingComputerWindsTheThrottleDownAtTheSameSpeed()
+    {
+        // The docking computer's own throttle, which the player's key never
+        // touches: the autopilot nudges the speed a step an update, so it
+        // needed the same scaling as everything else. It is engaged at full
+        // speed pointing away from the station, so the first thing it does is
+        // wind the throttle down - and this samples part way down, for the
+        // same reason as the test above. The ramp saturates at both ends, and
+        // a sample taken at rest cannot tell a correct rate from a fourfold
+        // one; that is what sank the first attempt at this test.
+        using HeadlessGameHarness slow = Dock(GameClock.StepsPerSecond, WindDownUpdates);
+        using HeadlessGameHarness fast = Dock(FastRate, (int)(WindDownUpdates * Ratio));
+
+        float slowSpeed = slow.Resolve<PlayerShip>().Speed;
+        Assert.InRange(slowSpeed, 5f, 21f);
+        Assert.Equal(slowSpeed, fast.Resolve<PlayerShip>().Speed, 1.5f);
+    }
+
+    [Fact]
+    public void TheDockingComputerWindsTheThrottleUpAtTheSameSpeed()
+    {
+        // The other half of the same method. Once the computer has turned the
+        // ship around it accelerates towards the station, and the run is
+        // stopped while it is still doing so: the wind-down test above passes
+        // with the accelerating branch left unscaled, so the approach has to
+        // be caught mid-ramp to cover it.
+        using HeadlessGameHarness slow = Dock(GameClock.StepsPerSecond, WindUpUpdates);
+        using HeadlessGameHarness fast = Dock(FastRate, (int)(WindUpUpdates * Ratio));
+
+        float slowSpeed = slow.Resolve<PlayerShip>().Speed;
+        Assert.InRange(slowSpeed, 2f, 21f);
+        Assert.Equal(slowSpeed, fast.Resolve<PlayerShip>().Speed, 1.5f);
+    }
+
     private static string ShipTypes(HeadlessGameHarness harness)
         => string.Join(
             ", ",
@@ -126,6 +171,30 @@ public class FrameRateIndependenceTests
 
         HeadlessGameHarness harness = new(randomSeed: 4242, updatesPerSecond: updatesPerSecond);
         harness.Run(updates, script);
+        return harness;
+    }
+
+    // Launches as above, then hands the ship a docking computer it did not
+    // start with and engages it. The equipment is fitted mid-run because a
+    // new commander has none, and 'N' at the start of the script makes one.
+    private static HeadlessGameHarness Dock(float updatesPerSecond, int updates)
+    {
+        float scale = updatesPerSecond / GameClock.StepsPerSecond;
+        int engage = (int)(EngageUpdates * scale);
+        KeyScriptEvent[] script =
+        [
+            new((int)(1 * scale), ConsoleKey.N, KeyScriptAction.Tap),
+            new((int)(2 * scale), ConsoleKey.Spacebar, KeyScriptAction.Tap),
+            new((int)(4 * scale), ConsoleKey.F1, KeyScriptAction.Tap),
+            new((int)(40 * scale), ConsoleKey.Spacebar, KeyScriptAction.Hold),
+            new((int)(70 * scale), ConsoleKey.Spacebar, KeyScriptAction.Release),
+            new(engage, ConsoleKey.C, KeyScriptAction.Tap),
+        ];
+
+        HeadlessGameHarness harness = new(randomSeed: 4242, updatesPerSecond: updatesPerSecond);
+        harness.Run(engage, script);
+        harness.Resolve<PlayerShip>().HasDockingComputer = true;
+        harness.Run(updates - engage, script);
         return harness;
     }
 
