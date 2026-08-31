@@ -7,6 +7,20 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (the game over screen is covered, 2026-08-31)
+
+- The game over screen was at 41% of its lines. Nine tests take it to 96%.
+- What `Reset` builds is held: the wreck and five pieces of cargo, all at the
+  same distance, only the wreck already dead, the cargo scattered and spinning,
+  the player's roll and pitch stopped and the drift speed set, and the effect
+  played once.
+- The hundred-tick wait is asserted on both sides of its boundary, and again
+  at four times the frame rate, where it must take four times as many updates.
+  The clock is opened per update the way `EliteMain`'s loop opens it, so the
+  screen is told what fraction of a tick each update is worth.
+- The two `AddNewShip` failure branches are left uncovered: `Reset` clears the
+  universe first, so neither can be reached.
+
 ### Added (the short range chart is covered, 2026-08-31)
 
 - **The short range chart had the thinnest cover of any screen: 12% of its
