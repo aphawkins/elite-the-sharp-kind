@@ -7,6 +7,23 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (both renditions draw every screen in a test, 2026-08-31)
+
+- **Nothing had ever drawn an 8-bit screen.** The tier sat at 0.5% of its
+  lines while the 16-bit tier was at 67%, and the difference was not that one
+  was tested: the 16-bit tier is the one the golden traces and the headless
+  harness happen to load, so it was covered by accident and the other was
+  covered not at all.
+- `RenditionViewTests` draws all sixteen screens of both renditions from one
+  table of filled-in models. The 8-bit tier goes to 67% and the 16-bit tier to
+  96%.
+- The palette is the real one off disk, which is what makes this worth
+  running: a view naming a colour its own tier's palette does not define
+  throws, and nothing else would have caught it.
+- One test compares the table against the rendition's own set of screens, so a
+  screen added to a rendition and not added here fails rather than quietly
+  going undrawn.
+
 ### Added (buying equipment is covered, 2026-08-31)
 
 - The equip-ship screen was at 53% of its lines: the list and its tech-level

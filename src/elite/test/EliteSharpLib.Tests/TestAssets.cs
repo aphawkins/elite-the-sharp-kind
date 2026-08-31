@@ -14,13 +14,23 @@ namespace EliteSharpLib.Tests;
 // sound effects, which is all the game keeps for itself.
 internal static class TestAssets
 {
-    private const string Rendition = "16-bit";
+    private const string SixteenBit = "16-bit";
 
-    // Where the test project's build drops the renditions, which is the same
-    // arrangement the app ships.
-    private static readonly string s_renditionFolder = Path.Combine("Renditions", "EliteSharp.Renditions.SixteenBit");
+    internal static IAssetLocator Locator() => Locator(SixteenBit);
 
-    internal static IAssetLocator Locator() => new RenditionAssets(
-        AssetLocator.CreateFrom(Path.Combine(AppContext.BaseDirectory, s_renditionFolder), Rendition),
-        AssetLocator.Create(Rendition));
+    // The rendition is named the way the config names it: the assembly it
+    // lives in is EliteSharp.Renditions.SixteenBit for "16-bit", which is
+    // also the folder the build drops it in, the same arrangement the app
+    // ships.
+    internal static IAssetLocator Locator(string rendition)
+    {
+        string assembly = rendition == SixteenBit
+            ? "EliteSharp.Renditions.SixteenBit"
+            : "EliteSharp.Renditions.EightBit";
+        string folder = Path.Combine("Renditions", assembly);
+
+        return new RenditionAssets(
+            AssetLocator.CreateFrom(Path.Combine(AppContext.BaseDirectory, folder), rendition),
+            AssetLocator.Create(rendition));
+    }
 }
