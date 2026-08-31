@@ -7,6 +7,24 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (the player's own weapons are covered, 2026-08-31)
+
+- `Combat`'s tests were all about what the AI does. Thirty tests now cover the
+  player's side of it, taking the class from 54% of its lines to 61%.
+- The missile is walked through its states: it will not arm with an empty
+  rack, it locks onto the first ship in the crosshairs and not a later one,
+  a ship outside the crosshairs is not locked onto, unarming forgets the lock,
+  firing without a lock spends nothing, and firing with one spends the
+  missile, angers the target and leaves the rack unarmed.
+- The laser is covered as a decision table: each of the four views fires the
+  laser on its own mount and a mount with no laser fires nothing; a screen
+  that is not a view, a docked ship and an overheated laser each fire nothing;
+  a shot that lands heats the laser and draws on the ship's energy.
+- The armour rules are held: a station shrugs a laser off but takes offence,
+  and the Constrictor and the Cougar are hurt only by a military laser.
+- The ECM will not restart while one is running, someone else's ECM costs the
+  player nothing, and docking puts every weapon back as it was found.
+
 ### Changed (the coverage figure stops counting the SDL bindings, 2026-08-31)
 
 - `SharpKind.SDL` is out of the coverage denominator. It is the P/Invoke layer
