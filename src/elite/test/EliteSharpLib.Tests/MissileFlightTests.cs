@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -69,7 +69,7 @@ public class MissileFlightTests
 
         combat.FireMissile();
 
-        IShip? missile = universe.GetAllObjects().OfType<IShip>().FirstOrDefault(o => o.Type == ShipType.Missile);
+        IShip? missile = universe.GetAllObjects().OfType<IShip>().FirstOrDefault(o => o.Id == ObjectIds.Missile);
         Assert.NotNull(missile);
 
         float closest = float.MaxValue;
@@ -105,7 +105,7 @@ public class MissileFlightTests
         Assert.NotNull(combat.MissileTarget);
         combat.FireMissile();
 
-        IShip? missile = universe.GetAllObjects().OfType<IShip>().FirstOrDefault(o => o.Type == ShipType.Missile);
+        IShip? missile = universe.GetAllObjects().OfType<IShip>().FirstOrDefault(o => o.Id == ObjectIds.Missile);
         Assert.NotNull(missile);
 
         // Park the pair a box-corner apart and let one tick's tactics run.

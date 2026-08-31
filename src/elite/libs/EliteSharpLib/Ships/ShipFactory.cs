@@ -169,8 +169,9 @@ internal sealed class ShipFactory : IShipFactory
         => new(draw)
         {
             Model = ModelReader.Read(modelPath, draw.Palette),
-            Type = definition.Type,
+            Id = definition.Id,
             Flags = definition.Flags,
+            Traits = definition.Traits,
             Name = definition.Name,
             ScoopedType = definition.ScoopedType,
             Bounty = definition.Bounty,

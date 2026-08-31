@@ -52,8 +52,8 @@ internal static class ShipTable
     /// <returns>The ships the factory can build, in the file's order.</returns>
     /// <exception cref="EliteException">
     /// The file is missing, unreadable, not the shape a ship file is, describes
-    /// no ships, names the same ship twice, names a kind or a behaviour the
-    /// game does not have, or is based on a ship the file does not describe.
+    /// no ships, names the same ship twice, names a behaviour the game does
+    /// not have, or is based on a ship the file does not describe.
     /// A table the game cannot read is a game with nothing to fly, so this says
     /// which file and why rather than starting an empty universe.
     /// </exception>
@@ -129,8 +129,8 @@ internal static class ShipTable
         return new(
             id,
             ship.Model ?? ship.BasedOn ?? id,
-            ParseType(path, id, ship.Type),
             ParseFlags(path, id, ship.Flags),
+            ParseTraits(path, id, ship.Traits),
             ship.Name ?? throw NoName(path, id),
             ship.ScoopedType,
             ship.Bounty ?? 0,
@@ -152,8 +152,8 @@ internal static class ShipTable
         => parent == null ? entry : entry with
         {
             Model = entry.Model ?? parent.Model,
-            Type = entry.Type ?? parent.Type,
             Flags = entry.Flags ?? parent.Flags,
+            Traits = entry.Traits ?? parent.Traits,
             Name = entry.Name ?? parent.Name,
             ScoopedType = entry.ScoopedType ?? parent.ScoopedType,
             Bounty = entry.Bounty ?? parent.Bounty,
@@ -171,12 +171,19 @@ internal static class ShipTable
     private static EliteException NoName(string path, string id)
         => new($"The ship file '{path}' gives '{id}' no name to show.");
 
-    private static ShipType ParseType(string path, string id, string? type)
-        => type == null
-            ? throw new EliteException($"The ship file '{path}' does not say what kind of ship '{id}' is.")
-            : Enum.TryParse(type, out ShipType parsed)
-                ? parsed
-                : throw new EliteException($"The ship file '{path}' gives '{id}' the unknown kind '{type}'.");
+    private static ShipTraits ParseTraits(string path, string id, IReadOnlyList<string>? traits)
+    {
+        ShipTraits parsed = ShipTraits.None;
+
+        foreach (string trait in traits ?? [])
+        {
+            parsed |= Enum.TryParse(trait, out ShipTraits one)
+                ? one
+                : throw new EliteException($"The ship file '{path}' gives '{id}' the unknown trait '{trait}'.");
+        }
+
+        return parsed;
+    }
 
     private static ShipProperties ParseFlags(string path, string id, IReadOnlyList<string>? flags)
     {
@@ -207,8 +214,8 @@ internal static class ShipTable
         string? Id,
         string? BasedOn,
         string? Model,
-        string? Type,
         IReadOnlyList<string>? Flags,
+        IReadOnlyList<string>? Traits,
         string? Name,
         string? ScoopedType,
         float? Bounty,

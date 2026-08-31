@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -104,7 +104,7 @@ public class ShipFactoryTests
         IShip created = factory.CreateLoneWolf();
 
         // Assert
-        Assert.Equal(expectedType, created.Type.ToString());
+        Assert.Equal(expectedType, created.Id);
     }
 
     [Theory]
@@ -128,7 +128,7 @@ public class ShipFactoryTests
         IShip created = factory.CreatePackHunter();
 
         // Assert
-        Assert.Equal(expectedType, created.Type.ToString());
+        Assert.Equal(expectedType, created.Id);
     }
 
     [Fact]

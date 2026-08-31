@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -19,8 +19,8 @@ namespace EliteSharpLib.Ships;
 /// variant that borrows another ship's mesh names that ship instead, so the
 /// manifest lists only real model files.
 /// </param>
-/// <param name="Type">The kind the game switches on. See <see cref="ShipType"/>.</param>
 /// <param name="Flags">How it behaves - who it flies for, and how boldly.</param>
+/// <param name="Traits">What it is, as against what it is doing.</param>
 /// <param name="Name">What the screens call it.</param>
 /// <param name="ScoopedType">
 /// The good scooping the wreck yields, for the junk that leaves any. Null for
@@ -40,8 +40,8 @@ namespace EliteSharpLib.Ships;
 internal sealed record ShipDefinition(
     string Id,
     string Model,
-    ShipType Type,
     ShipProperties Flags,
+    ShipTraits Traits,
     string Name,
     string? ScoopedType,
     float Bounty,

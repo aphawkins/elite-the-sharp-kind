@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -109,7 +109,7 @@ internal sealed class EscapeCapsuleController : IScreenController
             {
                 foreach (IObject universeObj in _universe.GetAllObjects())
                 {
-                    if (universeObj.Type != 0)
+                    if (universeObj.Id != ObjectIds.None)
                     {
                         universeObj.Location = new(universeObj.Location.X, universeObj.Location.Y, universeObj.Location.Z - 1500, 0);
                     }

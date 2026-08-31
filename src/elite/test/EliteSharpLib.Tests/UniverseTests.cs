@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -29,8 +29,8 @@ public class UniverseTests
         Assert.Null(universe.StationOrSun);
         Assert.False(universe.IsStationPresent);
         Assert.Equal(0, universe.PoliceCount);
-        Assert.Equal(1, universe.ShipCount(ShipType.CobraMk3));
-        Assert.Equal(0, universe.ShipCount(ShipType.Planet));
+        Assert.Equal(1, universe.ShipCount("CobraMk3"));
+        Assert.Equal(0, universe.ShipCount(ObjectIds.Planet));
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class UniverseTests
         Assert.Null(universe.StationOrSun);
         Assert.False(universe.IsStationPresent);
         Assert.Equal(0, universe.PoliceCount);
-        Assert.Equal(0, universe.ShipCount(ShipType.CobraMk3));
+        Assert.Equal(0, universe.ShipCount("CobraMk3"));
     }
 
     [Fact]
@@ -63,7 +63,7 @@ public class UniverseTests
         RNG rng = new(new Random(0));
         FakeShipFactory fakeShipFactory = new(draw);
         Universe universe = new(fakeShipFactory, rng);
-        IShip planet = new FakeShip(draw) { Type = ShipType.Planet };
+        IShip planet = new FakeShip(draw) { Id = ObjectIds.Planet };
 
         // Act
         universe.AddNewShip(planet, new(0, 0, 30000, 0), Matrix4x4.Identity, 0, 0);
@@ -85,7 +85,7 @@ public class UniverseTests
 
         IShip station = new FakeShip(draw)
         {
-            Type = ShipType.Coriolis,
+            Id = "Coriolis",
             Flags = ShipProperties.Station,
         };
 

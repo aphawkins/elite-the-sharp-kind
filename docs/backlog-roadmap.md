@@ -64,28 +64,24 @@ from the game's random stream, and an E.C.M. burst is counted in ticks. The
 same twenty seconds at 13.5Hz and at 60Hz now end on the same screen, within
 one housekeeping step, and meet the same ships.
 
-The [LARGE] item was surveyed and split on 2026-08-31, and the first of
-its three session-sized parts — the ship definitions — landed the same day
-(see [CHANGELOG.md](../CHANGELOG.md)). The precedent they all follow is the
-goods set: **the assembly is the door, the file is the table** (see the
-2026-08-27 entries in [decisions.md](decisions.md)) — a plugin referencing
-only `EliteSharp.Abstractions`, found beside the executable by a loader,
-reading its own JSON from beside itself. The survey also corrected the
-original wording twice: `ShipFactory` never built ships by reflection
-(`CreateShipFromName` was long gone; it was an explicit dictionary of 33
-constructor lambdas, so what was left was a table), and none of the 33 ship
-classes overrode anything, which is why the table replaced them outright
-rather than sitting alongside them.
+The [LARGE] item was surveyed and split on 2026-08-31, and two of its
+three session-sized parts landed the same day — the ship definitions became
+a table, and `ShipType` became the ids in it (see
+[CHANGELOG.md](../CHANGELOG.md)). Only the equipment table is left.
 
-- [ ] [EliteSharpLib] `ShipType` to string ids: the enum
-      ([ShipType.cs](../src/elite/libs/EliteSharpLib/Ships/ShipType.cs),
-      whose own comment says "get these from the assets") is what stops
-      `ships.json` being open — a row still has to name a kind the enum
-      has a member for, so nobody can add a ship the game was not built
-      against. 88 uses across 43 files, so it is its own session, and it
-      is the one with real design in it: the save format records ship
-      types, and `Sun`/`Planet`'s negative values are compared ordinally
-      in places. The table's ids are what the call sites move to.
+The precedent they all follow is the goods set: **the assembly is the door,
+the file is the table** (see the 2026-08-27 entries in
+[decisions.md](decisions.md)) — a plugin referencing only
+`EliteSharp.Abstractions`, found beside the executable by a loader, reading
+its own JSON from beside itself. The survey also corrected the
+original wording three times: `ShipFactory` never built ships by reflection
+(`CreateShipFromName` was long gone; it was an explicit dictionary of 33
+constructor lambdas, so what was left was a table), none of the 33 ship
+classes overrode anything, which is why the table replaced them outright,
+and the save format does not record ship types at all — the universe is not
+saved, only where the commander is docked — so the `ShipType` work turned
+out to have no save-compatibility problem to solve.
+
 - [ ] [EliteSharpLib] Equipment table to a plugin: the 34-row
       `_equipmentStock` literal at
       [EquipmentController.cs:23-58](../src/elite/libs/EliteSharpLib/Views/EquipmentController.cs)

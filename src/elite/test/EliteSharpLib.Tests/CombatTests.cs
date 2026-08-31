@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -62,7 +62,7 @@ public class CombatTests
         ship.ShieldRear = PlayerShip.ShieldMax;
         FakeShip canister = new(new FakeEliteDraw())
         {
-            Type = ShipType.Cargo,
+            Id = "CargoCannister",
             Location = new(0, -100, 500, 0),
         };
 
@@ -84,7 +84,7 @@ public class CombatTests
         ship.ShieldFront = PlayerShip.ShieldMax;
         FakeShip canister = new(new FakeEliteDraw())
         {
-            Type = ShipType.Cargo,
+            Id = "CargoCannister",
             Location = new(0, -100, 500, 0),
         };
 
@@ -102,7 +102,7 @@ public class CombatTests
         // alloy plates and cargo canisters.
         Combat combat = CreateCombat(out Universe universe, out _, out _, out _, randomValue: 2);
         SetLaserType(combat, LaserType.Pulse);
-        FakeShip asteroid = new(new FakeEliteDraw()) { Type = ShipType.Asteroid, LootMax = 15 };
+        FakeShip asteroid = new(new FakeEliteDraw()) { Id = ObjectIds.Asteroid, LootMax = 15 };
 
         InvokeDestroyTarget(combat, asteroid);
 
@@ -117,7 +117,7 @@ public class CombatTests
         // alloy/cargo every kill yields, not instead of it.
         Combat combat = CreateCombat(out Universe universe, out _, out _, out _, randomValue: 2);
         SetLaserType(combat, LaserType.Mining);
-        FakeShip asteroid = new(new FakeEliteDraw()) { Type = ShipType.Asteroid, LootMax = 15 };
+        FakeShip asteroid = new(new FakeEliteDraw()) { Id = ObjectIds.Asteroid, LootMax = 15 };
 
         InvokeDestroyTarget(combat, asteroid);
 
@@ -154,7 +154,7 @@ public class CombatTests
         Combat combat = CreateCombat(out Universe universe, out _, out _, out _, randomValue: 0);
         FakeShip enemy = new(new FakeEliteDraw())
         {
-            Type = ShipType.CobraMk3,
+            Id = "CobraMk3",
             Flags = ShipProperties.Angry,
             Rotmat = Matrix4x4.Identity,
             Location = new(0.51f, 0, -0.86f, 0),
@@ -190,7 +190,7 @@ public class CombatTests
         // into the spawn chance - they've almost certainly scanned us.
         Combat combat = CreateCombat(out Universe universe, out _, out _, out GameState gameState, randomValue: 50);
         gameState.Cmdr.LegalStatus = 200;
-        FakeShip existingPolice = new(new FakeEliteDraw()) { Type = ShipType.Viper };
+        FakeShip existingPolice = new(new FakeEliteDraw()) { Id = ObjectIds.Viper };
         universe.AddNewShip(existingPolice, default, Matrix4x4.Identity, 0, 0);
 
         InvokeCheckForPolice(combat);
@@ -298,7 +298,7 @@ public class CombatTests
 
     private static FakeShip LaunchedMissile(Universe universe)
     {
-        FakeShip missile = new(new FakeEliteDraw()) { Type = ShipType.Missile };
+        FakeShip missile = new(new FakeEliteDraw()) { Id = "Missile", Flags = ShipProperties.Missile };
         missile.Flags |= ShipProperties.Angry;
         universe.AddNewShip(missile, new(0, 0, 500, 0), Matrix4x4.Identity, 0, 0);
         return missile;

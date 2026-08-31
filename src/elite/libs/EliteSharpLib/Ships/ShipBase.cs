@@ -125,7 +125,9 @@ internal class ShipBase : IShip
 
     public IObject? Target { get; set; }
 
-    public ShipType Type { get; set; }
+    public string Id { get; set; } = ObjectIds.None;
+
+    public ShipTraits Traits { get; set; }
 
     public int VanishPoint { get; set; }
 
@@ -616,7 +618,7 @@ internal class ShipBase : IShip
 
         // A Viper's beam is the colour a Viper is on the scanner: both come
         // from the rendition's one definition of what a police ship looks like.
-        FastColor color = _draw.Ships.For(Type == ShipType.Viper ? ShipClass.Police : ShipClass.Default);
+        FastColor color = _draw.Ships.For(Id == ObjectIds.Viper ? ShipClass.Police : ShipClass.Default);
 
         Vector2 mount = new(pointList[lasv].X, pointList[lasv].Y);
 

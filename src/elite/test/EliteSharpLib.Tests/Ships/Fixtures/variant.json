@@ -3,8 +3,13 @@
   "ships": [
     {
       "id": "Python",
-      "type": "Python",
-      "flags": [ "Trader" ],
+      "flags": [
+        "Trader"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
+      ],
       "name": "Python",
       "energyMax": 250,
       "laserStrength": 13,
@@ -18,8 +23,15 @@
     {
       "id": "PythonLone",
       "basedOn": "Python",
-      "type": "PythonLone",
-      "flags": [ "LoneWolf", "Bold", "Angry" ],
+      "flags": [
+        "LoneWolf",
+        "Bold",
+        "Angry"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
+      ],
       "bounty": 20,
       "lootMax": 2
     }

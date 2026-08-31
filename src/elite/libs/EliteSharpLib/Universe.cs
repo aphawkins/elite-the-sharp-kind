@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -17,7 +17,7 @@ internal sealed class Universe
     internal const int MaxUniverseObjects = 20;
     private readonly IShipFactory _shipFactory;
     private readonly List<IObject> _objects = [];
-    private readonly Dictionary<ShipType, int> _shipCount = [];
+    private readonly Dictionary<string, int> _shipCount = new(StringComparer.Ordinal);
     private readonly RNG _rng;
 
     internal Universe(IShipFactory shipFactory, RNG rng)
@@ -27,13 +27,17 @@ internal sealed class Universe
         ClearUniverse();
     }
 
-    internal bool IsStationPresent => _shipCount[ShipType.Coriolis] != 0 || _shipCount[ShipType.Dodec] != 0;
+    // Whichever station this system has, rather than the two the game used
+    // to name: a station is a ship with the flag, and it is the one thing that
+    // shares the StationOrSun slot with the sun.
+    internal bool IsStationPresent
+        => StationOrSun?.Flags.HasFlag(ShipProperties.Station) == true;
 
     internal IObject? Planet { get; private set; }
 
     internal IObject? FirstShip => _objects.Count > 0 ? _objects[0] : StationOrSun;
 
-    internal int PoliceCount => _shipCount[ShipType.Viper];
+    internal int PoliceCount => ShipCount(ObjectIds.Viper);
 
     internal IObject? StationOrSun { get; private set; }
 
@@ -54,13 +58,13 @@ internal sealed class Universe
             newShip.Missiles = newShip.MissilesMax;
         }
 
-        _shipCount[newObj.Type]++;
+        Count(newObj, 1);
 
-        if (newObj.Flags.HasFlag(ShipProperties.Station) || newObj.Type == ShipType.Sun)
+        if (newObj.Flags.HasFlag(ShipProperties.Station) || newObj.Id == ObjectIds.Sun)
         {
             StationOrSun = newObj;
         }
-        else if (newObj.Type is ShipType.Planet)
+        else if (newObj.Id == ObjectIds.Planet)
         {
             Planet = newObj;
         }
@@ -106,10 +110,7 @@ internal sealed class Universe
         StationOrSun = null;
         _objects.Clear();
 
-        foreach (ShipType shipType in Enum.GetValues<ShipType>())
-        {
-            _shipCount[shipType] = 0;
-        }
+        _shipCount.Clear();
     }
 
     internal IEnumerable<IObject> GetAllObjects()
@@ -132,10 +133,7 @@ internal sealed class Universe
 
     internal void RemoveShip(IObject ship)
     {
-        if (ship.Type > ShipType.None)
-        {
-            _shipCount[ship.Type]--;
-        }
+        Count(ship, -1);
 
         if (ReferenceEquals(StationOrSun, ship))
         {
@@ -151,5 +149,16 @@ internal sealed class Universe
         }
     }
 
-    internal int ShipCount(ShipType shipType) => _shipCount[shipType];
+    internal int ShipCount(string shipId) => _shipCount.GetValueOrDefault(shipId);
+
+    // The planet and the sun are not ships and are not counted; nothing asks
+    // how many of either there are, and the original did not count them out of
+    // the universe when they left either.
+    private void Count(IObject obj, int delta)
+    {
+        if (obj.Id is not ObjectIds.None and not ObjectIds.Planet and not ObjectIds.Sun)
+        {
+            _shipCount[obj.Id] = _shipCount.GetValueOrDefault(obj.Id) + delta;
+        }
+    }
 }

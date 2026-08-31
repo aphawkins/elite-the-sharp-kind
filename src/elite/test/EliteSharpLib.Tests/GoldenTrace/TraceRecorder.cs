@@ -57,14 +57,14 @@ internal static class TraceRecorder
             // An empty slot is still a slot: Combat.Tactics phases a ship's
             // AI by its slot index, so the trace has to keep the numbering
             // rather than compact the list.
-            if (obj.Type == ShipType.None)
+            if (obj.Id == ObjectIds.None)
             {
                 continue;
             }
 
             objects.Add(new(
                 slot,
-                obj.Type.ToString(),
+                obj.Id,
                 obj.Location.X,
                 obj.Location.Y,
                 obj.Location.Z,

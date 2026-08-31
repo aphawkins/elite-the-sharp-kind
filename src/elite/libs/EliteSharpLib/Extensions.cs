@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -38,7 +38,8 @@ internal static class Extensions
         to.VelocityMax = from.VelocityMax;
         to.ExpDelta = from.ExpDelta;
         to.Flags = from.Flags;
-        to.Type = from.Type;
+        to.Id = from.Id;
+        to.Traits = from.Traits;
         to.Location = from.Location;
         to.Energy = from.Energy;
         to.Velocity = from.Velocity;
@@ -55,7 +56,8 @@ internal static class Extensions
         to.Rotmat = from.Rotmat;
         to.RotX = from.RotX;
         to.RotZ = from.RotZ;
-        to.Type = from.Type;
+        to.Id = from.Id;
+        to.Traits = from.Traits;
         to.Location = from.Location;
     }
 }

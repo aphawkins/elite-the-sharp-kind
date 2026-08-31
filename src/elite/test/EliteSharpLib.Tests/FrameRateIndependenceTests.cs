@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -116,13 +116,13 @@ public class FrameRateIndependenceTests(FrameRateRuns runs) : IClassFixture<Fram
     private static string ShipTypes(FrameRateRun run)
         => string.Join(
             ", ",
-            run.Harness.Resolve<Universe>().GetAllObjects().Select(o => o.Type.ToString()).Order());
+            run.Harness.Resolve<Universe>().GetAllObjects().Select(o => o.Id).Order());
 
     private static float DistanceToPlanet(FrameRateRun run)
     {
         foreach (IObject obj in run.Harness.Resolve<Universe>().GetAllObjects())
         {
-            if (obj.Type == ShipType.Planet)
+            if (obj.Id == ObjectIds.Planet)
             {
                 return obj.Location.Length();
             }

@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -261,13 +261,12 @@ public class CombatWeaponsTests
     [InlineData("Cougar")]
     public void OnlyAMilitaryLaserHurtsTheArmouredShips(string shipName)
     {
-        ShipType type = Enum.Parse<ShipType>(shipName);
         Combat pulse = CreateCombat(out _, out PlayerShip pulseShip, out GameState pulseState);
         pulseShip.LaserFront = new PulseLaser();
         pulseState.SetView(Screen.FrontView);
         _ = pulse.FireLaser();
         FakeShip shrugged = InTheCrosshairs();
-        shrugged.Type = type;
+        shrugged.Id = shipName;
         shrugged.Energy = 1000;
 
         pulse.CheckTarget(shrugged, shrugged);
@@ -279,7 +278,7 @@ public class CombatWeaponsTests
         militaryState.SetView(Screen.FrontView);
         _ = military.FireLaser();
         FakeShip hurt = InTheCrosshairs();
-        hurt.Type = type;
+        hurt.Id = shipName;
         hurt.Energy = 1000;
 
         military.CheckTarget(hurt, hurt);
@@ -361,9 +360,12 @@ public class CombatWeaponsTests
 
     // Dead on the crosshairs and close enough to be inside the ship's own
     // radius, which is what IsInTarget measures against.
+    // Crewed, because that is what decides whether a ship can be provoked -
+    // the trait a real Cobra gets from its row in the table.
     private static FakeShip InTheCrosshairs() => new(new FakeEliteDraw())
     {
-        Type = ShipType.CobraMk3,
+        Id = "CobraMk3",
+        Traits = ShipTraits.Crewed,
         Location = new(0, 0, 1000, 0),
         Size = 1,
         Energy = 1000,

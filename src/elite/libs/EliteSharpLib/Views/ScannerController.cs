@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -75,7 +75,7 @@ internal sealed class ScannerController
     private static ShipClass ClassOf(IObject obj)
         => obj.Flags.HasFlag(ShipProperties.Station)
             ? ShipClass.Station
-            : obj.Type == ShipType.Missile
+            : obj.Id == ObjectIds.Missile
                 ? ShipClass.Missile
                 : obj.Flags.HasFlag(ShipProperties.Police)
                     ? ShipClass.Police
@@ -149,7 +149,10 @@ internal sealed class ScannerController
 
         foreach (IObject obj in _universe.GetAllObjects())
         {
-            if ((obj.Type <= 0) ||
+            // The planet, the sun and the player's own proxy are not traffic:
+            // the original said so as "not above zero" in the ship numbering.
+            if (obj.Traits.HasFlag(ShipTraits.Stellar) ||
+                obj.Id == ObjectIds.None ||
                 obj.Flags.HasFlag(ShipProperties.Dead) ||
                 obj.Flags.HasFlag(ShipProperties.Cloaked))
             {

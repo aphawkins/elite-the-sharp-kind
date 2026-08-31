@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -35,10 +35,14 @@ public sealed class ShipTableTests : IDisposable
 
         Assert.Equal("Adder", ship.Id);
         Assert.Equal("Adder", ship.Model);
-        Assert.Equal(ShipType.Adder, ship.Type);
+
         Assert.Equal(
             ShipProperties.PackHunter | ShipProperties.Bold | ShipProperties.Angry,
             ship.Flags);
+
+        // What the ship numbering used to imply: a crewed ship that mass-locks
+        // the player is what "above a Rock Splinter" meant.
+        Assert.Equal(ShipTraits.Crewed | ShipTraits.MassLocks, ship.Traits);
         Assert.Equal("Adder", ship.Name);
         Assert.Null(ship.ScoopedType);
         Assert.Equal(4, ship.Bounty);
@@ -59,8 +63,8 @@ public sealed class ShipTableTests : IDisposable
         ShipDefinition lone = ships[1];
 
         // Its own.
-        Assert.Equal(ShipType.PythonLone, lone.Type);
         Assert.Equal(ShipProperties.LoneWolf | ShipProperties.Bold | ShipProperties.Angry, lone.Flags);
+        Assert.Equal(ShipTraits.Crewed | ShipTraits.MassLocks, lone.Traits);
         Assert.Equal(20, lone.Bounty);
         Assert.Equal(2, lone.LootMax);
 
@@ -114,13 +118,13 @@ public sealed class ShipTableTests : IDisposable
     }
 
     [Fact]
-    public void RejectsAKindTheGameDoesNotHave()
+    public void RejectsATraitTheGameDoesNotHave()
     {
-        string path = Given(s_oneShip.Replace("\"type\": \"Adder\"", "\"type\": \"Frigate\"", StringComparison.Ordinal));
+        string path = Given(s_oneShip.Replace("\"Crewed\"", "\"Amphibious\"", StringComparison.Ordinal));
 
         EliteException ex = Assert.Throws<EliteException>(() => ShipTable.LoadFrom(path));
 
-        Assert.Contains("Frigate", ex.Message, StringComparison.Ordinal);
+        Assert.Contains("Amphibious", ex.Message, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -151,7 +155,7 @@ public sealed class ShipTableTests : IDisposable
     {
         string path = Given(s_oneShip.Replace(
             "\"ships\": [",
-            "\"ships\": [ { \"id\": \"Adder\", \"type\": \"Adder\", \"name\": \"Adder\" },",
+            "\"ships\": [ { \"id\": \"Adder\", \"name\": \"Adder\" },",
             StringComparison.Ordinal));
 
         EliteException ex = Assert.Throws<EliteException>(() => ShipTable.LoadFrom(path));

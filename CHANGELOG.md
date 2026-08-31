@@ -7,6 +7,41 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (a ship is an id, not a member of an enum, 2026-08-31)
+
+- **`ShipType` is gone.** It was the last thing keeping `ships.json` closed:
+  a row had to name a member of an enum the game was compiled with, so no
+  table could describe a ship nobody had built the game for. An object now
+  carries the id the table files it under - `IObject.Id` - and the game
+  recognises one by that. The four ships whose enum member and row id
+  disagreed (`Cargo`/`CargoCannister`, `Hermit`/`RockHermit`,
+  `Rock`/`RockSplinter`, `Dodec`/`DodecStation`) now have one name each.
+- **The enum's numbering was carrying meaning, and that is the part that
+  needed designing.** `> ShipType.Rock` meant "somebody is flying it";
+  `> ShipType.None` and `< 0` meant "not the planet or the sun"; the
+  mass-lock test named six pieces of junk to exclude. Those bands are
+  `ShipTraits` now - `Crewed`, `MassLocks`, `Stellar` - stated by each row
+  rather than implied by where a ship sat in a list.
+- **Traits are deliberately not `ShipProperties`.** Flags are the ship's
+  mood and are assigned wholesale in a dozen places: `FireMissile` does
+  `missile.Flags = Angry`, which would wipe any fact about what the missile
+  *is*. The test suite caught exactly that - two missile tests failed
+  against a first attempt that put the traits in `Flags` - so a trait is set
+  when the object is built and never again.
+- **What the game still names by hand is in one place**, `ObjectIds`: the
+  planet and the sun, the Thargoid a drone dies without, the two mission
+  ships, and the wreckage a kill leaves. A table that omits one of those
+  loses that behaviour rather than stopping the game.
+- Two smaller things fell out. `Universe.IsStationPresent` asked whether a
+  Coriolis or a Dodec was present; it asks whether the station slot holds
+  something flagged as a station, so a table's own station counts.
+  `CreateLoneWolf` parsed a mission's ship name into the enum to count what
+  was flying - it counts by name now, and the parse is gone.
+- Verified against the golden traces: all five scenarios and their frame
+  signatures match the committed baselines **unchanged**, so the simulation
+  and every rendered frame are identical to before. Full suite green (623 in
+  `EliteSharpLib.Tests`).
+
 ### Changed (the ships are a table, not thirty-three classes, 2026-08-31)
 
 - **Every ship in Elite was a class whose whole body was a constructor
@@ -38,9 +73,8 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   match exactly. Full suite green (623 in `EliteSharpLib.Tests`, including
   eleven new `ShipTableTests`), and the ship parade still names and draws
   its ships in order.
-- `ShipType` is still an enum, so the table cannot yet name a ship the game
-  was not built against. That is the next item in
-  [the backlog](docs/backlog-roadmap.md).
+- `ShipType` was still an enum at this point, so the table could not yet name
+  a ship the game was not built against. The entry below closes that.
 
 ### Fixed (the integration-tests CI step failed on every run, 2026-08-31)
 

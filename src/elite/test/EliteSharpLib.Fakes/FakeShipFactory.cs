@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -13,7 +13,7 @@ internal sealed class FakeShipFactory(IEliteDraw draw) : IShipFactory
 
     public IShip CreateLoneWolf() => new FakeShip(draw)
     {
-        Type = ShipType.FerDeLance,
+        Id = "FerDeLance",
         Flags = ShipProperties.LoneWolf | ShipProperties.BountyHunter,
     };
 
@@ -25,7 +25,7 @@ internal sealed class FakeShipFactory(IEliteDraw draw) : IShipFactory
 
     public IShip CreateShip(string shipName) => new FakeShip(draw)
     {
-        Type = ShipType.CobraMk3,
+        Id = "CobraMk3",
     };
 
     public IShip CreateTrader() => new FakeShip(draw);

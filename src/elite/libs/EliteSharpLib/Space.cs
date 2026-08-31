@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -146,9 +146,10 @@ internal sealed class Space
     {
         foreach (IObject obj in _universe.GetAllObjects())
         {
-            if (obj.Type is > 0 and not ShipType.Asteroid and not ShipType.Cargo and
-                not ShipType.Alloy and not ShipType.Rock and
-                not ShipType.Boulder and not ShipType.EscapeCapsule)
+            // Anything with enough mass to hold the jump up. The original
+            // said it as everything above the planet and the sun bar six
+            // named pieces of junk; the table says it as a flag.
+            if (obj.Traits.HasFlag(ShipTraits.MassLocks))
             {
                 _gameState.InfoMessage("Mass Locked");
                 return;
@@ -174,7 +175,7 @@ internal sealed class Space
 
         foreach (IObject obj in _universe.GetAllObjects())
         {
-            if (obj.Type != 0)
+            if (obj.Id != ObjectIds.None)
             {
                 obj.Location = new(obj.Location.X, obj.Location.Y, obj.Location.Z - jump, 0);
             }
@@ -241,7 +242,7 @@ internal sealed class Space
     // station rather than a sun.
     internal void RefreshSunStyle()
     {
-        if (_universe.StationOrSun is not { Type: ShipType.Sun } oldSun)
+        if (_universe.StationOrSun is not { Id: ObjectIds.Sun } oldSun)
         {
             return;
         }
@@ -578,7 +579,7 @@ internal sealed class Space
     /// </summary>
     private void UpdateUniverseObject(IObject obj, int i, float ticks)
     {
-        if (obj.Type == ShipType.None)
+        if (obj.Id == ObjectIds.None)
         {
             return;
         }
@@ -604,7 +605,7 @@ internal sealed class Space
         IObject flip = obj.Clone();
         SwitchToView(flip);
 
-        if (obj.Type is ShipType.Planet or ShipType.Sun)
+        if (obj.Traits.HasFlag(ShipTraits.Stellar))
         {
             DrawStellarObject(obj, flip);
             return;
@@ -685,7 +686,7 @@ internal sealed class Space
     /// </summary>
     private void RemoveUniverseObject(IObject obj)
     {
-        if (obj.Type == ShipType.Viper)
+        if (obj.Id == ObjectIds.Viper)
         {
             _gameState.Cmdr.LegalStatus |= 64;
         }
@@ -703,7 +704,7 @@ internal sealed class Space
 
     private void DrawStellarObject(IObject obj, IObject flip)
     {
-        if (obj.Type == ShipType.Planet &&
+        if (obj.Id == ObjectIds.Planet &&
             !_universe.IsStationPresent &&
             (obj.Location.Length() < 65792 /* was 49152 */))
         {
@@ -728,8 +729,7 @@ internal sealed class Space
     private bool IsDestroyedByBomb(IObject obj)
         => _gameState.DetonateBomb &&
             (!obj.Flags.HasFlag(ShipProperties.Dead)) &&
-            (obj.Type != ShipType.Planet) &&
-            (obj.Type != ShipType.Sun) &&
+            !obj.Traits.HasFlag(ShipTraits.Stellar) &&
             !obj.Flags.HasFlag(ShipProperties.Station);
 
     private bool NeedsTactics(IObject obj)
@@ -738,7 +738,7 @@ internal sealed class Space
                 not Screen.IntroTwo and
                 not Screen.GameOver and
                 not Screen.EscapeCapsule) &&
-            (obj.Type is not ShipType.Planet and not ShipType.Sun) &&
+            !obj.Traits.HasFlag(ShipTraits.Stellar) &&
             !obj.Flags.HasFlag(ShipProperties.Dead) &&
             !obj.Flags.HasFlag(ShipProperties.Inactive);
 
@@ -768,7 +768,7 @@ internal sealed class Space
             float tmp = flip.Location.X;
             flip.Location = new(flip.Location.Z, flip.Location.Y, -tmp, 0);
 
-            if (flip.Type < 0)
+            if (flip.Traits.HasFlag(ShipTraits.Stellar))
             {
                 return;
             }
@@ -796,7 +796,7 @@ internal sealed class Space
             float tmp = flip.Location.X;
             flip.Location = new(-flip.Location.Z, flip.Location.Y, tmp, 0);
 
-            if (flip.Type < 0)
+            if (flip.Traits.HasFlag(ShipTraits.Stellar))
             {
                 return;
             }
@@ -1040,8 +1040,7 @@ internal sealed class Space
         Vector4 position = obj.Location;
         if (obj is IShip shipEx &&
             !obj.Flags.HasFlag(ShipProperties.Dead) &&
-            obj.Type != ShipType.Sun
-            && obj.Type != ShipType.Planet)
+            !obj.Traits.HasFlag(ShipTraits.Stellar))
         {
             position = ApplyShipVelocity(shipEx, position, ticks);
         }
@@ -1058,12 +1057,12 @@ internal sealed class Space
         // Original MV45: the sun returns here, before rotating its own
         // orientation vectors or applying its spin - "we don't need to
         // rotate the sun around its origin."
-        if (obj.Type == ShipType.Sun)
+        if (obj.Id == ObjectIds.Sun)
         {
             return;
         }
 
-        if (obj.Type == ShipType.Planet)
+        if (obj.Id == ObjectIds.Planet)
         {
             beta = 0.0f;
         }

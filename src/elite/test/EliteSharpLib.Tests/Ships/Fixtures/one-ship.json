@@ -3,11 +3,14 @@
   "ships": [
     {
       "id": "Adder",
-      "type": "Adder",
       "flags": [
         "PackHunter",
         "Bold",
         "Angry"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Adder",
       "bounty": 4,

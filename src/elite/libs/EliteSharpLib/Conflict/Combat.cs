@@ -149,7 +149,7 @@ internal sealed partial class Combat
         _audio.PlayEffect(nameof(SoundEffect.Explode));
         obj.Flags |= ShipProperties.Dead;
 
-        _missions.ShipDestroyed(obj.Type.ToString());
+        _missions.ShipDestroyed(obj.Id);
     }
 
     internal bool FireLaser()
@@ -219,7 +219,7 @@ internal sealed partial class Combat
         missile.Flags = ShipProperties.Angry;
         missile.Target = MissileTarget;
 
-        if (MissileTarget.Type > ShipType.Rock)
+        if (MissileTarget.Traits.HasFlag(ShipTraits.Crewed))
         {
             MissileTarget.Flags |= ShipProperties.Angry;
         }
@@ -285,7 +285,7 @@ internal sealed partial class Combat
 
     internal void RemoveShip(IObject obj)
     {
-        if (obj.Type == ShipType.None)
+        if (obj.Id == ObjectIds.None)
         {
             return;
         }
@@ -327,9 +327,7 @@ internal sealed partial class Combat
             return;
         }
 
-        ShipType type = obj.Type;
-
-        if (type == ShipType.Missile)
+        if (obj.Id == ObjectIds.Missile)
         {
             return;
         }
@@ -345,7 +343,7 @@ internal sealed partial class Combat
             return;
         }
 
-        if (type == ShipType.Cargo)
+        if (obj.Id == ObjectIds.CargoCannister)
         {
             // A canister could hold any of the eight the original numbered
             // first, which is what the 1..9 range this replaces was really
@@ -367,7 +365,7 @@ internal sealed partial class Combat
 
     internal void Tactics(IShip ship, int un)
     {
-        if (ship.Type == ShipType.Missile)
+        if (ship.Id == ObjectIds.Missile)
         {
             if (ship.Flags.HasFlag(ShipProperties.Angry))
             {
@@ -388,7 +386,7 @@ internal sealed partial class Combat
             return;
         }
 
-        if (ship.Type == ShipType.Hermit)
+        if (ship.Id == ObjectIds.RockHermit)
         {
             HermitTactics(ship);
             return;
@@ -399,7 +397,7 @@ internal sealed partial class Combat
             ship.Energy++;
         }
 
-        if (ship.Type == ShipType.Tharglet && _universe.ShipCount(ShipType.Thargoid) == 0)
+        if (ship.Id == ObjectIds.Tharglet && _universe.ShipCount(ObjectIds.Thargoid) == 0)
         {
             ship.Flags = 0;
             ship.Velocity /= 2;
@@ -452,7 +450,7 @@ internal sealed partial class Combat
             return;
         }
 
-        if (ship.Type > ShipType.Rock)
+        if (ship.Traits.HasFlag(ShipTraits.Crewed))
         {
             ship.RotX = 4;
             ship.Acceleration = 2;
@@ -533,7 +531,7 @@ internal sealed partial class Combat
 
     private void TryLockMissile(IShip obj)
     {
-        if (MissileTarget == null && IsMissileArmed && obj.Type >= 0)
+        if (MissileTarget == null && IsMissileArmed && !obj.Traits.HasFlag(ShipTraits.Stellar))
         {
             MissileTarget = obj;
             _gameState.InfoMessage("Target Locked");
@@ -548,7 +546,7 @@ internal sealed partial class Combat
             return;
         }
 
-        if (obj.Type is ShipType.Constrictor or ShipType.Cougar)
+        if (obj.Id is ObjectIds.Constrictor or ObjectIds.Cougar)
         {
             // only a military laser can hurt these two
             if (_laserType == LaserType.Military)
@@ -576,13 +574,13 @@ internal sealed partial class Combat
     {
         ExplodeObject(obj);
 
-        if (obj.Type == ShipType.Asteroid && _laserType == LaserType.Mining)
+        if (obj.Id == ObjectIds.Asteroid && _laserType == LaserType.Mining)
         {
-            LaunchLoot(obj, ShipType.Rock);
+            LaunchLoot(obj, ObjectIds.RockSplinter);
         }
 
-        LaunchLoot(obj, ShipType.Alloy);
-        LaunchLoot(obj, ShipType.Cargo);
+        LaunchLoot(obj, ObjectIds.Alloy);
+        LaunchLoot(obj, ObjectIds.CargoCannister);
     }
 
     private void StationTactics(IShip ship)
@@ -632,7 +630,7 @@ internal sealed partial class Combat
             ship.Bravery = 0;
         }
 
-        if (ship.Type == ShipType.Anaconda && _rng.Random(256) > 200)
+        if (ship.Id == ObjectIds.Anaconda && _rng.Random(256) > 200)
         {
             IShip anacondaHunter = _rng.Random(256) > 100 ? _shipFactory.CreateShip("Worm") : _shipFactory.CreateShip("Sidewinder");
             if (!LaunchEnemy(ship, anacondaHunter, ShipProperties.Angry | ShipProperties.HasECM, 113))
@@ -678,7 +676,7 @@ internal sealed partial class Combat
     /// <returns><c>true</c> if the ship has acted and no further tactics apply.</returns>
     private bool LowEnergyTactics(IShip ship)
     {
-        if (ship.Energy < ship.EnergyMax / 8 && _rng.Random(256) > 230 && ship.Type != ShipType.Thargoid)
+        if (ship.Energy < ship.EnergyMax / 8 && _rng.Random(256) > 230 && ship.Id != ObjectIds.Thargoid)
         {
             ship.Flags &= ~ShipProperties.Angry;
             ship.Flags |= ShipProperties.Inactive;
@@ -693,7 +691,7 @@ internal sealed partial class Combat
         if (ship.Missiles != 0 && _ship.EcmActive == 0 && ship.Missiles >= _rng.Random(32))
         {
             ship.Missiles--;
-            if (ship.Type == ShipType.Thargoid)
+            if (ship.Id == ObjectIds.Thargoid)
             {
                 if (!LaunchEnemy(ship, _shipFactory.CreateShip("Tharglet"), ShipProperties.Angry, ship.Bravery))
                 {
@@ -825,7 +823,7 @@ internal sealed partial class Combat
     /// </summary>
     private void CheckForAsteroids()
     {
-        if (_rng.Random(256) >= 35 || _universe.ShipCount(ShipType.Asteroid) >= 3)
+        if (_rng.Random(256) >= 35 || _universe.ShipCount(ObjectIds.Asteroid) >= 3)
         {
             return;
         }
@@ -943,7 +941,7 @@ internal sealed partial class Combat
 
         foreach (IObject universeObj in _universe.GetAllObjects())
         {
-            if (universeObj.Type == ShipType.Missile && ((IShip)universeObj).Target == obj)
+            if (universeObj.Id == ObjectIds.Missile && ((IShip)universeObj).Target == obj)
             {
                 universeObj.Flags |= ShipProperties.Dead;
             }
@@ -952,7 +950,7 @@ internal sealed partial class Combat
 
     private void CreateCougar()
     {
-        if (_universe.ShipCount(ShipType.Cougar) != 0)
+        if (_universe.ShipCount(ObjectIds.Cougar) != 0)
         {
             return;
         }
@@ -977,7 +975,7 @@ internal sealed partial class Combat
         // the mission cannot see the universe, so the count is kept here.
         IShip loneWolf = _missions.LoneWolfSubstitute() is { } substitute
             && (!substitute.Unique
-                || (Enum.TryParse(substitute.ShipName, out ShipType type) && _universe.ShipCount(type) == 0))
+                || _universe.ShipCount(substitute.ShipName) == 0)
             ? _shipFactory.CreateShip(substitute.ShipName)
             : _shipFactory.CreateLoneWolf();
 
@@ -989,7 +987,7 @@ internal sealed partial class Combat
                 loneWolf.Flags |= ShipProperties.Angry;
             }
 
-            if (_rng.Random(256) > 200 || loneWolf.Type == ShipType.Constrictor)
+            if (_rng.Random(256) > 200 || loneWolf.Id == ObjectIds.Constrictor)
             {
                 loneWolf.Flags |= ShipProperties.HasECM;
             }
@@ -1049,7 +1047,7 @@ internal sealed partial class Combat
         newShip.RotZ *= 2;
         newShip.Bravery = bravery;
 
-        if (newShip.Type is ShipType.Cargo or ShipType.Alloy or ShipType.Rock)
+        if (newShip.Id is ObjectIds.CargoCannister or ObjectIds.Alloy or ObjectIds.RockSplinter)
         {
             newShip.RotZ = ((_rng.Random(256) * 2) & 255) - 128;
             newShip.RotX = ((_rng.Random(256) * 2) & 255) - 128;
@@ -1059,11 +1057,14 @@ internal sealed partial class Combat
         return true;
     }
 
-    private void LaunchLoot(IShip ship, ShipType lootType)
+    // lootId is the ship the wreckage is made of, by the id the table files
+    // it under - so what a kill leaves behind is a name the game passes on
+    // rather than a case it has to have been built with.
+    private void LaunchLoot(IShip ship, string lootId)
     {
         int count;
 
-        if (lootType == ShipType.Rock)
+        if (lootId == ObjectIds.RockSplinter)
         {
             count = _rng.Random(4);
         }
@@ -1081,13 +1082,7 @@ internal sealed partial class Combat
 
         for (int i = 0; i < count; i++)
         {
-            IShip loot = lootType switch
-            {
-                ShipType.Rock => _shipFactory.CreateShip("RockSplinter"),
-                ShipType.Alloy => _shipFactory.CreateShip("Alloy"),
-                ShipType.Cargo => _shipFactory.CreateShip("CargoCannister"),
-                _ => throw new EliteException($"Incorrect loot type: {lootType}"),
-            };
+            IShip loot = _shipFactory.CreateShip(lootId);
 
             if (!LaunchEnemy(ship, loot, 0, 0))
             {
@@ -1098,8 +1093,8 @@ internal sealed partial class Combat
 
     private void LaunchShuttle()
     {
-        if (_universe.ShipCount(ShipType.Transporter) != 0 ||
-            _universe.ShipCount(ShipType.Shuttle) != 0 ||
+        if (_universe.ShipCount(ObjectIds.Transporter) != 0 ||
+            _universe.ShipCount(ObjectIds.Shuttle) != 0 ||
             _rng.Random(256) < 253
             || _pilot.IsAutoPilotOn)
         {

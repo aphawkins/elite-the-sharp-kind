@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -31,6 +31,10 @@ internal sealed class Sun : IObject
         _renderer = other._renderer;
     }
 
+    public string Id { get; set; } = ObjectIds.Sun;
+
+    public ShipTraits Traits { get; set; } = ShipTraits.Stellar;
+
     public ShipProperties Flags { get; set; }
 
     public Vector4 Location { get; set; } = new(0, 0, 123456, 0);
@@ -40,8 +44,6 @@ internal sealed class Sun : IObject
     public float RotX { get; set; }
 
     public float RotZ { get; set; }
-
-    public ShipType Type { get; set; } = ShipType.Sun;
 
     public IObject Clone()
     {

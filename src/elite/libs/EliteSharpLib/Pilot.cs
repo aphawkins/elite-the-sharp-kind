@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -42,7 +42,6 @@ internal sealed class Pilot
             Location = Vector4.Zero,
             Acceleration = 0,
             Model = ModelReader.None,
-            ////Type = (ShipType)(-96),
             Velocity = _ship.Speed,
             Bravery = 0,
             RotZ = 0,
@@ -329,7 +328,7 @@ internal sealed class Pilot
         Vector4 vec = VectorMaths.UnitVector(diff);
         ship.RotX = 0;
 
-        if (ship.Type == ShipType.None && !IsLinedUpWithDockingBay(ship, vec))
+        if (ship.Id == ObjectIds.None && !IsLinedUpWithDockingBay(ship, vec))
         {
             // still edging into line with the slot, so hold station this tick
             return;

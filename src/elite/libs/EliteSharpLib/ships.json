@@ -3,11 +3,14 @@
   "ships": [
     {
       "id": "Adder",
-      "type": "Adder",
       "flags": [
         "PackHunter",
         "Bold",
         "Angry"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Adder",
       "bounty": 4,
@@ -20,7 +23,6 @@
     },
     {
       "id": "Alloy",
-      "type": "Alloy",
       "flags": [
         "SpaceJunk",
         "Inactive"
@@ -35,10 +37,13 @@
     },
     {
       "id": "Anaconda",
-      "type": "Anaconda",
       "flags": [
         "Trader",
         "Slow"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Anaconda",
       "energyMax": 252,
@@ -53,11 +58,14 @@
     },
     {
       "id": "AspMk2",
-      "type": "AspMk2",
       "flags": [
         "LoneWolf",
         "Bold",
         "Angry"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Asp MkII",
       "bounty": 20,
@@ -72,7 +80,6 @@
     },
     {
       "id": "Asteroid",
-      "type": "Asteroid",
       "flags": [
         "SpaceJunk",
         "Inactive"
@@ -87,9 +94,12 @@
     },
     {
       "id": "Boa",
-      "type": "Boa",
       "flags": [
         "Trader"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Boa",
       "energyMax": 250,
@@ -103,7 +113,6 @@
     },
     {
       "id": "Boulder",
-      "type": "Boulder",
       "flags": [
         "SpaceJunk",
         "Inactive"
@@ -118,7 +127,6 @@
     },
     {
       "id": "CargoCannister",
-      "type": "Cargo",
       "flags": [
         "SpaceJunk",
         "Inactive"
@@ -132,11 +140,14 @@
     },
     {
       "id": "CobraMk1",
-      "type": "CobraMk1",
       "flags": [
         "PackHunter",
         "Bold",
         "Angry"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Cobra MkI",
       "bounty": 7.5,
@@ -152,9 +163,12 @@
     },
     {
       "id": "CobraMk3",
-      "type": "CobraMk3",
       "flags": [
         "Trader"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Cobra MkIII",
       "energyMax": 150,
@@ -170,10 +184,13 @@
     {
       "id": "CobraMk3Lone",
       "basedOn": "CobraMk3",
-      "type": "CobraMk3Lone",
       "flags": [
         "Bold",
         "Angry"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "bounty": 17.5,
       "lootMax": 1,
@@ -181,10 +198,13 @@
     },
     {
       "id": "Constrictor",
-      "type": "Constrictor",
       "flags": [
         "LoneWolf",
         "Angry"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Constrictor",
       "energyMax": 252,
@@ -197,9 +217,11 @@
     },
     {
       "id": "Coriolis",
-      "type": "Coriolis",
       "flags": [
         "Station"
+      ],
+      "traits": [
+        "MassLocks"
       ],
       "name": "Coriolis Space Station",
       "energyMax": 240,
@@ -211,11 +233,14 @@
     },
     {
       "id": "Cougar",
-      "type": "Cougar",
       "flags": [
         "LoneWolf",
         "Police",
         "Cloaked"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Cougar",
       "energyMax": 252,
@@ -228,9 +253,12 @@
     },
     {
       "id": "DodecStation",
-      "type": "Dodec",
       "flags": [
         "Station"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Dodec Space Station",
       "energyMax": 240,
@@ -240,7 +268,6 @@
     },
     {
       "id": "EscapeCapsule",
-      "type": "EscapeCapsule",
       "flags": [
         "SpaceJunk",
         "Slow",
@@ -256,11 +283,14 @@
     },
     {
       "id": "FerDeLance",
-      "type": "FerDeLance",
       "flags": [
         "LoneWolf",
         "Police",
         "BountyHunter"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Fer-de-Lance",
       "energyMax": 160,
@@ -273,11 +303,14 @@
     },
     {
       "id": "Gecko",
-      "type": "Gecko",
       "flags": [
         "PackHunter",
         "Bold",
         "Angry"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Gecko",
       "bounty": 5.5,
@@ -290,11 +323,14 @@
     },
     {
       "id": "Krait",
-      "type": "Krait",
       "flags": [
         "PackHunter",
         "Bold",
         "Angry"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Krait",
       "bounty": 10,
@@ -308,11 +344,14 @@
     },
     {
       "id": "Mamba",
-      "type": "Mamba",
       "flags": [
         "PackHunter",
         "Bold",
         "Angry"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Mamba",
       "bounty": 15,
@@ -327,9 +366,11 @@
     },
     {
       "id": "Missile",
-      "type": "Missile",
       "flags": [
         "Missile"
+      ],
+      "traits": [
+        "MassLocks"
       ],
       "name": "Missile",
       "energyMax": 2,
@@ -340,11 +381,14 @@
     },
     {
       "id": "Moray",
-      "type": "Moray",
       "flags": [
         "LoneWolf",
         "Bold",
         "Angry"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Moray Star Boat",
       "bounty": 5,
@@ -358,9 +402,12 @@
     },
     {
       "id": "Python",
-      "type": "Python",
       "flags": [
         "Trader"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Python",
       "energyMax": 250,
@@ -375,21 +422,27 @@
     {
       "id": "PythonLone",
       "basedOn": "Python",
-      "type": "PythonLone",
       "flags": [
         "LoneWolf",
         "Bold",
         "Angry"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "bounty": 20,
       "lootMax": 2
     },
     {
       "id": "RockHermit",
-      "type": "Hermit",
       "flags": [
         "SpaceJunk",
         "Slow"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Rock Hermit",
       "energyMax": 180,
@@ -403,7 +456,6 @@
     },
     {
       "id": "RockSplinter",
-      "type": "Rock",
       "flags": [
         "SpaceJunk",
         "Inactive"
@@ -418,11 +470,14 @@
     },
     {
       "id": "Shuttle",
-      "type": "Shuttle",
       "flags": [
         "SpaceJunk",
         "FlyToPlanet",
         "Slow"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Orbit Shuttle",
       "energyMax": 32,
@@ -434,11 +489,14 @@
     },
     {
       "id": "Sidewinder",
-      "type": "Sidewinder",
       "flags": [
         "PackHunter",
         "Bold",
         "Angry"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Sidewinder",
       "bounty": 5,
@@ -451,10 +509,13 @@
     },
     {
       "id": "Tharglet",
-      "type": "Tharglet",
       "flags": [
         "Tharglet",
         "Angry"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Tharglet",
       "scoopedType": "AlienItems",
@@ -468,11 +529,14 @@
     },
     {
       "id": "Thargoid",
-      "type": "Thargoid",
       "flags": [
         "LoneWolf",
         "Bold",
         "Angry"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Thargoid",
       "bounty": 50,
@@ -487,11 +551,14 @@
     },
     {
       "id": "Transporter",
-      "type": "Transporter",
       "flags": [
         "SpaceJunk",
         "FlyToPlanet",
         "Slow"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Transporter",
       "energyMax": 32,
@@ -503,10 +570,13 @@
     },
     {
       "id": "Viper",
-      "type": "Viper",
       "flags": [
         "Police",
         "Bold"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Viper",
       "energyMax": 140,
@@ -519,11 +589,14 @@
     },
     {
       "id": "Worm",
-      "type": "Worm",
       "flags": [
         "PackHunter",
         "Slow",
         "Angry"
+      ],
+      "traits": [
+        "Crewed",
+        "MassLocks"
       ],
       "name": "Worm",
       "energyMax": 30,

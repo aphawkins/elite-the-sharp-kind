@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -122,7 +122,11 @@ internal sealed class CommanderStatusController : IScreenController
 
         foreach (IObject obj in _universe.GetAllObjects())
         {
-            if (obj.Type is ShipType.Missile or (> ShipType.Rock and < ShipType.Dodec))
+            // A missile, or anybody crewed who is not the station: the original
+            // said this as a band of the ship numbering, "a missile or above a
+            // Rock Splinter but below the Dodec".
+            if (obj.Id == ObjectIds.Missile
+                || (obj.Traits.HasFlag(ShipTraits.Crewed) && !obj.Flags.HasFlag(ShipProperties.Station)))
             {
                 condition = 2;
                 break;
