@@ -7,6 +7,23 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (buying equipment is covered, 2026-08-31)
+
+- The equip-ship screen was at 53% of its lines: the list and its tech-level
+  gating were held, but almost nothing about buying was. 34 more tests take it
+  to 98%.
+- One case of the buy switch per row, as a decision table: each fits its own
+  piece of equipment, takes its own price, and stops offering itself
+  afterwards. Fuel and missiles are separate, because they are capped rather
+  than owned - the tank fills to seven at two credits a light year, and the
+  fourth missile is the last.
+- All sixteen laser-and-mount combinations are covered, each asserting the
+  laser lands on that mount and on no other, and all four trade-in values are
+  asserted by fitting a laser over one already there.
+- A purchase with too few credits changes nothing, the cursor keys are
+  asserted with their aliases, and the cursor is asserted to stop at both ends
+  of the list.
+
 ### Added (the game over screen is covered, 2026-08-31)
 
 - The game over screen was at 41% of its lines. Nine tests take it to 96%.
