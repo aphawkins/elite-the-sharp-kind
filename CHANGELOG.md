@@ -1,4 +1,4 @@
-# Changelog
+﻿# Changelog
 
 All notable changes to this project are documented in this file. The format
 is based on [Keep a Changelog](https://keepachangelog.com/); the project does
@@ -6,6 +6,41 @@ not yet cut versioned releases, so everything sits under Unreleased.
 Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
+
+### Changed (the ships are a table, not thirty-three classes, 2026-08-31)
+
+- **Every ship in Elite was a class whose whole body was a constructor
+  setting the same ten fields.** `Adder.cs` through `Worm.cs` declared no
+  method, overrode nothing, and `ShipBase.Clone` had always returned a
+  `ShipBase` whatever class it was called on - so the subclass was never
+  anything the game could observe. The thirty-three files are now
+  thirty-three rows in `src/elite/libs/EliteSharpLib/ships.json`, read by
+  `ShipTable` into `ShipDefinition`s that `ShipFactory` builds its
+  prototypes from. `ShipFactory`'s dictionary of thirty-three constructor
+  lambdas, and the `s_modelNames` table of variants that borrow a parent's
+  mesh, went with them.
+- **The shape is the goods set's**, decided 2026-08-27: the file travels
+  beside the assembly and is read from there, and nothing in the code knows
+  the word "Adder". Not a plugin yet - a ship still needs a model in the
+  rendition's asset manifest, so the table and the artwork have to agree -
+  but the door is the one a plugin would come through.
+- **A variant states only what it changes.** The two lone wolves were
+  subclasses of the ship they vary (`CobraMk3Lone : CobraMk3`), so a row may
+  name a `basedOn` and inherit every field it leaves unsaid, including which
+  mesh to draw. That is also what keeps the asset manifest listing only real
+  model files.
+- **The file is checked when it is read**: a ship with no id, the same ship
+  twice, a kind or a behaviour the game does not have, a `basedOn` naming a
+  ship the file has not described. Each says which file and why, rather than
+  starting a game with nothing to fly.
+- Verified field by field against the deleted classes - all ten fields of
+  all thirty-three ships, inherited variants and borrowed meshes included -
+  match exactly. Full suite green (623 in `EliteSharpLib.Tests`, including
+  eleven new `ShipTableTests`), and the ship parade still names and draws
+  its ships in order.
+- `ShipType` is still an enum, so the table cannot yet name a ship the game
+  was not built against. That is the next item in
+  [the backlog](docs/backlog-roadmap.md).
 
 ### Fixed (the integration-tests CI step failed on every run, 2026-08-31)
 

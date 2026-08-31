@@ -1,0 +1,537 @@
+{
+  "name": "Classic",
+  "ships": [
+    {
+      "id": "Adder",
+      "type": "Adder",
+      "flags": [
+        "PackHunter",
+        "Bold",
+        "Angry"
+      ],
+      "name": "Adder",
+      "bounty": 4,
+      "energyMax": 85,
+      "laserStrength": 8,
+      "minDistance": 200,
+      "size": 2500,
+      "vanishPoint": 20,
+      "velocityMax": 24
+    },
+    {
+      "id": "Alloy",
+      "type": "Alloy",
+      "flags": [
+        "SpaceJunk",
+        "Inactive"
+      ],
+      "name": "Alloy",
+      "scoopedType": "Alloys",
+      "energyMax": 16,
+      "minDistance": 200,
+      "size": 100,
+      "vanishPoint": 5,
+      "velocityMax": 16
+    },
+    {
+      "id": "Anaconda",
+      "type": "Anaconda",
+      "flags": [
+        "Trader",
+        "Slow"
+      ],
+      "name": "Anaconda",
+      "energyMax": 252,
+      "laserFront": 12,
+      "laserStrength": 31,
+      "lootMax": 7,
+      "minDistance": 800,
+      "missilesMax": 7,
+      "size": 10000,
+      "vanishPoint": 36,
+      "velocityMax": 14
+    },
+    {
+      "id": "AspMk2",
+      "type": "AspMk2",
+      "flags": [
+        "LoneWolf",
+        "Bold",
+        "Angry"
+      ],
+      "name": "Asp MkII",
+      "bounty": 20,
+      "energyMax": 150,
+      "laserFront": 8,
+      "laserStrength": 20,
+      "minDistance": 384,
+      "missilesMax": 1,
+      "size": 3600,
+      "vanishPoint": 40,
+      "velocityMax": 40
+    },
+    {
+      "id": "Asteroid",
+      "type": "Asteroid",
+      "flags": [
+        "SpaceJunk",
+        "Inactive"
+      ],
+      "name": "Asteroid",
+      "bounty": 0.5,
+      "energyMax": 60,
+      "minDistance": 384,
+      "size": 6400,
+      "vanishPoint": 50,
+      "velocityMax": 30
+    },
+    {
+      "id": "Boa",
+      "type": "Boa",
+      "flags": [
+        "Trader"
+      ],
+      "name": "Boa",
+      "energyMax": 250,
+      "laserStrength": 14,
+      "lootMax": 5,
+      "minDistance": 500,
+      "missilesMax": 4,
+      "size": 4900,
+      "vanishPoint": 40,
+      "velocityMax": 24
+    },
+    {
+      "id": "Boulder",
+      "type": "Boulder",
+      "flags": [
+        "SpaceJunk",
+        "Inactive"
+      ],
+      "name": "Boulder",
+      "bounty": 0.1,
+      "energyMax": 20,
+      "minDistance": 300,
+      "size": 900,
+      "vanishPoint": 20,
+      "velocityMax": 30
+    },
+    {
+      "id": "CargoCannister",
+      "type": "Cargo",
+      "flags": [
+        "SpaceJunk",
+        "Inactive"
+      ],
+      "name": "Cargo Cannister",
+      "energyMax": 17,
+      "minDistance": 200,
+      "size": 400,
+      "vanishPoint": 12,
+      "velocityMax": 15
+    },
+    {
+      "id": "CobraMk1",
+      "type": "CobraMk1",
+      "flags": [
+        "PackHunter",
+        "Bold",
+        "Angry"
+      ],
+      "name": "Cobra MkI",
+      "bounty": 7.5,
+      "energyMax": 90,
+      "laserFront": 10,
+      "laserStrength": 9,
+      "lootMax": 3,
+      "minDistance": 384,
+      "missilesMax": 2,
+      "size": 9801,
+      "vanishPoint": 19,
+      "velocityMax": 26
+    },
+    {
+      "id": "CobraMk3",
+      "type": "CobraMk3",
+      "flags": [
+        "Trader"
+      ],
+      "name": "Cobra MkIII",
+      "energyMax": 150,
+      "laserFront": 21,
+      "laserStrength": 9,
+      "lootMax": 3,
+      "minDistance": 420,
+      "missilesMax": 3,
+      "size": 9025,
+      "vanishPoint": 50,
+      "velocityMax": 28
+    },
+    {
+      "id": "CobraMk3Lone",
+      "basedOn": "CobraMk3",
+      "type": "CobraMk3Lone",
+      "flags": [
+        "Bold",
+        "Angry"
+      ],
+      "bounty": 17.5,
+      "lootMax": 1,
+      "missilesMax": 2
+    },
+    {
+      "id": "Constrictor",
+      "type": "Constrictor",
+      "flags": [
+        "LoneWolf",
+        "Angry"
+      ],
+      "name": "Constrictor",
+      "energyMax": 252,
+      "laserStrength": 26,
+      "lootMax": 3,
+      "missilesMax": 4,
+      "size": 4225,
+      "vanishPoint": 45,
+      "velocityMax": 36
+    },
+    {
+      "id": "Coriolis",
+      "type": "Coriolis",
+      "flags": [
+        "Station"
+      ],
+      "name": "Coriolis Space Station",
+      "energyMax": 240,
+      "laserStrength": 3,
+      "minDistance": 800,
+      "missilesMax": 6,
+      "size": 25600,
+      "vanishPoint": 120
+    },
+    {
+      "id": "Cougar",
+      "type": "Cougar",
+      "flags": [
+        "LoneWolf",
+        "Police",
+        "Cloaked"
+      ],
+      "name": "Cougar",
+      "energyMax": 252,
+      "laserStrength": 26,
+      "lootMax": 3,
+      "missilesMax": 4,
+      "size": 4900,
+      "vanishPoint": 34,
+      "velocityMax": 40
+    },
+    {
+      "id": "DodecStation",
+      "type": "Dodec",
+      "flags": [
+        "Station"
+      ],
+      "name": "Dodec Space Station",
+      "energyMax": 240,
+      "minDistance": 900,
+      "size": 32400,
+      "vanishPoint": 125
+    },
+    {
+      "id": "EscapeCapsule",
+      "type": "EscapeCapsule",
+      "flags": [
+        "SpaceJunk",
+        "Slow",
+        "FlyToPlanet"
+      ],
+      "name": "Escape Capsule",
+      "scoopedType": "Slaves",
+      "energyMax": 17,
+      "minDistance": 200,
+      "size": 256,
+      "vanishPoint": 8,
+      "velocityMax": 8
+    },
+    {
+      "id": "FerDeLance",
+      "type": "FerDeLance",
+      "flags": [
+        "LoneWolf",
+        "Police",
+        "BountyHunter"
+      ],
+      "name": "Fer-de-Lance",
+      "energyMax": 160,
+      "laserStrength": 9,
+      "minDistance": 384,
+      "missilesMax": 2,
+      "size": 1600,
+      "vanishPoint": 40,
+      "velocityMax": 30
+    },
+    {
+      "id": "Gecko",
+      "type": "Gecko",
+      "flags": [
+        "PackHunter",
+        "Bold",
+        "Angry"
+      ],
+      "name": "Gecko",
+      "bounty": 5.5,
+      "energyMax": 70,
+      "laserStrength": 8,
+      "minDistance": 384,
+      "size": 9801,
+      "vanishPoint": 18,
+      "velocityMax": 30
+    },
+    {
+      "id": "Krait",
+      "type": "Krait",
+      "flags": [
+        "PackHunter",
+        "Bold",
+        "Angry"
+      ],
+      "name": "Krait",
+      "bounty": 10,
+      "energyMax": 80,
+      "laserStrength": 8,
+      "lootMax": 1,
+      "minDistance": 384,
+      "size": 3600,
+      "vanishPoint": 20,
+      "velocityMax": 30
+    },
+    {
+      "id": "Mamba",
+      "type": "Mamba",
+      "flags": [
+        "PackHunter",
+        "Bold",
+        "Angry"
+      ],
+      "name": "Mamba",
+      "bounty": 15,
+      "energyMax": 90,
+      "laserStrength": 9,
+      "lootMax": 1,
+      "minDistance": 384,
+      "missilesMax": 2,
+      "size": 4900,
+      "vanishPoint": 25,
+      "velocityMax": 30
+    },
+    {
+      "id": "Missile",
+      "type": "Missile",
+      "flags": [
+        "Missile"
+      ],
+      "name": "Missile",
+      "energyMax": 2,
+      "minDistance": 200,
+      "size": 1600,
+      "vanishPoint": 14,
+      "velocityMax": 44
+    },
+    {
+      "id": "Moray",
+      "type": "Moray",
+      "flags": [
+        "LoneWolf",
+        "Bold",
+        "Angry"
+      ],
+      "name": "Moray Star Boat",
+      "bounty": 5,
+      "energyMax": 100,
+      "laserStrength": 8,
+      "lootMax": 1,
+      "minDistance": 384,
+      "size": 900,
+      "vanishPoint": 40,
+      "velocityMax": 25
+    },
+    {
+      "id": "Python",
+      "type": "Python",
+      "flags": [
+        "Trader"
+      ],
+      "name": "Python",
+      "energyMax": 250,
+      "laserStrength": 13,
+      "lootMax": 5,
+      "minDistance": 900,
+      "missilesMax": 3,
+      "size": 6400,
+      "vanishPoint": 40,
+      "velocityMax": 20
+    },
+    {
+      "id": "PythonLone",
+      "basedOn": "Python",
+      "type": "PythonLone",
+      "flags": [
+        "LoneWolf",
+        "Bold",
+        "Angry"
+      ],
+      "bounty": 20,
+      "lootMax": 2
+    },
+    {
+      "id": "RockHermit",
+      "type": "Hermit",
+      "flags": [
+        "SpaceJunk",
+        "Slow"
+      ],
+      "name": "Rock Hermit",
+      "energyMax": 180,
+      "laserStrength": 1,
+      "lootMax": 7,
+      "minDistance": 384,
+      "missilesMax": 2,
+      "size": 6400,
+      "vanishPoint": 50,
+      "velocityMax": 30
+    },
+    {
+      "id": "RockSplinter",
+      "type": "Rock",
+      "flags": [
+        "SpaceJunk",
+        "Inactive"
+      ],
+      "name": "Rock Splinter",
+      "scoopedType": "Minerals",
+      "energyMax": 20,
+      "minDistance": 200,
+      "size": 256,
+      "vanishPoint": 8,
+      "velocityMax": 10
+    },
+    {
+      "id": "Shuttle",
+      "type": "Shuttle",
+      "flags": [
+        "SpaceJunk",
+        "FlyToPlanet",
+        "Slow"
+      ],
+      "name": "Orbit Shuttle",
+      "energyMax": 32,
+      "lootMax": 15,
+      "minDistance": 200,
+      "size": 2500,
+      "vanishPoint": 22,
+      "velocityMax": 8
+    },
+    {
+      "id": "Sidewinder",
+      "type": "Sidewinder",
+      "flags": [
+        "PackHunter",
+        "Bold",
+        "Angry"
+      ],
+      "name": "Sidewinder",
+      "bounty": 5,
+      "energyMax": 70,
+      "laserStrength": 8,
+      "minDistance": 384,
+      "size": 4225,
+      "vanishPoint": 20,
+      "velocityMax": 37
+    },
+    {
+      "id": "Tharglet",
+      "type": "Tharglet",
+      "flags": [
+        "Tharglet",
+        "Angry"
+      ],
+      "name": "Tharglet",
+      "scoopedType": "AlienItems",
+      "bounty": 5,
+      "energyMax": 20,
+      "laserStrength": 8,
+      "minDistance": 384,
+      "size": 1600,
+      "vanishPoint": 20,
+      "velocityMax": 30
+    },
+    {
+      "id": "Thargoid",
+      "type": "Thargoid",
+      "flags": [
+        "LoneWolf",
+        "Bold",
+        "Angry"
+      ],
+      "name": "Thargoid",
+      "bounty": 50,
+      "energyMax": 240,
+      "laserFront": 15,
+      "laserStrength": 11,
+      "minDistance": 700,
+      "missilesMax": 6,
+      "size": 9801,
+      "vanishPoint": 55,
+      "velocityMax": 39
+    },
+    {
+      "id": "Transporter",
+      "type": "Transporter",
+      "flags": [
+        "SpaceJunk",
+        "FlyToPlanet",
+        "Slow"
+      ],
+      "name": "Transporter",
+      "energyMax": 32,
+      "laserFront": 12,
+      "minDistance": 200,
+      "size": 2500,
+      "vanishPoint": 16,
+      "velocityMax": 10
+    },
+    {
+      "id": "Viper",
+      "type": "Viper",
+      "flags": [
+        "Police",
+        "Bold"
+      ],
+      "name": "Viper",
+      "energyMax": 140,
+      "laserStrength": 8,
+      "minDistance": 384,
+      "missilesMax": 1,
+      "size": 5625,
+      "vanishPoint": 23,
+      "velocityMax": 32
+    },
+    {
+      "id": "Worm",
+      "type": "Worm",
+      "flags": [
+        "PackHunter",
+        "Slow",
+        "Angry"
+      ],
+      "name": "Worm",
+      "energyMax": 30,
+      "laserStrength": 4,
+      "minDistance": 384,
+      "size": 9801,
+      "vanishPoint": 19,
+      "velocityMax": 23
+    }
+  ]
+}

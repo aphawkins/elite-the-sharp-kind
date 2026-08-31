@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -10,50 +10,6 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class ShipFactory : IShipFactory
 {
-    private static readonly Dictionary<string, Func<IEliteDraw, IShip>> s_constructors = new()
-    {
-        { "Adder", draw => new Adder(draw) },
-        { "Alloy", draw => new Alloy(draw) },
-        { "Anaconda", draw => new Anaconda(draw) },
-        { "AspMk2", draw => new AspMk2(draw) },
-        { "Asteroid", draw => new Asteroid(draw) },
-        { "Boa", draw => new Boa(draw) },
-        { "Boulder", draw => new Boulder(draw) },
-        { "CargoCannister", draw => new CargoCannister(draw) },
-        { "CobraMk1", draw => new CobraMk1(draw) },
-        { "CobraMk3", draw => new CobraMk3(draw) },
-        { "CobraMk3Lone", draw => new CobraMk3Lone(draw) },
-        { "Constrictor", draw => new Constrictor(draw) },
-        { "Coriolis", draw => new Coriolis(draw) },
-        { "Cougar", draw => new Cougar(draw) },
-        { "DodecStation", draw => new DodecStation(draw) },
-        { "EscapeCapsule", draw => new EscapeCapsule(draw) },
-        { "FerDeLance", draw => new FerDeLance(draw) },
-        { "Gecko", draw => new Gecko(draw) },
-        { "Krait", draw => new Krait(draw) },
-        { "Mamba", draw => new Mamba(draw) },
-        { "Missile", draw => new Missile(draw) },
-        { "Moray", draw => new Moray(draw) },
-        { "Python", draw => new Python(draw) },
-        { "PythonLone", draw => new PythonLone(draw) },
-        { "RockHermit", draw => new RockHermit(draw) },
-        { "RockSplinter", draw => new RockSplinter(draw) },
-        { "Shuttle", draw => new Shuttle(draw) },
-        { "Sidewinder", draw => new Sidewinder(draw) },
-        { "Tharglet", draw => new Tharglet(draw) },
-        { "Thargoid", draw => new Thargoid(draw) },
-        { "Transporter", draw => new Transporter(draw) },
-        { "Viper", draw => new Viper(draw) },
-        { "Worm", draw => new Worm(draw) },
-    };
-
-    // Variants that share their parent's mesh, so the manifest lists only real model files.
-    private static readonly Dictionary<string, string> s_modelNames = new()
-    {
-        { "CobraMk3Lone", "CobraMk3" },
-        { "PythonLone", "Python" },
-    };
-
     private readonly Dictionary<string, IShip> _ships;
     private readonly RNG _rng;
 
@@ -68,31 +24,7 @@ internal sealed class ShipFactory : IShipFactory
     // entropy a ship draws with rides on the draw surface instead, so it
     // cannot be confused with this one. See RenderRandom.
     public static ShipFactory Create(IAssetLocator assetLocator, IEliteDraw draw, RNG rng)
-    {
-        ArgumentNullException.ThrowIfNull(assetLocator);
-
-        string? unknown = assetLocator.ModelPaths.Keys.FirstOrDefault(x => !s_constructors.ContainsKey(x));
-        if (unknown != null)
-        {
-            throw new EliteException($"Ship type '{unknown}' could not be found.");
-        }
-
-        // Every ship the manifest supplies a model for, including the variants
-        // that borrow their parent's model.
-        Dictionary<string, IShip> ships = [];
-        foreach ((string name, Func<IEliteDraw, IShip> constructor) in s_constructors)
-        {
-            string modelName = s_modelNames.GetValueOrDefault(name, name);
-            if (assetLocator.ModelPaths.TryGetValue(modelName, out string? modelPath))
-            {
-                IShip ship = constructor(draw);
-                ship.Model = ModelReader.Read(modelPath, draw.Palette);
-                ships[name] = ship;
-            }
-        }
-
-        return new(ships, rng);
-    }
+        => Create(assetLocator, draw, rng, ShipTable.Load());
 
     public IShip CreateShip(string shipName)
     => _ships.TryGetValue(shipName, out IShip? ship)
@@ -195,4 +127,61 @@ internal sealed class ShipFactory : IShipFactory
         { CreateShip("Tharglet") },
         { CreateShip("DodecStation") },
     };
+
+    // The table the ships are built from, handed in so a test can state its
+    // own rather than install a file.
+    internal static ShipFactory Create(
+        IAssetLocator assetLocator,
+        IEliteDraw draw,
+        RNG rng,
+        IReadOnlyList<ShipDefinition> definitions)
+    {
+        ArgumentNullException.ThrowIfNull(assetLocator);
+        ArgumentNullException.ThrowIfNull(definitions);
+
+        string? unknown = assetLocator.ModelPaths.Keys.FirstOrDefault(
+            x => !definitions.Any(d => d.Id == x));
+
+        if (unknown != null)
+        {
+            throw new EliteException($"Ship type '{unknown}' could not be found.");
+        }
+
+        // Every ship the manifest supplies a model for, including the variants
+        // that borrow their parent's model.
+        Dictionary<string, IShip> ships = [];
+        foreach (ShipDefinition definition in definitions)
+        {
+            if (assetLocator.ModelPaths.TryGetValue(definition.Model, out string? modelPath))
+            {
+                ships[definition.Id] = Build(definition, draw, modelPath);
+            }
+        }
+
+        return new(ships, rng);
+    }
+
+    // One row of the table becomes one prototype, which CreateShip then
+    // clones. Clone has always returned a ShipBase whatever class it was
+    // called on, so building them all as ShipBase changes nothing about what
+    // the game gets.
+    private static ShipBase Build(ShipDefinition definition, IEliteDraw draw, string modelPath)
+        => new(draw)
+        {
+            Model = ModelReader.Read(modelPath, draw.Palette),
+            Type = definition.Type,
+            Flags = definition.Flags,
+            Name = definition.Name,
+            ScoopedType = definition.ScoopedType,
+            Bounty = definition.Bounty,
+            EnergyMax = definition.EnergyMax,
+            LaserFront = definition.LaserFront,
+            LaserStrength = definition.LaserStrength,
+            LootMax = definition.LootMax,
+            MinDistance = definition.MinDistance,
+            MissilesMax = definition.MissilesMax,
+            Size = definition.Size,
+            VanishPoint = definition.VanishPoint,
+            VelocityMax = definition.VelocityMax,
+        };
 }

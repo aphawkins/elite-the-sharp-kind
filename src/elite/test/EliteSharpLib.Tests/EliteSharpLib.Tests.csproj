@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
@@ -57,6 +57,10 @@
     <!-- The goods-file fixtures, read from beside the assembly rather than
          spelled out as JSON in C#. -->
     <None Update="Trader\Fixtures\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <!-- The ship-file fixtures, for the same reason. -->
+    <None Update="Ships\Fixtures\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <!-- Read from the build output so a test run never depends on the source

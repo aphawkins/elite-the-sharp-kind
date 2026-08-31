@@ -1,0 +1,22 @@
+{
+  "name": "Test",
+  "ships": [
+    {
+      "id": "Adder",
+      "type": "Adder",
+      "flags": [
+        "PackHunter",
+        "Bold",
+        "Angry"
+      ],
+      "name": "Adder",
+      "bounty": 4,
+      "energyMax": 85,
+      "laserStrength": 8,
+      "minDistance": 200,
+      "size": 2500,
+      "vanishPoint": 20,
+      "velocityMax": 24
+    }
+  ]
+}

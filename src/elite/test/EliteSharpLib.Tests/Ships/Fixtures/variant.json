@@ -1,0 +1,27 @@
+{
+  "name": "Test",
+  "ships": [
+    {
+      "id": "Python",
+      "type": "Python",
+      "flags": [ "Trader" ],
+      "name": "Python",
+      "energyMax": 250,
+      "laserStrength": 13,
+      "lootMax": 5,
+      "minDistance": 900,
+      "missilesMax": 3,
+      "size": 6400,
+      "vanishPoint": 40,
+      "velocityMax": 20
+    },
+    {
+      "id": "PythonLone",
+      "basedOn": "Python",
+      "type": "PythonLone",
+      "flags": [ "LoneWolf", "Bold", "Angry" ],
+      "bounty": 20,
+      "lootMax": 2
+    }
+  ]
+}

@@ -50,7 +50,8 @@ that mentions a decision.
 
 Committed by the maintainer decisions in [decisions.md](decisions.md). The
 frame-rate item was audited and scoped on 2026-08-26 and is now the ordered
-list below; the data-driven content item is still a placeholder.
+list below; the data-driven content item was scoped and split the
+same way on 2026-08-31.
 
 Elite's frame rate vs the 13.5Hz tick — **done 2026-08-26** (see
 [CHANGELOG.md](../CHANGELOG.md) and the two 2026-08-26 entries in
@@ -63,21 +64,46 @@ from the game's random stream, and an E.C.M. burst is counted in ticks. The
 same twenty seconds at 13.5Hz and at 60Hz now end on the same screen, within
 one housekeeping step, and meet the same ships.
 
-- [ ] **[LARGE]** [EliteSharpLib] Data-driven game content model: replace
-      hardcoded/reflection-based game data — `EquipmentType`, ship
-      definitions, and `ShipFactory.CreateShipFromName`'s
-      reflection-based construction (see the smaller interim cleanup
-      below) — with a proper config-driven model. Design/scope the config
-      shape before starting. **Missions were the pilot and are done**
-      (2026-08-02, see [decisions.md](decisions.md)): they went to plugin
-      assemblies rather than config, because a mission carries behaviour.
-      What is left here is the inert content, which is the config-shaped
-      half of the problem. **`StockType` split out on 2026-08-27 and is
-      done** (see [CHANGELOG.md](../CHANGELOG.md)): the goods went to a
-      plugin assembly, as the missions did, so the answer for inert
-      content turned out to be an assembly too - the config shape was
-      right, the container was not. The ship definitions are the piece
-      that item touched, through the four ships that name a good.
+The [LARGE] item was surveyed and split on 2026-08-31, and the first of
+its three session-sized parts — the ship definitions — landed the same day
+(see [CHANGELOG.md](../CHANGELOG.md)). The precedent they all follow is the
+goods set: **the assembly is the door, the file is the table** (see the
+2026-08-27 entries in [decisions.md](decisions.md)) — a plugin referencing
+only `EliteSharp.Abstractions`, found beside the executable by a loader,
+reading its own JSON from beside itself. The survey also corrected the
+original wording twice: `ShipFactory` never built ships by reflection
+(`CreateShipFromName` was long gone; it was an explicit dictionary of 33
+constructor lambdas, so what was left was a table), and none of the 33 ship
+classes overrode anything, which is why the table replaced them outright
+rather than sitting alongside them.
+
+- [ ] [EliteSharpLib] `ShipType` to string ids: the enum
+      ([ShipType.cs](../src/elite/libs/EliteSharpLib/Ships/ShipType.cs),
+      whose own comment says "get these from the assets") is what stops
+      `ships.json` being open — a row still has to name a kind the enum
+      has a member for, so nobody can add a ship the game was not built
+      against. 88 uses across 43 files, so it is its own session, and it
+      is the one with real design in it: the save format records ship
+      types, and `Sun`/`Planet`'s negative values are compared ordinally
+      in places. The table's ids are what the call sites move to.
+- [ ] [EliteSharpLib] Equipment table to a plugin: the 34-row
+      `_equipmentStock` literal at
+      [EquipmentController.cs:23-58](../src/elite/libs/EliteSharpLib/Views/EquipmentController.cs)
+      is the last hardcoded content table. It goes the goods route —
+      `IEquipmentSet` in `EliteSharp.Abstractions`, an
+      `EliteSharp.Equipment.Classic` plugin with `equipment.json`, a
+      loader beside `GoodsLoader`, and the app's csproj dropping the DLL
+      into an `Equipment` folder. Unlike a good, an equipment item
+      *acts* — `EquipmentType`
+      ([EquipmentType.cs](../src/elite/libs/EliteSharpLib/Equipment/EquipmentType.cs))
+      is switched on to fit an E.C.M., mount a laser, or expand the hold —
+      so the enum stays as the behaviour key the game understands and the
+      file states only the inert half: name, price, tech level, the
+      `Show`/`CanBuy` flags and which behaviour key the row uses. A row
+      naming a key the game does not know is what the loader refuses.
+      Note the laser rows are a two-level list (a `+`/`-` category
+      expanding into four `>` mounts), so the file needs that shape, not
+      a flat array.
 
 ### 3D pipeline — modern-pipeline gaps
 

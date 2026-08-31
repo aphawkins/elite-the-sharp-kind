@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
@@ -32,6 +32,15 @@
     <None Update="Assets\SFX\*.wav;Assets\Music\*.ogg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The ship table, which travels with the assembly and is read from
+         beside it - Content rather than None, so the apps and the tests that
+         reference this project get the file in their own output too. -->
+    <Content Include="ships.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
