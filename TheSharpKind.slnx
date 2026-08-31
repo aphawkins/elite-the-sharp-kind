@@ -22,6 +22,8 @@
     <File Path="CODE_OF_CONDUCT.md" />
     <File Path="CONTRIBUTING.md" />
     <File Path="Directory.Build.props" />
+    <File Path="dotnet.config" />
+    <File Path="global.json" />
     <File Path="LICENSE" />
     <File Path="README.md" />
     <File Path="SECURITY.md" />

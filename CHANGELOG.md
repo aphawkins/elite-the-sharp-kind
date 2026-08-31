@@ -1,4 +1,4 @@
-﻿# Changelog
+# Changelog
 
 All notable changes to this project are documented in this file. The format
 is based on [Keep a Changelog](https://keepachangelog.com/); the project does
@@ -6,6 +6,27 @@ not yet cut versioned releases, so everything sits under Unreleased.
 Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
+
+### Fixed (the test suite runs again on CI, 2026-08-31)
+
+- **`dotnet test` ran no tests at all.** `xunit.v3` marks a project as a
+  Microsoft.Testing.Platform application, and the VSTest-based `dotnet test`
+  skips those without a word. The only two projects it did pick up were
+  `EliteSharpLib.Fakes` and `StuntCarRacerSharpLib.Fakes`, which hold no
+  tests, so the build's test step passed vacuously and a red test could not
+  break it. All 1654 tests now run.
+- `dotnet.config` selects the Microsoft.Testing.Platform runner for the .NET
+  10 SDK, and `global.json` does the same for the .NET 11 SDK, which moved
+  the setting. Both are needed while the two SDKs are in use side by side.
+- The runner is set once, in `Directory.Build.props`, for every project whose
+  name ends in `.Tests`. Ten of the thirteen set it themselves and three did
+  not, which is the kind of gap that made the step silent in the first place.
+- The two Fakes projects no longer reference `Microsoft.NET.Test.Sdk`, `Moq`
+  or `coverlet.collector`. They are fake implementations, not test projects,
+  and the reference is what made the runner treat them as one. The other two
+  Fakes projects never had it.
+- The coverage badge the build publishes was measured from those same two
+  empty projects, so it has been reporting a figure no test earned.
 
 ### Added (the docking computer's throttle ramp is covered, 2026-08-31)
 

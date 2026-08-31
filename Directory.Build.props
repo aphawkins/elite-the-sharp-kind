@@ -32,6 +32,14 @@
     <MinVerTagPrefix>v</MinVerTagPrefix>
   </PropertyGroup>
 
+  <!-- Every test project runs on Microsoft.Testing.Platform, the runner
+       dotnet.config and global.json select. A project left on VSTest is
+       silently skipped by 'dotnet test', so this is set in one place rather
+       than per project. -->
+  <PropertyGroup Condition="$(MSBuildProjectName.EndsWith('.Tests'))">
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+  </PropertyGroup>
+
   <ItemGroup>
     <!-- Sonar rule parameters (e.g. S1451's header format) can only be set
          from a SonarLint.xml additional file, not from .editorconfig. -->
