@@ -7,6 +7,21 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (the integration-tests CI step failed on every run, 2026-08-31)
+
+- **Only two of the thirteen test projects carry any `Level=Integration`
+  test** - `EliteSharpLib.Tests` and `StuntCarRacerSharpLib.Tests`. Filtering
+  the whole solution by that trait left the other eleven matching nothing,
+  and the runner treats a project with zero matching tests as a failure
+  (exit code 8) even though nothing is wrong. `dotnet test` reported the
+  whole step failed although all 82 integration tests that exist had passed.
+- `--ignore-exit-code 8` on that step's `dotnet test` call fixes it. A real
+  test failure still exits non-zero (confirmed at 2, not 8) and still fails
+  the build.
+- The earlier local check that this step worked only read the printed
+  `total`/`failed` summary, not the process's own exit code, which is how it
+  passed review without the bug being seen.
+
 ### Removed (dead code the tests were propping up, 2026-08-31)
 
 - **`MathsExtensions.GetRow` and `WithRow` could never be called.** .NET 10's

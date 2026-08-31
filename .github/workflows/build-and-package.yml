@@ -53,7 +53,12 @@ jobs:
         run: dotnet test --configuration Release -p:DebugType=portable -p:DebugSymbols=true --coverage --coverage-output-format cobertura --results-directory ./TestResults -- --filter-not-trait "Level=Integration"
 
       - name: Run integration tests with coverage
-        run: dotnet test --configuration Release -p:DebugType=portable -p:DebugSymbols=true --coverage --coverage-output-format cobertura --results-directory ./TestResults -- --filter-trait "Level=Integration"
+        # Only EliteSharpLib.Tests and StuntCarRacerSharpLib.Tests carry any
+        # Level=Integration tests, so every other project matches none. The
+        # runner treats a project with zero matching tests as a failure
+        # (exit code 8) even though nothing is actually wrong, so that one
+        # code is ignored here - a real test failure still exits non-zero.
+        run: dotnet test --configuration Release -p:DebugType=portable -p:DebugSymbols=true --coverage --coverage-output-format cobertura --results-directory ./TestResults -- --filter-trait "Level=Integration" --ignore-exit-code 8
 
       - name: Generate coverage report and badge
         # SharpKind.SDL is excluded: it is the P/Invoke layer over SDL3 and
