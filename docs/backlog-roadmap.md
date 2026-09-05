@@ -145,6 +145,36 @@ per item whether authenticity or modernity wins.
       not at all. Sequence after the z-buffer defect fix, which changes
       `Submit`'s signature.
 
+### Flight model — yaw
+
+- [ ] [EliteSharpLib] Yaw, behind `ELITE_DEBUG_YAW`: Elite flies on two
+      axes only — roll and pitch — so the ship cannot turn its nose left or
+      right without rolling first. This adds a third axis as a deliberate
+      departure from the 1984 original, the same way the modern-pipeline
+      items above are, and hides it behind the environment variable
+      `ELITE_DEBUG_YAW` until the maintainer decides it stays. The
+      convention is `MissionJump.IsEnabled`
+      ([MissionJump.cs:80](../src/elite/libs/EliteSharpLib/MissionJump.cs)) —
+      a runtime opt-in, not a debug build, so a Release build can be flown
+      with it. Six places carry roll and pitch and need the third angle:
+      `PlayerShip` (state, limits, `Increase`/`Decrease`, `LevelOut`),
+      `PilotController.HandleFlightControls`, `GamepadControls`,
+      `Space.MoveUniverseObject`, `Stars`' four starfields, and
+      `EliteMain.Simulate`, which clears the `Is*` flags each frame.
+      `VectorMaths.RotateVector`
+      ([VectorMaths.cs:52](../src/useful/libs/SharpKind/Maths/VectorMaths.cs))
+      takes two small angles and needs a third, about Y. Yaw damps and
+      clamps exactly as roll does (`MaxRoll` 31). Controls are Q and W on
+      the keyboard — comma and full stop are already roll — and the
+      twist axis on a joystick, which SDL reports as axis index 2 and the
+      port already names `GamepadAxis.RightX`
+      ([SDLInput.cs:129](../src/useful/libs/SharpKind.SDL/SDLInput.cs)).
+      Nothing is added to the dashboard: roll and climb have indicators,
+      yaw deliberately does not. With the variable unset `Yaw` stays zero,
+      so the golden traces are unchanged — clear it in `TraceRecorder` and
+      `FrameRecorder` beside `ELITE_DEBUG_COMMANDER` so a developer's
+      machine cannot change them either.
+
 ### Cleanups and small refactors
 
 3D pipeline sharing (split 2026-07-14 from the "unify the two 3D
