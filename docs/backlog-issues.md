@@ -32,10 +32,6 @@ there before starting an item that mentions a decision.
 
 ## Must
 
-- [ ] [EliteSharp] Flight doesn't pause on focus-loss keys while piloting —
-      pressing F5/F11/etc while flying should pause the flight, but it
-      continues instead. Reported 2026-09-05, not yet investigated.
-
 ## Should
 
 ## Could
@@ -45,6 +41,23 @@ there before starting an item that mentions a decision.
 Investigated and deliberately not fixed. Kept so the same ground isn't
 re-covered.
 
+- [ ] [EliteSharp] Flight doesn't pause on focus-loss keys while piloting —
+      **authentic, not a defect.** Pressing F5-F11 in space switches the
+      screen and the universe keeps moving behind it: `SetView` is all the
+      key does, and `Simulate`
+      ([EliteMain.cs:180](../src/elite/libs/EliteSharpLib/EliteMain.cs))
+      runs `MoveUniverse` and `UpdateInFlight` on every tick that is not
+      docked, whatever screen is up. The original does the same — in space
+      the BBC main loop iterates all six parts every time round, and the
+      view (`QQ11`) only selects what is *drawn*; only the docked loop drops
+      to parts 5 and 6
+      ([elite-source-flight.asm:24376-25007](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm)).
+      So a pause here would be a deliberate deviation from the original
+      rather than a fix, and the port's objective is authenticity. Noted while
+      investigating 2026-09-05: the existing P/R pause could not have been
+      reused for it anyway — a paused tick returns before `Compose`, so the
+      chart would never be drawn. Revisit only as a roadmap item, if a
+      playability deviation is wanted on purpose.
 - [ ] [SharpKind.Graphics] No frustum side-plane clipping — **profiled, not
       worth fixing.** `NearPlaneClip` clips one plane; left/right/top/bottom
       are handled *after* projection by `SetClipRegion` plus the
