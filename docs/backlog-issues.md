@@ -32,6 +32,14 @@ there before starting an item that mentions a decision.
 
 ## Must
 
+- [ ] [EliteSharp] Intro-screen music keeps playing after launch in some
+      cases — on the intro screen, pressing F5/F11/etc then F1 launches the
+      ship but the intro music continues instead of stopping. Reported
+      2026-09-05, not yet investigated.
+- [ ] [EliteSharp] Flight doesn't pause on focus-loss keys while piloting —
+      pressing F5/F11/etc while flying should pause the flight, but it
+      continues instead. Reported 2026-09-05, not yet investigated.
+
 ## Should
 
 ## Could

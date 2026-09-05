@@ -7,6 +7,22 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (the scanner's stalk joins its ball again, 2026-09-05)
+
+- **A lollipop could come apart.** `ScannerViewBase.UpdateScanner` drew the
+  stick as a rectangle positioned at whichever end was higher and sized by
+  `MathF.Abs(blipY - stickY)`. `DrawRectangleFilled` floors a position and a
+  height *separately*, and `floor(a) + floor(d)` is a row short of
+  `floor(a + d)` whenever the two fractions sum past a whole pixel - so a
+  stick reaching up to its blip stopped one row below it, leaving a gap.
+  Which frames showed it depended on where the ship happened to be, which is
+  what made it look intermittent.
+- **Both ends are floored before the difference is taken**, so the stick's
+  last row is always the blip's first. `ScannerViewTests.StickReachesTheBlip`
+  covers it, with the two "stick above the blip" cases that fail without the
+  fix; the `launch-and-fly` frame signature was regenerated, its 32x32
+  brightness grid unchanged - the difference is the one pixel.
+
 ### Changed (a ship is an id, not a member of an enum, 2026-08-31)
 
 - **`ShipType` is gone.** It was the last thing keeping `ships.json` closed:
