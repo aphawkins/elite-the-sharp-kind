@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -114,6 +114,7 @@ internal sealed class Stars
         float delta = (WarpStars ? 50 : _ship.Speed) * ticks;
         float alpha = _ship.Roll * ticks;
         float beta = _ship.Pitch * ticks;
+        float gamma = _ship.Yaw * ticks;
 
         alpha /= 256;
         delta /= 2;
@@ -136,6 +137,9 @@ internal sealed class Stars
             ////tx = yy * beta;
             ////xx = xx + (tx * tx * 2);
             yy += beta;
+
+            // Yaw pans the view sideways the way pitch pans it up and down.
+            xx -= gamma;
 
             _stars[i].Y = yy;
             _stars[i].X = xx;
@@ -168,7 +172,7 @@ internal sealed class Stars
     {
         float ticks = _gameState.Clock.Ticks;
         float delta = (WarpStars ? 50 : _ship.Speed) * ticks;
-        SideStarfield(-_ship.Roll * ticks, -_ship.Pitch * ticks, -delta);
+        SideStarfield(-_ship.Roll * ticks, -_ship.Pitch * ticks, _ship.Yaw * ticks, -delta);
     }
 
     internal void RearStarfield()
@@ -178,6 +182,7 @@ internal sealed class Stars
         float delta = (WarpStars ? 50 : _ship.Speed) * ticks;
         float alpha = -_ship.Roll * ticks;
         float beta = -_ship.Pitch * ticks;
+        float gamma = -_ship.Yaw * ticks;
 
         alpha /= 256;
         delta /= 2;
@@ -201,6 +206,10 @@ internal sealed class Stars
             ////xx = xx + (tx * tx * 2);
             yy += beta;
 
+            // Looking aft, the pan is the other way about - the same reason
+            // the roll and the pitch are negated above.
+            xx -= gamma;
+
             if (WarpStars)
             {
                 DrawStarStreak(star, xx, yy);
@@ -222,7 +231,7 @@ internal sealed class Stars
     {
         float ticks = _gameState.Clock.Ticks;
         float delta = (WarpStars ? 50 : _ship.Speed) * ticks;
-        SideStarfield(_ship.Roll * ticks, _ship.Pitch * ticks, delta);
+        SideStarfield(_ship.Roll * ticks, _ship.Pitch * ticks, _ship.Yaw * ticks, delta);
     }
 
     // Star space (centred on the view) to screen pixels.
@@ -312,7 +321,7 @@ internal sealed class Stars
         return star;
     }
 
-    private void SideStarfield(float alpha, float beta, float delta)
+    private void SideStarfield(float alpha, float beta, float gamma, float delta)
     {
         _marks.Clear();
         for (int i = 0; i < Count; i++)
@@ -333,6 +342,10 @@ internal sealed class Stars
             yy += yy / 256 * (alpha / 256) * yy;
 
             yy += alpha;
+
+            // Yaw swings the nose about the axis a side view looks across,
+            // so it pans that view sideways, both views the same way.
+            xx += gamma;
 
             _stars[i].Y = yy;
             _stars[i].X = xx;

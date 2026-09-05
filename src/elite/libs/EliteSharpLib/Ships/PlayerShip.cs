@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -150,6 +150,12 @@ internal sealed class PlayerShip
 
     internal bool IsRolling { get; set; }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the commander is yawing this
+    /// update, which is what stops <see cref="LevelOut"/> undoing it.
+    /// </summary>
+    internal bool IsYawing { get; set; }
+
     internal ILaser LaserFront { get; set; } = new LaserNone();
 
     internal ILaser LaserLeft { get; set; } = new LaserNone();
@@ -163,6 +169,13 @@ internal sealed class PlayerShip
     internal float MaxFuel { get; } = 7;
 
     internal float MaxRoll { get; } = 31;
+
+    /// <inheritdoc cref="MaxRoll"/>
+    /// <remarks>
+    /// Yaw turns at the same rate a roll does, so the two feel like one
+    /// stick rather than two.
+    /// </remarks>
+    internal float MaxYaw { get; } = 31;
 
     // 0.27 Light Mach
     internal float MaxSpeed { get; } = 40;
@@ -184,6 +197,17 @@ internal sealed class PlayerShip
     internal float ShieldRear { get; set; }
 
     internal float Speed { get; set; }
+
+    /// <summary>
+    /// Gets or sets the rate the nose swings left or right at. Positive is
+    /// nose right.
+    /// </summary>
+    /// <remarks>
+    /// Elite has no yaw: the original ship rolls and pitches only. This is a
+    /// deliberate departure, and it stays zero unless the commander has
+    /// switched the controls on - see <see cref="DebugYaw"/>.
+    /// </remarks>
+    internal float Yaw { get; set; }
 
     /// <summary>
     /// Deplete the shields.  Drain the energy banks if the shields fail.
@@ -237,6 +261,9 @@ internal sealed class PlayerShip
     internal void DecreaseRoll() => Roll = Math.Clamp(Roll - _clock.Ticks, -MaxRoll, MaxRoll);
 
     /// <inheritdoc cref="DecreasePitch"/>
+    internal void DecreaseYaw() => Yaw = Math.Clamp(Yaw - _clock.Ticks, -MaxYaw, MaxYaw);
+
+    /// <inheritdoc cref="DecreasePitch"/>
     internal void DecreaseSpeed() => Speed = Math.Clamp(Speed - _clock.Ticks, 0, MaxSpeed);
 
     /// <inheritdoc cref="DecreasePitch"/>
@@ -244,6 +271,9 @@ internal sealed class PlayerShip
 
     /// <inheritdoc cref="DecreasePitch"/>
     internal void IncreaseRoll() => Roll = Math.Clamp(Roll + _clock.Ticks, -MaxRoll, MaxRoll);
+
+    /// <inheritdoc cref="DecreasePitch"/>
+    internal void IncreaseYaw() => Yaw = Math.Clamp(Yaw + _clock.Ticks, -MaxYaw, MaxYaw);
 
     /// <inheritdoc cref="DecreasePitch"/>
     internal void IncreaseSpeed() => Speed = Math.Clamp(Speed + _clock.Ticks, 0, MaxSpeed);
@@ -285,6 +315,18 @@ internal sealed class PlayerShip
                 Pitch = MathF.Min(Pitch + _clock.Ticks, 0);
             }
         }
+
+        if (!IsYawing)
+        {
+            if (Yaw > 0)
+            {
+                Yaw = MathF.Max(Yaw - _clock.Ticks, 0);
+            }
+            else if (Yaw < 0)
+            {
+                Yaw = MathF.Min(Yaw + _clock.Ticks, 0);
+            }
+        }
     }
 
     /// <summary>
@@ -317,6 +359,7 @@ internal sealed class PlayerShip
         CabinTemperature = AmbientTemperature;
         Roll = 0;
         Pitch = 0;
+        Yaw = 0;
         Speed = 0;
         Energy = EnergyMax;
         ShieldFront = ShieldMax;

@@ -180,6 +180,20 @@ internal sealed class PilotController : IScreenController
         => _keyboard.IsHeld(ConsoleKey.Oem2)
             || GamepadControls.IsDecelerating(_gamepad);
 
+    // Yaw left and right. Q and W, because comma and full stop are already
+    // the roll, and the stick's twist. Off unless the commander switched it
+    // on, so the check is here rather than in the ship: with yaw off nothing
+    // reads these controls at all.
+    private bool WantsYawLeft()
+        => DebugYaw.IsEnabled
+            && (_keyboard.IsHeld(ConsoleKey.Q)
+                || GamepadControls.Yaw(_gamepad) < 0);
+
+    private bool WantsYawRight()
+        => DebugYaw.IsEnabled
+            && (_keyboard.IsHeld(ConsoleKey.W)
+                || GamepadControls.Yaw(_gamepad) > 0);
+
     private void HandleFlightControls()
     {
         if (WantsFire())
@@ -218,6 +232,7 @@ internal sealed class PilotController : IScreenController
         }
 
         HandleRollControls();
+        HandleYawControls();
 
         if (WantsAccelerate() && !_gameState.IsDocked)
         {
@@ -259,6 +274,39 @@ internal sealed class PilotController : IScreenController
                 _ship.DecreaseRoll();
                 _ship.DecreaseRoll();
                 _ship.IsRolling = true;
+            }
+        }
+    }
+
+    // Yaw levels out against itself the way the roll does: a yaw the other
+    // way stops the turn rather than reversing it.
+    private void HandleYawControls()
+    {
+        if (WantsYawLeft())
+        {
+            if (_ship.Yaw > 0)
+            {
+                _ship.Yaw = 0;
+            }
+            else
+            {
+                _ship.DecreaseYaw();
+                _ship.DecreaseYaw();
+                _ship.IsYawing = true;
+            }
+        }
+
+        if (WantsYawRight())
+        {
+            if (_ship.Yaw < 0)
+            {
+                _ship.Yaw = 0;
+            }
+            else
+            {
+                _ship.IncreaseYaw();
+                _ship.IncreaseYaw();
+                _ship.IsYawing = true;
             }
         }
     }

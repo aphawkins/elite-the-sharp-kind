@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -26,6 +26,12 @@ namespace EliteSharpLib.Tests.GoldenTrace;
 /// </para>
 /// </remarks>
 [Trait("Level", "Integration")]
+
+// Serialised against the other classes that read or write ELITE_DEBUG_YAW.
+// EnvironmentVariableScope puts a variable back, but it cannot stop another
+// class reading it in the meantime: an environment variable belongs to the
+// process, and xUnit runs test classes in parallel.
+[Collection("EnvironmentVariables")]
 public class GoldenTraceTests
 {
     // Zero until the rate conversion starts. Items 1 and 2 change no

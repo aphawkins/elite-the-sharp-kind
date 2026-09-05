@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -17,6 +17,7 @@ public class GamepadControlsTests
 
         Assert.Equal(0, GamepadControls.Roll(pad));
         Assert.Equal(0, GamepadControls.Pitch(pad));
+        Assert.Equal(0, GamepadControls.Yaw(pad));
         Assert.False(GamepadControls.IsFiring(pad));
         Assert.False(GamepadControls.IsAccelerating(pad));
         Assert.False(GamepadControls.IsDecelerating(pad));
@@ -53,6 +54,21 @@ public class GamepadControlsTests
         pad.AxisMoved(GamepadAxis.LeftY, y);
 
         Assert.Equal(expected, GamepadControls.Pitch(pad));
+    }
+
+    // The twist axis. SDL numbers a raw joystick's axes and says nothing
+    // about what they are, so a SideWinder's Z Rotation arrives as index 2,
+    // which the port names RightX.
+    [Theory]
+    [InlineData(-1f, -1)]
+    [InlineData(0f, 0)]
+    [InlineData(1f, 1)]
+    public void TheStickYawsOnItsTwist(float twist, int expected)
+    {
+        FakeGamepad pad = new();
+        pad.AxisMoved(GamepadAxis.RightX, twist);
+
+        Assert.Equal(expected, GamepadControls.Yaw(pad));
     }
 
     [Theory]

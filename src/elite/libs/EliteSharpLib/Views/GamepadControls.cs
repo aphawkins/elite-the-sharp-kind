@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -25,6 +25,12 @@ internal static class GamepadControls
     // keyboard; positive is pulled back, which does what X/Down does. SDL's Y
     // axis is positive downwards, the same sense the screen has.
     internal static int Pitch(IGamepad gamepad) => Direction(gamepad.Axis(GamepadAxis.LeftY));
+
+    // A flight stick's twist. SDL gives a raw joystick nothing but axis
+    // indices, and the twist is index 2, which the port already names
+    // RightX - so a SideWinder Precision 2 yaws on Z Rotation without SDL
+    // having to know the device. Negative yaws left, positive right.
+    internal static int Yaw(IGamepad gamepad) => Direction(gamepad.Axis(GamepadAxis.RightX));
 
     // Buttons 1 and 3 as a joystick numbers them, or (A)/(X) on a pad - the
     // same pair Stunt Car Racer fires on, so one stick behaves the same way

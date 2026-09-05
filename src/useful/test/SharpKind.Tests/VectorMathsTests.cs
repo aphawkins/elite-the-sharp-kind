@@ -1,4 +1,4 @@
-// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
+﻿// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
 
 using System.Numerics;
 using SharpKind.Maths;
@@ -78,7 +78,7 @@ public class VectorMathsTests
             0,
             0);
 
-        Matrix4x4 result = VectorMaths.RotateVector(matrix, 0, 0);
+        Matrix4x4 result = VectorMaths.RotateVector(matrix, 0, 0, 0);
 
         AssertVectorAlmostEqual(matrix.GetRow(0), result.GetRow(0));
         AssertVectorAlmostEqual(matrix.GetRow(1), result.GetRow(1));
@@ -106,7 +106,7 @@ public class VectorMathsTests
             0,
             0);
 
-        Matrix4x4 result = VectorMaths.RotateVector(matrix, 0.1f, 0.2f);
+        Matrix4x4 result = VectorMaths.RotateVector(matrix, 0.1f, 0.2f, 0.3f);
 
         // Should not be identical to input for non-zero angles
         Vector4 row0 = matrix.GetRow(0);

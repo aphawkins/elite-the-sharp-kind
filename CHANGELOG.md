@@ -7,6 +7,45 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (a third flight axis, behind a switch, 2026-09-05)
+
+- **Elite can yaw**, which Elite never could. The original ship rolls and
+  pitches, and turns by rolling first; the dashboard has an RL dial and a DC
+  dial and nothing else. This is a departure from that, not a correction to
+  it, so it is hidden behind `ELITE_DEBUG_YAW` (`DebugYaw.IsEnabled`,
+  the same runtime opt-in convention `ELITE_DEBUG_MISSIONS` uses). With the
+  variable unset nothing reads the yaw controls, `PlayerShip.Yaw` stays
+  zero, and the game flies exactly as it did - which is why the golden
+  traces are unchanged. `TraceRecorder` and `FrameRecorder` clear the
+  variable beside `ELITE_DEBUG_COMMANDER`, so a developer's machine cannot
+  change them either.
+- **Q yaws left and W yaws right**, because comma and full stop are already
+  the roll. On a joystick it is the twist: SDL gives a raw joystick nothing
+  but axis indices, and the twist is index 2, which the port already names
+  `GamepadAxis.RightX` - so a SideWinder Precision 2 yaws on Z Rotation
+  without SDL having to learn the device.
+- **Yaw behaves as roll does**: the same 31-unit ceiling, the same doubled
+  step per update, a yaw the other way stops the turn rather than reversing
+  it, and `LevelOut` centres it when the stick is released.
+- **The universe gained a third shear.** `Space.MoveUniverseObject` yaws
+  every object's position about Y and `VectorMaths.RotateVector` takes a
+  third small angle for the orientations. The four starfields pan with it:
+  the front and rear views were checked against the planet and the station,
+  which pan opposite ways as they should. The two side views pan by the same
+  derivation rather than against an object - nothing was in view to check
+  them by.
+- **Nothing was added to the dashboard.** Roll and climb have indicators;
+  yaw deliberately does not.
+- `DebugYawTests` covers the switch both ways and the levelling out;
+  `GamepadControlsTests` covers the twist axis.
+- **The test classes that read or write an `ELITE_DEBUG_*` variable now share
+  an xUnit collection**, so they run one at a time. An environment variable
+  belongs to the process, and xUnit runs classes in parallel, so one class
+  clearing a variable while another flies with it set is a test that fails
+  every so often for no reason of its own. That race was already there
+  between `SaveFileTests` and the trace recorders over
+  `ELITE_DEBUG_COMMANDER`; the yaw tests would have joined it.
+
 ### Fixed (the intro keeps its keys, and its music, 2026-09-05)
 
 - **The title music could play on into the game.** `EliteMain`'s chart and

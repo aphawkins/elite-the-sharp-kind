@@ -14,6 +14,11 @@ using SharpKind.Fakes.Input;
 
 namespace EliteSharpLib.Tests.Save;
 
+// Serialised against the other classes that read or write ELITE_DEBUG_COMMANDER.
+// EnvironmentVariableScope puts a variable back, but it cannot stop another
+// class reading it in the meantime: an environment variable belongs to the
+// process, and xUnit runs test classes in parallel.
+[Collection("EnvironmentVariables")]
 public class SaveFileTests
 {
     [Fact]

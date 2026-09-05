@@ -18,6 +18,11 @@ namespace EliteSharpLib.Tests.Save;
 /// difference between a file a commander can repair and a file they cannot.
 /// The screen used to say "Error Loading Commander!" whichever it was.
 /// </summary>
+// Serialised against the other classes that read or write ELITE_DEBUG_COMMANDER.
+// EnvironmentVariableScope puts a variable back, but it cannot stop another
+// class reading it in the meantime: an environment variable belongs to the
+// process, and xUnit runs test classes in parallel.
+[Collection("EnvironmentVariables")]
 public class SaveFileErrorTests
 {
     [Fact]

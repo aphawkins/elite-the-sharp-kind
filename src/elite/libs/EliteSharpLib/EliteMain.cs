@@ -187,6 +187,7 @@ public sealed class EliteMain : IGame, IGameApp
         _audio.UpdateSound(State.Clock.Ticks);
         _ship.IsRolling = false;
         _ship.IsPitching = false;
+        _ship.IsYawing = false;
         HandleViewKeys();
 
         if (State.IsGamePaused)

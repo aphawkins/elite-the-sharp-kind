@@ -193,6 +193,7 @@ internal sealed class Space
         // Rotate in the same direction that the station is spinning
         _ship.Roll = 15;
         _ship.Pitch = 0;
+        _ship.Yaw = 0;
         _gameState.Cmdr.LegalStatus |= _trade.IsCarryingContraband();
         _stars.CreateNewStars();
 
@@ -876,6 +877,7 @@ internal sealed class Space
         _ship.Speed = 12;
         _ship.Roll = 0;
         _ship.Pitch = 0;
+        _ship.Yaw = 0;
         _stars.CreateNewStars();
         _combat.Reset();
         _universe.ClearUniverse();
@@ -948,6 +950,7 @@ internal sealed class Space
         _ship.Speed = 12;
         _ship.Roll = 0;
         _ship.Pitch = 0;
+        _ship.Yaw = 0;
         _stars.CreateNewWitchspaceStars();
         _combat.Reset();
         _universe.ClearUniverse();
@@ -1036,6 +1039,7 @@ internal sealed class Space
         // that were once per tick and are now per second.
         float alpha = _ship.Roll / 256 * ticks;
         float beta = _ship.Pitch / 256 * ticks;
+        float gamma = _ship.Yaw / 256 * ticks;
 
         Vector4 position = obj.Location;
         if (obj is IShip shipEx &&
@@ -1049,6 +1053,12 @@ internal sealed class Space
         position.Z += beta * k2;
         position.Y = k2 - (position.Z * beta);
         position.X += alpha * position.Y;
+
+        // Yaw is the third shear, about Y. It is not the original's - Elite
+        // rolls and pitches only - so it stays zero unless the commander has
+        // switched it on.
+        position.X -= gamma * position.Z;
+        position.Z += gamma * position.X;
 
         position.Z -= _ship.Speed * ticks;
 
@@ -1065,9 +1075,10 @@ internal sealed class Space
         if (obj.Id == ObjectIds.Planet)
         {
             beta = 0.0f;
+            gamma = 0.0f;
         }
 
-        obj.Rotmat = VectorMaths.RotateVector(obj.Rotmat, alpha, beta);
+        obj.Rotmat = VectorMaths.RotateVector(obj.Rotmat, alpha, beta, gamma);
 
         if (obj.Flags.HasFlag(ShipProperties.Dead))
         {

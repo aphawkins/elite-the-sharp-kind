@@ -30,6 +30,7 @@ internal static class TraceRecorder
         // setting keeps the two agreeing whichever order they run in.
         using EnvironmentVariableScope commander =
             EnvironmentVariableScope.Set(SaveFile.DebugCommanderEnvVar, null);
+        using EnvironmentVariableScope yaw = EnvironmentVariableScope.Set(DebugYaw.EnvVar, null);
 
         using HeadlessGameHarness harness = new(randomSeed: scenario.RandomSeed);
         PlayerShip ship = harness.Resolve<PlayerShip>();

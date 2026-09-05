@@ -1,4 +1,4 @@
-// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
+﻿// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
 
 using System.Numerics;
 
@@ -45,16 +45,17 @@ public static class VectorMaths
         0);
 
     /// <summary>
-    /// Rotate a 4x4 matrix's basis vectors by two small angles.
+    /// Rotate a 4x4 matrix's basis vectors by three small angles.
     /// Each basis vector is independently rotated by the same small-angle approximation:
-    /// a rotation about Z by <paramref name="alpha"/> followed by a rotation about X by <paramref name="beta"/>.
+    /// a rotation about Z by <paramref name="alpha"/>, then about X by <paramref name="beta"/>,
+    /// then about Y by <paramref name="gamma"/>.
     /// </summary>
-    public static Matrix4x4 RotateVector(Matrix4x4 matrix, float alpha, float beta)
+    public static Matrix4x4 RotateVector(Matrix4x4 matrix, float alpha, float beta, float gamma)
     {
         for (int i = 0; i < 4; i++)
         {
             Vector4 row = matrix.GetRow(i);
-            RotateVector(ref row, alpha, beta);
+            RotateVector(ref row, alpha, beta, gamma);
             matrix = matrix.WithRow(i, row);
         }
 
@@ -125,7 +126,7 @@ public static class VectorMaths
     /// <returns>The cosine of the angle between the two vectors.</returns>
     public static float VectorDotProduct(Vector4 first, Vector4 second) => Vector4.Dot(first, second);
 
-    private static void RotateVector(ref Vector4 vec, float alpha, float beta)
+    private static void RotateVector(ref Vector4 vec, float alpha, float beta, float gamma)
     {
         float x = vec.X;
         float y = vec.Y;
@@ -135,6 +136,8 @@ public static class VectorMaths
         x += alpha * y;
         y -= beta * z;
         z += beta * y;
+        x -= gamma * z;
+        z += gamma * x;
 
         vec.X = x;
         vec.Y = y;

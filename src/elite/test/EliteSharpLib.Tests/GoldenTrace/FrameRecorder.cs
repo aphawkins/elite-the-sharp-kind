@@ -22,6 +22,7 @@ internal static class FrameRecorder
         // carries different equipment, and the HUD draws it.
         using EnvironmentVariableScope commander =
             EnvironmentVariableScope.Set(SaveFile.DebugCommanderEnvVar, null);
+        using EnvironmentVariableScope yaw = EnvironmentVariableScope.Set(DebugYaw.EnvVar, null);
 
         // Unlike the traces, this one pins the drawing's stream too: the
         // starfield is scattered from it, and a frame hash cannot be
