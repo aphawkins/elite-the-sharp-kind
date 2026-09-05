@@ -38,6 +38,12 @@ internal static class GamepadControls
     internal static bool IsFiring(IGamepad gamepad)
         => gamepad.IsHeld(GamepadButton.A) || gamepad.IsHeld(GamepadButton.X);
 
+    // The same pair as a one-shot, for the "press fire to continue" prompts:
+    // IsFiring above is held-based, so it would fire again on every tick the
+    // button stays down and skip straight through the screen behind it.
+    internal static bool WasFirePressed(IGamepad gamepad)
+        => gamepad.IsPressed(GamepadButton.A) || gamepad.IsPressed(GamepadButton.X);
+
     // Speed has no axis left on a one-stick joystick, so it needs the two
     // remaining buttons; a pad reaches it on the triggers as well.
     internal static bool IsAccelerating(IGamepad gamepad)

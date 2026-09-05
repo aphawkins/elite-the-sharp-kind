@@ -1,5 +1,13 @@
 # Release Notes
 
+## Unreleased
+
+### Elite
+
+#### Fixes
+
+- The ship parade's fire button now starts the game, as its prompt says it does
+
 ## v1.1.0 (2026-09-05)
 
 ### Elite

@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -27,6 +27,7 @@ internal sealed class Intro2Controller : IScreenController
     private readonly Combat _combat;
     private readonly GameState _gameState;
     private readonly IKeyboard _keyboard;
+    private readonly IGamepad _gamepad;
     private readonly PlayerShip _ship;
     private readonly List<IShip> _parade;
     private readonly Stars _stars;
@@ -43,6 +44,7 @@ internal sealed class Intro2Controller : IScreenController
         GameState gameState,
         AudioController audio,
         IKeyboard keyboard,
+        IGamepad gamepad,
         Stars stars,
         PlayerShip ship,
         Combat combat,
@@ -54,6 +56,7 @@ internal sealed class Intro2Controller : IScreenController
         _gameState = gameState;
         _audio = audio;
         _keyboard = keyboard;
+        _gamepad = gamepad;
         _stars = stars;
         _ship = ship;
         _combat = combat;
@@ -67,7 +70,7 @@ internal sealed class Intro2Controller : IScreenController
 
     public void HandleInput()
     {
-        if (_keyboard.IsPressed(ConsoleKey.Spacebar))
+        if (_keyboard.IsPressed(ConsoleKey.Spacebar) || GamepadControls.WasFirePressed(_gamepad))
         {
             _combat.Reset();
             _universe.ClearUniverse();

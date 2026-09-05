@@ -7,6 +7,18 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (the intro's fire prompt, 2026-09-05)
+
+- **The ship parade now starts the game on a joystick's fire button**, as its
+  own "Press Fire or Space, Commander." prompt has always claimed.
+  `Intro2Controller` only ever tested the spacebar and had no `IGamepad`; it
+  now takes one and also accepts `GamepadControls.WasFirePressed` — a
+  one-shot form of the existing `IsFiring` pair (button 1/3, or (A)/(X)),
+  since the held form would run straight through the screen behind it.
+  `Intro1Controller` was checked for the same gap and left alone: its prompt
+  is "Load New Commander (Y/N)?", a two-way choice one fire button cannot
+  express, and it never claims a joystick will do.
+
 ### Confirmed (the gamepad path checked with a real XInput pad, 2026-09-05)
 
 - **The one thing the 2026-08-22 gamepad/joystick landing left unconfirmed is

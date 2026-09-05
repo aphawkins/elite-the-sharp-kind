@@ -36,14 +36,6 @@ there before starting an item that mentions a decision.
 
 ## Should
 
-- [ ] [EliteSharpLib] Joystick fire button does not start the game from the
-      intro screen. `Intro2Controller.HandleInput`
-      ([Intro2Controller.cs:70](../src/elite/libs/EliteSharpLib/Views/Intro2Controller.cs))
-      tests only `_keyboard.IsPressed(ConsoleKey.Spacebar)`, but the prompt
-      says "Press Fire or Space, Commander." The screen has no `IGamepad`.
-      Fix: inject `IGamepad` and also accept `GamepadControls.IsFiring`
-      (one-shot, so add an `IsFiring` that uses `IsPressed`, or gate on an
-      edge). Check `Intro1Controller` (the Y/N load prompt) for the same gap.
 - [ ] [EliteSharp.Renditions.SixteenBit] The 16-bit speed bar is too short.
       `ScannerView16Bit.SpeedHeight` is `6`
       ([ScannerView16Bit.cs:65](../src/elite/libs/EliteSharp.Renditions.SixteenBit/ScannerView16Bit.cs))
