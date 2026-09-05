@@ -7,6 +7,19 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (the intro keeps its keys, and its music, 2026-09-05)
+
+- **The title music could play on into the game.** `EliteMain`'s chart and
+  status keys (F5-F11) were read on every screen, so a press on the intro
+  moved the view straight off it. The intro screens own the title music and
+  stop it in their own exit paths, which those keys never went through - so
+  F5 then F1 launched the ship with the Elite theme still playing.
+- **The intro screens now take only their own keys.** `HandleViewKeys`
+  returns early on `IntroOne`/`IntroTwo`, which is what the F1 handler's own
+  intro guard already said about the same screens; that guard is now
+  redundant and gone. `HeadlessGameHarnessTests.ViewKeysDoNotLeaveTheIntro`
+  covers F5, F9 and F11, and fails on each without the fix.
+
 ### Fixed (the scanner's stalk joins its ball again, 2026-09-05)
 
 - **A lollipop could come apart.** `ScannerViewBase.UpdateScanner` drew the

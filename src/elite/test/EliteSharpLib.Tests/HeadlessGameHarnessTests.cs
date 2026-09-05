@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -41,6 +41,30 @@ public class HeadlessGameHarnessTests
         Assert.Equal(Screen.CommanderStatus, state.Screen);
         Assert.True(state.IsDocked);
         Assert.False(state.IsGameOver);
+    }
+
+    // The intro screens own the title music and stop it on the way out. A
+    // chart or options key that moved the view off them skipped that, and
+    // the music played on behind the game.
+    [Theory]
+    [InlineData(ConsoleKey.F5)]
+    [InlineData(ConsoleKey.F9)]
+    [InlineData(ConsoleKey.F11)]
+    public void ViewKeysDoNotLeaveTheIntro(ConsoleKey key)
+    {
+        using HeadlessGameHarness harness = new();
+
+        // Tick 0 reaches IntroOne; the key lands on tick 1. N at tick 2 then
+        // proves the intro still has the input, rather than merely sitting
+        // on a screen that ignored the key.
+        KeyScriptEvent[] script =
+        [
+            new(1, key, KeyScriptAction.Tap),
+            new(2, ConsoleKey.N, KeyScriptAction.Tap),
+        ];
+
+        Assert.Equal(Screen.IntroOne, harness.Run(2, script).Screen);
+        Assert.Equal(Screen.IntroTwo, harness.Run(1, script).Screen);
     }
 
     [Fact]

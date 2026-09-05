@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -351,8 +351,16 @@ public sealed class EliteMain : IGame, IGameApp
         }
     }
 
+    // The intro screens take only their own keys. They own the title music,
+    // and they stop it on the way out; a chart or options key that moved the
+    // view straight off them left the music playing behind the game.
     private void HandleViewKeys()
     {
+        if (State.CurrentScreen is Screen.IntroOne or Screen.IntroTwo)
+        {
+            return;
+        }
+
         HandleFlightViewKeys();
         HandleChartViewKeys();
         HandleStatusViewKeys();
@@ -384,8 +392,7 @@ public sealed class EliteMain : IGame, IGameApp
     // F1 - F4: the cockpit views, which double as the docked screens
     private void HandleFlightViewKeys()
     {
-        if (_keyboard.IsPressed(ConsoleKey.F1) &&
-            State.CurrentScreen is not Screen.IntroOne and not Screen.IntroTwo)
+        if (_keyboard.IsPressed(ConsoleKey.F1))
         {
             if (State.IsDocked)
             {
