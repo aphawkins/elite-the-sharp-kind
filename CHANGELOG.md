@@ -7,6 +7,15 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (the scanner says ELITE#, 2026-09-05)
+
+- **The label below the 8-bit scanner reads "ELITE#", not "ELITE".** The
+  original art names the game; this build is EliteSharp, so the sharp sign
+  belongs in the name. The change is in the art alone
+  (`EliteSharp.Renditions.EightBit/Assets/Images/scanner.bmp`): the label is
+  part of the scanner bitmap, so no drawing code moves. The 16-bit scanner
+  art keeps the plain "ELITE" for now.
+
 ### Fixed (the 16-bit speed bar, 2026-09-05)
 
 - **The 16-bit speed bar is the same height as the roll and pitch indicators

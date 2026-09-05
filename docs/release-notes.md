@@ -4,6 +4,10 @@
 
 ### Elite
 
+#### Changes
+
+- The label below the 8-bit scanner now reads "ELITE#"
+
 #### Fixes
 
 - The ship parade's fire button now starts the game, as its prompt says it does
