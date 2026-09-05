@@ -15,9 +15,11 @@ else.
   games are expected to work before a tag goes out.
 - Decide the version number (see [Choosing the version](#choosing-the-version)
   below) and finish [release-notes.md](release-notes.md): rename its
-  top `## vX.Y.Z (Unreleased)` heading to the real version and today's date.
-  Commit that on `main` before tagging — the tag should point at a commit
-  whose release notes already say what the tag means.
+  top `## Unreleased` heading to the real version and today's date. The
+  heading carries no number until this moment, because the number is chosen
+  here — from what that section ended up containing. Commit that on `main`
+  before tagging — the tag should point at a commit whose release notes
+  already say what the tag means.
 
 ## 2. Tag and push
 
@@ -67,6 +69,12 @@ copy. Once the workflow finishes:
 - Confirm the new package versions show up on
   [NuGet.org](https://www.nuget.org/profiles/Hawky) (can take a few minutes
   to index).
+- Open a fresh `## Unreleased` section at the top of
+  [release-notes.md](release-notes.md), above the version just dated. Do this
+  even though there is nothing to put in it yet: without it the next fix has
+  nowhere to be written down, and the "add a line to release-notes.md" step
+  in each backlog file's definition of done gets skipped silently rather than
+  failing visibly. (This is exactly what happened after v1.1.0.)
 - Download at least one zip and smoke-test it — the workflow publishing
   successfully doesn't prove the exe actually runs on a machine with no .NET
   SDK installed.
@@ -85,7 +93,7 @@ copy. Once the workflow finishes:
   `SharpKind.*` libraries are published to NuGet.org (step 3.2 above), this
   applies to them like any other public library, not just to the games.
 
-[release-notes.md](release-notes.md)'s unreleased section is the source of
+[release-notes.md](release-notes.md)'s `## Unreleased` section is the source of
 truth for what to weigh: read down its Features/Fixes for each of Elite,
 Stunt Car Racer and the engine before picking a number, rather than
 guessing from memory.
