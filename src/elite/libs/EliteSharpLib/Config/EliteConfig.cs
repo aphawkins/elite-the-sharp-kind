@@ -11,6 +11,12 @@ namespace EliteSharpLib.Config;
 // The root of elite.sharp: shared engine settings plus Elite's own.
 internal sealed class EliteConfig : ConfigSettings<EliteConfigSettings>
 {
+    // The shared engine default is 16-bit, chosen for no reason particular to
+    // this game; Elite's own commander-facing default is the 8-bit tier,
+    // which is also the rendition whose own DefaultWindowScale (4) then
+    // applies to a commander who has never chosen a scale either.
+    public EliteConfig() => Engine.Rendition = "8-bit";
+
     public override bool Repair()
     {
         // The base repairs the engine half and the version; this adds Elite's

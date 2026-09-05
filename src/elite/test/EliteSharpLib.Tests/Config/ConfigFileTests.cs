@@ -30,6 +30,7 @@ public class ConfigFileTests
         // The renditions' own sheets, so a commander who has chosen nothing
         // gets the text each rendition was drawn for.
         Assert.Equal(FontKind.Bitmap, config.Engine.Graphics.FontKind);
+        Assert.Equal("8-bit", config.Engine.Rendition);
         Assert.Null(config.Engine.WindowScale);
         Assert.True(config.Engine.Sound.Music);
         Assert.True(config.Engine.Sound.Effects);
@@ -179,7 +180,7 @@ public class ConfigFileTests
 
         EliteConfig config = configFile.ReadConfig();
 
-        Assert.Equal("16-bit", config.Engine.Rendition);
+        Assert.Equal("8-bit", config.Engine.Rendition);
         Assert.False(config.Game.InstantDock);
         Assert.True(File.Exists(Path.Combine(directory, ConfigFileName + ".bad")));
     }

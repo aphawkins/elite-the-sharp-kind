@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Renditions.EightBit;
 using EliteSharp.Renditions.SixteenBit;
 using EliteSharpLib.Config;
 using EliteSharpLib.Fakes;
@@ -163,6 +164,34 @@ public class EngineSettingsControllerTests
         Assert.Equal(1, configFile.ReadConfig().Engine.WindowScale);
     }
 
+    // Row 9 is Rendition. Switching it to the 8-bit tier does not reload
+    // anything - that only happens on restart - but the Window Scale row
+    // above it has to offer that tier's own scales straight away: showing
+    // the 16-bit tier's 1 and 2 while the config underneath already says
+    // 8-bit would let a commander pick a scale the tier they are about to
+    // restart into does not offer, or hide 4, which it does.
+    [Fact]
+    public void SwitchingRenditionUpdatesTheWindowScalesOffered()
+    {
+        EngineSettingsController controller = CreateController(
+            out _, out FakeKeyboard keyboard, out _, out _);
+        controller.Reset();
+
+        Assert.Equal(["1x", "2x"], controller.Settings[8].Values);
+
+        for (int i = 0; i < 9; i++)
+        {
+            keyboard.KeyDown(ConsoleKey.DownArrow, default);
+            controller.HandleInput();
+        }
+
+        keyboard.KeyUp(ConsoleKey.DownArrow, default);
+        keyboard.KeyDown(ConsoleKey.Enter, default);
+        controller.HandleInput();
+
+        Assert.Equal(["1x", "2x", "4x"], controller.Settings[8].Values);
+    }
+
     // The game's own settings belong to the other screen.
     [Fact]
     public void ChangingAnEngineSettingLeavesTheGameSettingsAlone()
@@ -213,13 +242,23 @@ public class EngineSettingsControllerTests
         Space space = SettingsControllerFixture.CreateSpace(out gameState, out keyboard, out draw, out audio);
         configFile = SettingsControllerFixture.CreateConfigFile(ConfigFileName);
 
+        // The fixture's draw surface, base view and style are all built for
+        // the 16-bit tier (see SettingsControllerFixture), so the config has
+        // to say the same - Elite's own default is 8-bit, which would leave
+        // the Window Scale row reading a tier other than the one everything
+        // else here is built for.
+        gameState.Config.Engine.Rendition = "16-bit";
+
         return new EngineSettingsController(
             gameState,
             keyboard,
             space,
             audio,
             configFile,
-            new InstalledRenditions(new SixteenBitRendition(), string.Empty, ["8-bit", "16-bit"]),
+            new InstalledRenditions(
+                new SixteenBitRendition(),
+                string.Empty,
+                [new EightBitRendition(), new SixteenBitRendition()]),
             SettingsControllerFixture.CreateBaseView(draw),
             draw,
             SettingsControllerFixture.CreateStyle(draw));

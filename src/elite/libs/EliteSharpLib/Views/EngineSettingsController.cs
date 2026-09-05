@@ -175,16 +175,19 @@ internal sealed class EngineSettingsController : SettingsListController
                 Save),
 
             // How far the rendered pixels are magnified into the window. The
-            // scales offered are the chosen rendition's - a canvas that is
+            // scales offered are the selected rendition's - a canvas that is
             // already 640 wide has less room to grow than one that is 320 -
-            // so switching rendition changes what this row offers on the next
-            // launch, which is when either takes effect anyway.
+            // and read live off the Rendition row below rather than off
+            // renditions.Chosen, since switching that row does not take
+            // effect (and so does not reload) until the game restarts, and
+            // this row would otherwise keep offering the scales of whichever
+            // rendition is still running.
             new SavedSetting(
                 new NumberSetting(
                     "Window Scale *:",
-                    renditions.Chosen.WindowScales,
+                    () => renditions.Find(config.Engine.Rendition).WindowScales,
                     scale => scale.ToString(CultureInfo.InvariantCulture) + "x",
-                    () => config.Engine.WindowScale ?? renditions.Chosen.DefaultWindowScale,
+                    () => config.Engine.WindowScale ?? renditions.Find(config.Engine.Rendition).DefaultWindowScale,
                     value => config.Engine.WindowScale = value),
                 Save),
 

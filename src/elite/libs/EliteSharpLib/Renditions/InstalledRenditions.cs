@@ -17,5 +17,27 @@ namespace EliteSharpLib.Renditions;
 /// The directory the chosen rendition was loaded from. A rendition brings its
 /// own artwork with it, and this is where the game looks for it.
 /// </param>
-/// <param name="Names">Every installed rendition's name, in order.</param>
-public sealed record InstalledRenditions(IRendition Chosen, string Folder, IReadOnlyList<string> Names);
+/// <param name="Installed">
+/// Every rendition found, in the order their names are offered. Kept in full
+/// - not just by name - so a screen that offers switching rendition can read
+/// what one other than <paramref name="Chosen"/> would offer, such as the
+/// window scales it supports, without loading it.
+/// </param>
+public sealed record InstalledRenditions(IRendition Chosen, string Folder, IReadOnlyList<IRendition> Installed)
+{
+    /// <summary>
+    /// Gets every installed rendition's name, in order.
+    /// </summary>
+    public IReadOnlyList<string> Names => [.. Installed.Select(r => r.Name)];
+
+    /// <summary>
+    /// Finds the rendition by the name given, falling back to <see cref="Chosen"/>
+    /// when the name is not one that is installed - a hand-edited or
+    /// not-yet-saved choice cannot be shown scales for a rendition that isn't
+    /// there.
+    /// </summary>
+    /// <param name="name">The rendition name to look up.</param>
+    /// <returns>The rendition by that name, or <see cref="Chosen"/>.</returns>
+    public IRendition Find(string name)
+        => Installed.FirstOrDefault(r => string.Equals(r.Name, name, StringComparison.Ordinal)) ?? Chosen;
+}

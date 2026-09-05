@@ -105,8 +105,8 @@ internal static class RenditionLoader
         string folder = Path.GetDirectoryName(chosen.GetType().Assembly.Location) ?? renditionsFolder;
 
         // The settings screen offers the commander what is installed, so the
-        // names of the ones that were not chosen are worth keeping.
-        return new(chosen, folder, [.. renditions.Select(r => r.Name).Order(StringComparer.Ordinal)]);
+        // ones that were not chosen are worth keeping too.
+        return new(chosen, folder, [.. renditions.OrderBy(r => r.Name, StringComparer.Ordinal)]);
     }
 
     private static ConventionBuilder BuildConventions()

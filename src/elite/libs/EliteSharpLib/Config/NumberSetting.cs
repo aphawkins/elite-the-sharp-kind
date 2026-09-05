@@ -12,22 +12,26 @@ namespace EliteSharpLib.Config;
 /// values, so nothing has to keep a label list beside them.
 /// </summary>
 /// <param name="name">The label shown against the value.</param>
-/// <param name="values">The numbers, in cycling order.</param>
+/// <param name="values">
+/// Reads the numbers on offer, in cycling order. A function rather than a
+/// fixed list because what is on offer can depend on another setting not yet
+/// saved - the window scales a rendition allows depend on which rendition is
+/// selected, which this same screen also lets the commander change - so the
+/// row has to re-read it on every draw rather than freeze it at construction.
+/// </param>
 /// <param name="format">Turns one number into what the row shows.</param>
 /// <param name="get">Reads the current value.</param>
 /// <param name="set">Stores a new value.</param>
 internal sealed class NumberSetting(
     string name,
-    IReadOnlyList<int> values,
+    Func<IReadOnlyList<int>> values,
     Func<int, string> format,
     Func<int> get,
     Action<int> set) : ISetting
 {
-    private readonly string[] _labels = [.. values.Select(format)];
-
     public string Name => name;
 
-    public IReadOnlyList<string> Values => _labels;
+    public IReadOnlyList<string> Values => [.. values().Select(format)];
 
     /// <summary>
     /// Gets or sets the selected number's place in the list. A stored number
@@ -39,10 +43,11 @@ internal sealed class NumberSetting(
     {
         get
         {
-            int current = get();
-            for (int i = 0; i < values.Count; i++)
+            IReadOnlyList<int> current = values();
+            int selected = get();
+            for (int i = 0; i < current.Count; i++)
             {
-                if (values[i] == current)
+                if (current[i] == selected)
                 {
                     return i;
                 }
@@ -53,9 +58,10 @@ internal sealed class NumberSetting(
 
         set
         {
-            if (value >= 0 && value < values.Count)
+            IReadOnlyList<int> current = values();
+            if (value >= 0 && value < current.Count)
             {
-                set(values[value]);
+                set(current[value]);
             }
         }
     }
