@@ -1,6 +1,6 @@
 # Release Notes
 
-## v1.1.0 (Unreleased)
+## v1.1.0 (2026-09-05)
 
 ### Elite
 
