@@ -36,16 +36,6 @@ there before starting an item that mentions a decision.
 
 ## Should
 
-- [ ] [EliteSharp.Renditions.SixteenBit] The 16-bit speed bar is too short.
-      `ScannerView16Bit.SpeedHeight` is `6`
-      ([ScannerView16Bit.cs:65](../src/elite/libs/EliteSharp.Renditions.SixteenBit/ScannerView16Bit.cs))
-      while every other dial bar uses `DialBarHeight` `8`
-      ([ScannerView16Bit.cs:39](../src/elite/libs/EliteSharp.Renditions.SixteenBit/ScannerView16Bit.cs)).
-      `ScannerViewBase.DisplaySpeed`
-      ([ScannerViewBase.cs:274-280](../src/elite/libs/EliteSharp.Abstractions/Views/ScannerViewBase.cs))
-      loops `SpeedHeight` rows. Confirm the intended height against the
-      16-bit `scanner.bmp` art, then set it.
-
 ## Could
 
 - [ ] [EliteSharpLib] The explosion blast is a rectangle, not a circle.

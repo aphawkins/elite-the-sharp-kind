@@ -44,6 +44,36 @@ public sealed class ScannerViewTests
             $"Stick rows {stickTop}-{stickBottom} do not meet blip rows {blipTop}-{blipBottom}.");
     }
 
+    // The 16-bit speed bar shares a slot shape with the roll and pitch
+    // indicators below it: same height, same offset into its slot. A shorter
+    // bar sits in the slot with a gap the art does not have.
+    [Fact]
+    public void SpeedBarMatchesTheIndicatorSlot()
+    {
+        // Arrange
+        RecordingGraphics graphics = new(512, 512);
+        FakeEliteDraw surface = new() { Graphics = graphics };
+        ScannerView16Bit view = new(surface, surface.Ships);
+
+        // Act: only the speed bar and the two indicators draw lines here; the
+        // roll indicator is the higher of the two on screen.
+        view.Draw(Scanner(new(0, 0, 0, ShipClass.Default)) with { Speed = 1 });
+
+        // Assert
+        List<int> speedRows = [.. graphics.Lines
+            .Where(l => (int)l.Start.Y == (int)l.End.Y)
+            .Select(l => (int)l.Start.Y)
+            .Distinct()];
+
+        (int rollTop, int rollBottom) = graphics.Lines
+            .Where(l => (int)l.Start.X == (int)l.End.X)
+            .Select(l => ((int)l.Start.Y, (int)l.End.Y))
+            .MinBy(l => l.Item1);
+
+        Assert.Equal(rollBottom - rollTop + 1, speedRows.Count);
+        Assert.Equal(rollTop - 16, speedRows.Min());
+    }
+
     // The same flooring the software rasteriser applies, so these are the
     // rows that actually get painted.
     private static (int Top, int Bottom) Rows(float y, float height)

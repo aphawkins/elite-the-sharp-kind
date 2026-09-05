@@ -7,6 +7,19 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (the 16-bit speed bar, 2026-09-05)
+
+- **The 16-bit speed bar is the same height as the roll and pitch indicators
+  below it**, which is what the art asks for. `ScannerView16Bit.SpeedHeight`
+  was `6` against `DialBarHeight` `8`, so the bar sat two rows short in its
+  slot. The height alone was not the whole error: `scanner.bmp` gives all
+  three right-hand slots the same 12-row interior above their tick marks, and
+  the roll and pitch indicators start three rows into theirs, so the speed
+  bar's own start row was one slot's worth out too. `SpeedPosition` moves
+  from `9` to `7`, and the roll and pitch positions — written relative to it
+  — become `7 + 16` and `7 + 16 + 16`, drawing on the same rows as before and
+  making the slot pitch a uniform 16.
+
 ### Fixed (the intro's fire prompt, 2026-09-05)
 
 - **The ship parade now starts the game on a joystick's fire button**, as its

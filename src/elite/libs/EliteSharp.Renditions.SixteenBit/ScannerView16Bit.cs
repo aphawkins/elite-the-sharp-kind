@@ -60,13 +60,13 @@ internal sealed class ScannerView16Bit : ScannerViewBase
 
     protected override float EnergyBankSpacing => 18;
 
-    protected override Vector2 SpeedPosition => new(545, 9);
+    protected override Vector2 SpeedPosition => new(545, 7);
 
-    protected override float SpeedHeight => 6;
+    protected override float SpeedHeight => 8;
 
-    protected override Vector2 RollPosition => new(544, 9 + 14);
+    protected override Vector2 RollPosition => new(544, 7 + 16);
 
-    protected override Vector2 PitchPosition => new(544, 9 + 14 + 16);
+    protected override Vector2 PitchPosition => new(544, 7 + 16 + 16);
 
     protected override Vector2 CompassCentre => new(514, 26);
 

@@ -29,6 +29,8 @@ public sealed class RecordingGraphics(float screenWidth = 0, float screenHeight 
 
     public IList<(Vector2 Position, float Width, float Height, FastColor Colour)> FilledRectangles { get; } = [];
 
+    public IList<(Vector2 Start, Vector2 End, FastColor Colour)> Lines { get; } = [];
+
     public IList<(Vector2 Position, string Text, string FontType, FastColor Colour)> LeftTexts { get; } = [];
 
     public IList<(Vector2 Position, string Text, string FontType, FastColor Colour)> RightTexts { get; } = [];
@@ -73,8 +75,7 @@ public sealed class RecordingGraphics(float screenWidth = 0, float screenHeight 
     public Vector2 ImageSize(string imageType) => Vector2.Zero;
 
     public void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor color)
-    {
-    }
+        => Lines.Add((lineStart, lineEnd, color));
 
     public void DrawLineDepth(Vector2 lineStart, Vector2 lineEnd, float depthStart, float depthEnd, FastColor color, int surfaceId)
     {

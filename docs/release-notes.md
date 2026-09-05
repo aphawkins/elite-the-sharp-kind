@@ -7,6 +7,7 @@
 #### Fixes
 
 - The ship parade's fire button now starts the game, as its prompt says it does
+- 16-bit speed bar drawn short and one row out of its slot
 
 ## v1.1.0 (2026-09-05)
 
