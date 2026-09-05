@@ -7,6 +7,18 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (the explosion is a ball, 2026-09-05)
+
+- **The explosion blast is now a disc, not a square.**
+  `EliteDraw.DrawExplosionParticles` rolled each debris offset from two
+  independent axes (`_rng.Random(-128, 128)` on each), so the cloud filled the
+  square that encloses the intended radius and read as a box. The roll moves
+  into `EliteDraw.ScatterOffset`, which re-rolls a point that falls outside
+  the radius rather than clamping it — clamping would pile the rejected
+  corners onto the rim. The golden trace and frame baselines are unchanged:
+  the scatter comes from `RenderRandom`, which is a separate stream from the
+  game's `RNG`.
+
 ### Changed (the scanner says ELITE#, 2026-09-05)
 
 - **The label below the 8-bit scanner reads "ELITE#", not "ELITE".** The

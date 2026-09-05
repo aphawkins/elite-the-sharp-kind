@@ -38,18 +38,6 @@ there before starting an item that mentions a decision.
 
 ## Could
 
-- [ ] [EliteSharpLib] The explosion blast is a rectangle, not a circle.
-      `EliteDraw.DrawExplosionParticles`
-      ([EliteDraw.cs:333-356](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs))
-      scatters each debris point uniformly in a square box
-      (`_rng.Random(-128, 128)` on both axes), so the cloud fills a square.
-      Fix direction: reject or re-roll points outside the radius, or draw
-      from a polar distribution. Keep the draw order of the random stream
-      stable — `RenderRandom`
-      ([RenderRandom.cs](../src/elite/libs/EliteSharpLib/RenderRandom.cs))
-      notes the golden trace depends on how many numbers each explosion
-      takes; update `explosion.trace`/`explosion.frames` baselines with the
-      change.
 - [ ] [EliteSharp.Renditions.EightBit] The 8-bit left and right screen
       border should be 2 pixels wide. `BaseView8Bit.DrawBorder`
       ([BaseView8Bit.cs:65-78](../src/elite/libs/EliteSharp.Renditions.EightBit/BaseView8Bit.cs))

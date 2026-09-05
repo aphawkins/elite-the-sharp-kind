@@ -242,6 +242,24 @@ internal sealed class EliteDraw : IEliteDraw
 
     public void RenderStart() => _shipRenderer.StartFrame();
 
+    // One debris offset, uniform inside a disc of radius 128. A pair of
+    // independent axes would fill the square that encloses that disc and the
+    // cloud would read as a box, so a point outside the radius is re-rolled
+    // rather than clamped - clamping would pile the rejected corners onto the
+    // rim.
+    internal static Vector2 ScatterOffset(IRandomSource rng)
+    {
+        while (true)
+        {
+            Vector2 offset = new(rng.Random(-128, 128), rng.Random(-128, 128));
+
+            if ((offset.X * offset.X) + (offset.Y * offset.Y) <= 128 * 128)
+            {
+                return offset;
+            }
+        }
+    }
+
     // Draws the cloud at whatever age Space.AgeExplosion has already given
     // it this tick. The age itself is not touched here: a renderer that
     // advanced it would run the explosion at the frame rate rather than the
@@ -339,7 +357,7 @@ internal sealed class EliteDraw : IEliteDraw
 
             for (int i = 0; i < 16; i++)
             {
-                Vector2 position = new(_rng.Random(-128, 128), _rng.Random(-128, 128));
+                Vector2 position = ScatterOffset(_rng);
 
                 position.X = position.X * q / 256;
                 position.Y = position.Y * q / 256;
