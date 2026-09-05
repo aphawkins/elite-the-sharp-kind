@@ -1,20 +1,44 @@
 <Solution>
   <Folder Name="/docs/">
     <File Path="docs/architecture-principles.md" />
+    <File Path="docs/asset-structure.md" />
     <File Path="docs/backlog-issues.md" />
     <File Path="docs/backlog-roadmap.md" />
     <File Path="docs/decisions.md" />
     <File Path="docs/elite-readme.md" />
+    <File Path="docs/index.md" />
+    <File Path="docs/reference-sources.md" />
+    <File Path="docs/release-notes.md" />
+    <File Path="docs/release-process.md" />
     <File Path="docs/scr-readme.md" />
+    <File Path="docs/_config.yml" />
   </Folder>
   <Folder Name="/docs/images/">
     <File Path="docs/images/coverage-badge.svg" />
-    <File Path="docs/images/elite-screenshot.png" />
+    <File Path="docs/images/elite-screenshot-16-bit.png" />
+    <File Path="docs/images/elite-screenshot-8-bit.png" />
+    <File Path="docs/images/nuget-icon.png" />
+    <File Path="docs/images/scr-screenshot.png" />
+  </Folder>
+  <Folder Name="/.github/">
+    <File Path=".github/ISSUE_TEMPLATE/bug_report.md" />
+    <File Path=".github/ISSUE_TEMPLATE/config.yml" />
+    <File Path=".github/ISSUE_TEMPLATE/feature_request.md" />
+    <File Path=".github/PULL_REQUEST_TEMPLATE.md" />
+    <File Path=".github/workflows/benchmarks.yml" />
+    <File Path=".github/workflows/build-and-package.yml" />
+    <File Path=".github/workflows/release.yml" />
+  </Folder>
+  <Folder Name="/.vscode/">
+    <File Path=".vscode/launch.json" />
+    <File Path=".vscode/tasks.json" />
+  </Folder>
+  <Folder Name="/scripts/">
+    <File Path="scripts/test-case-sensitive.ps1" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path=".gitattributes" />
-    <File Path=".github/workflows/build-and-package.yml" />
     <File Path=".gitignore" />
     <File Path="AGENTS.md" />
     <File Path="CHANGELOG.md" />
@@ -22,7 +46,9 @@
     <File Path="CODE_OF_CONDUCT.md" />
     <File Path="CONTRIBUTING.md" />
     <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
     <File Path="dotnet.config" />
+    <File Path="elite.ico" />
     <File Path="global.json" />
     <File Path="LICENSE" />
     <File Path="README.md" />
@@ -72,8 +98,8 @@
     <Project Path="src/useful/libs/SharpKind.App/SharpKind.App.csproj" />
     <Project Path="src/useful/libs/SharpKind.Assets/SharpKind.Assets.csproj" />
     <Project Path="src/useful/libs/SharpKind.Audio/SharpKind.Audio.csproj" Id="f905b754-5b15-4e1e-95a5-0ae5c0543175" />
-    <Project Path="src/useful/libs/SharpKind.Input/SharpKind.Input.csproj" Id="06eb8143-9b04-4f33-ba8e-d1ec9357c9ea" />
     <Project Path="src/useful/libs/SharpKind.Graphics/SharpKind.Graphics.csproj" />
+    <Project Path="src/useful/libs/SharpKind.Input/SharpKind.Input.csproj" Id="06eb8143-9b04-4f33-ba8e-d1ec9357c9ea" />
     <Project Path="src/useful/libs/SharpKind.SDL/SharpKind.SDL.csproj" />
     <Project Path="src/useful/libs/SharpKind.Security.Cryptography.Streams/SharpKind.Security.Cryptography.Streams.csproj" />
     <Project Path="src/useful/libs/SharpKind.Security.Cryptography/SharpKind.Security.Cryptography.csproj" />
@@ -81,17 +107,17 @@
     <Project Path="src/useful/libs/SharpKind/SharpKind.csproj" />
   </Folder>
   <Folder Name="/src/useful/perf/">
-    <Project Path="src/useful/perf/SharpKind.Input.Benchmarks/SharpKind.Input.Benchmarks.csproj" />
     <Project Path="src/useful/perf/SharpKind.Graphics.Benchmarks/SharpKind.Graphics.Benchmarks.csproj" />
+    <Project Path="src/useful/perf/SharpKind.Input.Benchmarks/SharpKind.Input.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/src/useful/test/">
     <Project Path="src/useful/test/SharpKind.App.Tests/SharpKind.App.Tests.csproj" />
     <Project Path="src/useful/test/SharpKind.Assets.Tests/SharpKind.Assets.Tests.csproj" />
     <Project Path="src/useful/test/SharpKind.Audio.Tests/SharpKind.Audio.Tests.csproj" />
-    <Project Path="src/useful/test/SharpKind.Input.Tests/SharpKind.Input.Tests.csproj" Id="71806841-6acf-4385-9ca4-a722f492b109" />
     <Project Path="src/useful/test/SharpKind.Fakes/SharpKind.Fakes.csproj" />
     <Project Path="src/useful/test/SharpKind.Graphics.Fakes/SharpKind.Graphics.Fakes.csproj" />
     <Project Path="src/useful/test/SharpKind.Graphics.Tests/SharpKind.Graphics.Tests.csproj" />
+    <Project Path="src/useful/test/SharpKind.Input.Tests/SharpKind.Input.Tests.csproj" Id="71806841-6acf-4385-9ca4-a722f492b109" />
     <Project Path="src/useful/test/SharpKind.SDL.Tests/SharpKind.SDL.Tests.csproj" />
     <Project Path="src/useful/test/SharpKind.Security.Cryptography.Streams.Tests/SharpKind.Security.Cryptography.Streams.Tests.csproj" />
     <Project Path="src/useful/test/SharpKind.Security.Cryptography.Tests/SharpKind.Security.Cryptography.Tests.csproj" />
