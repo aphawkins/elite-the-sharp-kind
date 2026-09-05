@@ -36,7 +36,44 @@ there before starting an item that mentions a decision.
 
 ## Should
 
+- [ ] [EliteSharpLib] Joystick fire button does not start the game from the
+      intro screen. `Intro2Controller.HandleInput`
+      ([Intro2Controller.cs:70](../src/elite/libs/EliteSharpLib/Views/Intro2Controller.cs))
+      tests only `_keyboard.IsPressed(ConsoleKey.Spacebar)`, but the prompt
+      says "Press Fire or Space, Commander." The screen has no `IGamepad`.
+      Fix: inject `IGamepad` and also accept `GamepadControls.IsFiring`
+      (one-shot, so add an `IsFiring` that uses `IsPressed`, or gate on an
+      edge). Check `Intro1Controller` (the Y/N load prompt) for the same gap.
+- [ ] [EliteSharp.Renditions.SixteenBit] The 16-bit speed bar is too short.
+      `ScannerView16Bit.SpeedHeight` is `6`
+      ([ScannerView16Bit.cs:65](../src/elite/libs/EliteSharp.Renditions.SixteenBit/ScannerView16Bit.cs))
+      while every other dial bar uses `DialBarHeight` `8`
+      ([ScannerView16Bit.cs:39](../src/elite/libs/EliteSharp.Renditions.SixteenBit/ScannerView16Bit.cs)).
+      `ScannerViewBase.DisplaySpeed`
+      ([ScannerViewBase.cs:274-280](../src/elite/libs/EliteSharp.Abstractions/Views/ScannerViewBase.cs))
+      loops `SpeedHeight` rows. Confirm the intended height against the
+      16-bit `scanner.bmp` art, then set it.
+
 ## Could
+
+- [ ] [EliteSharpLib] The explosion blast is a rectangle, not a circle.
+      `EliteDraw.DrawExplosionParticles`
+      ([EliteDraw.cs:333-356](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs))
+      scatters each debris point uniformly in a square box
+      (`_rng.Random(-128, 128)` on both axes), so the cloud fills a square.
+      Fix direction: reject or re-roll points outside the radius, or draw
+      from a polar distribution. Keep the draw order of the random stream
+      stable — `RenderRandom`
+      ([RenderRandom.cs](../src/elite/libs/EliteSharpLib/RenderRandom.cs))
+      notes the golden trace depends on how many numbers each explosion
+      takes; update `explosion.trace`/`explosion.frames` baselines with the
+      change.
+- [ ] [EliteSharp.Renditions.EightBit] The 8-bit left and right screen
+      border should be 2 pixels wide. `BaseView8Bit.DrawBorder`
+      ([BaseView8Bit.cs:65-78](../src/elite/libs/EliteSharp.Renditions.EightBit/BaseView8Bit.cs))
+      draws single-pixel left and right lines. Draw a second vertical line
+      one pixel inboard on each side (top and bottom stay as they are
+      unless the art says otherwise).
 
 ## Won't
 

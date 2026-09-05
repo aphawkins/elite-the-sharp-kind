@@ -48,6 +48,44 @@ that mentions a decision.
 
 ## Could
 
+### Input
+
+- [ ] [EliteSharpLib] Fuller SideWinder (multi-axis joystick) flight mapping.
+      Today `GamepadControls`
+      ([GamepadControls.cs](../src/elite/libs/EliteSharpLib/Views/GamepadControls.cs))
+      maps only flight and fire, by deliberate choice (see the file's own
+      note); everything else stays on the keyboard. This item extends that
+      for a stick with a hat, a throttle slider and four-plus buttons:
+      - **Hat → view select** (front / left / right / rear), replacing the
+        F1-F4 keys. Wire it into the flight input path
+        (`PilotController` / `EliteMain.HandleFunctionKeys`
+        [EliteMain.cs:393-428](../src/elite/libs/EliteSharpLib/EliteMain.cs)),
+        one-shot per hat change.
+      - **Slider → speed.** Add a throttle axis (SDL joystick axis 3, which
+        the port already names `GamepadAxis.RightY` and does not use) and
+        map its position to target speed.
+      - **Button 3 → arm missile** (keyboard `T`); **button 4 → fire
+        missile** (keyboard `M`).
+
+      **Clashes with the current mapping — all need reassigning:**
+      - Hat currently feeds `GamepadAxis.LeftX`/`LeftY`
+        ([SDLInput.cs:289-306](../src/useful/libs/SharpKind.SDL/SDLInput.cs)),
+        i.e. roll and pitch, shared with the stick. Moving the hat to view
+        select means the hat stops mirroring the stick; roll/pitch stay on
+        the stick's `LeftX`/`LeftY` only.
+      - Button 3 is `GamepadButton.X`, currently a fire-laser button
+        (`IsFiring` = `A || X`). If it arms a missile, laser fire is button
+        1 (`A`) only.
+      - Button 4 is `GamepadButton.Y`, currently decelerate (`IsDecelerating`).
+        Freeing it for fire-missile is fine once the slider owns speed.
+      - Button 2 (`B`) is currently accelerate; also freed by the slider.
+      - Yaw stays on the twist axis (`RightX`), unaffected.
+
+      SCR shares `GamepadButton` A/X as its fire pair
+      ([scr GamepadControls.cs](../src/scr/libs/StuntCarRacerSharpLib/Screens/GamepadControls.cs))
+      — check that change here does not regress SCR, or scope the button
+      enum use per game.
+
 ### From decisions (2026-07-27)
 
 Committed by the maintainer decisions in [decisions.md](decisions.md). The
