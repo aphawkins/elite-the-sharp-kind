@@ -23,7 +23,9 @@ How to use this file:
   or either game loop. A defect fix should also arrive with a test that fails
   without it, wherever the seam allows one.
 - When an item completes, delete it here and record it in
-  [CHANGELOG.md](../CHANGELOG.md).
+  [CHANGELOG.md](../CHANGELOG.md). If the fix is significant enough that a
+  player or contributor would want to know about it at a glance, add a line
+  for it to [release-notes.md](release-notes.md) too.
 
 ## Decisions
 
@@ -45,7 +47,7 @@ re-covered.
       **authentic, not a defect.** Pressing F5-F11 in space switches the
       screen and the universe keeps moving behind it: `SetView` is all the
       key does, and `Simulate`
-      ([EliteMain.cs:180](../src/elite/libs/EliteSharpLib/EliteMain.cs))
+      ([EliteMain.cs:183](../src/elite/libs/EliteSharpLib/EliteMain.cs))
       runs `MoveUniverse` and `UpdateInFlight` on every tick that is not
       docked, whatever screen is up. The original does the same — in space
       the BBC main loop iterates all six parts every time round, and the
@@ -84,7 +86,7 @@ re-covered.
 - [ ] [EliteSharpLib] Buying more than 255g of Gold/Platinum doesn't work —
       authentic to the original ("broken as designed"); documented, not fixed.
 - [ ] [EliteSharpLib] Elite Intro2 parade shows 29 of ~33 ship models
-      ([ShipFactory.cs:80-111](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs))
+      ([ShipFactory.cs:98-129](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs))
       — Cougar, Constrictor and the Lone variants are mission-specific ships,
       deliberately excluded from the parade; confirmed intentional, not a bug.
 - [ ] [Assets] Selecting an 8-bit rendition in SCR does nothing — **not a
@@ -112,7 +114,7 @@ re-covered.
       Laser were genuinely off by the same mis-derivation's mirror error
       (too lenient) and have been fixed — see CHANGELOG.
 - [ ] [EliteSharpLib] Docking-bay roll-alignment threshold
-      (`FlyToDockingBay`, `Pilot.cs:342`, `MathF.Abs(dir) >= 0.9166f`) —
+      (`FlyToDockingBay`, `Pilot.cs:341`, `MathF.Abs(dir) >= 0.9166f`) —
       **not a bug.** A prior sweep computed the original's `CPX #66`
       threshold as `33/96 ≈ 0.344`, dividing by the *unit vector's* own
       magnitude (96). But `TAS4`'s dot product (like the unrelated `CNT`
@@ -128,7 +130,7 @@ re-covered.
       ([elite-source-flight.asm:9219-9245](../../../markmoxon/elite-source-code-bbc-micro-disc/1-source-files/main-sources/elite-source-flight.asm))
       applies 80 damage to the player whenever a missile is destroyed *for
       any reason* while near the player, separate from the 250-damage
-      direct-hit case. `TryGetMissileHeading` (`Combat.cs:1145-1192`) has
+      direct-hit case. `TryGetMissileHeading` (`Conflict/Combat.cs:1147-1194`) has
       no such path. **2026-08-04: blocked, not abandoned.** The mechanic is
       real and clearly missing, but TA35's own proximity test (`x_lo OR
       y_lo OR z_lo` of the missile's position) only examines each axis's

@@ -7,6 +7,19 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Confirmed (the gamepad path checked with a real XInput pad, 2026-09-05)
+
+- **The one thing the 2026-08-22 gamepad/joystick landing left unconfirmed is
+  now confirmed.** All three devices — a Speedlink Competition Pro Extra
+  joystick, a Microsoft Wireless Controller for Xbox One (Model 1708), and a
+  Microsoft SideWinder Precision 2 joystick — have been smoke-tested on both
+  games. `SDLInput.ConvertGamepadButton`/`ConvertGamepadAxis` name the
+  controls as expected, the 0.5 threshold in each game's `GamepadControls`
+  feels right on the Xbox pad's analog sticks, and sharing Stunt Car Racer's
+  left stick between steering and throttle is fine on a pad. No code change;
+  closes the "smoke-test the gamepad path with a real XInput pad" item in
+  [backlog-roadmap.md](docs/backlog-roadmap.md).
+
 ### Added (a third flight axis, behind a switch, 2026-09-05)
 
 - **Elite can yaw**, which Elite never could. The original ship rolls and

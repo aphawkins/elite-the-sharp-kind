@@ -1,11 +1,15 @@
 ﻿# Elite - The Sharp Kind
 
-![Elite - The Sharp Kind - Screenshot](images/elite-screenshot.png)
+![Elite - The Sharp Kind - Screenshot (8-bit)](images/elite-screenshot-8-bit.png)
+8-bit
+
+![Elite - The Sharp Kind - Screenshot (16-bit)](images/elite-screenshot-16-bit.png)
+16-bit
 
 A C# port of the classic BBC home computer game 'Elite'.  It is meant to look, feel and play the same as the original 8bit and 16bit versions of the game.
 
 Currently the objective of this port is authenticity, object oriented code and cross platform compatibility using dotnet.
-The game logic ticks at a fixed 13.5 Hz, the rate at which the original ran; rendering is separate and runs at the engine's configured frame rate (`engine.graphics.fps`, 60 by default), so a higher frame rate makes the game smoother without making it faster.
+The original BBC game ran its logic at a fixed 13.5 Hz. Elite now simulates and composes at the engine's configured frame rate instead (`engine.graphics.fps`, 60 by default), with its per-tick rates converted to true per-second ones — so the game plays close to the same at any rate, though feel and difficulty shift slightly away from 13.5 Hz.
 
 Part of [The Sharp Kind](../README.md), alongside [Stunt Car Racer - The Sharp Kind](scr-readme.md).
 
@@ -195,6 +199,37 @@ unless you mean it:
   nothing provides is refused rather than half-loaded. The log says which name
   it could not place.
 
+## Goods
+
+The stock market's wares are a plugin too, the same shape as a mission: an
+assembly referencing `EliteSharp.Abstractions` and nothing else, found in a
+**`Goods` folder beside the executable** at startup. `EliteSharp.Goods.Classic`
+— the seventeen classic wares — is the one the game ships with, and it comes
+through the same door a stranger's would: the plugin reads its own
+`goods.json` from beside its assembly rather than hardcoding what it trades,
+so a different economy is a different `goods.json` beside the same DLL.
+
+Unlike a mission, and like a rendition, this folder is not optional:
+
+- **The game needs exactly one set to trade.** No folder, or one with nothing
+  recognisable in it, is a startup failure naming the folder; two installed
+  sets is the same, naming both — the game trades one economy, and there is
+  no sensible way to pick between them.
+- **A good is named, not numbered.** As with a mission's stages, a closed
+  enum cannot name a good the game was never built against.
+- **Four pieces of wreckage need somewhere to put what they drop.** The
+  Alloy, the Escape Capsule, the Rock Splinter and the Tharglet each leave a
+  named good behind when scooped — Alloys, Slaves, Minerals and Alien Items —
+  and a set that does not provide all four is refused at startup, naming
+  which.
+- **A commander's saved cargo has to match the installed set exactly**, by
+  count and by name; a save from a different economy is rejected rather than
+  half-loaded.
+
+The market and inventory screens size themselves to whatever the installed
+set trades rather than assuming the classic seventeen, so a bigger goods set
+simply scrolls.
+
 ## Renditions
 
 Everything you see is a plugin. A **rendition** is one interpretation of the
@@ -215,7 +250,10 @@ Unlike the missions, this folder is not optional:
 
 - **The game picks the rendition named by `engine.rendition`.** Without it
   there is nothing to draw with, so it refuses to start and says which name it
-  could not find.
+  could not find. **Elite's own default is `8-bit`** — a fresh config, or
+  `engine.rendition` left out entirely, starts there — which differs from the
+  shared engine default of `16-bit` that a game with no rendition of its own,
+  such as Stunt Car Racer, still uses.
 - **A rendition missing a screen is refused the same way**, naming every
   screen it does not draw. The check happens before the first frame rather
   than when the commander opens that screen.
@@ -235,7 +273,7 @@ an old config keeps the look it had.
 
 ## Credits
 
-'Elite - The Sharp Kind' re-engineered in C# by Andy Hawkins 2023.
+'Elite - The Sharp Kind' re-engineered in C# by Andy Hawkins 2023-2026.
 - Converted into C#/.NET from C.J.Pinder's C version.
 - Forked from fesh0r/newkind 06 Dec 2022
 

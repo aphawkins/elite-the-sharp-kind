@@ -1,6 +1,9 @@
 ﻿# The Sharp Kind
 
+[![Build and Package](https://github.com/aphawkins/the-sharp-kind/actions/workflows/build-and-package.yml/badge.svg)](https://github.com/aphawkins/the-sharp-kind/actions/workflows/build-and-package.yml)
 ![Line coverage](docs/images/coverage-badge.svg)
+[![Latest release](https://img.shields.io/github/v/release/aphawkins/the-sharp-kind)](https://github.com/aphawkins/the-sharp-kind/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 Classic 8/16-bit computer games re-engineered in C# / .NET, sharing a common set of `SharpKind.*` game-engine libraries. The games are meant to look, feel and play like the originals while running cross-platform on modern hardware.
 
@@ -10,7 +13,7 @@ Classic 8/16-bit computer games re-engineered in C# / .NET, sharing a common set
 
 ### [Elite - The Sharp Kind](docs/elite-readme.md)
 
-![Elite - The Sharp Kind - Screenshot](docs/images/elite-screenshot.png)
+![Elite - The Sharp Kind - Screenshot](docs/images/elite-screenshot-8-bit.png)
 
 Status: Playable, feature-complete.
 
@@ -130,6 +133,8 @@ Diagnostic opt-ins read at runtime rather than compiled in, so they work in a Re
 - [Backlog — issues](docs/backlog-issues.md) — open defects, fixed first
 - [Backlog and roadmap](docs/backlog-roadmap.md) — features, refactors and spikes
 - [Changelog](CHANGELOG.md)
+- [Release notes](docs/release-notes.md) — a concise, categorised summary of the changelog, split at v1.0.0
+- [Release process](docs/release-process.md) — how to cut a tagged release
 - [Contributing](CONTRIBUTING.md)
 
 ## Licence

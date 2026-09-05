@@ -12,7 +12,7 @@ Race the clock and an AI opponent over four laps of elevated track.  The car tak
 
 ## Status
 
-Playable, preview.  The game starts at the track selection menu with all eight original tracks, framed with the remake's title artwork.  Gamepad/joystick support and the outside camera view are still to come.
+Playable, preview.  The game starts at the track selection menu with all eight original tracks, framed with the remake's title artwork.
 
 ## Getting Started
 
@@ -53,6 +53,7 @@ During the race:
 | Up arrow | Accelerate |
 | Down arrow | Brake / reverse |
 | Space | Boost |
+| Backspace | Toggle the outside/chase camera |
 | R | Point the car the opposite way |
 | N | Change the scenery type |
 | P | Pause |
@@ -68,6 +69,7 @@ During the race:
 Notes:
 - Boost (Space) only does anything while accelerating or braking, and only while the reserve shown on the dashboard isn't empty; accelerate and brake work on their own without it.
 - Steering only works while the wheels are touching the road.
+- Backspace toggles between the cockpit view and a chase camera behind and above the car. Like R, it works even while paused.
 - R points the car the opposite way, as the remake does. It is the way back for a car that ends up facing backwards. The new heading applies on the next physics frame.
 - P pauses and O resumes, as the remake does. Pausing stops the engine sound and freezes everything the race advances - the car, the opponent, the drawbridge, and the lap and race timers - so a pause cannot inflate a lap time. Unlike N and the F-keys, the pause keys only work during the race.
 - F9 and F10 tune the physics frame gap, as the remake's do: the physics steps every fourth 50Hz tick by default, F9 shortens that gap (down to every tick) and F10 lengthens it. N, F5, F6, F7, F9 and F10 work on every screen, not only during the race.

@@ -24,7 +24,9 @@ How to use this file:
   full solution, run the complete test suite, and smoke-test the affected
   app(s) live if the change touches shared code or either game loop.
 - When an item completes, delete it here and record it in
-  [CHANGELOG.md](../CHANGELOG.md).
+  [CHANGELOG.md](../CHANGELOG.md). If it's significant enough that a player
+  or contributor would want to know about it at a glance, add a line for it
+  to [release-notes.md](release-notes.md) too.
 - Line numbers date from the review; verify before editing.
 
 ## Decisions
@@ -193,24 +195,6 @@ while staying inside its assets and the Amiga's behaviour:
       sheet first (no atlas table exists upstream); assume the sheet
       order matches `opponentNames` (`Opponent_Behaviour.cpp:138-151`)
       and verify against the Amiga before committing.
-Gamepad/joystick support (split 2026-07-14 from the [LARGE] item; built,
-unit-tested and confirmed on the Competition Pro, so only the pad check is
-left):
-
-- [ ] [SharpKind.SDL] Smoke-test the gamepad path with a real XInput pad.
-      The joystick path is confirmed: a Competition Pro Extra steers,
-      accelerates and brakes on the stick, and boosts/fires on buttons 1
-      and 3 in both games. What the pad would settle: that
-      `SDLInput.ConvertGamepadButton`/`ConvertGamepadAxis` name the
-      controls the player expects, that the 0.5 threshold in each game's
-      `GamepadControls` feels right on an analog stick rather than a
-      digital one, and whether sharing the left stick between steering and
-      throttle in Stunt Car Racer is acceptable on a pad (it is what lets
-      one mapping serve both devices - see
-      [GamepadControls.cs](../src/scr/libs/StuntCarRacerSharpLib/Screens/GamepadControls.cs)).
-      The per-device logging added with the feature is the tool for this:
-      run with `SCR_LOG_LEVEL=Debug`.
-
 Super League (split 2026-07-14 from the [LARGE] item; reference is
 ptitSeb's `bSuperLeague` — toggled at `StuntCarRacer.cpp:1222`, applied
 at `:1298-1308`; do the first item first, the two visual items then in

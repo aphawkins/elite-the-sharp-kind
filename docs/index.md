@@ -14,7 +14,7 @@ Source on GitHub: [aphawkins/the-sharp-kind](https://github.com/aphawkins/the-sh
 
 ### [Elite - The Sharp Kind](elite-readme.md)
 
-![Elite - The Sharp Kind - Screenshot](images/elite-screenshot.png)
+![Elite - The Sharp Kind - Screenshot](images/elite-screenshot-8-bit.png)
 
 Status: Playable, feature-complete.
 
@@ -37,3 +37,4 @@ Both games are built on a shared set of engine libraries under `src/useful/` —
 - [Project README](https://github.com/aphawkins/the-sharp-kind#readme)
 - [Architecture principles](architecture-principles.md)
 - [Changelog](https://github.com/aphawkins/the-sharp-kind/blob/main/CHANGELOG.md)
+- [Release notes](release-notes.md) — a concise, categorised summary of the changelog, split at v1.0.0
