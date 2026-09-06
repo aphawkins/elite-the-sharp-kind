@@ -7,6 +7,16 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (the 8-bit side borders, 2026-09-06)
+
+- **The 8-bit left and right screen border is two pixels wide.**
+  `BaseView8Bit.DrawBorder` drew a single vertical line down each side, so
+  the frame read thinner at the sides than the art has it. Each side now
+  draws a second line one pixel inboard (`SideBorderWidth`); the top stays
+  single-pixel, and the content grid is unaffected — row 0 and the outermost
+  columns already belonged to the border, and the extra column falls in the
+  glyph cell's own inked-free edge, so no text is clipped.
+
 ### Fixed (the explosion trace scenario, 2026-09-05)
 
 - **The `explosion` golden-trace scenario explodes again.** It held the beam

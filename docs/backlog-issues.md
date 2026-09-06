@@ -38,13 +38,6 @@ there before starting an item that mentions a decision.
 
 ## Could
 
-- [ ] [EliteSharp.Renditions.EightBit] The 8-bit left and right screen
-      border should be 2 pixels wide. `BaseView8Bit.DrawBorder`
-      ([BaseView8Bit.cs:65-78](../src/elite/libs/EliteSharp.Renditions.EightBit/BaseView8Bit.cs))
-      draws single-pixel left and right lines. Draw a second vertical line
-      one pixel inboard on each side (top and bottom stay as they are
-      unless the art says otherwise).
-
 ## Won't
 
 Investigated and deliberately not fixed. Kept so the same ground isn't
