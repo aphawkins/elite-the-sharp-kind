@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -105,20 +105,28 @@ internal static class TraceScenarios
         // While the beam is drawn, and after it has stopped.
         [40, 120]);
 
-    // Launched, then the trigger held down until something wanders into it
-    // and dies. This is the one scenario that reaches the explosion cloud,
-    // and the cloud matters more than its share of the game because
-    // EliteDraw owns it: DrawObject seeds ExpDelta at 18 and DrawExplosion
-    // advances it by four every drawn frame, until past 251 it sets Remove.
-    // Separating simulate from compose moves all of that, so this trace is
-    // what says the move was faithful.
+    // Launched, turned around onto the encounter behind, then shot. This is
+    // the one scenario that reaches the explosion cloud, and the cloud
+    // matters more than its share of the game because EliteDraw owns it:
+    // DrawObject seeds ExpDelta at 18 and DrawExplosion advances it by four
+    // every drawn frame, until past 251 it sets Remove.
     //
-    // At this seed a Transporter is shot down around tick 270; the cloud
-    // then ramps 22 -> 254 over sixty ticks and the slot empties at 330. The
-    // kill is not aimed - it is the encounter flying into a held beam - so
-    // the tick it happens on is a property of the seed, and a change to how
-    // much RNG the game draws will move it. That is a real divergence worth
-    // seeing, not a flaw in the scenario.
+    // The kill is aimed only in the sense that the turn is: at this seed a
+    // Shuttle arrives behind the ship and stays there, so the script pitches
+    // for 230 ticks to bring it round to dead ahead and then holds the beam
+    // on it. It dies on tick 376 at z~1900, the cloud is drawn from 377 to
+    // 435, and the slot empties on 437. Aiming this way is what the earlier
+    // fire-and-wait script could not do: the wreck has to be *in front* for
+    // the frame check to see anything, because DrawExplosion returns on
+    // Location.Z <= 0, and a ship that flies into a held beam is already
+    // going past by the time it dies.
+    //
+    // The turn duration is a property of the seed, so a change to how much
+    // RNG the game draws will move the encounter and the trigger tick with
+    // it. That is a real divergence worth seeing, not a flaw in the
+    // scenario - but the trace no longer showing an explosion at all means
+    // the scenario has stopped covering what it is for, and it should be
+    // re-aimed rather than left green.
     //
     // Nothing scripts a kill more directly because nothing can: the escape
     // capsule and the energy bomb are the two deterministic explosions in
@@ -127,19 +135,22 @@ internal static class TraceScenarios
     internal static TraceScenario Explosion { get; } = new(
         "explosion",
         Seed,
-        400,
+        480,
         [
             new(1, ConsoleKey.N, KeyScriptAction.Tap),
             new(2, ConsoleKey.Spacebar, KeyScriptAction.Tap),
             new(4, ConsoleKey.F1, KeyScriptAction.Tap),
 
-            // Never released: the beam has to still be firing whenever the
-            // encounter arrives.
-            new(30, ConsoleKey.A, KeyScriptAction.Hold),
+            // Pitch until the encounter behind is dead ahead.
+            new(130, ConsoleKey.S, KeyScriptAction.Hold),
+            new(360, ConsoleKey.S, KeyScriptAction.Release),
+
+            // Never released: the beam has to still be firing when it dies.
+            new(360, ConsoleKey.A, KeyScriptAction.Hold),
         ],
 
         // The cloud early and late, then just after the wreck is gone.
-        [275, 310, 335]);
+        [385, 425, 445]);
 
     internal static IReadOnlyList<TraceScenario> All { get; } =
         [IntroParade, LaunchAndFly, LongFlight, LaserFire, Explosion];

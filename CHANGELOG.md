@@ -7,6 +7,21 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (the explosion trace scenario, 2026-09-05)
+
+- **The `explosion` golden-trace scenario explodes again.** It held the beam
+  down and waited for an encounter to fly into it; at this seed the encounter
+  now arrives *behind* the ship and stays there, so nothing died and every
+  `ExpDelta` in the baseline was `0` — the one scenario that covers the cloud
+  had been passing while covering nothing. It now pitches for 230 ticks to
+  bring the Shuttle round to dead ahead before firing: the kill lands on tick
+  376 at z~1900, the cloud is drawn from 377 to 435, and the slot empties on
+  437. Aiming matters because `DrawExplosion` returns on `Location.Z <= 0`, so
+  a wreck that is already going past is never drawn. Frame ticks move to
+  385/425/445 and both baselines are regenerated; the other four scenarios
+  regenerate byte-identical. Verified sensitive: suppressing the particle draw
+  now fails the explosion frame check, which it did not before.
+
 ### Fixed (the explosion is a ball, 2026-09-05)
 
 - **The explosion blast is now a disc, not a square.**
