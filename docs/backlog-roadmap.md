@@ -41,6 +41,146 @@ that mentions a decision.
 
 ## Should
 
+### Performance
+
+Profiled 2026-09-06 (i5-14600K, 512x512) after a frame-rate drop was noticed
+while docking, as a Coriolis fills the view. The four items below all come out
+of that one profile, so the evidence is stated once here and each item says
+only what it changes. The benchmarks that produced it are
+`StationBenchmarks`/`GraphicsPreset` (a Coriolis drawn through the real
+pipeline - `RenderStart`, `DrawObject`, `RenderEnd`) and
+`DepthFillBenchmarks`/`QuantiserBenchmarks` (one full-screen depth-tested
+face, and the quantisers on their own); re-run them to check any of this.
+
+**The settings decide whether there is a problem at all.** Every combination
+that asks the quantiser per pixel costs 5-8x the defaults, and each is a
+quarter to a third of a 60fps budget for one object:
+
+| Preset          | Z=1000 | Z=250    | vs default |
+|-----------------|-------:|---------:|-----------:|
+| Unlit/Nearest   | 117 us |   804 us |       1.0x |
+| Gouraud/Nearest | 519 us | 4 028 us |       5.0x |
+| Lambert/Ordered | 567 us | 4 841 us |       6.0x |
+| Gouraud/Ordered | 771 us | 6 397 us |       8.0x |
+
+On the defaults the worst frame spends 804 us on the station - 5 % of the
+budget, not something a player would see. **The maintainer confirms
+(2026-09-06) that the drop reproduces in all three of the other presets and
+never on the defaults**, which is the table's own shape: it is the per-pixel
+quantiser and nothing else.
+
+**Where the per-pixel time goes** (one full-screen face, 262 144 pixels; the
+right column is the cost the row adds over the row above it):
+
+| Ingredient                         |      Total | Adds per pixel |
+|------------------------------------|-----------:|---------------:|
+| `ClearDepth` (per frame, no draw)  |    24.8 us |              - |
+| Rasterise only, no depth buffer    |   109.8 us |        0.42 ns |
+| + per-pixel depth test             |   500.9 us |        1.49 ns |
+| + per-pixel clip test              |   712.8 us |        1.14 ns |
+| + ordered dither, channel grid     |  3 973.9 us |      13.25 ns |
+| + ordered dither, 16-entry palette |  6 800.0 us |       24.0 ns |
+| Gouraud (interpolate + quantise)   |  3 849.2 us |       12.8 ns |
+
+And the quantisers alone, one full screen of calls with the loop cost removed:
+`ChannelGridQuantiser` **5.5 ns** a call, `PaletteQuantiser` **15.3 ns**, and
+the `OrderedDitherQuantiser` wrapper a further **8.3-8.7 ns** on top of
+whichever it wraps. Against those, resolving a flat face's sixteen possible
+dithered answers once and indexing them per pixel costs **0.15 ns**.
+
+Two things this profile settles rather than opens:
+
+- **The off-screen theory is refuted.** The suspicion was that the station's
+  faces overflow the view and their pixels are rasterised then clipped away.
+  They are not: the fills clamp before the loop, not per pixel, so an
+  off-screen pixel is never visited. The distance sweep shows it directly -
+  from Z=500 to Z=250 the station's *unclipped* area grows 4x while the cost
+  grows only 1.8x, because the growth lands off-screen and the clamps drop
+  it. This agrees with the 2026-08-05 `OffScreenTriangleBenchmarks` figures
+  in [backlog-issues.md](backlog-issues.md). Nothing here argues for frustum
+  side-plane clipping.
+- **`ClearDepth` costs 25 us per frame** zeroing two full-screen arrays,
+  drawn or not - the whole of the 28 us floor. That is 0.15 % of a 60fps
+  budget, so it is recorded here and deliberately not an item.
+
+The stale "the game is fixed at 13.5fps by design" premise in the
+rasteriser-throughput Won't entry was corrected 2026-09-06 in the same pass;
+bare rasterisation stays a Won't, now on the 0.42 ns/pixel measurement above.
+
+- [ ] [SharpKind.Graphics] **Resolve an ordered dither once a face, not once a
+      pixel.** Fixes Lambert/Ordered outright: a flat fill's colour is
+      constant, so `Quantise(colour, x, y)` has exactly sixteen possible
+      answers, one per Bayer cell. Build them once per polygon and index by
+      `((y & 3) << 2) | (x & 3)` - measured at 0.15 ns a pixel against
+      13.25-24.0, and byte-identical output by construction, since the table
+      holds the same calls' results. Break-even is about sixteen pixels, so
+      it wins on every real face.
+      - Add `int Period { get; }` to
+        [IColourQuantiser](../src/useful/libs/SharpKind.Graphics/Rendering/IColourQuantiser.cs)
+        - 1 for `ChannelGridQuantiser` and `PaletteQuantiser`, 4 for
+        `OrderedDitherQuantiser`. A general quantiser declares no period, so
+        building a 4x4 table on the assumption of one would be a silent
+        correctness bet; declaring it makes the assumption checkable. This is
+        the only interface change.
+      - Carry a small readonly struct (`DitherCells`, built from a quantiser
+        and a face colour) instead of the `IColourQuantiser? dither`
+        parameter through `DrawPolygonFilledDepth` -> `DrawSpanFilledDepth`
+        and `DrawTriangleFilled` in
+        [SoftwareGraphics.cs](../src/useful/libs/SharpKind.Graphics/SoftwareGraphics.cs).
+      - Expected: Lambert/Ordered at Z=250 from 4 841 us to near the 804 us
+        unlit floor. Does nothing for either Gouraud preset - the colour
+        varies per pixel there and no table can cover it.
+- [ ] [SharpKind.Graphics] **Make each `Quantise` call cheaper**, for the
+      Gouraud presets, where the per-face table above cannot apply. Both
+      changes below are exactly output-preserving, and the second is provable
+      by a test walking all 256 channel values against the current function.
+      - [OrderedDitherQuantiser](../src/useful/libs/SharpKind.Graphics/Rendering/OrderedDitherQuantiser.cs):
+        precompute the sixteen nudges in the constructor into a `float[16]`.
+        Removes an `int[,]` two-dimensional index, an interface `LevelGap`
+        property call and three float ops per pixel - the 8.3-8.7 ns wrapper
+        cost.
+      - [ChannelGridQuantiser](../src/useful/libs/SharpKind.Graphics/Rendering/ChannelGridQuantiser.cs):
+        `AssetColourBudget.NearestLevel` does a `double` divide plus
+        `Math.Round(..., AwayFromZero)` per channel, three per pixel. Replace
+        with a 256-entry `byte[]` built in the constructor - the 5.5 ns.
+      - `PaletteQuantiser`'s exact linear search is deliberately left alone:
+        any nearest-entry cache keyed on truncated RGB changes output, which
+        is an authenticity decision rather than a performance one. Re-measure
+        after the two above and raise it separately if it is still the
+        remainder.
+      - Expected: recovers roughly 40 % of the two Gouraud presets. The rest
+        is the next item, so do not expect this one to reach the unlit floor.
+- [ ] [SharpKind.Graphics] **The Gouraud span's own per-pixel cost**, about
+      7.3 ns a pixel and the larger half of what the Gouraud presets pay:
+      `VertexColours.Lerp` plus a non-devirtualisable interface call, per
+      pixel, in `DrawSpanFilledDepthGouraud`
+      ([SoftwareGraphics.Gouraud.cs](../src/useful/libs/SharpKind.Graphics/SoftwareGraphics.Gouraud.cs)).
+      Derived by subtraction: Gouraud adds 12.8 ns a pixel over a flat fill
+      while the quantiser it calls accounts for only 5.5 of that. The obvious
+      shapes are interpolating the colour incrementally along the span rather
+      than lerping from `t` at each pixel, and resolving the quantiser to a
+      concrete type at the top of the span. Sequence after the item above,
+      which changes what that call costs. Only then is it known whether the
+      Gouraud presets can reach the unlit floor at all.
+- [ ] [SharpKind.Graphics] **Hoist the clip test out of the pixel loop.**
+      1.14 ns a pixel - 27 % on top of an unlit fill and 2.7x the bare
+      rasteriser - paid on every frame of the universe, because Elite draws
+      it all inside `SetViewClipRegion`. The fills already clamp their
+      scanline and span ranges once, to the screen; clamping to the clip
+      rectangle instead costs nothing and removes the test entirely from
+      `DrawTriangleFilled`, `DrawTriangleFilledDepth`, `DrawSpanFilledDepth`,
+      `DrawSpanTexturedDepth`, `DrawRectangleFilledInt` and `DrawImage`.
+      `DrawLineInt` currently tests bounds per pixel *and* calls a
+      `DrawPixel` that tests again - Cohen-Sutherland against the clip
+      rectangle once removes both. Storing the bounds as `int` also drops the
+      per-pixel int-to-float conversions, and `_clipIsFullScreen` can go with
+      them. Independent of the three items above; it is the smaller half of
+      the answer to "should `IGraphics.SetClipRegion` be removed" - see the
+      2026-07-31 entry in [decisions.md](decisions.md), which this profile
+      supports: at 1.14 ns a pixel the clip region is not worth pushing out
+      to six Elite call sites, and the planned full-screen 3D view would make
+      those six responsibilities pointless anyway.
+
 ### Release engineering (from the retired release plan)
 
 (none open — see [CHANGELOG.md](../CHANGELOG.md) for completed items)
@@ -470,12 +610,27 @@ widescreen half of these items applies to the modern tier alone. See
       ported algorithms. Revisit only if a specific project is scoped for
       it.
 - [ ] [SharpKind.Graphics] Software rasterizer throughput (per-pixel `SetPixel`,
-      insertion-sorted painter chain of ≤100 polys, no spans/SIMD) — the game
-      is fixed at 13.5fps by design and none of this is a bottleneck at that
-      rate; revisit only if the "performance as secondary objective" goal is
-      picked up. Note two items elsewhere are bounded by this one: the
-      side-plane clipping entry in [backlog-issues.md](backlog-issues.md) and
-      the per-frame-allocation entry above.
+      insertion-sorted painter chain of ≤100 polys, no spans/SIMD) — **the
+      bare rasteriser stays a Won't; the reason changed 2026-09-06.** This
+      entry used to say the game "is fixed at 13.5fps by design and none of
+      this is a bottleneck at that rate". That premise is gone: Elite has
+      simulated *and composed* at the commander's configured rate since
+      2026-08-26 ([EliteMain.Run](../src/elite/libs/EliteSharpLib/EliteMain.cs)),
+      so 13.5Hz is the rate the simulation's maths is written against, not
+      the rate frames are drawn at, and frames are drawn as fast as the
+      setting asks. What replaces it is a measurement rather than an
+      assumption: the 2026-09-06 profile behind the docking item under
+      Should puts bare rasterisation at **0.42 ns/pixel** — 110 us for a
+      full-screen face, the smallest ingredient of a fill by a wide margin
+      and 1 % of a 60fps budget. So per-pixel `SetPixel` and the absence of
+      SIMD are still not worth attacking. The painter chain is doubly moot:
+      `DepthSort` defaults to `ZBuffer`, which ignores the sort entirely.
+      What the same profile *does* find worth fixing — the per-pixel
+      quantiser at 13-24 ns/pixel, and the per-pixel clip test at 1.14 — is
+      itemised under Should, not here. Note two items elsewhere refer to
+      this one: the side-plane clipping entry in
+      [backlog-issues.md](backlog-issues.md) (which the same profile
+      confirms) and the per-frame-allocation entry above.
 - [ ] [SharpKind.Graphics] Shared text/HUD-panel helper for the two games'
       HUD code — **surveyed 2026-08-19, nothing to lift.** The item asked
       for a survey first and to lift only what both games actually use;
