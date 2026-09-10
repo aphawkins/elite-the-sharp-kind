@@ -613,7 +613,12 @@ which it already recorded as resolved.
 session-sized. `ViewLayout`, `Stars`, `WorldProjection`, `ShipBase.IsWithinView`,
 `ViewFrustum.FromViewport` and the planet/sun renderers all derive from the
 screen size or from a radius, at any width and any aspect. Three places do
-not. With the harness that proves the rest, they are four sessions:
+not, and two of those three are broken on the shipped renditions rather than
+only on an unbuilt one - the break pattern's rings and the explosion cloud's
+scatter, both now in [backlog-issues.md](backlog-issues.md), where they take
+priority over everything here. What is left for the roadmap is the third,
+which is only wrong at a width nothing has yet, and the harness that would
+have caught all three:
 
 - [ ] [EliteSharpLib] A rendition of an arbitrary size in the tests, so the
       claim above is checked rather than read. Today
@@ -623,8 +628,9 @@ not. With the harness that proves the rest, they are four sessions:
       stale as well as the size. Give the fakes a size that is neither
       square nor either shipped rendition's (say 800x480), and assert the
       derived layout, the projection and the starfield bounds against it.
-      This lands first: the three items below are the failures it is
-      expected to catch.
+      This lands first: it is what turns the two defects in
+      [backlog-issues.md](backlog-issues.md), and the item below, from a
+      reading of the code into a failing test.
 - [ ] [EliteSharpLib] Delete the square field-of-vision test in
       [EliteDraw.DrawObject](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs)
       (`MathF.Abs(obj.Location.X) > obj.Location.Z`, and the same for Y).
@@ -637,26 +643,9 @@ not. With the harness that proves the rest, they are four sessions:
       whole of its reach. Note in passing that `IsWithinView` passes
       `ViewportWidth`/`ViewportHeight` where `FromViewport` documents right
       and bottom *edges*; one pixel generous, so conservative, but the two
-      should agree.
-- [ ] [EliteSharpLib] Decide what the explosion cloud's size is measured in,
-      then make it that. `ScatterOffset` scatters within a 128-pixel disc and
-      `DrawExplosionParticles` scales it by `q / 256`, both in screen pixels
-      with no `Focus` or `Scale` in the arithmetic
-      ([EliteDraw.cs](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs)),
-      and the debris blocks are 1-3 pixels the same way. A cloud is therefore
-      the same number of pixels across on a 320-wide rendition as on a
-      640-wide one, so it reads twice as large on the smaller. Everything
-      else in the 3D view is `Focus`-derived, so the likely answer is
-      `Focus / 256` as `WorldProjection` uses; the block size may want
-      `Scale` instead, being chrome rather than geometry. Cover it with the
-      existing explosion golden trace, at two rendition sizes.
-- [ ] [EliteSharpLib] `BreakPattern`'s rings mix the two spaces: the
-      innermost radius is a bare `30` pixels while the spacing derives from
-      `ViewportCentre.X`
-      ([BreakPattern.cs:31](../src/elite/libs/EliteSharpLib/BreakPattern.cs)),
-      so on a viewport wider than it is tall the outer rings leave the top
-      and bottom of the screen. Derive both from the same measure - the
-      viewport's shorter half-extent - and scale the 30.
+      should agree. Nothing is wrong on either shipped rendition, both being
+      well under 90 degrees across, which is why this stays here while the
+      other two findings moved to the issues file.
 - [ ] [Repo] **Low-priority spike**: WASM build for Playwright-driven
       visual testing. Today `run-elite`/`run-scr`
       ([sdl-drive/drive.ps1](../.claude/skills/sdl-drive/drive.ps1))
