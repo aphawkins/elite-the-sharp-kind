@@ -582,43 +582,81 @@ widescreen half of these items applies to the modern tier alone. See
       centred); audit `TrackMenuScreen` and the other 2D screens for
       640x400 assumptions. `HudRenderer`'s virtual-canvas scaling
       mostly survives as-is.
-- [ ] [EliteSharpLib] Elite at non-512x512 resolutions: audit and fix
-      the hardcoded coordinate-space assumptions so Elite renders
-      correctly at other resolutions. **[LARGE]** — the maintainer
-      decided (see [decisions.md](decisions.md)) Elite should support
-      the full 8-bit/16-bit/modern resolution-tier scheme, not just
-      integer-scaled 512x512; re-scope this item against that decision
-      before starting.
 
-      **The 16-bit tier is now 640x512** (landed 2026-07-30). Height is
-      unchanged, so everything here is width-only. Three of the four
-      problems the 2026-07-29 trial exposed are resolved:
-      - ~~**The HUD stops spanning the window.**~~ Resolved: the 16-bit
-        `scanner.bmp` is 640 wide. `Scanner16Bit`'s right-hand cluster
-        moved +128 to match — see the CHANGELOG for how that offset was
-        measured off the art rather than guessed.
-      - ~~**The 3D field of view changes.**~~ Resolved on master
-        2026-07-29: `Focus` now follows `ScreenHeight`, so the vertical
-        field of view is constant and widening shows more to the left
-        and right instead of magnifying everything. See the decision in
-        [decisions.md](decisions.md), which supersedes the width-derived
-        `Focus` of the 2026-07-28 tier decision.
-      - ~~**The stale comment** in `SDLProgram.cs`~~ — updated with the
-        change.
-      - **The fourth — the 16-bit screens still being laid out for 512
-        on a 640-wide tier — lives in
-        [backlog-issues.md](backlog-issues.md)**, where it can be fixed
-        without waiting on this audit. It is a re-authoring job against
-        one known width: per [decisions.md](decisions.md) (2026-08-01)
-        the 8-bit and 16-bit tiers are fixed-width, so no widescreen
-        machinery is wanted for them.
+Elite at non-512x512 resolutions (split 2026-09-10 from the [LARGE] item).
+The survey found the item mostly overtaken, and its wording wrong in four
+places.
 
-      Two specifics this item used to cite are now out of date: `511`
-      in `ShipBase.DrawLasers` is already fixed — `ProjectToViewBoundary`
-      clips to the real viewport — and the `512` literals still in the
-      lib (`Combat.cs:758-759`, `ScannerBase`, `Space.cs:408-414`)
-      are world-space and physics constants, not screen coordinates, so
-      they are not in scope.
+**A tier is a rendition, and a rendition declares its own size** (decided
+2026-08-03, see [decisions.md](decisions.md)). `SystemTier` is gone, and
+`IRendition.ScreenWidth`/`ScreenHeight`/`Scale` are the rendition's own
+answers rather than facts the game holds about two known machines. So the
+"8-bit/16-bit/modern tier scheme" this item asked to be re-scoped against no
+longer exists as a scheme, and 512x512 is not a resolution either shipped
+rendition uses: they are 320x256 and 640x512. **Elite already renders at
+non-512x512 resolutions.** What is left is narrower — whether the *game*
+side, which serves every rendition, still holds anything that only works at
+the two sizes it has been run at.
+
+**The widescreen half is dropped, not split.** Per
+[decisions.md](decisions.md) (2026-08-01) widescreen is a modern-rendition
+concern only, and that rendition does not exist; its layout is designed when
+it is. The two shipped renditions are fixed-width by the same decision.
+
+**The fourth of the 2026-07-29 trial's problems is closed too** — the 16-bit
+screens were re-laid-out at 640 (the `640/512` ratio the rendition's own
+comments record), so the item's pointer into
+[backlog-issues.md](backlog-issues.md) is stale along with the other three,
+which it already recorded as resolved.
+
+**The audit itself came back nearly clean**, which is what makes the rest
+session-sized. `ViewLayout`, `Stars`, `WorldProjection`, `ShipBase.IsWithinView`,
+`ViewFrustum.FromViewport` and the planet/sun renderers all derive from the
+screen size or from a radius, at any width and any aspect. Three places do
+not. With the harness that proves the rest, they are four sessions:
+
+- [ ] [EliteSharpLib] A rendition of an arbitrary size in the tests, so the
+      claim above is checked rather than read. Today
+      [FakeAbstraction.cs:17-22](../src/elite/test/EliteSharpLib.Fakes/FakeAbstraction.cs)
+      hardcodes 512x512 and says it does so to match `SDLProgram` — which
+      has not decided the resolution since renditions did, so the comment is
+      stale as well as the size. Give the fakes a size that is neither
+      square nor either shipped rendition's (say 800x480), and assert the
+      derived layout, the projection and the starfield bounds against it.
+      This lands first: the three items below are the failures it is
+      expected to catch.
+- [ ] [EliteSharpLib] Delete the square field-of-vision test in
+      [EliteDraw.DrawObject](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs)
+      (`MathF.Abs(obj.Location.X) > obj.Location.Z`, and the same for Y).
+      It is a hardcoded 90 degree cone from the original, and it is the one
+      surviving place that assumes the viewport. Below 90 degrees across it
+      is merely redundant — `ShipBase.Draw` culls against the real frustum
+      immediately afterwards — but a viewport wider than it is tall enough
+      to see past 45 degrees loses ships that are genuinely on screen at the
+      sides. Explosions, planets and suns return before it, so ships are the
+      whole of its reach. Note in passing that `IsWithinView` passes
+      `ViewportWidth`/`ViewportHeight` where `FromViewport` documents right
+      and bottom *edges*; one pixel generous, so conservative, but the two
+      should agree.
+- [ ] [EliteSharpLib] Decide what the explosion cloud's size is measured in,
+      then make it that. `ScatterOffset` scatters within a 128-pixel disc and
+      `DrawExplosionParticles` scales it by `q / 256`, both in screen pixels
+      with no `Focus` or `Scale` in the arithmetic
+      ([EliteDraw.cs](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs)),
+      and the debris blocks are 1-3 pixels the same way. A cloud is therefore
+      the same number of pixels across on a 320-wide rendition as on a
+      640-wide one, so it reads twice as large on the smaller. Everything
+      else in the 3D view is `Focus`-derived, so the likely answer is
+      `Focus / 256` as `WorldProjection` uses; the block size may want
+      `Scale` instead, being chrome rather than geometry. Cover it with the
+      existing explosion golden trace, at two rendition sizes.
+- [ ] [EliteSharpLib] `BreakPattern`'s rings mix the two spaces: the
+      innermost radius is a bare `30` pixels while the spacing derives from
+      `ViewportCentre.X`
+      ([BreakPattern.cs:31](../src/elite/libs/EliteSharpLib/BreakPattern.cs)),
+      so on a viewport wider than it is tall the outer rings leave the top
+      and bottom of the screen. Derive both from the same measure - the
+      viewport's shorter half-extent - and scale the 30.
 - [ ] [Repo] **Low-priority spike**: WASM build for Playwright-driven
       visual testing. Today `run-elite`/`run-scr`
       ([sdl-drive/drive.ps1](../.claude/skills/sdl-drive/drive.ps1))
