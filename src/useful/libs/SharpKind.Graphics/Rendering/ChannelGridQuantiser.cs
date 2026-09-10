@@ -12,6 +12,11 @@ public sealed class ChannelGridQuantiser(int channelBits) : IColourQuantiser
     // Zero means "every level there is", so nothing needs snapping.
     private readonly int _top = channelBits >= 8 ? 0 : (1 << channelBits) - 1;
 
+    // There are only 256 channel values, so the whole answer is a table. It
+    // costs a divide and a rounding call to build an entry and an index to
+    // read one, and this is asked three times a pixel.
+    private readonly byte[] _levels = BuildLevels(channelBits);
+
     public int Period => 1;
 
     // Levels are evenly spaced, so the gap is exact. Eight bits a channel
@@ -19,11 +24,21 @@ public sealed class ChannelGridQuantiser(int channelBits) : IColourQuantiser
     public float LevelGap => _top == 0 ? 1f : 255f / _top;
 
     public FastColor Quantise(in FastColor colour, int x, int y)
-        => _top == 0
-            ? colour
-            : new(
-                colour.A,
-                (byte)AssetColourBudget.NearestLevel(colour.R, _top),
-                (byte)AssetColourBudget.NearestLevel(colour.G, _top),
-                (byte)AssetColourBudget.NearestLevel(colour.B, _top));
+        => new(colour.A, _levels[colour.R], _levels[colour.G], _levels[colour.B]);
+
+    private static byte[] BuildLevels(int channelBits)
+    {
+        byte[] levels = new byte[256];
+
+        for (int channel = 0; channel < levels.Length; channel++)
+        {
+            // Eight bits a channel snaps to itself, which the identity table
+            // gives without a branch per pixel.
+            levels[channel] = channelBits >= 8
+                ? (byte)channel
+                : (byte)AssetColourBudget.NearestLevel(channel, (1 << channelBits) - 1);
+        }
+
+        return levels;
+    }
 }

@@ -7,6 +7,28 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (cheaper quantiser calls, 2026-09-10)
+
+- **Both fast quantisers answer from a table instead of arithmetic.**
+  `ChannelGridQuantiser` built its answer per channel from
+  `AssetColourBudget.NearestLevel`, a `double` divide plus
+  `Math.Round(..., AwayFromZero)`, three times a pixel; there are only 256
+  channel values, so the constructor now runs that same function over all of
+  them into a `byte[256]` and `Quantise` indexes it. Eight bits a channel
+  builds the identity table, which drops the per-pixel pass-through branch
+  as well. `OrderedDitherQuantiser` computed its Bayer nudge per pixel from a
+  two-dimensional `int[,]` and the inner quantiser's `LevelGap` property; the
+  sixteen nudges never change, so they are resolved into a `float[16]` at
+  construction and indexed by `((y & 3) << 2) | (x & 3)`. Both are exactly
+  output-preserving, and a new `QuantiserTests` case walks all 256 channel
+  values at 1, 2, 3, 4 and 8 bits against `NearestLevel` itself.
+  `QuantiserBenchmarks`: `ChannelGridQuantiser` 5.5 ns a call to 0.1 ns, and
+  the `OrderedDitherQuantiser` wrapper 8.3-8.7 ns to 4.1-4.9 ns.
+  `StationBenchmarks` on a Coriolis filling the view at Z=250: Gouraud/Nearest
+  4 028 us to 2 021 us and Gouraud/Ordered 6 397 us to 3 289 us, both about
+  half. `PaletteQuantiser`'s exact nearest-entry search is untouched - a cache
+  keyed on truncated RGB would change what the display shows.
+
 ### Changed (the dither resolved once a face, 2026-09-10)
 
 - **A flat fill resolves its dither once per face, not once per pixel.** An

@@ -31,6 +31,28 @@ public class QuantiserTests
         Assert.Equal(new FastColor(0xFF7A7A7A), quantiser.Quantise(new(0xFF7A7A7A), 0, 0));
     }
 
+    // The grid answers from a table now. It has to agree with the function
+    // that built it on every channel value there is, at every tier's depth.
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    [InlineData(8)]
+    public void AChannelGridsTableMatchesTheLevelItSnapsTo(int channelBits)
+    {
+        ChannelGridQuantiser quantiser = new(channelBits);
+
+        for (int channel = 0; channel <= 255; channel++)
+        {
+            byte expected = channelBits >= 8
+                ? (byte)channel
+                : (byte)AssetColourBudget.NearestLevel(channel, (1 << channelBits) - 1);
+
+            Assert.Equal(expected, quantiser.Quantise(new(0xFF, (byte)channel, 0, 0), 0, 0).R);
+        }
+    }
+
     [Fact]
     public void APaletteTakesTheNearestEntryItNames()
     {

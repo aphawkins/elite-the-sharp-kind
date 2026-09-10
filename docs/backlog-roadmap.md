@@ -44,7 +44,7 @@ that mentions a decision.
 ### Performance
 
 Profiled 2026-09-06 (i5-14600K, 512x512) after a frame-rate drop was noticed
-while docking, as a Coriolis fills the view. The three items below all come out
+while docking, as a Coriolis fills the view. The two items below both come out
 of that one profile, so the evidence is stated once here and each item says
 only what it changes. The benchmarks that produced it are
 `StationBenchmarks`/`GraphicsPreset` (a Coriolis drawn through the real
@@ -52,22 +52,23 @@ pipeline - `RenderStart`, `DrawObject`, `RenderEnd`) and
 `DepthFillBenchmarks`/`QuantiserBenchmarks` (one full-screen depth-tested
 face, and the quantisers on their own); re-run them to check any of this.
 
-**The settings decide whether there is a problem at all.** Every combination
-that asks the quantiser per pixel costs 5-8x the defaults, and each is a
-quarter to a third of a 60fps budget for one object:
+**The settings decide whether there is a problem at all.** The presets that
+ask the quantiser per pixel are the Gouraud pair, and they now cost 2.6-4.2x
+the defaults. The column in brackets is the same preset on 2026-09-06, before
+the per-face dither table and the cheaper `Quantise` call:
 
-| Preset          | Z=1000 | Z=250    | vs default |
-|-----------------|-------:|---------:|-----------:|
-| Unlit/Nearest   | 117 us |   804 us |       1.0x |
-| Gouraud/Nearest | 519 us | 4 028 us |       5.0x |
-| Lambert/Ordered | 567 us | 4 841 us |       6.0x |
-| Gouraud/Ordered | 771 us | 6 397 us |       8.0x |
+| Preset          | Z=1000        | Z=250             | vs default |
+|-----------------|--------------:|------------------:|-----------:|
+| Unlit/Nearest   | 116 us (117)  |   781 us (  804)  |       1.0x |
+| Lambert/Ordered | 114 us (567)  |   771 us (4 841)  |       1.0x |
+| Gouraud/Nearest | 277 us (519)  | 2 021 us (4 028)  |       2.6x |
+| Gouraud/Ordered | 427 us (771)  | 3 289 us (6 397)  |       4.2x |
 
-On the defaults the worst frame spends 804 us on the station - 5 % of the
-budget, not something a player would see. **The maintainer confirms
-(2026-09-06) that the drop reproduces in all three of the other presets and
-never on the defaults**, which is the table's own shape: it is the per-pixel
-quantiser and nothing else.
+On the defaults the worst frame spends 781 us on the station - 5 % of the
+budget, not something a player would see. **The maintainer confirmed
+(2026-09-06) that the drop reproduced in all three of the other presets and
+never on the defaults**, which was the table's shape then: the per-pixel
+quantiser and nothing else. Lambert/Ordered has since joined the defaults.
 
 **Where the per-pixel time goes** (one full-screen face, 262 144 pixels; the
 right column is the cost the row adds over the row above it):
@@ -82,11 +83,14 @@ right column is the cost the row adds over the row above it):
 | + ordered dither, 16-entry palette |  6 800.0 us |       24.0 ns |
 | Gouraud (interpolate + quantise)   |  3 849.2 us |       12.8 ns |
 
-And the quantisers alone, one full screen of calls with the loop cost removed:
-`ChannelGridQuantiser` **5.5 ns** a call, `PaletteQuantiser` **15.3 ns**, and
-the `OrderedDitherQuantiser` wrapper a further **8.3-8.7 ns** on top of
-whichever it wraps. Against those, resolving a flat face's sixteen possible
-dithered answers once and indexing them per pixel costs **0.15 ns**.
+And the quantisers alone, one full screen of calls with the loop cost removed
+(re-measured 2026-09-10): `ChannelGridQuantiser` **0.1 ns** a call - it reads a
+256-entry table now, where it rounded to the grid for 5.5 ns before -
+`PaletteQuantiser` **15.5 ns**, and the `OrderedDitherQuantiser` wrapper a
+further **4.1-4.9 ns** on top of whichever it wraps, down from 8.3-8.7 now the
+sixteen nudges are resolved at construction. Against those, resolving a flat
+face's sixteen possible dithered answers once and indexing them per pixel costs
+**0.15 ns**.
 
 Two things this profile settles rather than opens:
 
@@ -107,46 +111,28 @@ The stale "the game is fixed at 13.5fps by design" premise in the
 rasteriser-throughput Won't entry was corrected 2026-09-06 in the same pass;
 bare rasterisation stays a Won't, now on the 0.42 ns/pixel measurement above.
 
-**Every ordered-dither figure above is historical from 2026-09-10.** A flat
-fill resolves the dither once per face now, not once per pixel, so
-`Dithered` and `DitheredPalette` measure at the flat fill's own cost - about
-660 us against 653 us - and the 13.25 and 24.0 ns per pixel, along with the
-Lambert/Ordered preset row, are gone. Only the Gouraud presets still pay a
-quantiser per pixel, which is what the items below address; the Gouraud row
-is unchanged.
+**Three rows of the per-pixel table are historical, both changes dated
+2026-09-10.** A flat fill resolves the dither once per face now, not once per
+pixel, so `Dithered` and `DitheredPalette` measure at the flat fill's own cost
+- 667 us each against 678 us - and the 13.25 and 24.0 ns per pixel are gone.
+The Gouraud row went with the cheaper `Quantise` call: it measures **1 833 us**
+now, **4.4 ns** a pixel over a flat fill rather than 12.8. The four rows above
+those are still the 2026-09-06 figures and were not re-measured.
 
-- [ ] [SharpKind.Graphics] **Make each `Quantise` call cheaper**, for the
-      Gouraud presets, where the per-face table above cannot apply. Both
-      changes below are exactly output-preserving, and the second is provable
-      by a test walking all 256 channel values against the current function.
-      - [OrderedDitherQuantiser](../src/useful/libs/SharpKind.Graphics/Rendering/OrderedDitherQuantiser.cs):
-        precompute the sixteen nudges in the constructor into a `float[16]`.
-        Removes an `int[,]` two-dimensional index, an interface `LevelGap`
-        property call and three float ops per pixel - the 8.3-8.7 ns wrapper
-        cost.
-      - [ChannelGridQuantiser](../src/useful/libs/SharpKind.Graphics/Rendering/ChannelGridQuantiser.cs):
-        `AssetColourBudget.NearestLevel` does a `double` divide plus
-        `Math.Round(..., AwayFromZero)` per channel, three per pixel. Replace
-        with a 256-entry `byte[]` built in the constructor - the 5.5 ns.
-      - `PaletteQuantiser`'s exact linear search is deliberately left alone:
-        any nearest-entry cache keyed on truncated RGB changes output, which
-        is an authenticity decision rather than a performance one. Re-measure
-        after the two above and raise it separately if it is still the
-        remainder.
-      - Expected: recovers roughly 40 % of the two Gouraud presets. The rest
-        is the next item, so do not expect this one to reach the unlit floor.
 - [ ] [SharpKind.Graphics] **The Gouraud span's own per-pixel cost**, about
-      7.3 ns a pixel and the larger half of what the Gouraud presets pay:
+      4.3 ns a pixel and now nearly all of what the Gouraud presets pay:
       `VertexColours.Lerp` plus a non-devirtualisable interface call, per
       pixel, in `DrawSpanFilledDepthGouraud`
       ([SoftwareGraphics.Gouraud.cs](../src/useful/libs/SharpKind.Graphics/SoftwareGraphics.Gouraud.cs)).
-      Derived by subtraction: Gouraud adds 12.8 ns a pixel over a flat fill
-      while the quantiser it calls accounts for only 5.5 of that. The obvious
-      shapes are interpolating the colour incrementally along the span rather
-      than lerping from `t` at each pixel, and resolving the quantiser to a
-      concrete type at the top of the span. Sequence after the item above,
-      which changes what that call costs. Only then is it known whether the
-      Gouraud presets can reach the unlit floor at all.
+      Derived by subtraction: Gouraud adds 4.4 ns a pixel over a flat fill
+      while the `ChannelGridQuantiser` it calls accounts for only 0.1 of that.
+      The obvious shapes are interpolating the colour incrementally along the
+      span rather than lerping from `t` at each pixel, and resolving the
+      quantiser to a concrete type at the top of the span. This is what stands
+      between the Gouraud presets and the unlit floor.
+      `PaletteQuantiser`'s own 15.5 ns search is deliberately left alone: any
+      nearest-entry cache keyed on truncated RGB changes output, which is an
+      authenticity decision rather than a performance one.
 - [ ] [SharpKind.Graphics] **Hoist the clip test out of the pixel loop.**
       1.14 ns a pixel - 27 % on top of an unlit fill and 2.7x the bare
       rasteriser - paid on every frame of the universe, because Elite draws

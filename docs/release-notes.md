@@ -7,6 +7,7 @@
 #### Changes
 
 - Ordered dithering costs nothing extra on solid faces — the same picture, at the undithered frame rate
+- Gouraud shading draws about twice as fast — the same picture, cheaper colour matching
 - The label below the 8-bit scanner now reads "ELITE#"
 
 #### Fixes
