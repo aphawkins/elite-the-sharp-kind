@@ -292,21 +292,91 @@ departure from the source material, not a correction. Nothing here should
 start before the issues file is clear, and the maintainer should decide
 per item whether authenticity or modernity wins.
 
-- [ ] [SharpKind.Graphics] **[LARGE]** Homogeneous clip-space pipeline: neither
-      game builds view/projection matrices or carries a `w`. Elite does
-      `Vector4.Transform(...) + Location` then divides by `Z` directly
-      ([ShipBase.ProjectPoint](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs));
-      SCR uses a hand-rolled fixed-point 3x3 and `focus * x / z`
-      ([Scene3D.cs](../src/scr/libs/StuntCarRacerSharpLib/Rendering/Scene3D.cs)).
-      With no clip space there is no NDC and no viewport transform as a
-      distinct stage, so frustum clipping, guard-banding and a depth range
-      all have to be special-cased instead of falling out for free. This is
-      the structural root of several items here and of the side-plane
-      clipping item in the issues file. It also overlaps heavily with the
-      "convert angles and trig" step of the SCR float-physics conversion
-      below — sequence after that, and build on
-      `SharpKind.Graphics.PerspectiveProjector`, the small first slice of the
-      same idea that landed 2026-08-09 (see [CHANGELOG.md](../CHANGELOG.md)).
+The homogeneous clip-space [LARGE] item was surveyed and split on
+2026-09-10 into the six ordered parts below. The survey corrected the
+original wording three times. "Neither game builds view/projection
+matrices" was too strong: Elite already transforms by a float
+`Matrix4x4` (`Rotmat`) and both games already share one projection stage,
+`PerspectiveProjector` — what neither builds is a *projection matrix*, so
+what is really missing is the `w`, not the matrices. "Frustum clipping has
+to be special-cased" is half overtaken: `ViewFrustum.FromViewport`
+already derives all six planes by reading the projection backwards, and
+Elite culls whole ships against them
+([ShipBase.IsWithinView](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs));
+what no stage does is clip a *face* against the side planes. And the near
+plane is shared too — both games clip camera-space polygons through
+`NearPlaneClip`, colours and texture coordinates included. So the gap
+that is left is narrower than the original entry reads: no `w`, no NDC,
+and the viewport transform folded into the projection rather than
+standing as its own stage.
+
+Two things the split has to preserve, because they are the reason the
+current shape works. `PerspectiveProjector.Project` returns *pixels*
+(`Centre + Focus * x / z`), not NDC, and every caller expects pixels.
+And the renderers take a camera-space depth per point (`float[] depths`
+on [IPolygonRenderer](../src/useful/libs/SharpKind.Graphics/Rendering/IPolygonRenderer.cs)),
+so the z-buffer's depth is camera z, and a move to a normalised depth
+changes what is stored, not only what is computed.
+
+Sequence the whole run after the "convert angles and trig" step of the
+SCR float-physics conversion below, and build on
+`SharpKind.Graphics.PerspectiveProjector`, the first small slice of the
+same idea that landed 2026-08-09 (see [CHANGELOG.md](../CHANGELOG.md)).
+Parts 1 to 3 are library-only and change no game output; parts 4 and 5
+move one game each; part 6 is what the clip space was for. Only part 6
+closes the side-plane clipping entry under Won't in
+[backlog-issues.md](backlog-issues.md).
+
+- [ ] [SharpKind.Graphics] Viewport transform as its own stage: split
+      [PerspectiveProjector.cs](../src/useful/libs/SharpKind.Graphics/PerspectiveProjector.cs)
+      into the perspective divide (camera space to NDC) and a `Viewport`
+      that maps NDC to pixels, with the existing `Project` kept as the
+      composition of the two. Nothing else moves — both games keep
+      calling `Project` and keep getting the same pixels — so this is a
+      library change with library tests, and it is what makes an NDC
+      exist to clip against later.
+- [ ] [SharpKind.Graphics] A projection matrix and a `w`: build a
+      `Matrix4x4` from focus, aspect, near and far, so a camera-space
+      point transforms to clip space and the divide by `w` reproduces
+      today's projector. Library only, no caller changes; the test that
+      matters compares the matrix path against `PerspectiveProjector`
+      over a sweep of points, to a tolerance, so the two are known to
+      agree before anything depends on it.
+- [ ] [SharpKind.Graphics] Clip in clip space: generalise
+      [NearPlaneClip.cs](../src/useful/libs/SharpKind.Graphics/NearPlaneClip.cs)
+      into a Sutherland-Hodgman clipper against all six clip-space
+      planes (`-w <= x, y, z <= w`), keeping the two interpolating
+      overloads — a corner the clipper invents still needs its colour and
+      its texture coordinate. The existing camera-space entry points stay
+      until the games move, so this adds a path rather than replacing
+      one. Library and tests only.
+- [ ] [EliteSharpLib] Move Elite onto the clip-space path: `ShipBase`
+      transforms to clip space, clips there, divides, and applies the
+      viewport
+      ([ShipBase.cs](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs)).
+      Two things resist and need deciding, not deleting: `ProjectPoint`'s
+      `vec.Z <= 0` clamp, which exists only so a laser aim behind the
+      camera still yields a point, and `ShowsDetail`, which reads
+      `Focus * radius / z` directly as a screen size. Verify with the
+      golden-trace harness, and smoke-test — this is a game loop.
+- [ ] [StuntCarRacerSharpLib] Move SCR onto the clip-space path:
+      `Scene3D.TransformPoint`/`ProjectPoint` and `TrackRenderer`'s
+      per-triangle clip loop
+      ([Scene3D.cs](../src/scr/libs/StuntCarRacerSharpLib/Rendering/Scene3D.cs),
+      [TrackRenderer.cs:200-232](../src/scr/libs/StuntCarRacerSharpLib/Rendering/TrackRenderer.cs)).
+      Strictly after the float trig conversion below: the view transform
+      is still a fixed-point 3x3 with a `>> Track.LogPrecision` rescale
+      until then, and putting a matrix in front of it twice is wasted
+      work. Verify against the physics golden traces and drive a lap.
+- [ ] [SharpKind.Graphics] Depth range and guard band: with both games in
+      clip space, `z / w` is a normalised depth, so the z-buffer can store
+      that instead of camera z — an `IPolygonRenderer` signature change,
+      since `Submit`'s `depths` are camera-space today — and a guard band
+      is a side plane pushed outwards rather than a special case. Retire the `Math.Max`/`Min` span clamps in
+      `DrawTriangleFilled` only if a measurement says the clip now pays
+      for itself; the 2026-08-05 benchmark under Won't in
+      [backlog-issues.md](backlog-issues.md) says an off-screen face is
+      cheap today, and that entry is the one this part closes.
 - [ ] [SharpKind.Graphics] Sub-pixel rasterisation precision: triangle edges
       snap to integer scanlines (`MathF.Ceiling`/`Floor` in
       `DrawTriangleFilled` and its variants), so geometry jitters as it
@@ -447,7 +517,7 @@ by the traces):
       and the fixed-point view transform here are the one remaining
       non-`System.Numerics` piece, and this item is where that gets
       resolved; no separate item needed. This is also the prerequisite
-      for the clip-space pipeline item above.
+      for the clip-space pipeline items above.
 - [ ] [StuntCarRacerSharpLib] Convert `CarPhysics` (four partials:
       [CarPhysics.cs](../src/scr/libs/StuntCarRacerSharpLib/Cars/CarPhysics.cs),
       `.Motion`, `.Road`, and the crane/chain-recovery `.Chains` — the
