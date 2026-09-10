@@ -7,6 +7,21 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (the break pattern's rings, 2026-09-10)
+
+- **The break pattern's rings stay inside the viewport.** `BreakPattern.Draw`
+  grew each ring from a bare `30` pixels by `ViewportCentre.X / MaxRings`, so
+  the radius was measured against the viewport's *width* while the viewport it
+  has to fit inside is shorter than it is wide: the widest ring reached 334 on
+  the 16-bit rendition against a 383-tall viewport, and 182 on the 8-bit
+  against a 200-tall one, and both clipped off the top and bottom. The spacing
+  is now derived from the viewport's shorter half-extent, and the innermost
+  ring sits two steps out (the proportion the old `30` had to the old
+  spacing), so the widest ring drawn lands exactly on the half-extent. New
+  `BreakPatternTests` walks the animation at both shipped rendition shapes and
+  fails on the old arithmetic; the `launch-and-fly` frame baseline is
+  regenerated, and the other four scenarios regenerate byte-identical.
+
 ### Fixed (the 8-bit side borders, 2026-09-06)
 
 - **The 8-bit left and right screen border is two pixels wide.**

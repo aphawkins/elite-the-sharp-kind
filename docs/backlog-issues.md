@@ -36,22 +36,11 @@ there before starting an item that mentions a decision.
 
 ## Should
 
-Both found by the 2026-09-10 survey of the roadmap's non-512x512 resolution
-item (see [backlog-roadmap.md](backlog-roadmap.md), where the rest of that
-survey lives). They are here rather than there because neither waits on a
-new resolution: both draw wrongly on the two renditions that ship today.
+Found by the 2026-09-10 survey of the roadmap's non-512x512 resolution item
+(see [backlog-roadmap.md](backlog-roadmap.md), where the rest of that survey
+lives). It is here rather than there because it does not wait on a new
+resolution: it draws wrongly on the two renditions that ship today.
 
-- [ ] [EliteSharpLib] The break pattern's rings run off the top and bottom of
-      the screen. `BreakPattern`
-      ([BreakPattern.cs:31](../src/elite/libs/EliteSharpLib/BreakPattern.cs))
-      grows each ring from a bare `30` pixels by `ViewportCentre.X /
-      MaxRings`, so the radius is measured against the viewport's *width*
-      while the viewport it has to fit inside is shorter than it is wide:
-      the outer ring reaches 350 on the 16-bit rendition against a 383-tall
-      viewport whose half-extent is 191, and 190 on the 8-bit against a
-      200-tall viewport whose half-extent is 100. Both clip. Derive the
-      radius from the viewport's shorter half-extent instead, and scale the
-      `30` with it so the innermost ring keeps its proportion.
 - [ ] [EliteSharpLib] An explosion cloud is the same size in pixels whatever
       the rendition draws at, so it reads twice as large on the 320-wide
       rendition as on the 640-wide one. `ScatterOffset` scatters within a
