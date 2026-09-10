@@ -1,4 +1,4 @@
-﻿# Changelog
+# Changelog
 
 All notable changes to this project are documented in this file. The format
 is based on [Keep a Changelog](https://keepachangelog.com/); the project does
@@ -6,6 +6,27 @@ not yet cut versioned releases, so everything sits under Unreleased.
 Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
+
+### Changed (the dither resolved once a face, 2026-09-10)
+
+- **A flat fill resolves its dither once per face, not once per pixel.** An
+  ordered dither's answer only depends on where the pixel falls in a 4x4
+  Bayer cell, so a face of one colour has exactly sixteen possible answers.
+  `SoftwareGraphics` now works those sixteen out at the top of the fill into a
+  `DitherCells` table on the stack and indexes it by
+  `((y & 3) << 2) | (x & 3)`, instead of carrying an `IColourQuantiser?` down
+  to `DrawSpanFilledDepth` and `DrawTriangleFilled` and calling it per pixel.
+  The output is byte-identical by construction - the table holds the results
+  of the same calls - and a new `TriangleFillTests` case asserts every pixel
+  of a dithered fill against asking the quantiser directly. `IColourQuantiser`
+  gains `Period`, the stride its answer repeats on (1 for
+  `ChannelGridQuantiser` and `PaletteQuantiser`, 4 for
+  `OrderedDitherQuantiser`), so the tiling is declared rather than assumed;
+  `IsPositionDependent` is now derived from it. `DepthFillBenchmarks` on a
+  full-screen 512x512 face: `Dithered` 3 974 us to 661 us and
+  `DitheredPalette` 6 800 us to 659 us, both now level with the undithered
+  `Flat` fill's 653 us. The Gouraud presets are untouched - their colour
+  varies per pixel, so no per-face table can cover them.
 
 ### Fixed (the explosion cloud's size, 2026-09-10)
 

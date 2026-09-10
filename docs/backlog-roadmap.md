@@ -1,4 +1,4 @@
-﻿# Backlog and Roadmap — The Sharp Kind
+# Backlog and Roadmap — The Sharp Kind
 
 Features, refactors, cleanups and spikes — work that **adds or reshapes**,
 not work that fixes. Prioritised with MoSCoW (per
@@ -44,7 +44,7 @@ that mentions a decision.
 ### Performance
 
 Profiled 2026-09-06 (i5-14600K, 512x512) after a frame-rate drop was noticed
-while docking, as a Coriolis fills the view. The four items below all come out
+while docking, as a Coriolis fills the view. The three items below all come out
 of that one profile, so the evidence is stated once here and each item says
 only what it changes. The benchmarks that produced it are
 `StationBenchmarks`/`GraphicsPreset` (a Coriolis drawn through the real
@@ -107,29 +107,14 @@ The stale "the game is fixed at 13.5fps by design" premise in the
 rasteriser-throughput Won't entry was corrected 2026-09-06 in the same pass;
 bare rasterisation stays a Won't, now on the 0.42 ns/pixel measurement above.
 
-- [ ] [SharpKind.Graphics] **Resolve an ordered dither once a face, not once a
-      pixel.** Fixes Lambert/Ordered outright: a flat fill's colour is
-      constant, so `Quantise(colour, x, y)` has exactly sixteen possible
-      answers, one per Bayer cell. Build them once per polygon and index by
-      `((y & 3) << 2) | (x & 3)` - measured at 0.15 ns a pixel against
-      13.25-24.0, and byte-identical output by construction, since the table
-      holds the same calls' results. Break-even is about sixteen pixels, so
-      it wins on every real face.
-      - Add `int Period { get; }` to
-        [IColourQuantiser](../src/useful/libs/SharpKind.Graphics/Rendering/IColourQuantiser.cs)
-        - 1 for `ChannelGridQuantiser` and `PaletteQuantiser`, 4 for
-        `OrderedDitherQuantiser`. A general quantiser declares no period, so
-        building a 4x4 table on the assumption of one would be a silent
-        correctness bet; declaring it makes the assumption checkable. This is
-        the only interface change.
-      - Carry a small readonly struct (`DitherCells`, built from a quantiser
-        and a face colour) instead of the `IColourQuantiser? dither`
-        parameter through `DrawPolygonFilledDepth` -> `DrawSpanFilledDepth`
-        and `DrawTriangleFilled` in
-        [SoftwareGraphics.cs](../src/useful/libs/SharpKind.Graphics/SoftwareGraphics.cs).
-      - Expected: Lambert/Ordered at Z=250 from 4 841 us to near the 804 us
-        unlit floor. Does nothing for either Gouraud preset - the colour
-        varies per pixel there and no table can cover it.
+**Every ordered-dither figure above is historical from 2026-09-10.** A flat
+fill resolves the dither once per face now, not once per pixel, so
+`Dithered` and `DitheredPalette` measure at the flat fill's own cost - about
+660 us against 653 us - and the 13.25 and 24.0 ns per pixel, along with the
+Lambert/Ordered preset row, are gone. Only the Gouraud presets still pay a
+quantiser per pixel, which is what the items below address; the Gouraud row
+is unchanged.
+
 - [ ] [SharpKind.Graphics] **Make each `Quantise` call cheaper**, for the
       Gouraud presets, where the per-face table above cannot apply. Both
       changes below are exactly output-preserving, and the second is provable

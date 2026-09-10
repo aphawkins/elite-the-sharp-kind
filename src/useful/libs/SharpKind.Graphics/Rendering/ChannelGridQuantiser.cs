@@ -12,7 +12,7 @@ public sealed class ChannelGridQuantiser(int channelBits) : IColourQuantiser
     // Zero means "every level there is", so nothing needs snapping.
     private readonly int _top = channelBits >= 8 ? 0 : (1 << channelBits) - 1;
 
-    public bool IsPositionDependent => false;
+    public int Period => 1;
 
     // Levels are evenly spaced, so the gap is exact. Eight bits a channel
     // leaves neighbouring values one apart.

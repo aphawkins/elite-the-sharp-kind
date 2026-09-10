@@ -28,7 +28,7 @@ public sealed class PaletteQuantiser : IColourQuantiser
         LevelGap = MeanNeighbourGap(_entries);
     }
 
-    public bool IsPositionDependent => false;
+    public int Period => 1;
 
     // A hand-picked palette has no even spacing to read off, so this is the
     // average distance from an entry to its nearest neighbour, converted from

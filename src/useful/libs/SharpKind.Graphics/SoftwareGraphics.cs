@@ -360,10 +360,14 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
             return;
         }
 
+        // The face is one colour, so the dither has only sixteen answers for
+        // it; resolve them once here rather than per pixel.
+        DitherCells cells = new(stackalloc FastColor[DitherCells.Count], faceColor, dither);
+
         // Create triangles of which each share the first vertex
         for (int i = 1; i < points.Length - 1; i++)
         {
-            DrawTriangleFilled(points[0], points[i], points[i + 1], faceColor, dither);
+            DrawTriangleFilledCells(points[0], points[i], points[i + 1], in cells);
         }
     }
 
@@ -371,10 +375,20 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
         => DrawPolygonFilledDepth(points, depths, faceColor, dither: null);
 
     public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, FastColor faceColor, IColourQuantiser? dither)
-        => FillPolygonDepth(points, depths, faceColor, writeColor: true, surfaceId: 0, dither);
+        => FillPolygonDepth(
+            points,
+            depths,
+            new(stackalloc FastColor[DitherCells.Count], faceColor, dither),
+            writeColor: true,
+            surfaceId: 0);
 
     public void FillDepth(Vector2[] points, float[] depths, int surfaceId)
-        => FillPolygonDepth(points, depths, BaseColors.Black, writeColor: false, surfaceId, dither: null);
+        => FillPolygonDepth(
+            points,
+            depths,
+            new(stackalloc FastColor[DitherCells.Count], BaseColors.Black, null),
+            writeColor: false,
+            surfaceId);
 
     public void DrawPolygonTextured(Vector2[] points, Vector2[] textureCoords, FastBitmap texture)
     {
@@ -492,38 +506,7 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
         => DrawTriangleFilled(a, b, c, color, dither: null);
 
     public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, in FastColor color, IColourQuantiser? dither)
-    {
-        // Sort the points so that a.Y <= b.Y <= c.Y
-        (a, b, c) = SortPointsByY(a, b, c);
-
-        // Clamp Y range to screen bounds
-        int firstY = Math.Max((int)MathF.Ceiling(a.Y), 0);
-        int lastY = Math.Min((int)MathF.Floor(c.Y), (int)ScreenHeight - 1);
-
-        // Evaluate the two edges crossing each scanline directly; the
-        // interpolation parameter is clamped to the edge's endpoints, so
-        // steep or near-horizontal edges can never overshoot.
-        for (int y = firstY; y <= lastY; y++)
-        {
-            // the long edge a-c, and either a-b (above b) or b-c (below)
-            float x0 = EdgeX(a, c, y);
-            float x1 = y < b.Y ? EdgeX(a, b, y) : EdgeX(b, c, y);
-
-            if (x0 > x1)
-            {
-                (x0, x1) = (x1, x0);
-            }
-
-            int start = Math.Max((int)MathF.Floor(x0), 0);
-            int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
-
-            for (int x = start; x <= end; x++)
-            {
-                // As DrawSpanFilledDepth: only a dither needs the pixel.
-                DrawPixel(x, y, dither == null ? color : dither.Quantise(color, x, y));
-            }
-        }
-    }
+        => DrawTriangleFilledCells(a, b, c, new DitherCells(stackalloc FastColor[DitherCells.Count], color, dither));
 
     public void ScreenUpdate() => _screenUpdate(_screen);
 
@@ -636,10 +619,9 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
         float za,
         float zb,
         float zc,
-        in FastColor color,
+        in DitherCells cells,
         bool writeColor = true,
-        int surfaceId = 0,
-        IColourQuantiser? dither = null)
+        int surfaceId = 0)
     {
         if (za <= 0 || zb <= 0 || zc <= 0)
         {
@@ -701,7 +683,7 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
                 (i0, i1) = (i1, i0);
             }
 
-            DrawSpanFilledDepth(y, x0, x1, i0, i1, color, writeColor, surfaceId, dither);
+            DrawSpanFilledDepth(y, x0, x1, i0, i1, in cells, writeColor, surfaceId);
         }
     }
 
@@ -888,15 +870,49 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
+    private void DrawTriangleFilledCells(Vector2 a, Vector2 b, Vector2 c, in DitherCells cells)
+    {
+        // Sort the points so that a.Y <= b.Y <= c.Y
+        (a, b, c) = SortPointsByY(a, b, c);
+
+        // Clamp Y range to screen bounds
+        int firstY = Math.Max((int)MathF.Ceiling(a.Y), 0);
+        int lastY = Math.Min((int)MathF.Floor(c.Y), (int)ScreenHeight - 1);
+
+        // Evaluate the two edges crossing each scanline directly; the
+        // interpolation parameter is clamped to the edge's endpoints, so
+        // steep or near-horizontal edges can never overshoot.
+        for (int y = firstY; y <= lastY; y++)
+        {
+            // the long edge a-c, and either a-b (above b) or b-c (below)
+            float x0 = EdgeX(a, c, y);
+            float x1 = y < b.Y ? EdgeX(a, b, y) : EdgeX(b, c, y);
+
+            if (x0 > x1)
+            {
+                (x0, x1) = (x1, x0);
+            }
+
+            int start = Math.Max((int)MathF.Floor(x0), 0);
+            int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
+
+            for (int x = start; x <= end; x++)
+            {
+                // As DrawSpanFilledDepth: the face's colours are already
+                // resolved, so the pixel only picks one of them.
+                DrawPixel(x, y, cells[x, y]);
+            }
+        }
+    }
+
     // Draw one depth-tested scanline of a flat-shaded triangle, interpolating
     // inverse depth from i0 at x0 to i1 at x1.
     private void FillPolygonDepth(
         Vector2[] points,
         float[] depths,
-        in FastColor faceColor,
+        in DitherCells cells,
         bool writeColor,
-        int surfaceId,
-        IColourQuantiser? dither)
+        int surfaceId)
     {
         if (points == null || depths == null || depths.Length < points.Length)
         {
@@ -913,10 +929,9 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
                 depths[0],
                 depths[i],
                 depths[i + 1],
-                faceColor,
+                in cells,
                 writeColor,
-                surfaceId,
-                dither);
+                surfaceId);
         }
     }
 
@@ -926,10 +941,9 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
         float x1,
         float i0,
         float i1,
-        in FastColor color,
+        in DitherCells cells,
         bool writeColor,
-        int surfaceId,
-        IColourQuantiser? dither)
+        int surfaceId)
     {
         int start = Math.Max((int)MathF.Floor(x0), 0);
         int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
@@ -940,10 +954,10 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
             float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
             if (DepthTest(x, y, i0 + ((i1 - i0) * t), surfaceId) && writeColor)
             {
-                // A dither picks a different colour per pixel, so it can only
-                // be asked here; without one the caller already quantised the
-                // whole face once.
-                DrawPixel(x, y, dither == null ? color : dither.Quantise(color, x, y));
+                // The face's sixteen possible colours are already resolved,
+                // so the pixel only picks the one its dither cell holds;
+                // without a dither every cell holds the same colour.
+                DrawPixel(x, y, cells[x, y]);
             }
         }
     }

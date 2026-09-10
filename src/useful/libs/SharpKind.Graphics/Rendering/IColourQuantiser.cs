@@ -13,17 +13,30 @@ namespace SharpKind.Graphics.Rendering;
 /// per-colour. Nearest-level and nearest-palette-entry ignore it; ordered
 /// dithering cannot, since its whole method is to alternate between the two
 /// levels that straddle the wanted colour according to where the pixel falls
-/// in a threshold matrix. Anything that dithers therefore has to run per
-/// pixel, inside the fill, rather than once per face.
+/// in a threshold matrix. What a dither depends on is only the pixel's place
+/// in that matrix, though, so a flat fill resolves its handful of answers
+/// once per face - see <see cref="Period"/>.
 /// </remarks>
 public interface IColourQuantiser
 {
+    /// <summary>
+    /// Gets how many pixels apart, on both axes, this quantiser's answer
+    /// repeats. One means the answer never depends on the pixel at all.
+    /// </summary>
+    /// <remarks>
+    /// A fill resolves a flat face's colours once per cell of this tile
+    /// rather than once per pixel, so the period has to be declared rather
+    /// than assumed: a quantiser that repeats on some other stride would
+    /// otherwise be tiled wrongly and silently.
+    /// </remarks>
+    public int Period { get; }
+
     /// <summary>
     /// Gets a value indicating whether this quantiser's answer depends on
     /// where the pixel is, and so has to be asked per pixel rather than once
     /// for a whole face.
     /// </summary>
-    public bool IsPositionDependent { get; }
+    public bool IsPositionDependent => Period > 1;
 
     /// <summary>
     /// Gets the typical gap, per channel, between neighbouring colours this

@@ -103,13 +103,42 @@ public class QuantiserTests
         }
     }
 
-    // Only a dither needs the pixel; the fill checks this to decide whether it
-    // has to ask per pixel or can take one answer for the whole face.
+    // Only a dither needs the pixel; the fill reads the period to decide how
+    // many answers a whole face has, and IsPositionDependent falls out of it.
     [Fact]
     public void OnlyADitherDependsOnThePixelPosition()
     {
-        Assert.False(new ChannelGridQuantiser(4).IsPositionDependent);
-        Assert.False(new PaletteQuantiser(s_greys).IsPositionDependent);
-        Assert.True(new OrderedDitherQuantiser(new PaletteQuantiser(s_greys)).IsPositionDependent);
+        IColourQuantiser grid = new ChannelGridQuantiser(4);
+        IColourQuantiser palette = new PaletteQuantiser(s_greys);
+        IColourQuantiser dither = new OrderedDitherQuantiser(new PaletteQuantiser(s_greys));
+
+        Assert.Equal(1, grid.Period);
+        Assert.Equal(1, palette.Period);
+        Assert.Equal(4, dither.Period);
+
+        Assert.False(grid.IsPositionDependent);
+        Assert.False(palette.IsPositionDependent);
+        Assert.True(dither.IsPositionDependent);
+    }
+
+    // A dither's answer repeats every Period pixels on both axes, which is
+    // what lets a flat fill resolve sixteen cells once instead of asking per
+    // pixel. Without this the per-face table would be a silent bet.
+    [Fact]
+    public void ADithersAnswerRepeatsEveryPeriodPixels()
+    {
+        IColourQuantiser quantiser = new OrderedDitherQuantiser(new PaletteQuantiser(s_greys));
+        FastColor colour = new(0xFF5A5A5A);
+
+        for (int y = 0; y < 4; y++)
+        {
+            for (int x = 0; x < 4; x++)
+            {
+                FastColor cell = quantiser.Quantise(colour, x, y);
+
+                Assert.Equal(cell, quantiser.Quantise(colour, x + quantiser.Period, y));
+                Assert.Equal(cell, quantiser.Quantise(colour, x, y + quantiser.Period));
+            }
+        }
     }
 }

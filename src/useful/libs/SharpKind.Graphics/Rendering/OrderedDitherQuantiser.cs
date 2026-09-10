@@ -47,7 +47,8 @@ public sealed class OrderedDitherQuantiser : IColourQuantiser
         _inner = inner;
     }
 
-    public bool IsPositionDependent => true;
+    // The Bayer matrix is 4x4, so the nudge repeats every four pixels.
+    public int Period => 4;
 
     // Dithering picks differently among the same colours; it does not change
     // how far apart they are.

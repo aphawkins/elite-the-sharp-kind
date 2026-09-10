@@ -3,6 +3,7 @@
 using System.Numerics;
 using Moq;
 using SharpKind.Assets;
+using SharpKind.Graphics.Rendering;
 
 namespace SharpKind.Graphics.Tests;
 
@@ -100,6 +101,44 @@ public class TriangleFillTests
             for (int x = 30; x <= 70; x++)
             {
                 Assert.Equal(BaseColors.White, bmp.GetPixel(x, 40));
+            }
+        }
+    }
+
+    // The fill resolves a dither's sixteen answers once for the face instead
+    // of asking per pixel, so every pixel must still hold exactly what the
+    // quantiser would have returned for it.
+    [Fact]
+    public void DitheredFillMatchesAskingTheQuantiserPerPixel()
+    {
+        FastColor[] greys =
+        [
+            new(0xFF000000), new(0xFF333333), new(0xFF666666),
+            new(0xFF999999), new(0xFFCCCCCC), new(0xFFFFFFFF),
+        ];
+
+        IColourQuantiser quantiser = new OrderedDitherQuantiser(new PaletteQuantiser(greys));
+
+        // A colour between two palette entries, so the dither actually
+        // alternates rather than landing on one entry everywhere.
+        FastColor colour = new(0xFF7A7A7A);
+
+        Mock<IAssetLocator> assets = new();
+        SetupEmptyAssets(assets);
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(100, 100, DoAssert, assets.Object);
+
+        graphics.DrawPolygonFilled([new(20, 20), new(80, 20), new(80, 80), new(20, 80)], colour, quantiser);
+        graphics.ScreenUpdate();
+
+        void DoAssert(FastBitmap bmp)
+        {
+            // Well inside the quad, clear of the edge rule.
+            for (int y = 25; y <= 75; y++)
+            {
+                for (int x = 25; x <= 75; x++)
+                {
+                    Assert.Equal(quantiser.Quantise(colour, x, y), bmp.GetPixel(x, y));
+                }
             }
         }
     }
