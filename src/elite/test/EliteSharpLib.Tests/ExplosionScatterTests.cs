@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -23,6 +23,25 @@ public class ExplosionScatterTests
             Assert.True(offset.Length() <= 128, $"Offset {offset} is outside the radius.");
         }
     }
+
+    // The cloud is written in the original's 256-wide space, so it must grow
+    // with the projection's focal length. A rendition that draws at twice the
+    // height scatters the same debris twice as far, and the cloud keeps the
+    // same size relative to the ship it came from.
+    [Fact]
+    public void ScatterSpreadFollowsTheFocalLength()
+    {
+        float small = EliteDraw.ScatterSpread(64, 256);
+        float large = EliteDraw.ScatterSpread(64, 512);
+
+        Assert.Equal(2 * small, large, 3);
+    }
+
+    // At the original's own focal length the arithmetic is the original's:
+    // a radius-128 offset times q/256, doubled.
+    [Fact]
+    public void ScatterSpreadMatchesTheOriginalAtFocus256()
+        => Assert.Equal(2 * 64f / 256, EliteDraw.ScatterSpread(64, 256), 5);
 
     // ... and the disc must still be filled, not collapsed onto the middle or
     // the rim.

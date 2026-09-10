@@ -36,23 +36,6 @@ there before starting an item that mentions a decision.
 
 ## Should
 
-Found by the 2026-09-10 survey of the roadmap's non-512x512 resolution item
-(see [backlog-roadmap.md](backlog-roadmap.md), where the rest of that survey
-lives). It is here rather than there because it does not wait on a new
-resolution: it draws wrongly on the two renditions that ship today.
-
-- [ ] [EliteSharpLib] An explosion cloud is the same size in pixels whatever
-      the rendition draws at, so it reads twice as large on the 320-wide
-      rendition as on the 640-wide one. `ScatterOffset` scatters within a
-      128-pixel disc and `DrawExplosionParticles` scales that by `q / 256`
-      ([EliteDraw.cs](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs)),
-      both in screen pixels with no `Focus` or `Scale` in the arithmetic, and
-      the debris blocks are 1-3 pixels the same way. Everything else in the
-      3D view is `Focus`-derived, so the answer is likely `Focus / 256` as
-      `WorldProjection` uses; the block size may want `Scale` instead, being
-      chrome rather than geometry. The existing explosion golden trace covers
-      it - run it at both rendition sizes.
-
 ## Could
 
 ## Won't

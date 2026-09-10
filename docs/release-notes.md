@@ -12,6 +12,7 @@
 
 - The launch, docking and hyperspace rings no longer run off the top and bottom of the screen
 - Explosions are round — the debris cloud was a square box
+- Explosion clouds are the same size relative to the ship on both renditions
 - 8-bit left and right screen border drawn one pixel wide instead of two
 - The ship parade's fire button now starts the game, as its prompt says it does
 - 16-bit speed bar drawn short and one row out of its slot

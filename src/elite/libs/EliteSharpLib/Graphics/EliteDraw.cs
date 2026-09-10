@@ -260,6 +260,15 @@ internal sealed class EliteDraw : IEliteDraw
         }
     }
 
+    // How far a scatter offset reaches on screen. The offset is a radius-128
+    // disc in the original's 256-wide space and q is the cloud's spread in
+    // the same terms, so the result follows the projection's focal length -
+    // exactly as WorldProjection's unitScale does - rather than being pixels.
+    // Without the focal term the cloud is the same pixel size whatever the
+    // rendition draws at, so it reads twice as large on a 320-wide screen as
+    // on a 640-wide one while the ship it came from does not.
+    internal static float ScatterSpread(float q, float focus) => 2 * q / 256 * (focus / 256);
+
     // Draws the cloud at whatever age Space.AgeExplosion has already given
     // it this tick. The age itself is not touched here: a renderer that
     // advanced it would run the explosion at the frame rate rather than the
@@ -350,23 +359,23 @@ internal sealed class EliteDraw : IEliteDraw
     // spread wider as the explosion grows (q).
     private void DrawExplosionParticles(int np, float q, in FastColor color)
     {
+        float spread = ScatterSpread(q, Focus);
+
+        // The blocks are chrome rather than geometry - the original's pixel,
+        // not a point in space - so they follow Scale, like every other piece
+        // of the render written in the original's pixels.
+        int blockScale = (int)Layout.Scale;
+
         for (int cnt = 0; cnt < np; cnt++)
         {
-            float sx = _pointList[cnt].X;
-            float sy = _pointList[cnt].Y;
+            Vector2 point = new(_pointList[cnt].X, _pointList[cnt].Y);
 
             for (int i = 0; i < 16; i++)
             {
-                Vector2 position = ScatterOffset(_rng);
+                Vector2 position = (ScatterOffset(_rng) * spread) + point;
 
-                position.X = position.X * q / 256;
-                position.Y = position.Y * q / 256;
-
-                position.X = position.X + position.X + sx;
-                position.Y = position.Y + position.Y + sy;
-
-                int sizex = _rng.Random(1, 3);
-                int sizey = _rng.Random(1, 3);
+                int sizex = _rng.Random(1, 3) * blockScale;
+                int sizey = _rng.Random(1, 3) * blockScale;
 
                 DrawExplosionBlock(position, sizex, sizey, color);
             }

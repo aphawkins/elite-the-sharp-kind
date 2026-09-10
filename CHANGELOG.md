@@ -7,6 +7,25 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (the explosion cloud's size, 2026-09-10)
+
+- **The explosion cloud follows the rendition's focal length.**
+  `ScatterOffset` scatters within a radius-128 disc and `DrawExplosionParticles`
+  scaled that by `q / 256`, both written in the original's 256-wide space but
+  applied as screen pixels, with no `Focus` in the arithmetic. Every other
+  part of the 3D view is `Focus`-derived, so the cloud was the same pixel size
+  whatever the rendition drew at and read twice as large on the 320-wide
+  rendition as on the 640-wide one, while the ship it came from did not. The
+  spread is now `ScatterSpread(q, Focus)`, carrying the same `Focus / 256`
+  unit scale `WorldProjection` uses for a world's radius. The debris blocks
+  followed as raw 1-3 pixels the same way; being the original's pixel rather
+  than a point in space, they follow `Scale`, like the rest of the render
+  written in the original's pixels. The 8-bit rendition is unchanged by
+  construction (`Focus` 256, `Scale` 1); the 16-bit cloud doubles to match its
+  own 2x geometry. New `ScatterSpread` tests fail on the old arithmetic, the
+  `explosion` frame baseline is regenerated, and the other four scenarios
+  regenerate byte-identical.
+
 ### Fixed (the break pattern's rings, 2026-09-10)
 
 - **The break pattern's rings stay inside the viewport.** `BreakPattern.Draw`
