@@ -145,6 +145,87 @@ test the game pays.
 
 ## Could
 
+### The 'Modern' rendition
+
+Scoped with the maintainer on 2026-09-12. A third rendition standing in for
+no machine at all: **1280x720, one window scale, no restriction on colour**,
+with the scanner centred at the bottom of the screen and the rendered
+universe filling every side of it, where both shipped tiers reserve a
+full-width strip for the HUD and stop the viewport above it. The HUD art is
+a placeholder for 3D instrumentation, so nothing here should invest in it.
+
+Three decisions the maintainer settled, so none of them is reopened below:
+
+- **1280x720, not 1920x1080.** A 1080p render is larger than the usable
+  desktop area on a 1080p display once the titlebar and taskbar are counted.
+  The intention is that Modern eventually resizes or goes fullscreen at the
+  native resolution, which is the last item here and is genuinely separate
+  work — `SDLGraphics.ScreenWidth`/`ScreenHeight` are set once in the
+  constructor and the render target, depth buffer and surface-id buffer are
+  all sized from them
+  ([SDLGraphics.cs](../src/useful/libs/SharpKind.SDL/SDLGraphics.cs)), and
+  `ViewLayout` is an immutable record every view caches its geometry against.
+- **`DesignScale` 2, the same as the 16-bit tier.** The design scale is a
+  property of the artwork rather than of the resolution, so it does not have
+  to divide 720 — and it cannot be fractional anyway (`IRendition.DesignScale`
+  is `int`, `EliteDraw` truncates it for the explosion blocks, and
+  [decisions.md](decisions.md) rules half-pixel chrome out). Modern's chrome
+  is the 16-bit tier's, so it is drawn at the 16-bit tier's scale with more
+  room around it. 3 needs 768 of 720 rows and overflows.
+- **32-bit colour, and no other restriction.** Free: `AssetColourLimits`
+  already defaults to `ChannelBits = 8`, and `ChannelGridQuantiser` treats 8
+  bits as "every level there is" and passes colour through untouched, so the
+  manifest declares it and no code changes.
+
+Do them in order — the first is what the second needs, and the last two are
+independent of each other.
+
+- [ ] [EliteSharp.Abstractions] Let a rendition overlay its HUD instead of
+      reserving a strip for it. `ViewLayout` derives
+      `ViewportHeight = ScreenHeight - ScannerSize.Y`, and `ScannerViewBase`
+      hardcodes the scanner's top-left as `(ViewportLeft, ViewportHeight)` in
+      `DrawScanner` and `ScannerRelative`
+      ([ViewLayout.cs](../src/elite/libs/EliteSharp.Abstractions/Views/ViewLayout.cs),
+      [ScannerViewBase.cs](../src/elite/libs/EliteSharp.Abstractions/Views/ScannerViewBase.cs)),
+      so a full-screen viewport with a centred HUD cannot be expressed. Add a
+      `HudPlacement` (`Reserved` | `Overlaid`) to `IRendition`, defaulting to
+      `Reserved`, and derive a `ScannerOrigin` on `ViewLayout` from it —
+      derived, not stored, so the origin and the viewport height cannot
+      disagree. `ScannerViewBase` then reads `ScannerOrigin`. Library and
+      tests only: both shipped tiers are `Reserved` and must come out with
+      byte-identical layout numbers, which is the test that matters.
+- [ ] [EliteSharp.Renditions.Modern] The rendition itself: a new plugin
+      assembly and `Assets` folder alongside the two shipped ones, 1280x720,
+      `DesignScale` 2, `WindowScales => [1]`, `HudPlacement.Overlaid`,
+      `ShadesShips`. Assets are a copy of the 16-bit tree — self-contained
+      like the other two, so each file can be replaced independently as real
+      artwork arrives — with the manifest's `Colours` block widened to 32-bit.
+      Screens derive from the 16-bit set and centre against `ViewportCentre`
+      rather than inheriting its absolute offsets. The 640-wide scanner
+      centres at x=320 of 1280, which is exact. Wire it into
+      [EliteSharp.csproj](../src/elite/apps/EliteSharp/EliteSharp.csproj)'s
+      `RenditionProject`/`RenditionAsset` lists; it then appears on the
+      settings screen with no settings code change, since `ChoiceSetting`
+      offers whatever is installed. Smoke-test it — this is a game loop.
+- [ ] [EliteSharpLib] Log the field of view at startup. The startup settings
+      line logs `rendition` and `windowScale` but not `fieldOfView`
+      ([GameApp.cs](../src/useful/libs/SharpKind.App/GameApp.cs)), so a bug
+      report from a commander who has widened it does not say so — and it
+      changes what is on screen, which is exactly what a screenshot in a bug
+      report is of. One field.
+- [ ] [SharpKind.SDL] **[LARGE]** A resizeable window, and fullscreen at the
+      native resolution. This is what Modern is ultimately for, and it is the
+      reason `ScreenWidth`/`ScreenHeight` being constructor-fixed matters:
+      the render target, depth buffer and surface-id buffer are all sized from
+      them ([SDLGraphics.cs](../src/useful/libs/SharpKind.SDL/SDLGraphics.cs)).
+      So it needs a resize signal, a rebuild of those buffers, and a way to
+      replace the immutable `ViewLayout` every view was built against —
+      `BaseView8Bit` and `BaseView16Bit` capture the record in their
+      constructors, and every other view reads it off the surface per draw.
+      Harder than it looks: most views and controllers are written against
+      *pixel* positions rather than scaled ones, so they would all have to
+      move when the screen does. Survey that before splitting.
+
 ### Input
 
 - [ ] [EliteSharpLib] Fuller SideWinder (multi-axis joystick) flight mapping.

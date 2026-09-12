@@ -7,6 +7,73 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (the coordinate scale named, and a field of view setting, 2026-09-12)
+
+- **`IRendition.Scale` and `ViewLayout.Scale` are now `DesignScale`.** The
+  name `Scale` collided with `EngineConfigSettings.WindowScale` in every
+  conversation about either, and the two are unrelated: this one multiplies
+  chrome authored in the original's 256-square space up to a rendition's
+  pixels, deciding *where things are drawn in the frame*, where `WindowScale`
+  magnifies the finished frame into the window. Neither is a zoom. It stays
+  the rendition's own property - it is a fact about the artwork, not something
+  a commander has a reason to change.
+- **Field of View is a setting.** `engine.fieldOfView` holds a vertical field
+  of view in degrees, and the Engine Settings screen offers 53, 65, 75, 90 and
+  105 between Window Scale and Rendition. This is the setting that changes
+  *how much of the universe is in front of the ship*: widening it shortens the
+  projection's focal length, so more fits across the viewport and everything
+  in it is smaller. It feeds `EliteDraw.Focus`, which every projection, the
+  frustum culling, the planets, the starfield and the explosion spread already
+  read, so one number moves all of them together.
+  - `Focus` keeps its name: it is a focal length in pixels
+    (`Centre.X + Focus * x / z`), not an angle, and it is shared with Stunt
+    Car Racer through `PerspectiveProjector`. The setting is the angle; `Focus`
+    is what the angle derives.
+  - 53 is the original's own projection - a focal length of exactly one screen
+    height, which is 2·atan(0.5) = 53.13° - and selecting it stores nothing
+    rather than writing 53 back, so the classic view stays bit-for-bit the
+    classic view instead of becoming the rounded angle put back through the
+    arithmetic. `FocusFactor` is now derived from the setting rather than a
+    constant.
+  - No restart marker: `Focus` reads the config every time it is used, so the
+    next frame drawn is already at the new angle.
+  - Shown as bare numbers. A degree sign crashed the game - see the new entry
+    in [backlog-issues.md](docs/backlog-issues.md).
+
+### Fixed (the rear and side starfields at a wide field of view, 2026-09-12)
+
+- **The rear and side starfields recycled stars that were still on screen.**
+  Both passes ([Stars.cs](src/elite/libs/EliteSharpLib/Stars.cs)) carried a
+  star until `MathF.Abs(y) >= 110` (rear) or `>= 116` (side) before putting it
+  back at an edge. Those are the original's numbers, and they are 1.10 and
+  1.16 times the 8-bit tier's 100-unit half-height - a margin *outside* the
+  view, which they have to be, since both recycle paths reset a star to
+  exactly `StarHalfHeight` and a bound of exactly that would recycle it again
+  on the very next frame, forever. But star space is sized by the focal
+  length, so widening the field of view stretches the view further across it
+  and a fixed 110 falls *inside* the view: stars were then recycled while
+  visible and spent their lives out past the drawable area. Over 200 frames of
+  64 stars at half the classic focal length, 93 % of the rear field and only
+  69 % of the side field reached the screen, against 98 % of both once the
+  bounds are expressed as those same ratios of `StarHalfHeight`. The front
+  pass was already derived this way and was never affected. Found by widening
+  the new Field of View setting and looking aft.
+
+### Fixed (a label row read before it was checked, 2026-09-12)
+
+- **The short range chart no longer throws when a planet plots outside it.**
+  `ShortRangeChartController.Reset` read `rowUsed[row]` *before* the
+  `FirstPackedRow` test that exists to reject an unusable row
+  ([ShortRangeChartController.cs](src/elite/libs/EliteSharpLib/Views/ShortRangeChartController.cs)),
+  so a row outside the array indexed it anyway. Neither shipped rendition
+  reaches that state - it needs a design scale that plots the chart's 38-unit
+  spread past the viewport's top - but a rendition drawing on a larger canvas
+  would, which the planned Modern tier will. The row selection moved into a
+  `PackedRow` helper that checks the bounds first and returns null where there
+  is no row to label in, and the caller leaves that planet unnamed; the
+  packing step also no longer steps off the last row. Found by driving the
+  real app at design scale 3, and tested at 3 and 4.
+
 ### Changed (the clip test hoisted out of the pixel loop, 2026-09-12)
 
 - **The fills clamp to the clip rectangle instead of testing every pixel
