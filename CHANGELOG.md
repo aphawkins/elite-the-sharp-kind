@@ -7,6 +7,26 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (a cheaper Gouraud span, 2026-09-12)
+
+- **The Gouraud span interpolates its colour with the span's own arithmetic
+  instead of a lerp per pixel.** `DrawSpanFilledDepthGouraud`
+  ([SoftwareGraphics.Gouraud.cs](src/useful/libs/SharpKind.Graphics/SoftwareGraphics.Gouraud.cs))
+  divided by the span width and called `VertexColours.Lerp` at every pixel,
+  which converted both end colours to float and rounded three channels
+  through `MathF.Round(..., AwayFromZero)`. The reciprocal of the width and
+  the distance each channel travels are properties of the span, so they are
+  worked out once for it; a pixel now costs a multiply-add and a truncation
+  per channel. Rounding is unchanged - `t` is still clamped, so the result
+  stays between the two ends and adding a half before truncating rounds away
+  from zero exactly as `Lerp` did. `DepthFillBenchmarks/Gouraud` on a
+  full-screen face: 1 833 us to 1 299 us, which is 2.4 ns a pixel over a flat
+  fill rather than 4.4. `StationBenchmarks` on a Coriolis filling the view at
+  Z=250: Gouraud/Nearest 2 021 us to 1 468 us and Gouraud/Ordered 3 289 us to
+  2 624 us. Resolving the quantiser to a concrete type at the top of the span
+  was measured as well and left out: it saves 0.18 ns a pixel, which does not
+  pay for a copy of the pixel loop per quantiser.
+
 ### Changed (cheaper quantiser calls, 2026-09-10)
 
 - **Both fast quantisers answer from a table instead of arithmetic.**

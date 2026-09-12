@@ -1,4 +1,4 @@
-// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
+﻿// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
 
 using System.Numerics;
 using SharpKind.Graphics.Rendering;
@@ -134,6 +134,11 @@ public sealed partial class SoftwareGraphics
         }
     }
 
+    // One channel of the blend. The same rounding as VertexColours.Lerp - t
+    // is clamped, so the result never leaves the range the two ends span and
+    // adding a half then truncating rounds away from zero as that does.
+    private static byte Channel(byte from, float range, float t) => (byte)(from + (range * t) + 0.5f);
+
     // Draw one depth-tested scanline of a Gouraud triangle, blending the
     // colour from colour0 at x0 to colour1 at x1 alongside the inverse depth.
     // Unlike the flat span, the quantiser is asked at every pixel whether it
@@ -152,14 +157,28 @@ public sealed partial class SoftwareGraphics
     {
         int start = Math.Max((int)MathF.Floor(x0), 0);
         int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
+
+        // What varies across the span, worked out once for the whole of it
+        // rather than per pixel: the reciprocal of its width, and how far each
+        // channel and the inverse depth travel from one end to the other.
         float span = x1 - x0;
+        float across = span <= 0 ? 0f : 1f / span;
+        float depthRange = i1 - i0;
+        float redRange = colour1.R - colour0.R;
+        float greenRange = colour1.G - colour0.G;
+        float blueRange = colour1.B - colour0.B;
 
         for (int x = start; x <= end; x++)
         {
-            float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
-            if (DepthTest(x, y, i0 + ((i1 - i0) * t), surfaceId: 0))
+            float t = Math.Clamp((x - x0) * across, 0f, 1f);
+            if (DepthTest(x, y, i0 + (depthRange * t), surfaceId: 0))
             {
-                FastColor colour = VertexColours.Lerp(colour0, colour1, t);
+                FastColor colour = new(
+                    colour0.A,
+                    Channel(colour0.R, redRange, t),
+                    Channel(colour0.G, greenRange, t),
+                    Channel(colour0.B, blueRange, t));
+
                 DrawPixel(x, y, quantiser == null ? colour : quantiser.Quantise(colour, x, y));
             }
         }

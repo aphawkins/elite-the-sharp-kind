@@ -44,8 +44,8 @@ that mentions a decision.
 ### Performance
 
 Profiled 2026-09-06 (i5-14600K, 512x512) after a frame-rate drop was noticed
-while docking, as a Coriolis fills the view. The two items below both come out
-of that one profile, so the evidence is stated once here and each item says
+while docking, as a Coriolis fills the view. The item below comes out
+of that one profile, so the evidence is stated once here and the item says
 only what it changes. The benchmarks that produced it are
 `StationBenchmarks`/`GraphicsPreset` (a Coriolis drawn through the real
 pipeline - `RenderStart`, `DrawObject`, `RenderEnd`) and
@@ -53,18 +53,19 @@ pipeline - `RenderStart`, `DrawObject`, `RenderEnd`) and
 face, and the quantisers on their own); re-run them to check any of this.
 
 **The settings decide whether there is a problem at all.** The presets that
-ask the quantiser per pixel are the Gouraud pair, and they now cost 2.6-4.2x
-the defaults. The column in brackets is the same preset on 2026-09-06, before
-the per-face dither table and the cheaper `Quantise` call:
+ask the quantiser per pixel are the Gouraud pair, and they now cost 1.8-3.3x
+the defaults. The figures are 2026-09-12; the column in brackets is the same
+preset on 2026-09-06, before the per-face dither table, the cheaper
+`Quantise` call and the Gouraud span's own arithmetic:
 
 | Preset          | Z=1000        | Z=250             | vs default |
 |-----------------|--------------:|------------------:|-----------:|
-| Unlit/Nearest   | 116 us (117)  |   781 us (  804)  |       1.0x |
-| Lambert/Ordered | 114 us (567)  |   771 us (4 841)  |       1.0x |
-| Gouraud/Nearest | 277 us (519)  | 2 021 us (4 028)  |       2.6x |
-| Gouraud/Ordered | 427 us (771)  | 3 289 us (6 397)  |       4.2x |
+| Unlit/Nearest   | 113 us (117)  |   807 us (  804)  |       1.0x |
+| Lambert/Ordered | 118 us (567)  |   801 us (4 841)  |       1.0x |
+| Gouraud/Nearest | 212 us (519)  | 1 468 us (4 028)  |       1.8x |
+| Gouraud/Ordered | 355 us (771)  | 2 624 us (6 397)  |       3.3x |
 
-On the defaults the worst frame spends 781 us on the station - 5 % of the
+On the defaults the worst frame spends 807 us on the station - 5 % of the
 budget, not something a player would see. **The maintainer confirmed
 (2026-09-06) that the drop reproduced in all three of the other presets and
 never on the defaults**, which was the table's shape then: the per-pixel
@@ -111,28 +112,19 @@ The stale "the game is fixed at 13.5fps by design" premise in the
 rasteriser-throughput Won't entry was corrected 2026-09-06 in the same pass;
 bare rasterisation stays a Won't, now on the 0.42 ns/pixel measurement above.
 
-**Three rows of the per-pixel table are historical, both changes dated
-2026-09-10.** A flat fill resolves the dither once per face now, not once per
-pixel, so `Dithered` and `DitheredPalette` measure at the flat fill's own cost
-- 667 us each against 678 us - and the 13.25 and 24.0 ns per pixel are gone.
-The Gouraud row went with the cheaper `Quantise` call: it measures **1 833 us**
-now, **4.4 ns** a pixel over a flat fill rather than 12.8. The four rows above
-those are still the 2026-09-06 figures and were not re-measured.
+**Three rows of the per-pixel table are historical.** A flat fill resolves
+the dither once per face since 2026-09-10, not once per pixel, so `Dithered`
+and `DitheredPalette` measure at the flat fill's own cost - 667 us each
+against 678 us - and the 13.25 and 24.0 ns per pixel are gone. The Gouraud
+row went with the cheaper `Quantise` call the same day and again on
+2026-09-12, when the span stopped lerping from `t` at each pixel: it measures
+**1 299 us** now, **2.4 ns** a pixel over a flat fill rather than 12.8. The
+four rows above those are still the 2026-09-06 figures and were not
+re-measured. What is left of the Gouraud span's cost is the per-pixel
+arithmetic itself; resolving the quantiser to a concrete type at the top of
+the span was measured on 2026-09-12 and saves only 0.18 ns a pixel, which
+does not pay for a copy of the pixel loop per quantiser.
 
-- [ ] [SharpKind.Graphics] **The Gouraud span's own per-pixel cost**, about
-      4.3 ns a pixel and now nearly all of what the Gouraud presets pay:
-      `VertexColours.Lerp` plus a non-devirtualisable interface call, per
-      pixel, in `DrawSpanFilledDepthGouraud`
-      ([SoftwareGraphics.Gouraud.cs](../src/useful/libs/SharpKind.Graphics/SoftwareGraphics.Gouraud.cs)).
-      Derived by subtraction: Gouraud adds 4.4 ns a pixel over a flat fill
-      while the `ChannelGridQuantiser` it calls accounts for only 0.1 of that.
-      The obvious shapes are interpolating the colour incrementally along the
-      span rather than lerping from `t` at each pixel, and resolving the
-      quantiser to a concrete type at the top of the span. This is what stands
-      between the Gouraud presets and the unlit floor.
-      `PaletteQuantiser`'s own 15.5 ns search is deliberately left alone: any
-      nearest-entry cache keyed on truncated RGB changes output, which is an
-      authenticity decision rather than a performance one.
 - [ ] [SharpKind.Graphics] **Hoist the clip test out of the pixel loop.**
       1.14 ns a pixel - 27 % on top of an unlit fill and 2.7x the bare
       rasteriser - paid on every frame of the universe, because Elite draws
