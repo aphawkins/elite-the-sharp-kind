@@ -66,6 +66,30 @@ public class ShortRangeChartControllerTests
         Assert.True(model.Labels.Count <= 64 - 4);
     }
 
+    // A design scale large enough to plot the 38-unit spread past the
+    // viewport's top puts a planet's y above it, and its label row negative
+    // with it. The row used to be read out of rowUsed before the guard that
+    // rejects it, so this threw rather than leaving that planet unnamed.
+    [Theory]
+    [InlineData(3)]
+    [InlineData(4)]
+    public void ResetLeavesPlanetsPlottedOutsideTheChartUnnamed(int designScale)
+    {
+        ShortRangeChartController controller = CreateController(
+            out _,
+            out _,
+            new ViewLayout(512, 512, new Vector2(512, 129), designScale));
+
+        controller.Reset();
+
+        // The point is that it returns at all. What it returns still has to
+        // make sense: no more labels than planets, and none in a row the
+        // chart does not have.
+        ShortRangeChartModel model = controller.BuildModel();
+        Assert.True(model.Labels.Count <= model.Planets.Count);
+        Assert.True(model.Labels.Count <= 64 - 4);
+    }
+
     [Fact]
     public void ResetPutsTheCrossOnTheHyperspacePlanet()
     {

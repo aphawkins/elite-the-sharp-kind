@@ -147,29 +147,19 @@ internal sealed class ShortRangeChartController : IScreenController
             float px = ((glx.D - _gameState.DockedPlanet.D) * 4 * scale) + centre.X;
             float py = ((glx.B - _gameState.DockedPlanet.B) * 2 * scale) + centre.Y;
 
-            int row = (int)(py / (RowHeight * scale));
+            int? row = PackedRow(py, scale, rowUsed);
 
-            if (rowUsed[row])
-            {
-                row++;
-            }
-
-            if (rowUsed[row])
-            {
-                row -= 2;
-            }
-
-            if (row <= FirstPackedRow - 1)
+            if (row is null)
             {
                 WaggleGalaxy(glx);
                 continue;
             }
 
-            if (!rowUsed[row])
+            if (!rowUsed[row.Value])
             {
-                rowUsed[row] = true;
+                rowUsed[row.Value] = true;
                 _labels.Add(new(
-                    new(px + (4 * scale), ((row * RowHeight) - 5) * scale),
+                    new(px + (4 * scale), ((row.Value * RowHeight) - 5) * scale),
                     _planet.NamePlanet(glx).CapitaliseFirstLetter()));
             }
 
@@ -213,6 +203,41 @@ internal sealed class ShortRangeChartController : IScreenController
             _cross,
             caption,
             detail);
+    }
+
+    /// <summary>
+    /// Picks the label row a planet's plotted position falls in, packing it
+    /// against a neighbour where that row is taken.
+    /// </summary>
+    /// <param name="py">The plotted y position, in screen pixels.</param>
+    /// <param name="scale">The design scale the chart is drawn at.</param>
+    /// <param name="rowUsed">Which rows already carry a label.</param>
+    /// <returns>The row, or null where there is no row to label in.</returns>
+    private static int? PackedRow(float py, float scale, bool[] rowUsed)
+    {
+        int row = (int)(py / (RowHeight * scale));
+
+        // Checked before rowUsed is read rather than after, which is what the
+        // FirstPackedRow test below used to do on its own: a design scale
+        // that plots the spread wider than the viewport puts py outside it,
+        // and the row with it.
+        if (row is < FirstPackedRow or >= PackedRows)
+        {
+            return null;
+        }
+
+        // Only where there is a row to step into; the last one has none.
+        if (rowUsed[row] && (row + 1 < PackedRows))
+        {
+            row++;
+        }
+
+        if (rowUsed[row])
+        {
+            row -= 2;
+        }
+
+        return row <= FirstPackedRow - 1 ? null : row;
     }
 
     // The find prompt while typing, otherwise the selected planet and how
