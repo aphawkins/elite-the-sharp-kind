@@ -13,6 +13,19 @@ namespace EliteSharpLib;
 
 internal sealed class Stars
 {
+    // How far past the view's own edge a star is carried before it is
+    // recycled. It has to be past it: both recycle paths put a star back at
+    // exactly StarHalfHeight, so an edge of exactly that would satisfy the
+    // test again on the very next frame and recycle it forever.
+    //
+    // The original wrote these as 110 and 116, which are 1.10 and 1.16 times
+    // the 8-bit tier's 100-unit half-height. Kept as ratios rather than
+    // numbers because star space is sized by the focal length: a wider field
+    // of view stretches the view further across it, and a fixed 110 then
+    // falls *inside* the view and recycles stars a commander can still see.
+    private const float RearRecycleMargin = 1.10f;
+    private const float SideRecycleMargin = 1.16f;
+
     private readonly IEliteDraw _draw;
     private readonly GameState _gameState;
     private readonly PlayerShip _ship;
@@ -218,7 +231,7 @@ internal sealed class Stars
             _stars[i].Y = yy;
             _stars[i].X = xx;
 
-            if ((zz >= 300) || (MathF.Abs(yy) >= 110))
+            if ((zz >= 300) || (MathF.Abs(yy) >= (StarHalfHeight * RearRecycleMargin)))
             {
                 RecycleStarAtEdge(i);
             }
@@ -361,7 +374,7 @@ internal sealed class Stars
                 _stars[i].Y = _rng.Random(-(int)StarHalfHeight, (int)StarHalfHeight);
                 _stars[i].Z = _rng.Random(256) | 8;
             }
-            else if (MathF.Abs(_stars[i].Y) >= 116)
+            else if (MathF.Abs(_stars[i].Y) >= (StarHalfHeight * SideRecycleMargin))
             {
                 _stars[i].X = _rng.Random(-(int)StarHalfWidth, (int)StarHalfWidth);
                 _stars[i].Y = (alpha > 0) ? -StarHalfHeight : StarHalfHeight;
