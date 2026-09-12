@@ -25,9 +25,12 @@ internal sealed class EliteDraw : IEliteDraw
     // projection buffer never has to grow.
     private const int MaxModelPoints = 100;
 
-    // Focal length as a multiple of the rendition's screen height. 1.0 reproduces
-    // the 16-bit render exactly (512 x 1.0 = the old 256 x Scale 2).
-    private const float FocusFactor = 1.0f;
+    // The original's projection is x * 256 / z against a 256-square view -
+    // a focal length of exactly one screen height, which is a vertical field
+    // of view of 2*atan(0.5), or 53.13 degrees. A commander who has chosen no
+    // field of view gets this factor rather than 53 degrees put back through
+    // the arithmetic, so the classic view is bit-for-bit the classic view.
+    private const float ClassicFocusFactor = 1.0f;
 
     private readonly FastColor _colorWhite;
     private readonly GameState _gameState;
@@ -92,14 +95,16 @@ internal sealed class EliteDraw : IEliteDraw
 
     public ViewLayout Layout { get; }
 
-    // The original's projection is x * 256 / z against a 256-square view, i.e.
-    // a focal length of one screen height. Deriving it from the tier's height
-    // holds the vertical field of view constant, so a wider screen shows more
-    // to the left and right rather than magnifying everything (decided
-    // 2026-07-29; deriving it from the width instead narrows the vertical view
-    // as the screen widens). It is deliberately not tied to Scale, which is
-    // window/coordinate magnification, not zoom.
-    public float Focus => Layout.ScreenHeight * FocusFactor;
+    // Derived from the tier's height, which holds the vertical field of view
+    // constant: a wider screen shows more to the left and right rather than
+    // magnifying everything (decided 2026-07-29; deriving it from the width
+    // instead narrows the vertical view as the screen widens). It is
+    // deliberately not tied to DesignScale, which is where chrome is drawn,
+    // not how much of the universe is in front of the ship.
+    //
+    // Read off the config on each use rather than captured, so the Field of
+    // View setting shows on the next frame drawn.
+    public float Focus => Layout.ScreenHeight * FocusFactor(_gameState.Config.Engine.FieldOfView);
 
     public IRandomSource Jitter => _rng;
 
@@ -274,6 +279,15 @@ internal sealed class EliteDraw : IEliteDraw
     // it this tick. The age itself is not touched here: a renderer that
     // advanced it would run the explosion at the frame rate rather than the
     // game's, which is exactly what the frame-rate rework exists to stop.
+    // Half the screen height over the tangent of the half-angle - the focal
+    // length that puts a vertical field of view of that many degrees across
+    // the viewport - expressed as a factor of the height so the line above
+    // reads the same either way.
+    private static float FocusFactor(int? fieldOfView)
+        => fieldOfView is null
+            ? ClassicFocusFactor
+            : 0.5f / MathF.Tan(float.DegreesToRadians(fieldOfView.Value) / 2);
+
     private void DrawExplosion(IShip ship)
     {
         // The tick the cloud expires it is flagged for removal and not drawn;

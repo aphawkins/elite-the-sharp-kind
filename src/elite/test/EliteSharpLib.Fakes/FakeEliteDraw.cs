@@ -22,7 +22,9 @@ internal class FakeEliteDraw : IEliteDraw
 
     public string Rendition { get; set; } = "16-bit";
 
-    public float Focus => 512;
+    // Settable so a test can widen or narrow the field of view: the real
+    // EliteDraw derives this from the screen height and the chosen angle.
+    public float Focus { get; set; } = 512;
 
     // No jitter at all, rather than a seeded stream: the shimmer is
     // cosmetic, and a test asserting where a laser bolt lands wants the

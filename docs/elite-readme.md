@@ -266,6 +266,10 @@ Unlike the missions, this folder is not optional:
   320 x 256 canvas, `16-bit` 1 and 2 (2 by default) against its 640 x 512 —
   so the Engine Settings screen offers those, and a `windowScale` hand-edited
   into the config file is pegged to the nearest one the rendition allows.
+- **Field of View** sets how much of the universe the viewport shows, in
+  degrees. Widening it fits more on screen and makes everything in it smaller.
+  53° is the original's own projection and is the default; it applies without
+  restarting.
 
 Files written before renditions existed say `"tier": "8Bit"`. That is read and
 carried over to `"rendition": "EightBit"` the first time the file is saved, so

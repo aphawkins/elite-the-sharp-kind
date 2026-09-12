@@ -5,6 +5,7 @@
 using System.Globalization;
 using EliteSharp.Abstractions.Views;
 using EliteSharpLib.Config;
+using EliteSharpLib.Graphics;
 using EliteSharpLib.Renditions;
 using SharpKind.Abstraction;
 using SharpKind.Audio;
@@ -21,6 +22,10 @@ namespace EliteSharpLib.Views;
 // SettingsController.
 internal sealed class EngineSettingsController : SettingsListController
 {
+    // The original's 2*atan(0.5), rounded for display. Selecting it clears
+    // the setting rather than storing 53, so the projection stays exact.
+    private const int ClassicFieldOfView = 53;
+
     internal EngineSettingsController(
         GameState gameState,
         IKeyboard keyboard,
@@ -29,16 +34,16 @@ internal sealed class EngineSettingsController : SettingsListController
         IConfigWriter<EliteConfig> configWriter,
         InstalledRenditions renditions,
         IBaseView baseView,
-        IViewSurface surface,
+        IEliteDraw draw,
         SettingsListStyle style)
         : base(
             gameState,
             keyboard,
             baseView,
-            surface,
+            draw,
             style,
             "ENGINE SETTINGS",
-            BuildSettings(gameState, space, audio, configWriter, renditions, surface),
+            BuildSettings(gameState, space, audio, configWriter, renditions, draw),
             "* Applies when the game is restarted")
     {
     }
@@ -49,14 +54,14 @@ internal sealed class EngineSettingsController : SettingsListController
         AudioController audio,
         IConfigWriter<EliteConfig> configWriter,
         InstalledRenditions renditions,
-        IViewSurface surface)
+        IEliteDraw draw)
     {
         ArgumentNullException.ThrowIfNull(gameState);
         ArgumentNullException.ThrowIfNull(space);
         ArgumentNullException.ThrowIfNull(audio);
         ArgumentNullException.ThrowIfNull(configWriter);
         ArgumentNullException.ThrowIfNull(renditions);
-        ArgumentNullException.ThrowIfNull(surface);
+        ArgumentNullException.ThrowIfNull(draw);
 
         EliteConfig config = gameState.Config;
         void Save() => configWriter.WriteConfig(config);
@@ -127,7 +132,7 @@ internal sealed class EngineSettingsController : SettingsListController
                     value =>
                     {
                         config.Engine.Graphics.FontKind = value;
-                        surface.Graphics.FontKind = value;
+                        draw.Graphics.FontKind = value;
                     }),
                 Save),
             new SavedSetting(
@@ -189,6 +194,32 @@ internal sealed class EngineSettingsController : SettingsListController
                     scale => scale.ToString(CultureInfo.InvariantCulture) + "x",
                     () => config.Engine.WindowScale ?? renditions.Find(config.Engine.Rendition).DefaultWindowScale,
                     value => config.Engine.WindowScale = value),
+                Save),
+
+            // How much of the universe the viewport shows. Widening it pulls
+            // the projection's focal length in, so more fits on screen and
+            // everything in it is smaller - it is the one setting here that
+            // changes what is in front of the ship rather than how it is
+            // drawn.
+            //
+            // No asterisk: Focus is read off the config every time it is
+            // used, so the next frame is already at the new angle.
+            //
+            // 53 is the original's own projection - a focal length of one
+            // screen height, 2*atan(0.5) = 53.13 degrees - and selecting it
+            // stores nothing, so the classic view stays exact rather than
+            // being the rounded angle put back through the arithmetic.
+            //
+            // Shown as bare degrees: the bitmap fonts are indexed from space
+            // and carry no degree sign, so a suffix would be a glyph off the
+            // end of the sheet.
+            new SavedSetting(
+                new NumberSetting(
+                    "Field of View:",
+                    () => [53, 65, 75, 90, 105],
+                    fov => fov.ToString(CultureInfo.InvariantCulture),
+                    () => config.Engine.FieldOfView ?? ClassicFieldOfView,
+                    value => config.Engine.FieldOfView = value == ClassicFieldOfView ? null : value),
                 Save),
 
             // The renditions offered are the ones installed, so a commander

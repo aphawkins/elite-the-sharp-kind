@@ -18,6 +18,11 @@ public sealed class EngineConfigSettings
     // shown on, so it is a typo rather than an intention.
     private const int MaxWindowScale = 4;
 
+    // Past these the projection is a fish-eye or a telescope rather than a
+    // view out of a cockpit.
+    private const int MinFieldOfView = 30;
+    private const int MaxFieldOfView = 120;
+
     private static readonly Dictionary<string, string> s_legacyRenditionNames = new(StringComparer.Ordinal)
     {
         ["8Bit"] = "8-bit",
@@ -64,6 +69,16 @@ public sealed class EngineConfigSettings
     // Elite's answer depends on the rendition. Each app resolves it before
     // the window is made.
     public int? WindowScale { get; set; }
+
+    // The vertical field of view in degrees: how much of the universe the
+    // viewport shows. Widening it pulls the focal length in, so more fits on
+    // screen and everything in it is smaller.
+    //
+    // Null means the commander has never chosen one and the original's own
+    // projection applies, which is 2*atan(0.5) - a focal length of one screen
+    // height. Kept null rather than written out as a number so the classic
+    // view stays exactly the classic view.
+    public int? FieldOfView { get; set; }
 
     /// <summary>
     /// Replaces any engine value that cannot be honoured with its default, in
@@ -114,6 +129,14 @@ public sealed class EngineConfigSettings
         if (WindowScale is < 1 or > MaxWindowScale)
         {
             WindowScale = null;
+            repaired = true;
+        }
+
+        // Likewise a field of view no cockpit could have: back to unchosen,
+        // and the original's projection applies.
+        if (FieldOfView is < MinFieldOfView or > MaxFieldOfView)
+        {
+            FieldOfView = null;
             repaired = true;
         }
 

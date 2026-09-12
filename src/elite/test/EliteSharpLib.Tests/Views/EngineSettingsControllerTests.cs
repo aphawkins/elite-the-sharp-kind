@@ -164,7 +164,36 @@ public class EngineSettingsControllerTests
         Assert.Equal(1, configFile.ReadConfig().Engine.WindowScale);
     }
 
-    // Row 9 is Rendition. Switching it to the 8-bit tier does not reload
+    // Row 9 is Field of View. Unchosen, it reads back the original's own
+    // 53 degrees, and selecting that value stores nothing so the classic
+    // projection stays exact. Stepping the row on once moves to 65.
+    [Fact]
+    public void SelectingAFieldOfViewSavesIt()
+    {
+        EngineSettingsController controller = CreateController(
+            out GameState gameState, out FakeKeyboard keyboard, out _, out ConfigFile<EliteConfig> configFile);
+        controller.Reset();
+
+        Assert.Null(gameState.Config.Engine.FieldOfView);
+        Assert.Equal(["53", "65", "75", "90", "105"], controller.Settings[9].Values);
+        Assert.Equal(0, controller.Settings[9].SelectedIndex);
+
+        for (int i = 0; i < 9; i++)
+        {
+            keyboard.KeyDown(ConsoleKey.DownArrow, default);
+            controller.HandleInput();
+        }
+
+        keyboard.KeyUp(ConsoleKey.DownArrow, default);
+        keyboard.KeyDown(ConsoleKey.Enter, default);
+        controller.HandleInput();
+
+        Assert.Equal(65, gameState.Config.Engine.FieldOfView);
+        Assert.Equal(65, configFile.ReadConfig().Engine.FieldOfView);
+    }
+
+    // Row 10 is Rendition - Design Scale was inserted at 9, between it and
+    // Window Scale. Switching it to the 8-bit tier does not reload
     // anything - that only happens on restart - but the Window Scale row
     // above it has to offer that tier's own scales straight away: showing
     // the 16-bit tier's 1 and 2 while the config underneath already says
@@ -179,7 +208,7 @@ public class EngineSettingsControllerTests
 
         Assert.Equal(["1x", "2x"], controller.Settings[8].Values);
 
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < 10; i++)
         {
             keyboard.KeyDown(ConsoleKey.DownArrow, default);
             controller.HandleInput();
@@ -211,7 +240,7 @@ public class EngineSettingsControllerTests
         controller.Reset();
 
         // Navigate to the last row - the Back row.
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 11; i++)
         {
             keyboard.KeyDown(ConsoleKey.DownArrow, default);
             controller.HandleInput();
