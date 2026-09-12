@@ -92,8 +92,8 @@ public sealed partial class SoftwareGraphics
         float ic = 1f / zc;
 
         // Clamp Y range to screen bounds
-        int firstY = Math.Max((int)MathF.Ceiling(a.Y), 0);
-        int lastY = Math.Min((int)MathF.Floor(c.Y), (int)ScreenHeight - 1);
+        int firstY = Math.Max((int)MathF.Ceiling(a.Y), _clipTop);
+        int lastY = Math.Min((int)MathF.Floor(c.Y), _clipBottom - 1);
 
         // As DrawTriangleFilledDepth: evaluate the two edges crossing each
         // scanline directly, carrying the inverse depth and the colour along
@@ -155,8 +155,8 @@ public sealed partial class SoftwareGraphics
         in FastColor colour1,
         IColourQuantiser? quantiser)
     {
-        int start = Math.Max((int)MathF.Floor(x0), 0);
-        int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
+        int start = Math.Max((int)MathF.Floor(x0), _clipLeft);
+        int end = Math.Min((int)MathF.Floor(x1), _clipRight - 1);
 
         // What varies across the span, worked out once for the whole of it
         // rather than per pixel: the reciprocal of its width, and how far each
@@ -179,7 +179,7 @@ public sealed partial class SoftwareGraphics
                     Channel(colour0.G, greenRange, t),
                     Channel(colour0.B, blueRange, t));
 
-                DrawPixel(x, y, quantiser == null ? colour : quantiser.Quantise(colour, x, y));
+                StorePixel(x, y, quantiser == null ? colour : quantiser.Quantise(colour, x, y));
             }
         }
     }

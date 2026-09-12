@@ -1,4 +1,4 @@
-// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
+﻿// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
 
 using System.Collections;
 using System.Numerics;
@@ -732,6 +732,82 @@ public class SoftwareGraphicsTests
         graphics.ScreenUpdate();
 
         // Assert - only the clip region got painted
+        static void DoAssert(FastBitmap bmp)
+        {
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(0, 0));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(1, 1));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(2, 2));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(3, 3));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(4, 4));
+        }
+    }
+
+    [Fact]
+    public void SetClipRegionRestrictsTriangleFilledToRegion()
+    {
+        // Arrange
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
+
+        // Act - clip to the region [1,1]-[3,3), then fill a triangle covering the whole screen
+        graphics.SetClipRegion(new Vector2(1, 1), 2, 2);
+        graphics.DrawTriangleFilled(new(0, 0), new(8, 0), new(0, 8), BaseColors.White);
+        graphics.ScreenUpdate();
+
+        // Assert - only the clip region got painted
+        static void DoAssert(FastBitmap bmp)
+        {
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(0, 0));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(1, 1));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(2, 2));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(3, 3));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(0, 4));
+        }
+    }
+
+    [Fact]
+    public void SetClipRegionRestrictsPolygonFilledDepthToRegion()
+    {
+        // Arrange
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
+
+        // Act - clip to the region [1,1]-[3,3), then fill a depth-tested quad
+        // covering the whole screen
+        graphics.SetClipRegion(new Vector2(1, 1), 2, 2);
+        graphics.ClearDepth();
+        graphics.DrawPolygonFilledDepth(
+            [new(0, 0), new(5, 0), new(5, 5), new(0, 5)],
+            [1f, 1f, 1f, 1f],
+            BaseColors.White);
+        graphics.ScreenUpdate();
+
+        // Assert - only the clip region got painted
+        static void DoAssert(FastBitmap bmp)
+        {
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(0, 0));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(1, 1));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(2, 2));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(3, 3));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(4, 4));
+        }
+    }
+
+    [Fact]
+    public void SetClipRegionRestrictsLineToRegion()
+    {
+        // Arrange
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
+
+        // Act - clip to the region [1,1]-[3,3), then draw a diagonal crossing
+        // the whole screen, entering and leaving the region
+        graphics.SetClipRegion(new Vector2(1, 1), 2, 2);
+        graphics.DrawLine(new(0, 0), new(4, 4), BaseColors.White);
+        graphics.ScreenUpdate();
+
+        // Assert - the line keeps the pixels it would have had, minus those
+        // outside the region
         static void DoAssert(FastBitmap bmp)
         {
             Assert.Equal(BaseColors.Black, bmp.GetPixel(0, 0));

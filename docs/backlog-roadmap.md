@@ -43,10 +43,13 @@ that mentions a decision.
 
 ### Performance
 
+(none open — see [CHANGELOG.md](../CHANGELOG.md) for completed items)
+
 Profiled 2026-09-06 (i5-14600K, 512x512) after a frame-rate drop was noticed
-while docking, as a Coriolis fills the view. The item below comes out
-of that one profile, so the evidence is stated once here and the item says
-only what it changes. The benchmarks that produced it are
+while docking, as a Coriolis fills the view. Every item it produced has since
+landed; the evidence is kept here because it is where the next performance
+item should start rather than re-profiling from nothing. The benchmarks that
+produced it are
 `StationBenchmarks`/`GraphicsPreset` (a Coriolis drawn through the real
 pipeline - `RenderStart`, `DrawObject`, `RenderEnd`) and
 `DepthFillBenchmarks`/`QuantiserBenchmarks` (one full-screen depth-tested
@@ -125,24 +128,15 @@ arithmetic itself; resolving the quantiser to a concrete type at the top of
 the span was measured on 2026-09-12 and saves only 0.18 ns a pixel, which
 does not pay for a copy of the pixel loop per quantiser.
 
-- [ ] [SharpKind.Graphics] **Hoist the clip test out of the pixel loop.**
-      1.14 ns a pixel - 27 % on top of an unlit fill and 2.7x the bare
-      rasteriser - paid on every frame of the universe, because Elite draws
-      it all inside `SetViewClipRegion`. The fills already clamp their
-      scanline and span ranges once, to the screen; clamping to the clip
-      rectangle instead costs nothing and removes the test entirely from
-      `DrawTriangleFilled`, `DrawTriangleFilledDepth`, `DrawSpanFilledDepth`,
-      `DrawSpanTexturedDepth`, `DrawRectangleFilledInt` and `DrawImage`.
-      `DrawLineInt` currently tests bounds per pixel *and* calls a
-      `DrawPixel` that tests again - Cohen-Sutherland against the clip
-      rectangle once removes both. Storing the bounds as `int` also drops the
-      per-pixel int-to-float conversions, and `_clipIsFullScreen` can go with
-      them. Independent of the three items above; it is the smaller half of
-      the answer to "should `IGraphics.SetClipRegion` be removed" - see the
-      2026-07-31 entry in [decisions.md](decisions.md), which this profile
-      supports: at 1.14 ns a pixel the clip region is not worth pushing out
-      to six Elite call sites, and the planned full-screen 3D view would make
-      those six responsibilities pointless anyway.
+**The clip row is historical as well.** The fills clamp their scanlines and
+spans to the clip rectangle rather than to the screen since 2026-09-12, so no
+pixel is tested against it and the 1.14 ns is gone. The measurement is
+`DepthFillBenchmarks/FlatClipped` against `Flat`: a fill inside Elite's
+viewport rectangle costs what its smaller area says it should - 608 us
+against the full-screen fill's 680 - where it used to cost more than the
+full-screen fill did, at 774 us. `StationBenchmarks` did not move and was not
+expected to: it draws with the clip left full-screen, so it never paid the
+test the game pays.
 
 ### Release engineering (from the retired release plan)
 

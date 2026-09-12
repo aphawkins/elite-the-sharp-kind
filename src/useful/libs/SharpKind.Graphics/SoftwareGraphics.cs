@@ -1,4 +1,4 @@
-// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
+﻿// 'SharpKind Libraries' - Andy Hawkins 2023-2026.
 
 using System.Diagnostics;
 using System.Numerics;
@@ -36,22 +36,18 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
     private int[]? _surfaceIds;
     private bool _isDisposed;
 
-    // Clip rectangle every pixel write is tested against; defaults to the
-    // whole screen so callers that never call SetClipRegion see no change
-    // in behaviour. Always kept clamped to the screen bounds so the clip
-    // fields alone are sufficient to keep pixel writes in-bounds.
-    private float _clipLeft;
-    private float _clipTop;
-    private float _clipRight;
-    private float _clipBottom;
-
-    // True whenever the clip rectangle covers the whole screen (the default,
-    // and what most frames spend most of their time in - e.g. Elite only
-    // narrows the clip for the 3D view). Lets DrawPixel skip the clip
-    // comparisons entirely in the common case instead of reading four fields
-    // per pixel, which measurably regressed hot per-pixel paths
-    // (DrawLine/DrawCircleFilled) when the clip fields were unconditional.
-    private bool _clipIsFullScreen = true;
+    // Clip rectangle in whole pixels - left and top inclusive, right and
+    // bottom exclusive - defaulting to the whole screen so callers that
+    // never call SetClipRegion see no change in behaviour. Always kept
+    // clamped to the screen bounds, so clamping a loop to these bounds
+    // keeps it both inside the clip region and inside the framebuffer: the
+    // fills, rectangles and images below narrow their ranges to them once
+    // and then write pixels without testing anything. Held as int so no
+    // pixel path converts them to float.
+    private int _clipLeft;
+    private int _clipTop;
+    private int _clipRight;
+    private int _clipBottom;
 
     internal SoftwareGraphics(
         float screenWidth,
@@ -66,8 +62,8 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
         _screenUpdate = screenUpdate;
         Images = images;
         _fontRasterisers = fontRasterisers;
-        _clipRight = screenWidth;
-        _clipBottom = screenHeight;
+        _clipRight = (int)screenWidth;
+        _clipBottom = (int)screenHeight;
         Clear();
     }
 
@@ -272,7 +268,7 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
         for (int dy = 0; dy < destHeight; dy++)
         {
             int y = (int)(position.Y + dy);
-            if (y < 0 || y >= (int)ScreenHeight)
+            if (y < _clipTop || y >= _clipBottom)
             {
                 continue;
             }
@@ -320,14 +316,7 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
 
     public void DrawPixel(Vector2 position, FastColor color)
     {
-        if (_clipIsFullScreen)
-        {
-            if (position.X < 0 || position.Y < 0 || position.X >= ScreenWidth || position.Y >= ScreenHeight)
-            {
-                return;
-            }
-        }
-        else if (position.X < _clipLeft || position.Y < _clipTop || position.X >= _clipRight || position.Y >= _clipBottom)
+        if (position.X < _clipLeft || position.Y < _clipTop || position.X >= _clipRight || position.Y >= _clipBottom)
         {
             return;
         }
@@ -519,11 +508,10 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
 
     public void SetClipRegion(Vector2 position, float width, float height)
     {
-        _clipLeft = Math.Clamp(position.X, 0, ScreenWidth);
-        _clipTop = Math.Clamp(position.Y, 0, ScreenHeight);
-        _clipRight = Math.Clamp(position.X + width, 0, ScreenWidth);
-        _clipBottom = Math.Clamp(position.Y + height, 0, ScreenHeight);
-        _clipIsFullScreen = _clipLeft <= 0 && _clipTop <= 0 && _clipRight >= ScreenWidth && _clipBottom >= ScreenHeight;
+        _clipLeft = (int)Math.Clamp(position.X, 0, ScreenWidth);
+        _clipTop = (int)Math.Clamp(position.Y, 0, ScreenHeight);
+        _clipRight = (int)Math.Clamp(position.X + width, 0, ScreenWidth);
+        _clipBottom = (int)Math.Clamp(position.Y + height, 0, ScreenHeight);
     }
 
     // Textured variant of DrawTriangleFilled: texture coordinates are
@@ -561,8 +549,8 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
         }
 
         // Clamp Y range to screen bounds
-        int firstY = Math.Max((int)MathF.Ceiling(a.Y), 0);
-        int lastY = Math.Min((int)MathF.Floor(c.Y), (int)ScreenHeight - 1);
+        int firstY = Math.Max((int)MathF.Ceiling(a.Y), _clipTop);
+        int lastY = Math.Min((int)MathF.Floor(c.Y), _clipBottom - 1);
 
         // As DrawTriangleFilled: evaluate the two edges crossing each
         // scanline directly, with the interpolation parameter clamped to the
@@ -595,14 +583,14 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
                 (uv0, uv1) = (uv1, uv0);
             }
 
-            int start = Math.Max((int)MathF.Floor(x0), 0);
-            int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
+            int start = Math.Max((int)MathF.Floor(x0), _clipLeft);
+            int end = Math.Min((int)MathF.Floor(x1), _clipRight - 1);
             float span = x1 - x0;
 
             for (int x = start; x <= end; x++)
             {
                 float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
-                DrawPixel(x, y, SampleTexture(mip, Vector2.Lerp(uv0, uv1, t)));
+                StorePixel(x, y, SampleTexture(mip, Vector2.Lerp(uv0, uv1, t)));
             }
         }
     }
@@ -650,8 +638,8 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
         float ic = 1f / zc;
 
         // Clamp Y range to screen bounds
-        int firstY = Math.Max((int)MathF.Ceiling(a.Y), 0);
-        int lastY = Math.Min((int)MathF.Floor(c.Y), (int)ScreenHeight - 1);
+        int firstY = Math.Max((int)MathF.Ceiling(a.Y), _clipTop);
+        int lastY = Math.Min((int)MathF.Floor(c.Y), _clipBottom - 1);
 
         // As DrawTriangleFilled: evaluate the two edges crossing each
         // scanline directly, carrying the inverse depth along
@@ -735,8 +723,8 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
         Vector2 uc = tc * ic;
 
         // Clamp Y range to screen bounds
-        int firstY = Math.Max((int)MathF.Ceiling(a.Y), 0);
-        int lastY = Math.Min((int)MathF.Floor(c.Y), (int)ScreenHeight - 1);
+        int firstY = Math.Max((int)MathF.Ceiling(a.Y), _clipTop);
+        int lastY = Math.Min((int)MathF.Floor(c.Y), _clipBottom - 1);
 
         for (int y = firstY; y <= lastY; y++)
         {
@@ -816,14 +804,14 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
 
     private void DrawImage(FastBitmap bitmap, Vector2 position)
     {
-        // Clipped once here rather than per pixel: DrawPixel only tests
-        // bounds while a clip region is set, so an image landing even partly
-        // off-screen would otherwise write outside the framebuffer. Narrowing
-        // the loops keeps the per-pixel path free of the extra comparisons.
-        int left = Math.Max(0, -(int)position.X);
-        int top = Math.Max(0, -(int)position.Y);
-        int right = Math.Min(bitmap.Width, (int)ScreenWidth - (int)position.X);
-        int bottom = Math.Min(bitmap.Height, (int)ScreenHeight - (int)position.Y);
+        // Clipped once here rather than per pixel: the loops are narrowed to
+        // the part of the bitmap landing inside the clip rectangle, which is
+        // inside the framebuffer by construction, so the pixel path tests
+        // nothing.
+        int left = Math.Max(0, _clipLeft - (int)position.X);
+        int top = Math.Max(0, _clipTop - (int)position.Y);
+        int right = Math.Min(bitmap.Width, _clipRight - (int)position.X);
+        int bottom = Math.Min(bitmap.Height, _clipBottom - (int)position.Y);
 
         for (int y = top; y < bottom; y++)
         {
@@ -832,7 +820,7 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
                 FastColor color = bitmap.GetPixel(x, y);
                 if (color.A != 0)
                 {
-                    DrawPixel((int)(position.X + x), (int)(position.Y + y), color);
+                    StorePixel((int)(position.X + x), (int)(position.Y + y), color);
                 }
             }
         }
@@ -853,7 +841,7 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
         for (int dx = 0; dx < destWidth; dx++)
         {
             int x = (int)(destX + dx);
-            if (x < 0 || x >= (int)ScreenWidth)
+            if (x < _clipLeft || x >= _clipRight)
             {
                 continue;
             }
@@ -865,7 +853,7 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
             FastColor color = bitmap.GetPixel(sx, sy);
             if (color.A != 0)
             {
-                DrawPixel(x, y, color);
+                StorePixel(x, y, color);
             }
         }
     }
@@ -876,8 +864,8 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
         (a, b, c) = SortPointsByY(a, b, c);
 
         // Clamp Y range to screen bounds
-        int firstY = Math.Max((int)MathF.Ceiling(a.Y), 0);
-        int lastY = Math.Min((int)MathF.Floor(c.Y), (int)ScreenHeight - 1);
+        int firstY = Math.Max((int)MathF.Ceiling(a.Y), _clipTop);
+        int lastY = Math.Min((int)MathF.Floor(c.Y), _clipBottom - 1);
 
         // Evaluate the two edges crossing each scanline directly; the
         // interpolation parameter is clamped to the edge's endpoints, so
@@ -893,14 +881,14 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
                 (x0, x1) = (x1, x0);
             }
 
-            int start = Math.Max((int)MathF.Floor(x0), 0);
-            int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
+            int start = Math.Max((int)MathF.Floor(x0), _clipLeft);
+            int end = Math.Min((int)MathF.Floor(x1), _clipRight - 1);
 
             for (int x = start; x <= end; x++)
             {
                 // As DrawSpanFilledDepth: the face's colours are already
                 // resolved, so the pixel only picks one of them.
-                DrawPixel(x, y, cells[x, y]);
+                StorePixel(x, y, cells[x, y]);
             }
         }
     }
@@ -945,8 +933,8 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
         bool writeColor,
         int surfaceId)
     {
-        int start = Math.Max((int)MathF.Floor(x0), 0);
-        int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
+        int start = Math.Max((int)MathF.Floor(x0), _clipLeft);
+        int end = Math.Min((int)MathF.Floor(x1), _clipRight - 1);
         float span = x1 - x0;
 
         for (int x = start; x <= end; x++)
@@ -957,7 +945,7 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
                 // The face's sixteen possible colours are already resolved,
                 // so the pixel only picks the one its dither cell holds;
                 // without a dither every cell holds the same colour.
-                DrawPixel(x, y, cells[x, y]);
+                StorePixel(x, y, cells[x, y]);
             }
         }
     }
@@ -979,8 +967,8 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
         Vector2 uv1,
         FastBitmap[] mipChain)
     {
-        int start = Math.Max((int)MathF.Floor(x0), 0);
-        int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
+        int start = Math.Max((int)MathF.Floor(x0), _clipLeft);
+        int end = Math.Min((int)MathF.Floor(x1), _clipRight - 1);
         if (start > end)
         {
             return;
@@ -996,16 +984,13 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
             if (DepthTest(x, y, inverseDepth, surfaceId: 0))
             {
                 Vector2 uv = Vector2.Lerp(uv0, uv1, t) / inverseDepth;
-                DrawPixel(x, y, SampleTexture(mip, uv));
+                StorePixel(x, y, SampleTexture(mip, uv));
             }
         }
     }
 
     private void DrawLineInt(int x0, int y0, int x1, int y1, in FastColor color)
     {
-        int screenWidth = (int)ScreenWidth;   // Replace with actual screen width
-        int screenHeight = (int)ScreenHeight; // Replace with actual screen height
-
         int dx = Math.Abs(x1 - x0);
         int dy = Math.Abs(y1 - y0);
         int sx = x0 < x1 ? 1 : -1;
@@ -1014,9 +999,13 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
 
         while (true)
         {
-            if (x0 >= 0 && x0 < screenWidth && y0 >= 0 && y0 < screenHeight)
+            // The walk runs over the whole line, so which pixels it picks
+            // never depends on where it was clipped; only the write is gated,
+            // and by the clip rectangle alone - that rectangle is inside the
+            // framebuffer, so the one test is the whole of the bounds check.
+            if (x0 >= _clipLeft && x0 < _clipRight && y0 >= _clipTop && y0 < _clipBottom)
             {
-                DrawPixel(x0, y0, color);
+                StorePixel(x0, y0, color);
             }
 
             if (x0 == x1 && y0 == y1)
@@ -1073,25 +1062,15 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
 
     private void PlotDepthTestedPixel(int x, int y, float inverseDepth, in FastColor color, int surfaceId)
     {
-        if (x < 0 || x >= (int)ScreenWidth || y < 0 || y >= (int)ScreenHeight)
+        if (x < _clipLeft || x >= _clipRight || y < _clipTop || y >= _clipBottom)
         {
             return;
         }
 
         if (DepthTest(x, y, inverseDepth, surfaceId))
         {
-            DrawPixel(x, y, color);
+            StorePixel(x, y, color);
         }
-    }
-
-    private void DrawPixel(int x, int y, in FastColor color)
-    {
-        if (!_clipIsFullScreen && (x < _clipLeft || y < _clipTop || x >= _clipRight || y >= _clipBottom))
-        {
-            return;
-        }
-
-        StorePixel(x, y, color);
     }
 
     // The one place a colour reaches the framebuffer. A translucent one is
@@ -1124,39 +1103,39 @@ public sealed partial class SoftwareGraphics : IGraphics, IDisposable
 
     private void DrawRectangleFilledInt(int startX, int startY, int width, int height, in FastColor color)
     {
-        startX = Math.Min(Math.Max(startX, 0), (int)ScreenWidth - 1);
-        startY = Math.Min(Math.Max(startY, 0), (int)ScreenHeight - 1);
-        int endX = Math.Min(Math.Max(startX + width - 1, 0), (int)ScreenWidth - 1);
-        int endY = Math.Min(Math.Max(startY + height - 1, 0), (int)ScreenHeight - 1);
+        startX = Math.Min(Math.Max(startX, _clipLeft), _clipRight - 1);
+        startY = Math.Min(Math.Max(startY, _clipTop), _clipBottom - 1);
+        int endX = Math.Min(Math.Max(startX + width - 1, _clipLeft), _clipRight - 1);
+        int endY = Math.Min(Math.Max(startY + height - 1, _clipTop), _clipBottom - 1);
 
         // Draw horizontal lined
         for (int x = startX; x <= endX; x++)
         {
             for (int y = startY; y <= endY; y++)
             {
-                DrawPixel(x, y, color);
+                StorePixel(x, y, color);
             }
         }
     }
 
     private void DrawRectangleInt(int startX, int startY, int width, int height, in FastColor color)
     {
-        startX = Math.Min(Math.Max(startX, 0), (int)ScreenWidth - 1);
-        startY = Math.Min(Math.Max(startY, 0), (int)ScreenHeight - 1);
-        int endX = Math.Min(Math.Max(startX + width - 1, 0), (int)ScreenWidth - 1);
-        int endY = Math.Min(Math.Max(startY + height - 1, 0), (int)ScreenHeight - 1);
+        startX = Math.Min(Math.Max(startX, _clipLeft), _clipRight - 1);
+        startY = Math.Min(Math.Max(startY, _clipTop), _clipBottom - 1);
+        int endX = Math.Min(Math.Max(startX + width - 1, _clipLeft), _clipRight - 1);
+        int endY = Math.Min(Math.Max(startY + height - 1, _clipTop), _clipBottom - 1);
 
         // Draw horizontal lines
         for (int x = startX; x <= endX; x++)
         {
-            DrawPixel(x, startY, color);
-            DrawPixel(x, endY, color);
+            StorePixel(x, startY, color);
+            StorePixel(x, endY, color);
         }
 
         for (int y = startY + 1; y <= endY - 1; y++)
         {
-            DrawPixel(startX, y, color);
-            DrawPixel(endX, y, color);
+            StorePixel(startX, y, color);
+            StorePixel(endX, y, color);
         }
     }
 

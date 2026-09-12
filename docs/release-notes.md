@@ -8,6 +8,7 @@
 
 - Ordered dithering costs nothing extra on solid faces — the same picture, at the undithered frame rate
 - Gouraud shading draws about three times as fast — the same picture, cheaper colour matching and blending
+- The 3D view no longer pays to check each pixel against its own edges — every fill in the universe is a little faster
 - The label below the 8-bit scanner now reads "ELITE#"
 
 #### Fixes

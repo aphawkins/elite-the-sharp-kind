@@ -7,6 +7,37 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (the clip test hoisted out of the pixel loop, 2026-09-12)
+
+- **The fills clamp to the clip rectangle instead of testing every pixel
+  against it.** Elite draws the whole universe inside `SetViewClipRegion`, so
+  every pixel of it paid a clip test on the way to the framebuffer
+  ([SoftwareGraphics.cs](src/useful/libs/SharpKind.Graphics/SoftwareGraphics.cs)).
+  The clip rectangle is kept clamped to the screen, so clamping a loop to it
+  is no more work than clamping to the screen was and leaves nothing to test:
+  `DrawTriangleFilledCells`, `DrawTriangleFilledDepth`, the Gouraud and
+  textured triangles, `DrawSpanFilledDepth`, `DrawSpanTexturedDepth`,
+  `DrawRectangleFilledInt`, `DrawRectangleInt` and `DrawImage` now narrow
+  their scanline and span ranges once and write pixels unconditionally. The
+  private clip-testing `DrawPixel(int, int, ...)` is gone with them, and so is
+  `_clipIsFullScreen`, the flag that existed to make its test cheap. The
+  bounds are held as `int` now rather than `float`, so nothing on a pixel path
+  converts them. `DrawLineInt` and `PlotDepthTestedPixel` tested screen bounds
+  per pixel *and* called a `DrawPixel` that tested the clip again; they keep
+  one test, against the clip rectangle alone, rather than clipping the segment
+  first - the Bresenham walk stays over the whole line so which pixels it
+  picks never depends on where it was clipped. `DrawImagePart` likewise keeps
+  its per-pixel test, now against the clip rather than the screen.
+  `DepthFillBenchmarks/FlatClipped`, a full-width fill inside Elite's viewport
+  rectangle: 774 us to 608 us. That fill is 11 % smaller than the full-screen
+  `Flat`, and it now costs 11 % less than `Flat` rather than 14 % more, which
+  is the per-pixel test being gone rather than merely cheaper. Depth and
+  surface ids are no longer written outside the clip rectangle either, which
+  nothing can observe: only a pixel inside the rectangle is ever drawn or
+  tested. `StationBenchmarks` is unchanged and expected to be - it draws
+  through `RenderStart` with the clip left full-screen, so it never paid the
+  test the game pays.
+
 ### Changed (a cheaper Gouraud span, 2026-09-12)
 
 - **The Gouraud span interpolates its colour with the span's own arithmetic

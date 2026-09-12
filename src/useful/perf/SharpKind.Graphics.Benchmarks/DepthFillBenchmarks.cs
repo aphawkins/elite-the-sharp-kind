@@ -83,8 +83,11 @@ public class DepthFillBenchmarks : IDisposable
     public void Flat() => _graphics.DrawPolygonFilledDepth(s_fullScreen, s_depths, BaseColors.White);
 
     // The same fill with the clip narrowed off full screen, which is what
-    // Elite's viewport does for every frame of the universe. The difference
-    // from Flat is the per-pixel clip test and nothing else.
+    // Elite's viewport does for every frame of the universe. The clip costs
+    // nothing per pixel - the fill clamps its scanlines and spans to the clip
+    // rectangle once - so this should land at Flat scaled by the area the
+    // narrower rectangle leaves, and a result above Flat means a per-pixel
+    // test has crept back in.
     [Benchmark]
     public void FlatClipped()
     {
