@@ -60,11 +60,12 @@ internal sealed class EliteDraw : IEliteDraw
         Graphics = graphics;
         _shipRenderer = shipRenderer;
         _rng = rng;
+
         Layout = new(
             screen.ScreenWidth,
             screen.ScreenHeight,
             graphics.ImageSize(nameof(ImageType.Scanner)),
-            rendition.Scale);
+            rendition.DesignScale);
         Palette = PaletteReader.Read(assetLocator.PalettePath);
         _shadesShips = rendition.ShadesShips;
 
@@ -364,7 +365,7 @@ internal sealed class EliteDraw : IEliteDraw
         // The blocks are chrome rather than geometry - the original's pixel,
         // not a point in space - so they follow Scale, like every other piece
         // of the render written in the original's pixels.
-        int blockScale = (int)Layout.Scale;
+        int blockScale = (int)Layout.DesignScale;
 
         for (int cnt = 0; cnt < np; cnt++)
         {

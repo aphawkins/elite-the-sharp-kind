@@ -24,7 +24,7 @@ public sealed class EightBitRendition : IRendition
 
     public int ScreenHeight => 256;
 
-    public int Scale => 1;
+    public int DesignScale => 1;
 
     // 320x256 is a postage stamp on a modern display, so this tier magnifies
     // further than the 16-bit one does: quadrupled it is 1280x1024, which is

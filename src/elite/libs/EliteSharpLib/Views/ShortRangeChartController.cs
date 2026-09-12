@@ -68,8 +68,8 @@ internal sealed class ShortRangeChartController : IScreenController
     private (float MinX, float MaxX, float MinY, float MaxY) CrossBounds => (
         1,
         _draw.Layout.ViewportRight - 1,
-        (18 * _draw.Layout.Scale) + 1,
-        _draw.Layout.ViewportHeight - ((16 * _draw.Layout.Scale) + 1));
+        (18 * _draw.Layout.DesignScale) + 1,
+        _draw.Layout.ViewportHeight - ((16 * _draw.Layout.DesignScale) + 1));
 
     public void Draw() => _view.Draw(BuildModel());
 
@@ -129,7 +129,7 @@ internal sealed class ShortRangeChartController : IScreenController
 
         bool[] rowUsed = new bool[PackedRows];
         GalaxySeed glx = new(_gameState.Cmdr.Galaxy);
-        float scale = _draw.Layout.Scale;
+        float scale = _draw.Layout.DesignScale;
         Vector2 centre = _draw.Layout.ViewportCentre;
 
         for (int i = 0; i < 256; i++)
@@ -268,7 +268,7 @@ internal sealed class ShortRangeChartController : IScreenController
 
     private void CalculateDistanceToPlanet()
     {
-        float scale = _draw.Layout.Scale;
+        float scale = _draw.Layout.DesignScale;
         Vector2 centre = _draw.Layout.ViewportCentre;
         Vector2 location = new()
         {
@@ -283,8 +283,8 @@ internal sealed class ShortRangeChartController : IScreenController
     }
 
     private void CrossFromHyperspacePlanet() => _cross = new(
-        ((_gameState.HyperspacePlanet.D - _gameState.DockedPlanet.D) * 4 * _draw.Layout.Scale) + _draw.Layout.ViewportCentre.X,
-        ((_gameState.HyperspacePlanet.B - _gameState.DockedPlanet.B) * 2 * _draw.Layout.Scale) + _draw.Layout.ViewportCentre.Y);
+        ((_gameState.HyperspacePlanet.D - _gameState.DockedPlanet.D) * 4 * _draw.Layout.DesignScale) + _draw.Layout.ViewportCentre.X,
+        ((_gameState.HyperspacePlanet.B - _gameState.DockedPlanet.B) * 2 * _draw.Layout.DesignScale) + _draw.Layout.ViewportCentre.Y);
 
     /// <summary>
     /// Move the planet chart cross hairs to specified position.

@@ -48,12 +48,19 @@ public interface IRendition
     public int ScreenHeight { get; }
 
     /// <summary>
-    /// Gets the coordinate scale: the original's drawing maths is written in a
-    /// 256-square space and multiplied up to the render resolution, so a
-    /// rendition twice the original's size uses 2. Whole numbers only - a
-    /// fraction puts HUD text and ship vertices on half-pixels.
+    /// Gets the design-space scale: this rendition's chrome is authored in the
+    /// original's 256-square space, and this multiplies those positions and
+    /// sizes up to its own pixels, so chrome drawn at twice the original's
+    /// proportions uses 2.
+    /// <para>
+    /// It is a property of the artwork rather than of the resolution, so it
+    /// need not divide the screen: a rendition can draw 16-bit-proportioned
+    /// chrome on a larger canvas and simply have more room around it. Whole
+    /// numbers only - a fraction puts HUD text and ship vertices on
+    /// half-pixels.
+    /// </para>
     /// </summary>
-    public int Scale { get; }
+    public int DesignScale { get; }
 
     /// <summary>
     /// Gets the window scales this rendition offers, smallest first. A scale

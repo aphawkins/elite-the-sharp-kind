@@ -30,13 +30,15 @@ namespace EliteSharp.Abstractions.Views;
 /// than hardcoded, so each tier's scanner sets its own HUD height (the 8-bit
 /// scanner is 320x56 against the 16-bit 640x129).
 /// </param>
-/// <param name="Scale">
-/// Elite's coordinate scale: the game's drawing maths is written in the
-/// original's 256x256-ish space and multiplied up to the render resolution.
+/// <param name="DesignScale">
+/// The design-space scale: chrome positions and sizes are authored in the
+/// original's 256x256-ish space, and this is what multiplies them up to
+/// this rendition's pixels. It is a unit conversion, not a transform - it
+/// never enters the projection, which has its own focal length.
 /// Kept whole, per the pixel-doubling rule in docs/decisions.md - a
 /// fractional value would put HUD text and ship vertices on half-pixels.
 /// </param>
-public sealed record ViewLayout(float ScreenWidth, float ScreenHeight, Vector2 ScannerSize, float Scale)
+public sealed record ViewLayout(float ScreenWidth, float ScreenHeight, Vector2 ScannerSize, float DesignScale)
     : ScreenLayout(ScreenWidth, ScreenHeight)
 {
     // Left/Top/Right/Bottom are inclusive pixel bounds - Right and Bottom are

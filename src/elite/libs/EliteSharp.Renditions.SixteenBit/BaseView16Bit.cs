@@ -35,7 +35,7 @@ internal class BaseView16Bit : IBaseView
 
         Graphics = surface.Graphics;
         Layout = surface.Layout;
-        _rowHeight = 8 * surface.Layout.Scale;
+        _rowHeight = 8 * surface.Layout.DesignScale;
         _colorGold = surface.Palette["Gold"];
         _colorWhite = surface.Palette["White"];
     }

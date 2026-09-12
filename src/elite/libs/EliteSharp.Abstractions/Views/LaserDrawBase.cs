@@ -47,7 +47,7 @@ public abstract class LaserDrawBase
     public void DrawLaserLines(LaserType laserType, Vector2 aim, bool wireframe)
     {
         FastColor color = BeamColor(laserType);
-        float scale = Surface.Layout.Scale;
+        float scale = Surface.Layout.DesignScale;
 
         Vector2 target = Surface.Layout.ViewportCentre + (aim * scale);
 

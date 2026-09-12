@@ -12,7 +12,7 @@ namespace EliteSharp.Renditions.EightBit;
 /// <summary>
 /// The 8-bit galactic chart: authored for the 320x256 canvas and its fixed
 /// 8x8 font. The plot itself needs no tier-specific maths - galaxy space is
-/// 256x256 and <see cref="ViewLayout.Scale"/> maps it onto the tier - so only
+/// 256x256 and <see cref="ViewLayout.DesignScale"/> maps it onto the tier - so only
 /// the divider line, the cross-hair size and the two caption rows differ from
 /// the 16-bit view.
 /// </summary>
@@ -54,8 +54,8 @@ internal sealed class GalacticChartView8Bit : BaseView8Bit, IView<GalacticChartM
 
         // Fuel radius
         Vector2 centre = ToScreen(model.DockedPlanet);
-        float radius = model.FuelLightYears * 2.5f * _surface.Layout.Scale;
-        float fuelCrossSize = 7 * _surface.Layout.Scale;
+        float radius = model.FuelLightYears * 2.5f * _surface.Layout.DesignScale;
+        float fuelCrossSize = 7 * _surface.Layout.DesignScale;
         _surface.Graphics.DrawCircle(centre, radius, _colorGreen);
         _surface.Graphics.DrawLine(new(centre.X, centre.Y - fuelCrossSize), new(centre.X, centre.Y + fuelCrossSize), _colorWhite);
         _surface.Graphics.DrawLine(new(centre.X - fuelCrossSize, centre.Y), new(centre.X + fuelCrossSize, centre.Y), _colorWhite);
@@ -93,6 +93,6 @@ internal sealed class GalacticChartView8Bit : BaseView8Bit, IView<GalacticChartM
 
     // Galaxy space (D, B) to this tier's screen coordinates.
     private Vector2 ToScreen(Vector2 galaxy) => new(
-        (galaxy.X * _surface.Layout.Scale * 1.2f) + _surface.Layout.ViewportLeft + 8,
-        (galaxy.Y * _surface.Layout.Scale * 0.55f) + _surface.Layout.ViewportTop + 24);
+        (galaxy.X * _surface.Layout.DesignScale * 1.2f) + _surface.Layout.ViewportLeft + 8,
+        (galaxy.Y * _surface.Layout.DesignScale * 0.55f) + _surface.Layout.ViewportTop + 24);
 }

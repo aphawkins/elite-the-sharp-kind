@@ -46,8 +46,8 @@ internal sealed class GalacticChartView16Bit : BaseView16Bit, IView<GalacticChar
 
         // Fuel radius
         Vector2 centre = ToScreen(model.DockedPlanet);
-        float radius = model.FuelLightYears * 2.5f * _surface.Layout.Scale;
-        float cross_size = 7 * _surface.Layout.Scale;
+        float radius = model.FuelLightYears * 2.5f * _surface.Layout.DesignScale;
+        float cross_size = 7 * _surface.Layout.DesignScale;
         _surface.Graphics.DrawCircle(centre, radius, _colorGreen);
         _surface.Graphics.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size), _colorWhite);
         _surface.Graphics.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y), _colorWhite);
@@ -89,6 +89,6 @@ internal sealed class GalacticChartView16Bit : BaseView16Bit, IView<GalacticChar
     // field's own span is 512-wide regardless of the viewport, so it is
     // centred in the wider 640-wide viewport with a fixed +64 offset.
     private Vector2 ToScreen(Vector2 galaxy) => new(
-        (galaxy.X * _surface.Layout.Scale) + _surface.Layout.ViewportLeft + 64,
-        (galaxy.Y * _surface.Layout.Scale / 2) + (18 * _surface.Layout.Scale) + 1);
+        (galaxy.X * _surface.Layout.DesignScale) + _surface.Layout.ViewportLeft + 64,
+        (galaxy.Y * _surface.Layout.DesignScale / 2) + (18 * _surface.Layout.DesignScale) + 1);
 }

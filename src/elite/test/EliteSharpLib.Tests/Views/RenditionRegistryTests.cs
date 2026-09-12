@@ -80,7 +80,7 @@ public class RenditionRegistryTests
 
         public int ScreenHeight => 256;
 
-        public int Scale => 1;
+        public int DesignScale => 1;
 
         public IBaseView CreateBaseView(IViewSurface surface) => new NothingBaseView();
 

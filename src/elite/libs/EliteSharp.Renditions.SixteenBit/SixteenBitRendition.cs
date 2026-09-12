@@ -25,7 +25,7 @@ public sealed class SixteenBitRendition : IRendition
 
     public int ScreenHeight => 512;
 
-    public int Scale => 2;
+    public int DesignScale => 2;
 
     // 640x512 doubled is 1280x1024; there is no room above that on a common
     // display, so this tier stops where the 8-bit one keeps going.

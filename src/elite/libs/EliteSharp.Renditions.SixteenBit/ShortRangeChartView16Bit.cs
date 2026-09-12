@@ -43,7 +43,7 @@ internal sealed class ShortRangeChartView16Bit : BaseView16Bit, IView<ShortRange
 
         // Fuel radius
         Vector2 centre = _surface.Layout.ViewportCentre;
-        float scale = _surface.Layout.Scale;
+        float scale = _surface.Layout.DesignScale;
         float radius = model.FuelLightYears * 10 * scale;
         float crossSize = CrossSize * scale;
         Graphics.DrawCircle(centre, radius, _colorGreen);
